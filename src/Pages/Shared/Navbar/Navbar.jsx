@@ -20,11 +20,33 @@ const Navbar = () => {
     };
   }, []);
 
+  // Extended nav items with more sections and submenus
   const navItems = [
     { label: "HOME", link: "/", subMenu: [] },
     { label: "JOBS", link: "/jobs", subMenu: [] },
-    { label: "BLOGS", link: "/Blogs", subMenu: [] },
-    { label: "ABOUT US", link: "/AboutUs", subMenu: [] },
+    { label: "GIGS", link: "/gigs", subMenu: [] },
+    { label: "BLOGS", link: "/blogs", subMenu: [] },
+    { label: "ABOUT US", link: "/about-us", subMenu: [] },
+    { label: "EVENTS", link: "/events", subMenu: [] },
+    {
+      label: "MORE",
+      link: "#",
+      subMenu: [
+        { label: "Featured Jobs", link: "/featured-jobs" },
+        { label: "Featured Gigs", link: "/featured-gigs" },
+        { label: "Company Profiles", link: "/company-profiles" },
+        { label: "Newsletter", link: "/newsletter" },
+        { label: "Testimonials", link: "/testimonials" },
+        { label: "Why Choose Us", link: "/why-choose-us" },
+        { label: "COURSES", link: "/courses", subMenu: [] },
+
+        { label: "INTERNSHIPS", link: "/internships", subMenu: [] },
+
+        { label: "MENTORSHIP", link: "/mentorship", subMenu: [] },
+
+        { label: "SALARY INSIGHTS", link: "/salary-insights", subMenu: [] },
+      ],
+    },
   ];
 
   const renderNav = () =>
@@ -33,7 +55,7 @@ const Navbar = () => {
         <div className="dropdown dropdown-hover">
           {subMenu.length > 0 ? (
             <>
-              <p className="hover:text-blue-800 ">{label}</p>
+              <p className="hover:text-blue-800">{label}</p>
               <ul
                 tabIndex={0}
                 className="dropdown-content menu bg-white font-semibold z-[1] w-52 p-2 shadow"
@@ -73,7 +95,7 @@ const Navbar = () => {
       {/* Navbar section */}
       <div
         className={`navbar transition-all duration-300 mx-auto text-black fixed w-full z-40 ${
-          scrollPosition > 50 ? "bg-white top-0" : "bg-blue-500 "
+          scrollPosition > 50 ? "bg-white top-0" : "bg-blue-400 "
         }`}
       >
         <div className="navbar mx-auto max-w-[1200px] items-center h-16">
@@ -95,9 +117,9 @@ const Navbar = () => {
             </div>
             <Link to={"/"}>
               <div className="flex items-center">
-                <img src={Logo} alt="Logo.png" className="w-16"  />
+                <img src={Logo} alt="Logo.png" className="w-16" />
                 <p className="text-xl font-bold">Master Job Shop</p>
-              </div>{" "}
+              </div>
             </Link>
           </div>
 
@@ -115,7 +137,7 @@ const Navbar = () => {
                 <button className="py-2 w-28">SignUp</button>
               </Link>
               <Link to={"/Login"}>
-                <button className=" py-2 w-32 bg-blue-600 hover:bg-white">
+                <button className="py-2 w-32 bg-blue-600 hover:bg-white">
                   Login
                 </button>
               </Link>

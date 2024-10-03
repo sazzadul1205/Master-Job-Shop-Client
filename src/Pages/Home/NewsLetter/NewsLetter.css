@@ -1,0 +1,7 @@
+/* styles.css or any relevant CSS file */
+.Newsletter-item {
+    background-image: url('../../../assets/NewsLetter.jfif');
+    background-size: cover; /* Ensure the image covers the entire area */
+    background-position: center; /* Center the image */
+  }
+  

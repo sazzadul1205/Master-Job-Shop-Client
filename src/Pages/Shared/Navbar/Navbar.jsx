@@ -44,7 +44,7 @@ const Navbar = () => {
                       to={item.link}
                       className={({ isActive }) =>
                         isActive
-                          ? "text-blue-800 bg-white"
+                          ? "text-blue-800 bg-black"
                           : "hover:text-blue-800"
                       }
                     >
@@ -88,7 +88,7 @@ const Navbar = () => {
                 <IoMenu className="text-3xl mt-2" />
               </button>
               {isDropdownOpen && (
-                <ul className="menu menu-sm bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                <ul className="menu menu-sm bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow text-xl">
                   {renderNav()}
                 </ul>
               )}
@@ -103,7 +103,7 @@ const Navbar = () => {
 
           {/* Navbar Center */}
           <div className="navbar-center hidden lg:flex">
-            <ul className="flex gap-1 px-1 space-x-5 font-semibold text-white">
+            <ul className="flex gap-1 px-1 space-x-5 font-semibold text-black">
               {renderNav()}
             </ul>
           </div>

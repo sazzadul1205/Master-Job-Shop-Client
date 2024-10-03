@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import Rating from "react-rating";
+import { Link } from "react-router-dom";
 
 const jobData = [
   {
@@ -406,9 +407,11 @@ const FeaturedJobs = () => {
                   </p>
                 )}
                 <div className="card-actions justify-end mt-5">
-                  <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
-                    Apply Now
-                  </button>
+                  <Link to={`/jobs/${job.id}`}>
+                    <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
+                      Apply Now
+                    </button>
+                  </Link>
                   <button
                     className="bg-yellow-500 hover:bg-yellow-600 px-5 py-2 text-lg font-semibold text-white"
                     onClick={() => openModal(job)}
@@ -424,7 +427,7 @@ const FeaturedJobs = () => {
         {/* View Modal */}
         {selectedJob && (
           <dialog id="my_modal_2" className="modal">
-            <div className="modal-box bg-white text-black max-w-[700px]">
+            <div className="modal-box bg-white text-black max-w-[700px] bg-gradient-to-br from-blue-100 to-blue-50">
               {/* Top part */}
               <div className="flex items-center justify-between">
                 {/* Content */}

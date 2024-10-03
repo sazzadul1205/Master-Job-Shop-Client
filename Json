@@ -4,6 +4,7 @@ import Rating from "react-rating";
 
 const jobData = [
   {
+    id: 1,
     jobTitle: "Project Manager",
     jobDescription:
       "We are looking for a Project Manager to oversee and coordinate projects from inception to completion, ensuring they are delivered on time and within budget.",
@@ -38,6 +39,7 @@ const jobData = [
     toolsAndTechnologies: ["Microsoft Project", "Trello"],
   },
   {
+    id: 2,
     jobTitle: "HR Coordinator",
     jobDescription:
       "The HR Coordinator will assist in various HR functions, including recruitment, onboarding, and employee relations. A key role in supporting HR initiatives.",
@@ -80,6 +82,7 @@ const jobData = [
     toolsAndTechnologies: ["HRIS", "Microsoft Office"],
   },
   {
+    id: 3,
     jobTitle: "Sales Representative",
     jobDescription:
       "We are looking for a motivated Sales Representative to join our team. You will be responsible for driving sales and building relationships with clients.",

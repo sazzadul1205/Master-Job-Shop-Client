@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaStar } from "react-icons/fa";
+import { FaArrowRight, FaStar } from "react-icons/fa";
 import Rating from "react-rating";
 import { Link } from "react-router-dom";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
@@ -70,11 +70,18 @@ const FeaturedJobs = () => {
     <div className="bg-gradient-to-b from-blue-400 to-blue-50">
       <div className="max-w-[1200px] mx-auto text-black py-20">
         {/* Top section */}
-        <div className="text-xl pt-20 text-center">
-          <p className="text-5xl font-bold italic text-blue-700">
-            Featured Jobs
-          </p>
-          <p className="text-xl">Find your dream job and help yourself</p>
+        <div className="flex items-center pt-20 px-5">
+          <div className="">
+            <p className="text-5xl font-bold italic text-blue-700">
+              Featured Jobs
+            </p>
+            <p className="text-xl">Find your dream job and help yourself</p>
+          </div>
+          <button className="ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
+            <Link to={"/Jobs"} className="flex items-center">
+              Show More <FaArrowRight className="ml-2" />
+            </Link>
+          </button>
         </div>
 
         {/* Job Cards Section */}

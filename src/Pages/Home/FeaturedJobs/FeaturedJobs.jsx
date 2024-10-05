@@ -22,18 +22,6 @@ const FeaturedJobs = () => {
     return `${daysDiff} days ago`;
   };
 
-  const openModal = (job) => {
-    setSelectedJob(job);
-    const modal = document.getElementById("my_modal_2");
-    modal.showModal();
-  };
-
-  const closeModal = () => {
-    const modal = document.getElementById("my_modal_2");
-    modal.close();
-    setSelectedJob(null); // Clear selected job when closing
-  };
-
   // Fetching PostedJobsData
   const {
     data: PostedJobsData,
@@ -65,6 +53,18 @@ const FeaturedJobs = () => {
       </div>
     );
   }
+
+  const openModal = (job) => {
+    setSelectedJob(job); // Set the selected job for the modal
+    const modal = document.getElementById("my_modal_2");
+    modal.showModal();
+  };
+
+  const closeModal = () => {
+    const modal = document.getElementById("my_modal_2");
+    modal.close();
+    setSelectedJob(null); // Clear selected job on modal close
+  };
 
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50">
@@ -110,7 +110,7 @@ const FeaturedJobs = () => {
                   </Link>
                   <button
                     className="bg-yellow-500 hover:bg-yellow-600 px-5 py-2 text-lg font-semibold text-white"
-                    onClick={() => openModal(job)}
+                    onClick={() => openModal(job)} // Open modal on button click
                   >
                     View More
                   </button>
@@ -121,8 +121,8 @@ const FeaturedJobs = () => {
         </div>
 
         {/* View Modal */}
-        {selectedJob && (
-          <dialog id="my_modal_2" className="modal">
+        <dialog id="my_modal_2" className="modal">
+          {selectedJob && (
             <div className="modal-box bg-white text-black max-w-[700px] bg-gradient-to-br from-blue-100 to-blue-50">
               {/* Top part */}
               <div className="flex items-center justify-between">
@@ -239,8 +239,8 @@ const FeaturedJobs = () => {
                 </button>
               </div>
             </div>
-          </dialog>
-        )}
+          )}
+        </dialog>
       </div>
     </div>
   );

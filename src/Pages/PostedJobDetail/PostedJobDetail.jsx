@@ -1,13 +1,14 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import Loader from "../Shared/Loader/Loader";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import Rating from "react-rating";
-import { FaStar } from "react-icons/fa";
+import { FaArrowLeft, FaStar } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 
 const PostedJobDetail = () => {
   const { id } = useParams(); // Get the job ID from the URL
+  const navigate = useNavigate(); // Initialize useNavigate for back navigation
   const axiosPublic = useAxiosPublic();
   const {
     register,
@@ -57,9 +58,18 @@ const PostedJobDetail = () => {
   // Render job details once data is fetched
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50 ">
-      <div className="max-w-[1200px] mx-auto text-black pt-32">
+      <div className="max-w-[1200px] mx-auto text-black pt-24">
+        {/* Back button with navigation */}
+        <button
+          className="flex text-2xl items-center hover:text-red-500"
+          onClick={() => navigate(-1)} // Navigate back to the previous page
+        >
+          <FaArrowLeft className="mr-5" />
+          Back
+        </button>
+
         {/* Top part */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pt-2">
           {/* Content */}
           <div>
             <p className="text-2xl grid grid-cols-2 py-1">
@@ -218,84 +228,63 @@ const PostedJobDetail = () => {
             </tbody>
           </table>
         </div>
-      </div>
 
-      {/* Modal for applying */}
-      <dialog id="my_modal_1" className="modal">
-        <div className="modal-box bg-white text-black border-2 border-red-500">
-          <h3 className="font-bold text-xl text-center">Apply for the Job</h3>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
+        {/* Form */}
+        <dialog id="my_modal_1" className="modal">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            method="dialog"
+            className="modal-box"
+          >
+            <h3 className="font-bold text-lg">Submit your application</h3>
             <div>
-              <label htmlFor="name" className="block text-sm font-bold mb-2">
-                Name
-              </label>
               <input
-                id="name"
-                {...register("name", { required: "Name is required" })}
-                className="w-full p-2 border bg-white"
+                type="text"
+                placeholder="Your Name"
+                {...register("name", { required: true })}
+                className="input input-bordered w-full mt-4"
               />
               {errors.name && (
-                <p className="text-red-500">{errors.name.message}</p>
+                <p className="text-red-500 text-sm mt-1">Name is required</p>
               )}
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-bold mb-2">
-                Email
-              </label>
               <input
-                id="email"
                 type="email"
-                {...register("email", { required: "Email is required" })}
-                className="w-full p-2 border bg-white"
+                placeholder="Your Email"
+                {...register("email", { required: true })}
+                className="input input-bordered w-full mt-4"
               />
               {errors.email && (
-                <p className="text-red-500">{errors.email.message}</p>
+                <p className="text-red-500 text-sm mt-1">Email is required</p>
               )}
             </div>
             <div>
-              <label htmlFor="aboutMe" className="block text-sm font-bold mb-2">
-                About Me
-              </label>
               <textarea
-                id="aboutMe"
-                {...register("aboutMe", {
-                  required: "Please tell us about yourself",
-                })}
-                className="w-full p-2 border bg-white"
+                placeholder="About Me"
+                {...register("aboutMe", { required: true })}
+                className="textarea textarea-bordered w-full mt-4"
               />
               {errors.aboutMe && (
-                <p className="text-red-500">{errors.aboutMe.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  A description is required
+                </p>
               )}
             </div>
-            <div>
-              <label htmlFor="image" className="block text-sm font-bold mb-2">
-                Profile Image URL
-              </label>
-              <input
-                id="image"
-                type="url"
-                {...register("image")}
-                className="w-full p-2 border bg-white"
-              />
-            </div>
-            <div className="modal-action justify-between mt-10">
-              <button
-                type="submit"
-                className="bg-green-500 hover:bg-green-400 px-5 py-3 text-white font-bold"
-              >
-                Submit Application
+            <div className="modal-action">
+              <button className="btn bg-red-500 text-white hover:bg-red-400">
+                Close
               </button>
               <button
-                type="button"
-                className="bg-green-500 hover:bg-green-400 px-5 py-3 text-white font-bold"
-                onClick={() => document.getElementById("my_modal_1").close()}
+                className="btn bg-green-500 text-white hover:bg-green-400"
+                type="submit"
               >
-                Close
+                Submit
               </button>
             </div>
           </form>
-        </div>
-      </dialog>
+        </dialog>
+      </div>
     </div>
   );
 };

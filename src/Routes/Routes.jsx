@@ -3,6 +3,7 @@ import MainLayout from "../Layouts/MainLayout";
 import Home from "../Pages/Home/Home";
 import Jobs from "../Pages/Jobs/Jobs";
 import PostedJobDetail from "../Pages/PostedJobDetail/PostedJobDetail";
+import Gigs from "../Pages/Gigs/Gigs";
 
 export const router = createBrowserRouter([
   {
@@ -14,7 +15,7 @@ export const router = createBrowserRouter([
         element: <Home></Home>,
       },
       {
-        path: "/jobs",
+        path: "/Jobs",
         element: <Jobs></Jobs>,
       },
       {
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
         element: <PostedJobDetail></PostedJobDetail>,
         loader: ({ params }) =>
           fetch(`http://localhost:5000/Posted-Job/${params.id}`),
+      },
+      {
+        path: "/Gigs",
+        element: <Gigs></Gigs>,
       },
     ],
   },

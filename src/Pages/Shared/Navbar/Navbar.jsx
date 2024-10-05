@@ -23,28 +23,28 @@ const Navbar = () => {
   // Extended nav items with more sections and submenus
   const navItems = [
     { label: "HOME", link: "/", subMenu: [] },
-    { label: "JOBS", link: "/jobs", subMenu: [] },
-    { label: "GIGS", link: "/gigs", subMenu: [] },
-    { label: "BLOGS", link: "/blogs", subMenu: [] },
-    { label: "ABOUT US", link: "/about-us", subMenu: [] },
-    { label: "EVENTS", link: "/events", subMenu: [] },
+    { label: "JOBS", link: "/Jobs", subMenu: [] },
+    { label: "GIGS", link: "/Gigs", subMenu: [] },
+    { label: "BLOGS", link: "/Blogs", subMenu: [] },
+    { label: "ABOUT US", link: "/About-us", subMenu: [] },
+    { label: "EVENTS", link: "/Events", subMenu: [] },
     {
       label: "MORE",
       link: "#",
       subMenu: [
-        { label: "Featured Jobs", link: "/featured-jobs" },
-        { label: "Featured Gigs", link: "/featured-gigs" },
-        { label: "Company Profiles", link: "/company-profiles" },
-        { label: "Newsletter", link: "/newsletter" },
-        { label: "Testimonials", link: "/testimonials" },
-        { label: "Why Choose Us", link: "/why-choose-us" },
-        { label: "COURSES", link: "/courses", subMenu: [] },
+        { label: "Featured Jobs", link: "/Featured-jobs" },
+        { label: "Featured Gigs", link: "/Featured-gigs" },
+        { label: "Company Profiles", link: "/Company-profiles" },
+        { label: "Newsletter", link: "/Newsletter" },
+        { label: "Testimonials", link: "/Testimonials" },
+        { label: "Why Choose Us", link: "/Why-choose-us" },
+        { label: "COURSES", link: "/Courses", subMenu: [] },
 
-        { label: "INTERNSHIPS", link: "/internships", subMenu: [] },
+        { label: "INTERNSHIPS", link: "/Internships", subMenu: [] },
 
-        { label: "MENTORSHIP", link: "/mentorship", subMenu: [] },
+        { label: "MENTORSHIP", link: "/Mentorship", subMenu: [] },
 
-        { label: "SALARY INSIGHTS", link: "/salary-insights", subMenu: [] },
+        { label: "SALARY INSIGHTS", link: "/S alary-insights", subMenu: [] },
       ],
     },
   ];

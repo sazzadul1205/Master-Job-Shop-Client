@@ -4,6 +4,7 @@ import Loader from "../Shared/Loader/Loader";
 import { useState } from "react";
 import { FaSearch, FaStar } from "react-icons/fa";
 import Rating from "react-rating";
+import { Link } from "react-router-dom";
 
 const Gigs = () => {
   const axiosPublic = useAxiosPublic();
@@ -203,7 +204,7 @@ const Gigs = () => {
         </div>
 
         {/* Gig Cards Section */}
-        <div className="grid grid-cols-3 gap-4 py-10">
+        <div className="grid grid-cols-3 gap-4 py-10 text-black">
           {currentGigs.map((gig, index) => (
             <div
               key={index}
@@ -238,9 +239,11 @@ const Gigs = () => {
 
                 {/* Card Actions */}
                 <div className="card-actions justify-end mt-5">
-                  <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
-                    Apply Now
-                  </button>
+                  <Link to={`/PostedGigsDetails/${gig._id}`}>
+                    <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
+                      Apply Now
+                    </button>
+                  </Link>
                   <button
                     className="bg-yellow-500 hover:bg-yellow-600 px-5 py-2 text-lg font-semibold text-white"
                     onClick={() => openModal(gig)}
@@ -322,10 +325,13 @@ const Gigs = () => {
                 />
               </div>
             </div>
+            
             <div className="modal-action">
-              <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
-                Apply Now
-              </button>
+              <Link to={`/PostedGigsDetails/${selectedGig._id}`}>
+                <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
+                  Apply Now
+                </button>
+              </Link>
               <button
                 className="bg-red-500 hover:bg-red-600 px-5 py-2 text-lg font-semibold text-white"
                 onClick={closeModal}

@@ -73,6 +73,7 @@ const CompanyProfiles = () => {
             </Link>
           </button>
         </div>
+        
         {/* Company Cards Section */}
         <div className="grid grid-cols-3 gap-4 py-10">
           {CompanyProfilesData.slice(0, 6).map((company, index) => {

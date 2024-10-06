@@ -1,13 +1,17 @@
-import { useState } from "react";
-import { FaArrowRight, FaFacebook, FaLinkedin } from "react-icons/fa";
-import { FaSquareXTwitter } from "react-icons/fa6";
-import Loader from "../../Shared/Loader/Loader";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import Loader from "../Shared/Loader/Loader";
+import { FaSearch, FaLinkedin, FaFacebook } from "react-icons/fa";
+import { useState } from "react";
+import { FaSquareXTwitter } from "react-icons/fa6";
 
-const CompanyProfiles = () => {
+const CompanyProfilesPage = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedIndustry, setSelectedIndustry] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedCompany, setSelectedCompany] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 9;
   const axiosPublic = useAxiosPublic();
 
   // Fetching CompanyProfilesData
@@ -42,6 +46,39 @@ const CompanyProfiles = () => {
     );
   }
 
+  // Extract unique industries and locations from CompanyProfilesData
+  const uniqueIndustries = [
+    ...new Set(CompanyProfilesData.map((company) => company.industry)),
+  ];
+  const uniqueLocations = [
+    ...new Set(CompanyProfilesData.map((company) => company.location)),
+  ];
+
+  // Search and filter functionality
+  const filteredCompanies = CompanyProfilesData.filter((company) => {
+    const matchesSearch = company.companyName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesIndustry = selectedIndustry
+      ? company.industry === selectedIndustry
+      : true;
+    const matchesLocation = selectedLocation
+      ? company.location === selectedLocation
+      : true;
+    return matchesSearch && matchesIndustry && matchesLocation;
+  });
+
+  // Pagination logic
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentCompanies = filteredCompanies.slice(
+    indexOfFirstJob,
+    indexOfLastJob
+  );
+  const totalCompanies = filteredCompanies.length;
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   const openModal = (company) => {
     setSelectedCompany(company);
     const modal = document.getElementById("Company_Profiles_view");
@@ -55,27 +92,81 @@ const CompanyProfiles = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-blue-400 to-blue-50">
-      <div className="max-w-[1200px] mx-auto text-black py-10">
-        {/* Top section */}
-        <div className="flex items-center pt-20 px-5">
-          <div className="">
-            <p className="text-5xl font-bold italic text-blue-700">
-              Company Profiles
-            </p>
-            <p className="text-xl">
-              Discover companies and their career opportunities.
-            </p>
+    <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
+      <div className="mx-auto max-w-[1200px] pt-20">
+        {/* Search Box and Filters */}
+        <div className="flex flex-col md:flex-row  space-x-4 py-3">
+          {/* Title */}
+          <div className="text-black">
+            <p className="text-2xl font-bold ">Our Posted Gigs</p>
+            <p>Find New and Profitable Gigs you can work on</p>
           </div>
-          <button className="ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
-            <Link to={"/CompanyProfiles"} className="flex items-center">
-              Show More <FaArrowRight className="ml-2" />
-            </Link>
-          </button>
+
+          {/* Search bar */}
+          <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
+            <input
+              type="text"
+              className="grow py-2 px-3 focus:outline-none"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <FaSearch className="h-4 w-4 opacity-70 text-black" />
+          </label>
+
+          {/* Industry Filter */}
+          <select
+            value={selectedIndustry}
+            onChange={(e) => setSelectedIndustry(e.target.value)}
+            className="select select-bordered bg-white px-4 py-2 w-64 text-black"
+          >
+            <option value="">All Industries</option>
+            {uniqueIndustries.map((industry, index) => (
+              <option key={index} value={industry}>
+                {industry}
+              </option>
+            ))}
+          </select>
+
+          {/* Location Filter */}
+          <select
+            value={selectedLocation}
+            onChange={(e) => setSelectedLocation(e.target.value)}
+            className="select select-bordered bg-white px-4 py-2 w-64 text-black"
+          >
+            <option value="">All Locations</option>
+            {uniqueLocations.map((location, index) => (
+              <option key={index} value={location}>
+                {location}
+              </option>
+            ))}
+          </select>
         </div>
+
+        {/* Pagination */}
+        <div className="flex justify-end space-x-2 ">
+          {[...Array(Math.ceil(totalCompanies / jobsPerPage)).keys()].map(
+            (num) => (
+              <button
+                key={num}
+                className={`px-4 py-2 font-semibold text-lg ${
+                  currentPage === num + 1
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200 text-black"
+                }`}
+                onClick={() => paginate(num + 1)}
+                aria-label={`Go to page ${num + 1}`}
+                disabled={currentPage === num + 1} // Disable current page button
+              >
+                {num + 1}
+              </button>
+            )
+          )}
+        </div>
+
         {/* Company Cards Section */}
         <div className="grid grid-cols-3 gap-4 py-10">
-          {CompanyProfilesData.slice(0, 6).map((company, index) => {
+          {currentCompanies.map((company, index) => {
             const {
               companyName,
               location,
@@ -280,4 +371,4 @@ const CompanyProfiles = () => {
   );
 };
 
-export default CompanyProfiles;
+export default CompanyProfilesPage;

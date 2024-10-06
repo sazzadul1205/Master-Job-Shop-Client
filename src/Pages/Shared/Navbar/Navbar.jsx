@@ -32,10 +32,7 @@ const Navbar = () => {
       label: "MORE",
       link: "#",
       subMenu: [
-        { label: "Featured Jobs", link: "/Featured-jobs" },
-        { label: "Featured Gigs", link: "/Featured-gigs" },
-        { label: "Company Profiles", link: "/Company-profiles" },
-        { label: "Newsletter", link: "/Newsletter" },
+        { label: "Company Profiles", link: "/CompanyProfiles" },
         { label: "Testimonials", link: "/Testimonials" },
         { label: "Why Choose Us", link: "/Why-choose-us" },
         { label: "COURSES", link: "/Courses", subMenu: [] },
@@ -66,8 +63,8 @@ const Navbar = () => {
                       to={item.link}
                       className={({ isActive }) =>
                         isActive
-                          ? "text-blue-800 bg-black"
-                          : "hover:text-blue-800"
+                          ? "text-blue-800 hover:bg-white bg-white text-lg"
+                          : "hover:text-blue-800 hover:bg-white text-lg"
                       }
                     >
                       {item.label}

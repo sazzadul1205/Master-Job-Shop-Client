@@ -5,6 +5,7 @@ import Jobs from "../Pages/Jobs/Jobs";
 import PostedJobDetail from "../Pages/PostedJobDetail/PostedJobDetail";
 import Gigs from "../Pages/Gigs/Gigs";
 import PostedGigDetail from "../Pages/PostedGigDetail/PostedGigDetail";
+import CompanyProfilesPage from "../Pages/CompanyProfilesPage/CompanyProfilesPage";
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ export const router = createBrowserRouter([
         element: <PostedGigDetail></PostedGigDetail>,
         loader: ({ params }) =>
           fetch(`http://localhost:5000/Posted-Gig/${params.id}`),
+      },
+      {
+        path: "/CompanyProfiles",
+        element: <CompanyProfilesPage></CompanyProfilesPage>,
       },
     ],
   },

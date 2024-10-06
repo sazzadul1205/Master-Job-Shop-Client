@@ -115,6 +115,11 @@ const Gigs = () => {
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
       <div className="mx-auto max-w-[1200px] pt-20">
+        {/* Title */}
+        <div className="text-black">
+          <h1 className="text-2xl font-bold m-0 pt-5">Our Posted Gigs</h1>
+          <p>Find New and Profitable Gigs you can work on</p>
+        </div>  
         {/* Filter Dropdowns */}
         <div className="flex space-x-4 py-3">
           {/* Search */}
@@ -325,7 +330,7 @@ const Gigs = () => {
                 />
               </div>
             </div>
-            
+
             <div className="modal-action">
               <Link to={`/PostedGigsDetails/${selectedGig._id}`}>
                 <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">

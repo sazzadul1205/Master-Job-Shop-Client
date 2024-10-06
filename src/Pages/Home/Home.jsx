@@ -1,5 +1,5 @@
+import { useState, useEffect } from "react";
 import { GoMoveToTop } from "react-icons/go";
-import Courses from "./Courses/Courses";
 import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
 import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
 import HomeBanners from "./HomeBanner/HomeBanner";
@@ -8,10 +8,10 @@ import MentorshipPrograms from "./MentorshipPrograms/MentorshipPrograms";
 import NewsLetter from "./NewsLetter/NewsLetter";
 import Testimonials from "./Testimonials/Testimonials";
 import WhyChooseUs from "./WhyChooseUs/WhyChooseUs";
-import { useState, useEffect } from "react";
 import FeaturedCompanyProfiles from "./FeaturedCompanyProfiles/FeaturedCompanyProfiles";
 import FeaturedSalaryInsights from "./FeaturedSalaryInsights/FeaturedSalaryInsights";
 import FeaturedUpcomingEvents from "./FeaturedUpcomingEvents/FeaturedUpcomingEvents";
+import FeaturedCourses from "./FeaturedCourses/FeaturedCourses";
 
 const Home = () => {
   const [showToTop, setShowToTop] = useState(false);
@@ -59,7 +59,7 @@ const Home = () => {
       <FeaturedCompanyProfiles />
       <FeaturedSalaryInsights />
       <FeaturedUpcomingEvents />
-      <Courses />
+      <FeaturedCourses />
       <MentorshipPrograms />
       <InternshipPrograms />
       <NewsLetter />

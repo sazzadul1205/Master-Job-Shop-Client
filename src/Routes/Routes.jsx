@@ -10,6 +10,7 @@ import UpcomingEvents from "../Pages/UpcomingEvents/UpcomingEvents";
 import SalaryInsights from "../Pages/SalaryInsights/SalaryInsights";
 import CompanyProfiles from "../Pages/CompanyProfiles/CompanyProfiles";
 import UpcomingEventsDetails from "../Pages/UpcomingEvents/UpcomingEventsDetails/UpcomingEventsDetails";
+import Courses from "../Pages/Courses/Courses";
 
 export const router = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ export const router = createBrowserRouter([
         element: <UpcomingEventsDetails></UpcomingEventsDetails>,
         loader: ({ params }) =>
           fetch(`http://localhost:5000/Upcoming-Events/${params.id}`),
+      },
+      {
+        path: "/Courses",
+        element: <Courses></Courses>,
       },
     ],
   },

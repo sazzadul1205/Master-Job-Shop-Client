@@ -7,6 +7,7 @@ import Gigs from "../Pages/Gigs/Gigs";
 import PostedGigDetail from "../Pages/PostedGigDetail/PostedGigDetail";
 import CompanyProfilesPage from "../Pages/CompanyProfilesPage/CompanyProfilesPage";
 import SalaryInsightsPage from "../Pages/SalaryInsightsPage/SalaryInsightsPage";
+import CompanyProfileDetails from "../Pages/CompanyProfileDetails/CompanyProfileDetails";
 
 export const router = createBrowserRouter([
   {
@@ -42,8 +43,14 @@ export const router = createBrowserRouter([
         element: <CompanyProfilesPage></CompanyProfilesPage>,
       },
       {
+        path: "/CompanyProfiles/:id",
+        element: <CompanyProfileDetails></CompanyProfileDetails>,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/Company-Profiles/${params.id}`),
+      },
+      {
         path: "/SalaryInsights",
-        element: <SalaryInsightsPage></SalaryInsightsPage>
+        element: <SalaryInsightsPage></SalaryInsightsPage>,
       },
     ],
   },

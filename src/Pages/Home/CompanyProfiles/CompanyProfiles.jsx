@@ -73,7 +73,7 @@ const CompanyProfiles = () => {
             </Link>
           </button>
         </div>
-        
+
         {/* Company Cards Section */}
         <div className="grid grid-cols-3 gap-4 py-10">
           {CompanyProfilesData.slice(0, 6).map((company, index) => {
@@ -132,9 +132,11 @@ const CompanyProfiles = () => {
 
                   {/* Card Actions */}
                   <div className="card-actions justify-end mt-5">
-                    <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
-                      View Jobs
-                    </button>
+                    <Link to={`/CompanyProfiles/${company._id}`}>
+                      <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
+                        View Jobs
+                      </button>
+                    </Link>
                     <button
                       className="bg-yellow-500 hover:bg-yellow-600 px-5 py-2 text-lg font-semibold text-white"
                       onClick={() => openModal(company)}
@@ -267,6 +269,11 @@ const CompanyProfiles = () => {
               </div>
             </div>
             <div className="modal-action">
+              <Link to={`/CompanyProfiles/${selectedCompany._id}`}>
+                <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
+                  View Jobs
+                </button>
+              </Link>
               <button
                 className="bg-red-500 hover:bg-red-600 px-5 py-2 text-lg font-semibold text-white"
                 onClick={closeModal}

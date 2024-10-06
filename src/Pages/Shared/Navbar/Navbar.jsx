@@ -34,10 +34,10 @@ const Navbar = () => {
       subMenu: [
         { label: "COMPANY PROFILES", link: "/CompanyProfiles" },
         { label: "SALARY INSIGHTS", link: "/SalaryInsights" },
-        { label: "UPCOMING EVENTs", link: "/UpcomingEvents" },
+        { label: "UPCOMING EVENTS", link: "/UpcomingEvents" },
+        { label: "COURSES", link: "/Courses" },
         { label: "Testimonials", link: "/Testimonials" },
         { label: "Why Choose Us", link: "/Why-choose-us" },
-        { label: "COURSES", link: "/Courses", subMenu: [] },
         { label: "INTERNSHIPS", link: "/Internships", subMenu: [] },
         { label: "MENTORSHIP", link: "/Mentorship", subMenu: [] },
       ],

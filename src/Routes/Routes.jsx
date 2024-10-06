@@ -11,6 +11,7 @@ import SalaryInsights from "../Pages/SalaryInsights/SalaryInsights";
 import CompanyProfiles from "../Pages/CompanyProfiles/CompanyProfiles";
 import UpcomingEventsDetails from "../Pages/UpcomingEvents/UpcomingEventsDetails/UpcomingEventsDetails";
 import Courses from "../Pages/Courses/Courses";
+import CoursesDetails from "../Pages/Courses/CoursesDetails/CoursesDetails";
 
 export const router = createBrowserRouter([
   {
@@ -68,6 +69,12 @@ export const router = createBrowserRouter([
       {
         path: "/Courses",
         element: <Courses></Courses>,
+      },
+      {
+        path: "/Courses/:id",
+        element: <CoursesDetails></CoursesDetails>,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/Courses/${params.id}`),
       },
     ],
   },

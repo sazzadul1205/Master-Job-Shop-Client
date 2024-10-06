@@ -3,6 +3,7 @@ import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../Shared/Loader/Loader";
 import { FaSearch } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Courses = () => {
   const axiosPublic = useAxiosPublic();
@@ -76,8 +77,8 @@ const Courses = () => {
         <div className="flex justify-between items-center gap-5 pt-5">
           {/* Title */}
           <div className="text-black">
-            <h1 className="text-2xl font-bold m-0 pt-5">Our Posted Jobs</h1>
-            <p>Find Your Preferred Job</p>
+            <h1 className="text-2xl font-bold m-0 pt-5">Our Course</h1>
+            <p>Join our Courses to get more Experience</p>
           </div>
 
           {/* Search */}
@@ -124,7 +125,7 @@ const Courses = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-end space-x-2 py-3">
+        <div className="flex justify-end space-x-2">
           {[...Array(totalPages).keys()].map((num) => (
             <button
               key={num}
@@ -141,7 +142,7 @@ const Courses = () => {
         </div>
 
         {/* Course Cards Section */}
-        <div className="grid grid-cols-3 gap-4 py-10">
+        <div className="grid grid-cols-3 gap-4 py-5">
           {currentJobs.map((course, index) => (
             <div
               key={index}
@@ -175,9 +176,11 @@ const Courses = () => {
 
                 {/* Card Actions */}
                 <div className="card-actions justify-end mt-5">
-                  <button className="bg-blue-500 hover:bg-blue-600 px-5 py-2 text-lg font-semibold text-white">
-                    Enroll Now
-                  </button>
+                  <Link to={`/Courses/${course._id}`}>
+                    <button className="bg-blue-500 hover:bg-blue-600 px-5 py-2 text-lg font-semibold text-white">
+                      Enroll Now
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>

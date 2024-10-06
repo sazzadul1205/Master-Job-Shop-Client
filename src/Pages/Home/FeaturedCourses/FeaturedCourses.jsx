@@ -94,9 +94,11 @@ const FeaturedCourses = () => {
 
                 {/* Card Actions */}
                 <div className="card-actions justify-end mt-5">
-                  <button className="bg-blue-500 hover:bg-blue-600 px-5 py-2 text-lg font-semibold text-white">
-                    Enroll Now
-                  </button>
+                  <Link to={`/Courses/${course._id}`}>
+                    <button className="bg-blue-500 hover:bg-blue-600 px-5 py-2 text-lg font-semibold text-white">
+                      Enroll Now
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>

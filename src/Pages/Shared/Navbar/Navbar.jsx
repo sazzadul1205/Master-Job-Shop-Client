@@ -32,16 +32,13 @@ const Navbar = () => {
       label: "MORE",
       link: "#",
       subMenu: [
-        { label: "Company Profiles", link: "/CompanyProfiles" },
+        { label: "COMPANY PROFILES", link: "/CompanyProfiles" },
+        { label: "SALARY INSIGHTS", link: "/SalaryInsights" },
         { label: "Testimonials", link: "/Testimonials" },
         { label: "Why Choose Us", link: "/Why-choose-us" },
         { label: "COURSES", link: "/Courses", subMenu: [] },
-
         { label: "INTERNSHIPS", link: "/Internships", subMenu: [] },
-
         { label: "MENTORSHIP", link: "/Mentorship", subMenu: [] },
-
-        { label: "SALARY INSIGHTS", link: "/S alary-insights", subMenu: [] },
       ],
     },
   ];

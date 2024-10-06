@@ -1,13 +1,17 @@
-import { Link } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa";
 import { useState } from "react";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
-import Loader from "../../Shared/Loader/Loader";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import Loader from "../Shared/Loader/Loader";
+import { FaSearch } from "react-icons/fa";
 
-const SalaryInsights = () => {
-  const [selectedJob, setSelectedJob] = useState(null);
+const SalaryInsightsPage = () => {
   const axiosPublic = useAxiosPublic();
+  const [searchTerm, setSearchTerm] = useState(""); // State for search
+  const [currentPage, setCurrentPage] = useState(1); // State for pagination
+  const jobsPerPage = 9; // Jobs per page
+  const [selectedJob, setSelectedJob] = useState(null); // State for modal
+  const [selectedCareerPath, setSelectedCareerPath] = useState(""); // State for careerPath filter
+  const [selectedIndustry, setSelectedIndustry] = useState(""); // State for potentialIndustries filter
 
   // Fetching SalaryInsightData
   const {
@@ -41,6 +45,37 @@ const SalaryInsights = () => {
     );
   }
 
+  // Extract unique career paths and industries from SalaryInsightData
+  const careerPaths = Array.from(
+    new Set(SalaryInsightData.flatMap((item) => item.careerPath))
+  );
+  const potentialIndustries = Array.from(
+    new Set(SalaryInsightData.flatMap((item) => item.potentialIndustries))
+  );
+
+  // Pagination logic
+  //   const totalCompanies = SalaryInsightData.length;
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+
+  // Filtering logic
+  const filteredJobs = SalaryInsightData.filter((job) => {
+    const matchesSearchTerm = job.jobTitle
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesCareerPath = selectedCareerPath
+      ? job.careerPath.includes(selectedCareerPath)
+      : true;
+    const matchesIndustry = selectedIndustry
+      ? job.potentialIndustries.includes(selectedIndustry)
+      : true;
+    return matchesSearchTerm && matchesCareerPath && matchesIndustry;
+  });
+
+  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+
+  // Modal control
   const openModal = (job) => {
     setSelectedJob(job);
     const modal = document.getElementById("SalaryInsightsModal");
@@ -54,28 +89,81 @@ const SalaryInsights = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-blue-50 to-blue-400">
-      <div className="max-w-[1200px] mx-auto text-black py-10">
-        {/* Top section */}
-        <div className="flex items-center pt-20 px-5">
-          <div>
-            <p className="text-5xl font-bold italic text-blue-700">
-              Salary Insights
-            </p>
-            <p className="text-xl">
-              Get an overview of salary ranges for various roles.
-            </p>
+    <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
+      <div className="mx-auto max-w-[1200px] pt-20">
+        {/* Search Box and Filters */}
+        <div className="flex flex-col md:flex-row space-x-4 py-3">
+          {/* Title */}
+          <div className="text-black">
+            <p className="text-2xl font-bold ">Salary Insights</p>
+            <p>Know about the salary insights of different industries.</p>
           </div>
-          <button className="ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
-            <Link to={"/SalaryInsights"} className="flex items-center">
-              Show More <FaArrowRight className="ml-2" />
-            </Link>
-          </button>
+
+          {/* Search bar */}
+          <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
+            <input
+              type="text"
+              className="grow py-2 px-3 focus:outline-none"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <FaSearch className="h-4 w-4 opacity-70 text-black" />
+          </label>
+
+          {/* Career Path Selector */}
+          <select
+            className="input input-bordered bg-white text-black"
+            value={selectedCareerPath}
+            onChange={(e) => setSelectedCareerPath(e.target.value)}
+          >
+            <option value="">All Career Paths</option>
+            {careerPaths.map((path, index) => (
+              <option key={index} value={path}>
+                {path}
+              </option>
+            ))}
+          </select>
+
+          {/* Industry Selector */}
+          <select
+            className="input input-bordered bg-white text-black"
+            value={selectedIndustry}
+            onChange={(e) => setSelectedIndustry(e.target.value)}
+          >
+            <option value="">All Industries</option>
+            {potentialIndustries.map((industry, index) => (
+              <option key={index} value={industry}>
+                {industry}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-end space-x-2 ">
+          {[...Array(Math.ceil(filteredJobs.length / jobsPerPage)).keys()].map(
+            (num) => (
+              <button
+                key={num}
+                className={`px-4 py-2 font-semibold text-lg ${
+                  currentPage === num + 1
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200 text-black"
+                }`}
+                onClick={() => paginate(num + 1)}
+                aria-label={`Go to page ${num + 1}`}
+                disabled={currentPage === num + 1} // Disable current page button
+              >
+                {num + 1}
+              </button>
+            )
+          )}
         </div>
 
         {/* Salary Cards Section */}
         <div className="grid grid-cols-3 gap-4 py-10">
-          {SalaryInsightData.slice(0, 6).map((salaryInsight, index) => (
+          {currentJobs.map((salaryInsight, index) => (
             <div
               key={index}
               className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-orange-50 hover:shadow-2xl"
@@ -253,4 +341,4 @@ const SalaryInsights = () => {
   );
 };
 
-export default SalaryInsights;
+export default SalaryInsightsPage;

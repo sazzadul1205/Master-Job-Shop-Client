@@ -6,6 +6,7 @@ import PostedJobDetail from "../Pages/PostedJobDetail/PostedJobDetail";
 import Gigs from "../Pages/Gigs/Gigs";
 import PostedGigDetail from "../Pages/PostedGigDetail/PostedGigDetail";
 import CompanyProfilesPage from "../Pages/CompanyProfilesPage/CompanyProfilesPage";
+import SalaryInsightsPage from "../Pages/SalaryInsightsPage/SalaryInsightsPage";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
       {
         path: "/CompanyProfiles",
         element: <CompanyProfilesPage></CompanyProfilesPage>,
+      },
+      {
+        path: "/SalaryInsights",
+        element: <SalaryInsightsPage></SalaryInsightsPage>
       },
     ],
   },

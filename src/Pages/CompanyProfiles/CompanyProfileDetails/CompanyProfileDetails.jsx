@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import Loader from "../Shared/Loader/Loader";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import Loader from "../../Shared/Loader/Loader";
 
 const CompanyProfileDetails = () => {
   const { id } = useParams(); // Get the company profile ID from the URL

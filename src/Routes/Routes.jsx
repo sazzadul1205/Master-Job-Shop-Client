@@ -2,12 +2,13 @@ import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../Layouts/MainLayout";
 import Home from "../Pages/Home/Home";
 import Jobs from "../Pages/Jobs/Jobs";
-import PostedJobDetail from "../Pages/PostedJobDetail/PostedJobDetail";
+import PostedJobDetail from "../Pages/Jobs/PostedJobDetail/PostedJobDetail";
 import Gigs from "../Pages/Gigs/Gigs";
-import PostedGigDetail from "../Pages/PostedGigDetail/PostedGigDetail";
-import CompanyProfilesPage from "../Pages/CompanyProfilesPage/CompanyProfilesPage";
-import SalaryInsightsPage from "../Pages/SalaryInsightsPage/SalaryInsightsPage";
-import CompanyProfileDetails from "../Pages/CompanyProfileDetails/CompanyProfileDetails";
+import PostedGigDetail from "../Pages/Gigs/PostedGigDetail/PostedGigDetail";
+import CompanyProfileDetails from "../Pages/CompanyProfiles/CompanyProfileDetails/CompanyProfileDetails";
+import UpcomingEvents from "../Pages/UpcomingEvents/UpcomingEvents";
+import SalaryInsights from "../Pages/SalaryInsights/SalaryInsights";
+import CompanyProfiles from "../Pages/CompanyProfiles/CompanyProfiles";
 
 export const router = createBrowserRouter([
   {
@@ -40,7 +41,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/CompanyProfiles",
-        element: <CompanyProfilesPage></CompanyProfilesPage>,
+        element: <CompanyProfiles></CompanyProfiles>
       },
       {
         path: "/CompanyProfiles/:id",
@@ -50,7 +51,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/SalaryInsights",
-        element: <SalaryInsightsPage></SalaryInsightsPage>,
+        element: <SalaryInsights></SalaryInsights>,
+      },
+      {
+        path: "/UpcomingEvents",
+        element: <UpcomingEvents></UpcomingEvents>,
       },
     ],
   },

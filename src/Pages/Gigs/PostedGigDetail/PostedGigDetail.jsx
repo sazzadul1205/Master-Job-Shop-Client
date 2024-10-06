@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
-import Loader from "../Shared/Loader/Loader";
-import Rating from "react-rating";
-import { FaArrowLeft, FaStar } from "react-icons/fa";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../../Shared/Loader/Loader";
+import { FaArrowLeft, FaStar } from "react-icons/fa";
+import Rating from "react-rating";
 
 const PostedGigDetail = () => {
   const { id } = useParams(); // Get the job ID from the URL

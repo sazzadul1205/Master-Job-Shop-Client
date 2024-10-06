@@ -6,7 +6,7 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
-const CompanyProfiles = () => {
+const FeaturedCompanyProfiles = () => {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const axiosPublic = useAxiosPublic();
 
@@ -288,4 +288,4 @@ const CompanyProfiles = () => {
   );
 };
 
-export default CompanyProfiles;
+export default FeaturedCompanyProfiles;

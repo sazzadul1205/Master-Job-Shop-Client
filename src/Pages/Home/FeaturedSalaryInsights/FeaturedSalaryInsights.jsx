@@ -5,7 +5,7 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../Shared/Loader/Loader";
 
-const SalaryInsights = () => {
+const FeaturedSalaryInsights = () => {
   const [selectedJob, setSelectedJob] = useState(null);
   const axiosPublic = useAxiosPublic();
 
@@ -253,4 +253,4 @@ const SalaryInsights = () => {
   );
 };
 
-export default SalaryInsights;
+export default FeaturedSalaryInsights;

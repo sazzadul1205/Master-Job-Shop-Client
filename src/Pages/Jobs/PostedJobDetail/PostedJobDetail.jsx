@@ -1,10 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Loader from "../Shared/Loader/Loader";
+
 import { useQuery } from "@tanstack/react-query";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+
 import Rating from "react-rating";
 import { FaArrowLeft, FaStar } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import Loader from "../../Shared/Loader/Loader";
 
 const PostedJobDetail = () => {
   const { id } = useParams(); // Get the job ID from the URL

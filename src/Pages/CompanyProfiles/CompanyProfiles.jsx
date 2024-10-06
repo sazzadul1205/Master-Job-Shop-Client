@@ -6,7 +6,7 @@ import { useState } from "react";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
-const CompanyProfilesPage = () => {
+const CompanyProfiles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -379,4 +379,4 @@ const CompanyProfilesPage = () => {
   );
 };
 
-export default CompanyProfilesPage;
+export default CompanyProfiles;

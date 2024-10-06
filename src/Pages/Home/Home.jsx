@@ -1,5 +1,4 @@
 import { GoMoveToTop } from "react-icons/go";
-import CompanyProfiles from "./CompanyProfiles/CompanyProfiles";
 import Courses from "./Courses/Courses";
 import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
 import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
@@ -7,11 +6,12 @@ import HomeBanners from "./HomeBanner/HomeBanner";
 import InternshipPrograms from "./InternshipPrograms/InternshipPrograms";
 import MentorshipPrograms from "./MentorshipPrograms/MentorshipPrograms";
 import NewsLetter from "./NewsLetter/NewsLetter";
-import SalaryInsights from "./SalaryInsights/SalaryInsights";
 import Testimonials from "./Testimonials/Testimonials";
-import UpcomingEvents from "./UpcomingEvents/UpcomingEvents";
 import WhyChooseUs from "./WhyChooseUs/WhyChooseUs";
 import { useState, useEffect } from "react";
+import FeaturedCompanyProfiles from "./FeaturedCompanyProfiles/FeaturedCompanyProfiles";
+import FeaturedSalaryInsights from "./FeaturedSalaryInsights/FeaturedSalaryInsights";
+import FeaturedUpcomingEvents from "./FeaturedUpcomingEvents/FeaturedUpcomingEvents";
 
 const Home = () => {
   const [showToTop, setShowToTop] = useState(false);
@@ -56,9 +56,9 @@ const Home = () => {
       <HomeBanners />
       <FeaturedJobs />
       <FeaturedGigs />
-      <CompanyProfiles />
-      <SalaryInsights />
-      <UpcomingEvents />
+      <FeaturedCompanyProfiles />
+      <FeaturedSalaryInsights />
+      <FeaturedUpcomingEvents />
       <Courses />
       <MentorshipPrograms />
       <InternshipPrograms />
@@ -70,4 +70,3 @@ const Home = () => {
 };
 
 export default Home;
-

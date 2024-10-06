@@ -4,7 +4,7 @@ import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import Loader from "../Shared/Loader/Loader";
 import { FaSearch } from "react-icons/fa";
 
-const SalaryInsightsPage = () => {
+const SalaryInsights = () => {
   const axiosPublic = useAxiosPublic();
   const [searchTerm, setSearchTerm] = useState(""); // State for search
   const [currentPage, setCurrentPage] = useState(1); // State for pagination
@@ -341,4 +341,4 @@ const SalaryInsightsPage = () => {
   );
 };
 
-export default SalaryInsightsPage;
+export default SalaryInsights;

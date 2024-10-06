@@ -34,6 +34,7 @@ const Navbar = () => {
       subMenu: [
         { label: "COMPANY PROFILES", link: "/CompanyProfiles" },
         { label: "SALARY INSIGHTS", link: "/SalaryInsights" },
+        { label: "UPCOMING EVENTs", link: "/UpcomingEvents" },
         { label: "Testimonials", link: "/Testimonials" },
         { label: "Why Choose Us", link: "/Why-choose-us" },
         { label: "COURSES", link: "/Courses", subMenu: [] },
@@ -60,8 +61,8 @@ const Navbar = () => {
                       to={item.link}
                       className={({ isActive }) =>
                         isActive
-                          ? "text-blue-800 hover:bg-white bg-white text-lg"
-                          : "hover:text-blue-800 hover:bg-white text-lg"
+                          ? "text-blue-800 hover:bg-white bg-white text-base"
+                          : "hover:text-blue-800 hover:bg-white text-base"
                       }
                     >
                       {item.label}

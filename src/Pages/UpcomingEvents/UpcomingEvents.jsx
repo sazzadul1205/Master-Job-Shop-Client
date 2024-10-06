@@ -129,12 +129,8 @@ const UpcomingEvents = () => {
 
                   {/* Card Actions */}
                   <div className="card-actions justify-end mt-5">
-                    <Link >
-                      <button
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-blue-500 hover:bg-blue-600 px-5 py-2 text-lg font-semibold text-white"
-                      >
+                    <Link to={`/UpcomingEventsDetails/${event._id}`}>
+                      <button className="bg-blue-500 hover:bg-blue-600 px-5 py-2 text-lg font-semibold text-white">
                         RSVP Now
                       </button>
                     </Link>

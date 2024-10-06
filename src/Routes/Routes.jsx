@@ -9,6 +9,7 @@ import CompanyProfileDetails from "../Pages/CompanyProfiles/CompanyProfileDetail
 import UpcomingEvents from "../Pages/UpcomingEvents/UpcomingEvents";
 import SalaryInsights from "../Pages/SalaryInsights/SalaryInsights";
 import CompanyProfiles from "../Pages/CompanyProfiles/CompanyProfiles";
+import UpcomingEventsDetails from "../Pages/UpcomingEvents/UpcomingEventsDetails/UpcomingEventsDetails";
 
 export const router = createBrowserRouter([
   {
@@ -41,7 +42,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/CompanyProfiles",
-        element: <CompanyProfiles></CompanyProfiles>
+        element: <CompanyProfiles></CompanyProfiles>,
       },
       {
         path: "/CompanyProfiles/:id",
@@ -56,6 +57,12 @@ export const router = createBrowserRouter([
       {
         path: "/UpcomingEvents",
         element: <UpcomingEvents></UpcomingEvents>,
+      },
+      {
+        path: "/UpcomingEventsDetails/:id",
+        element: <UpcomingEventsDetails></UpcomingEventsDetails>,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/Upcoming-Events/${params.id}`),
       },
     ],
   },

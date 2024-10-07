@@ -80,7 +80,7 @@ const CoursesDetails = () => {
         </button>
 
         {/* Course Details */}
-        <div className="py-5">
+        <div className="py-1">
           {/* Title */}
           <h1 className="text-3xl font-bold mb-4">{course.courseTitle}</h1>
 
@@ -190,7 +190,7 @@ const CoursesDetails = () => {
           <p className="text-lg">{course.certification}</p>
 
           <h2 className="text-xl font-bold mt-6">Support</h2>
-          
+
           <p className="text-lg">
             <strong>Office Hours:</strong> {course.support.officeHours}
           </p>

@@ -63,7 +63,7 @@ const UpcomingEvents = () => {
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
       <div className="mx-auto max-w-[1200px] pt-20">
         {/* Search Box and Filters */}
-        <div className="flex flex-col md:flex-row justify-between space-x-4 py-3">
+        <div className="flex flex-col md:flex-row justify-between space-x-4 pt-5">
           {/* Title */}
           <div className="text-black">
             <p className="text-2xl font-bold">Our Upcoming Events</p>
@@ -84,7 +84,7 @@ const UpcomingEvents = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-end space-x-2 py-3">
+        <div className="flex justify-end space-x-2 pt-5">
           {[...Array(Math.ceil(totalEvents / eventsPerPage)).keys()].map(
             (num) => (
               <button
@@ -105,7 +105,7 @@ const UpcomingEvents = () => {
         </div>
 
         {/* Event Cards Section */}
-        <div className="grid grid-cols-3 gap-4 py-10">
+        <div className="grid grid-cols-3 gap-4 pt-5">
           {currentEvents.length > 0 ? (
             currentEvents.map((event, index) => (
               <div

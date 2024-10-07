@@ -105,7 +105,7 @@ const Jobs = () => {
         <div className="flex justify-between items-center gap-5 pt-5">
           {/* Title */}
           <div className="text-black">
-            <h1 className="text-2xl font-bold m-0 pt-5">Our Posted Jobs</h1>
+            <h1 className="text-2xl font-bold m-0 ">Our Posted Jobs</h1>
             <p>Find Your Preferred Job</p>
           </div>
 
@@ -119,13 +119,13 @@ const Jobs = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <FaSearch className="h-4 w-4 opacity-70 text-black" />
+              <FaSearch className="h-3 w-4 opacity-70 text-black" />
             </label>
           </div>
 
           {/* Dropdown for Job Title Filter */}
           <select
-            className="border border-gray-300 p-2 w-[200px] bg-white text-black"
+            className="border border-gray-300 p-2  w-[200px] bg-white text-black"
             value={selectedTitle}
             onChange={(e) => setSelectedTitle(e.target.value)}
           >

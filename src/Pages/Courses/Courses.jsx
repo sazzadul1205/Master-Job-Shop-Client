@@ -74,7 +74,7 @@ const Courses = () => {
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
       <div className="mx-auto max-w-[1200px] pt-20">
         {/* Top Section */}
-        <div className="flex justify-between items-center gap-5 pt-5">
+        <div className="flex justify-between items-center gap-5 pt-0">
           {/* Title */}
           <div className="text-black">
             <h1 className="text-2xl font-bold m-0 pt-5">Our Course</h1>

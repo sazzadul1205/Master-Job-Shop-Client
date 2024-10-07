@@ -4,7 +4,7 @@ import { FaFacebook, FaGithub, FaTwitter } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <div className="pt-20 bg-blue-500">
+    <div className="pt-5 bg-blue-500">
       <footer className="footer max-w-[1200px] mx-auto py-10 text-white">
         <aside className="text-center">
           <Link to={"/"}>
@@ -13,7 +13,7 @@ const Footer = () => {
               <p className="text-xl font-bold ml-2">Master Job Shop</p>
             </div>
           </Link>
-          <p className="text-lg">
+          <p className="text-lg text-left">
             Sazzadul Islam Molla
             <br />
             Providing reliable tech since 2024

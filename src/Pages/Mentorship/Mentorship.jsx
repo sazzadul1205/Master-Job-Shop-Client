@@ -1,36 +1,41 @@
-import { Link } from "react-router-dom";
-import { FaArrowRight, FaStar } from "react-icons/fa";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
-import Loader from "../../Shared/Loader/Loader";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import Loader from "../Shared/Loader/Loader";
+import { FaSearch, FaStar } from "react-icons/fa";
 import { useState } from "react";
 import Rating from "react-rating";
+import { Link } from "react-router-dom";
 
-const MentorshipPrograms = () => {
+const Mentorship = () => {
   const axiosPublic = useAxiosPublic();
-  const [selectedMentor, setSelectedMentor] = useState(null); // State for selected mentor
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedSessionFormat, setSelectedSessionFormat] = useState("");
+  const [selectedExpertise, setSelectedExpertise] = useState("");
+  const jobsPerPage = 9;
+  const [selectedMentor, setSelectedMentor] = useState(null); // Added state for selected mentor
 
   // Fetching MentorshipData
   const {
-    data: MentorshipData,
-    isLoading: MentorshipDataIsLoading,
-    error: MentorshipDataError,
+    data: mentorshipData,
+    isLoading: mentorshipDataIsLoading,
+    error: mentorshipDataError,
   } = useQuery({
     queryKey: ["MentorshipData"],
     queryFn: () => axiosPublic.get(`/Mentorship`).then((res) => res.data),
   });
 
   // Loading state
-  if (MentorshipDataIsLoading) {
+  if (mentorshipDataIsLoading) {
     return <Loader />;
   }
 
   // Error state
-  if (MentorshipDataError) {
+  if (mentorshipDataError) {
     return (
       <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
         <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          Something went wrong. Please reload the page.
+          Something went wrong. Please try again later.
         </p>
         <button
           className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
@@ -41,6 +46,41 @@ const MentorshipPrograms = () => {
       </div>
     );
   }
+
+  // Extract unique expertise and formats from mentorshipData
+  const uniqueExpertiseAreas = [
+    ...new Set(mentorshipData.map((course) => course.expertise)),
+  ];
+  const uniqueSessionFormats = [
+    ...new Set(mentorshipData.map((course) => course.sessionFormat)),
+  ];
+
+  // Filter mentorship based on selected sessionFormat, expertise, and searchTerm
+  const filteredMentorship = mentorshipData.filter((course) => {
+    return (
+      (selectedSessionFormat === "" ||
+        course.sessionFormat === selectedSessionFormat) &&
+      (selectedExpertise === "" || course.expertise === selectedExpertise) &&
+      course.mentorName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredMentorship.length / jobsPerPage);
+  const paginatedMentorship = filteredMentorship.slice(
+    (currentPage - 1) * jobsPerPage,
+    currentPage * jobsPerPage
+  );
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "sessionFormat") {
+      setSelectedSessionFormat(value);
+    } else if (name === "expertise") {
+      setSelectedExpertise(value);
+    }
+    setCurrentPage(1); // Reset to first page after filtering
+  };
 
   const openModal = (mentor) => {
     setSelectedMentor(mentor);
@@ -55,34 +95,87 @@ const MentorshipPrograms = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-blue-400 to-blue-50">
-      <div className="max-w-[1200px] mx-auto text-black py-10">
+    <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
+      <div className="mx-auto max-w-[1200px] pt-20">
         {/* Top Section */}
-        <div className="flex items-center px-5">
-          <div className="">
-            <p className="text-5xl font-bold italic text-blue-700">
-              Mentorship Programs
-            </p>
-            <p className="text-xl">
-              Join a mentorship program to advance your skills and career.
-            </p>
+        <div className="flex justify-between items-center gap-5 pt-0">
+          {/* Title */}
+          <div className="text-black">
+            <h1 className="text-2xl font-bold m-0 pt-5">Our Mentorship</h1>
+            <p>Join our Mentorship to gain more experience</p>
           </div>
-          <button className="ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
-            <Link to={"/Mentorship"} className="flex items-center">
-              Show More <FaArrowRight className="ml-2" />
-            </Link>
-          </button>
+
+          {/* Search */}
+          <div>
+            <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
+              <input
+                type="text"
+                className="grow py-2 px-3 focus:outline-none"
+                placeholder="Search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <FaSearch className="h-4 w-4 opacity-70 text-black" />
+            </label>
+          </div>
+
+          {/* Session Format Dropdown */}
+          <select
+            name="sessionFormat"
+            className="border border-gray-300 rounded w-[300px] p-2 bg-white text-black"
+            onChange={handleFilterChange}
+            value={selectedSessionFormat}
+          >
+            <option value="">Select Session Format</option>
+            {uniqueSessionFormats.map((format, index) => (
+              <option key={index} value={format}>
+                {format}
+              </option>
+            ))}
+          </select>
+
+          {/* Expertise Dropdown */}
+          <select
+            name="expertise"
+            className="border border-gray-300 rounded w-[300px] p-2 bg-white text-black"
+            onChange={handleFilterChange}
+            value={selectedExpertise}
+          >
+            <option value="">Select Expertise</option>
+            {uniqueExpertiseAreas.map((expertise, index) => (
+              <option key={index} value={expertise}>
+                {expertise}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-end space-x-2">
+          {[...Array(totalPages).keys()].map((num) => (
+            <button
+              key={num}
+              className={`px-4 py-2 font-semibold text-lg ${
+                currentPage === num + 1
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-black"
+              }`}
+              onClick={() => setCurrentPage(num + 1)}
+            >
+              {num + 1}
+            </button>
+          ))}
         </div>
 
         {/* Mentorship Cards Section */}
         <div className="grid grid-cols-3 gap-4 py-10">
-          {MentorshipData.slice(0, 6).map((mentor, index) => (
+          {paginatedMentorship.map((mentor, index) => (
             <div
               key={index}
               className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-emerald-50 hover:shadow-2xl"
             >
               <div className="card-body">
-                {/* Mentor mentorImage */}
+                {/* Mentor Image */}
                 {mentor.mentorImage && (
                   <img
                     src={mentor.mentorImage}
@@ -120,7 +213,7 @@ const MentorshipPrograms = () => {
                   </Link>
                   <button
                     className="bg-yellow-500 hover:bg-yellow-600 px-5 py-2 text-lg font-semibold text-white"
-                    onClick={() => openModal(mentor)}
+                    onClick={() => openModal(mentor)} // Open modal on button click
                   >
                     Know More
                   </button>
@@ -239,4 +332,4 @@ const MentorshipPrograms = () => {
   );
 };
 
-export default MentorshipPrograms;
+export default Mentorship;

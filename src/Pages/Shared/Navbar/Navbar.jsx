@@ -27,7 +27,7 @@ const Navbar = () => {
     { label: "GIGS", link: "/Gigs", subMenu: [] },
     { label: "BLOGS", link: "/Blogs", subMenu: [] },
     { label: "ABOUT US", link: "/About-us", subMenu: [] },
-    { label: "Testimonials", link: "/Testimonials", subMenu: []},
+    { label: "Testimonials", link: "/Testimonials", subMenu: [] },
     {
       label: "MORE",
       link: "#",
@@ -37,8 +37,8 @@ const Navbar = () => {
         { label: "UPCOMING EVENTS", link: "/UpcomingEvents" },
         { label: "COURSES", link: "/Courses" },
         { label: "MENTORSHIP", link: "/Mentorship" },
+        { label: "INTERNSHIPS", link: "/Internship", subMenu: [] },
         { label: "Why Choose Us", link: "/Why-choose-us" },
-        { label: "INTERNSHIPS", link: "/Internships", subMenu: [] },
       ],
     },
   ];

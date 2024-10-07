@@ -14,6 +14,8 @@ import Courses from "../Pages/Courses/Courses";
 import CoursesDetails from "../Pages/Courses/CoursesDetails/CoursesDetails";
 import Mentorship from "../Pages/Mentorship/Mentorship";
 import MentorshipDetails from "../Pages/Mentorship/MentorshipDetails/MentorshipDetails";
+import Internship from "../Pages/Internship/Internship";
+import InternshipDetails from "../Pages/Internship/InternshipDetails/InternshipDetails";
 
 export const router = createBrowserRouter([
   {
@@ -87,6 +89,16 @@ export const router = createBrowserRouter([
         element: <MentorshipDetails></MentorshipDetails>,
         loader: ({ params }) =>
           fetch(`http://localhost:5000/Mentorship/${params.id}`),
+      },
+      {
+        path: "/Internship",
+        element: <Internship></Internship>,
+      },
+      {
+        path: "/Internship/:id",
+        element: <InternshipDetails></InternshipDetails>,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/Internship/${params.id}`),
       },
     ],
   },

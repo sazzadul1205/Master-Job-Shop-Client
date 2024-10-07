@@ -112,9 +112,11 @@ const InternshipPrograms = () => {
 
                 {/* Card Actions */}
                 <div className="card-actions justify-end mt-5">
-                  <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
-                    Apply Now
-                  </button>
+                  <Link to={`/Internship/${internship._id}`}>
+                    <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
+                      Apply Now
+                    </button>
+                  </Link>
                   <button
                     className="bg-yellow-500 hover:bg-yellow-600 px-5 py-2 text-lg font-semibold text-white"
                     onClick={() => openModal(internship)}
@@ -246,9 +248,11 @@ const InternshipPrograms = () => {
 
             {/* Modal Actions */}
             <div className="modal-action">
-              <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
-                Join Now
-              </button>
+              <Link to={`/Internship/${selectedInternship._id}`}>
+                <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
+                  Join Now
+                </button>
+              </Link>
               <button
                 className="bg-red-500 hover:bg-red-600 px-5 py-2 text-lg font-semibold text-white"
                 onClick={closeModal}

@@ -1,16 +1,19 @@
-import { useNavigate, useParams } from "react-router-dom";
-
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-
 import Rating from "react-rating";
 import { FaArrowLeft, FaStar } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loader from "../../Shared/Loader/Loader";
+import { AuthContext } from "../../../Provider/AuthProvider";
+import { useContext, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const PostedJobDetail = () => {
   const { id } = useParams(); // Get the job ID from the URL
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate(); // Initialize useNavigate for back navigation
+  const [hasApplied, setHasApplied] = useState(false); // To track if user has applied
   const axiosPublic = useAxiosPublic();
   const {
     register,
@@ -24,15 +27,95 @@ const PostedJobDetail = () => {
     data: jobDetails,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["PostedJobsDetailsData", id],
     queryFn: () => axiosPublic.get(`/Posted-Job/${id}`).then((res) => res.data), // Fetch job by ID
   });
 
-  // Handle form submission for applicants
-  const onSubmit = (data) => {
-    console.log(data);
-    reset();
+  // Function to check if the user has already applied
+  const checkIfApplied = async () => {
+    if (user) {
+      try {
+        const response = await axiosPublic.get(`/Posted-Job/${id}`);
+        const { PeopleApplied } = response.data;
+
+        // Check if the user's email is in the PeopleApplied array
+        const hasApplied = PeopleApplied.some(
+          (applicant) => applicant.email === user.email
+        );
+        setHasApplied(hasApplied);
+      } catch (error) {
+        console.error("Error checking application status:", error);
+      }
+    }
+  };
+
+  // Use effect to fetch job data and check application status when the component loads
+  useEffect(() => {
+    if (user) {
+      checkIfApplied(); // Check application status when the user is available
+    }
+  }, [id, user]);
+
+  const currentDate = new Date();
+  const formattedDateTime = currentDate.toLocaleString("en-US", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
+  const onSubmit = async (data) => {
+    const applicantData = {
+      name: data.name,
+      email: user.email, // Assuming user email is from the AuthContext
+      appliedDate: formattedDateTime,
+      AboutMe: data.AboutMe,
+      image: data.image,
+      resumeLink: data.resumeLink,
+    };
+
+    try {
+      const response = await axiosPublic.post(
+        `/Posted-Job/${id}/apply`,
+        applicantData
+      );
+
+      if (response.status === 200) {
+        // Show success Swal alert
+        Swal.fire({
+          title: "Success!",
+          text: "Your application has been submitted.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+
+        // Close the modal
+        document.getElementById("Apply_To_Job").close();
+        refetch();
+
+        // Reset the form after submission
+        reset();
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          button: "OK",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to submit the application. Please try again later.",
+        icon: "error",
+        button: "OK",
+      });
+    }
   };
 
   // Loading state
@@ -178,12 +261,34 @@ const PostedJobDetail = () => {
         <div className="overflow-x-auto py-5">
           <div className="flex justify-between items-center">
             <p className="text-xl font-bold my-4">Applicants</p>
-            <button
-              className="bg-green-500 hover:bg-green-400 px-10 py-3 text-white font-bold"
-              onClick={() => document.getElementById("my_modal_1").showModal()}
-            >
-              Apply
-            </button>
+            {user ? (
+              hasApplied ? (
+                // If the user has already applied, show the "Already Applied" button
+                <button
+                  className="bg-gray-500 px-10 py-3 text-white font-bold"
+                  disabled
+                >
+                  Already Applied
+                </button>
+              ) : (
+                // If the user is logged in and hasn't applied, show the "Apply" button
+                <button
+                  className="bg-green-500 hover:bg-green-400 px-10 py-3 text-white font-bold"
+                  onClick={() =>
+                    document.getElementById("Apply_To_Job").showModal()
+                  }
+                >
+                  Apply
+                </button>
+              )
+            ) : (
+              // If the user is not logged in, show the "Login" button
+              <Link to={"/Login"}>
+                <button className="bg-blue-500 hover:bg-blue-400 px-10 py-3 text-white font-bold">
+                  Login
+                </button>
+              </Link>
+            )}
           </div>
           <table className="table-auto w-full border-collapse">
             <thead>
@@ -205,7 +310,7 @@ const PostedJobDetail = () => {
                         <img
                           src={applicant.image}
                           alt={applicant.name}
-                          className="w-10 h-10 object-cover rounded-full"
+                          className="w-10 h-10"
                         />
                       ) : (
                         <span>No Image</span>
@@ -235,7 +340,7 @@ const PostedJobDetail = () => {
       </div>
 
       {/* Modal for applying */}
-      <dialog id="my_modal_1" className="modal">
+      <dialog id="Apply_To_Job" className="modal">
         <div className="modal-box bg-white text-black border-2 border-red-500">
           <h3 className="font-bold text-xl text-center">Apply for the Job</h3>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -252,32 +357,18 @@ const PostedJobDetail = () => {
               )}
             </div>
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-bold mb-2">Email</label>
-              <input
-                id="email"
-                type="email"
-                {...register("email", { required: "Email is required" })}
-                className="w-full p-2 border bg-white"
-              />
-              {errors.email && (
-                <p className="text-red-500">{errors.email.message}</p>
-              )}
-            </div>
-
             {/* About Me */}
             <div>
               <label className="block text-sm font-bold mb-2">About Me</label>
               <textarea
-                id="aboutMe"
-                {...register("aboutMe", {
+                id="AboutMe"
+                {...register("AboutMe", {
                   required: "Please tell us about yourself",
                 })}
-                className="w-full p-2 border bg-white"
+                className="w-full h-36 p-2 border bg-white"
               />
-              {errors.aboutMe && (
-                <p className="text-red-500">{errors.aboutMe.message}</p>
+              {errors.AboutMe && (
+                <p className="text-red-500">{errors.AboutMe.message}</p>
               )}
             </div>
 
@@ -294,6 +385,19 @@ const PostedJobDetail = () => {
               />
             </div>
 
+            {/* resumeLink URL */}
+            <div>
+              <label className="block text-sm font-bold mb-2">
+                resumeLink URL
+              </label>
+              <input
+                id="resumeLink"
+                type="url"
+                {...register("resumeLink")}
+                className="w-full p-2 border bg-white"
+              />
+            </div>
+
             {/* Buttons */}
             <div className="modal-action justify-between mt-10">
               <button
@@ -305,7 +409,7 @@ const PostedJobDetail = () => {
               <button
                 type="button"
                 className="bg-red-500 hover:bg-red-400 px-5 py-3 text-white font-bold"
-                onClick={() => document.getElementById("my_modal_1").close()}
+                onClick={() => document.getElementById("Apply_To_Job").close()}
               >
                 Close
               </button>

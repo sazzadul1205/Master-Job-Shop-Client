@@ -57,7 +57,7 @@ const Navbar = () => {
     { label: "JOBS", link: "/Jobs", subMenu: [] },
     { label: "GIGS", link: "/Gigs", subMenu: [] },
     { label: "BLOGS", link: "/Blogs", subMenu: [] },
-    { label: "ABOUT US", link: "/About-us", subMenu: [] },
+    { label: "ABOUT US", link: "/AboutUS", subMenu: [] },
     { label: "Testimonials", link: "/Testimonials", subMenu: [] },
     {
       label: "MORE",
@@ -174,11 +174,16 @@ const Navbar = () => {
                     <p>{user.displayName}</p>
                   </li>
                   <li>
-                    <Link to={"/Dashboard"}>Dashboard</Link>
+                    <Link
+                      to={"/Dashboard"}
+                      className="py-3 hover:bg-blue-200 rounded-none font-semibold"
+                    >
+                      Dashboard
+                    </Link>
                   </li>
                   <li>
                     <button
-                      className="font-bold mx-2 bg-blue-500 hover:bg-blue-400 rounded-none text-white"
+                      className="font-bold bg-blue-500 hover:bg-blue-400 rounded-none text-white py-3"
                       onClick={handleSignOut}
                     >
                       LogOut

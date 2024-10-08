@@ -18,6 +18,8 @@ import Internship from "../Pages/Internship/Internship";
 import InternshipDetails from "../Pages/Internship/InternshipDetails/InternshipDetails";
 import Login from "../Pages/Auth/Login/Login";
 import SignUp from "../Pages/Auth/SignUp/SignUp";
+import AboutUs from "../Pages/AboutUs/AboutUs";
+import Blogs from "../Pages/Blogs/Blogs";
 
 export const router = createBrowserRouter([
   {
@@ -109,6 +111,14 @@ export const router = createBrowserRouter([
       {
         path: "/SignUp",
         element: <SignUp></SignUp>,
+      },
+      {
+        path: "/AboutUS",
+        element: <AboutUs></AboutUs>,
+      },
+      {
+        path: "/Blogs",
+        element: <Blogs></Blogs>,
       },
     ],
   },

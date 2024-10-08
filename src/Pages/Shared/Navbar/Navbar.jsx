@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
-import Swal from "sweetalert2"; // Import SweetAlert
+import Swal from "sweetalert2";
 import Logo from "../../../assets/Logo.png";
 import { AuthContext } from "../../../Provider/AuthProvider";
 
@@ -165,11 +165,11 @@ const Navbar = () => {
                   tabIndex={0}
                 >
                   <img src={user.photoURL} alt="User" className="w-12 h-12 " />
-                  <h2 className="font-semibold lg:pl-2 text-lg hidden lg:flex">
+                  <h2 className="font-semibold lg:pl-2 text-lg hidden lg:flex w-[200px]">
                     {user.displayName}
                   </h2>
                 </div>
-                <ul className="dropdown-content menu bg-white z-[1] w-full shadow right-0">
+                <ul className="dropdown-content menu m-0 bg-white z-[1] w-full shadow right-0">
                   <li className="lg:hidden">
                     <p>{user.displayName}</p>
                   </li>

@@ -17,6 +17,7 @@ import MentorshipDetails from "../Pages/Mentorship/MentorshipDetails/MentorshipD
 import Internship from "../Pages/Internship/Internship";
 import InternshipDetails from "../Pages/Internship/InternshipDetails/InternshipDetails";
 import Login from "../Pages/Auth/Login/Login";
+import SignUp from "../Pages/Auth/SignUp/SignUp";
 
 export const router = createBrowserRouter([
   {
@@ -104,6 +105,10 @@ export const router = createBrowserRouter([
       {
         path: "/Login",
         element: <Login></Login>,
+      },
+      {
+        path: "/SignUp",
+        element: <SignUp></SignUp>,
       },
     ],
   },

@@ -16,6 +16,7 @@ import Mentorship from "../Pages/Mentorship/Mentorship";
 import MentorshipDetails from "../Pages/Mentorship/MentorshipDetails/MentorshipDetails";
 import Internship from "../Pages/Internship/Internship";
 import InternshipDetails from "../Pages/Internship/InternshipDetails/InternshipDetails";
+import Login from "../Pages/Auth/Login/Login";
 
 export const router = createBrowserRouter([
   {
@@ -99,6 +100,10 @@ export const router = createBrowserRouter([
         element: <InternshipDetails></InternshipDetails>,
         loader: ({ params }) =>
           fetch(`http://localhost:5000/Internship/${params.id}`),
+      },
+      {
+        path: "/Login",
+        element: <Login></Login>,
       },
     ],
   },

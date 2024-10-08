@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
+import Swal from "sweetalert2"; // Import SweetAlert
 import Logo from "../../../assets/Logo.png";
+import { AuthContext } from "../../../Provider/AuthProvider";
 
 const Navbar = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { user, logOut } = useContext(AuthContext);
 
   // Handle scroll position change
   useEffect(() => {
@@ -19,6 +22,34 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Handle logout with Swal alert
+  const handleSignOut = () => {
+    logOut()
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Logged Out",
+          text: "You have successfully logged out!",
+          confirmButtonColor: "#3085d6",
+          timer: 2000,
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Logout Failed",
+          text: `Error logging out: ${error.message}`,
+          confirmButtonColor: "#d33",
+          timer: 3000,
+        });
+        console.error("Error signing out:", error);
+      });
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false); // Close dropdown after link click
+  };
 
   // Extended nav items with more sections and submenus
   const navItems = [
@@ -37,7 +68,7 @@ const Navbar = () => {
         { label: "UPCOMING EVENTS", link: "/UpcomingEvents" },
         { label: "COURSES", link: "/Courses" },
         { label: "MENTORSHIP", link: "/Mentorship" },
-        { label: "INTERNSHIPS", link: "/Internship", subMenu: [] },
+        { label: "INTERNSHIPS", link: "/Internship" },
         { label: "Why Choose Us", link: "/Why-choose-us" },
       ],
     },
@@ -45,17 +76,17 @@ const Navbar = () => {
 
   const renderNav = () =>
     navItems.map(({ label, link, subMenu }) => (
-      <li key={label}>
+      <li key={label} className="relative">
         <div className="dropdown dropdown-hover">
           {subMenu.length > 0 ? (
             <>
-              <p className="hover:text-blue-800">{label}</p>
+              <p className="hover:text-blue-800 cursor-pointer">{label}</p>
               <ul
                 tabIndex={0}
                 className="dropdown-content menu bg-white font-semibold z-[1] w-52 p-2 shadow"
               >
                 {subMenu.map((item) => (
-                  <li key={item.link}>
+                  <li key={item.link} onClick={closeDropdown}>
                     <NavLink
                       to={item.link}
                       className={({ isActive }) =>
@@ -73,6 +104,7 @@ const Navbar = () => {
           ) : (
             <NavLink
               to={link}
+              onClick={closeDropdown}
               className={({ isActive }) =>
                 isActive ? "text-blue-800" : "hover:text-blue-800"
               }
@@ -89,7 +121,7 @@ const Navbar = () => {
       {/* Navbar section */}
       <div
         className={`navbar transition-all duration-300 mx-auto text-black fixed w-full z-40 ${
-          scrollPosition > 50 ? "bg-white top-0" : "bg-blue-400 "
+          scrollPosition > 50 ? "bg-white top-0" : "bg-blue-400"
         }`}
       >
         <div className="navbar mx-auto max-w-[1200px] items-center h-16">
@@ -125,17 +157,49 @@ const Navbar = () => {
           </div>
 
           {/* Navbar End */}
-          <div className="navbar-end flex gap-5">
-            <div className="text-xl font-semibold bg-blue-400 hover:bg-blue-100">
-              <Link to={"/SignUp"}>
-                <button className="py-2 w-28">SignUp</button>
-              </Link>
-              <Link to={"/Login"}>
-                <button className="py-2 w-32 bg-blue-600 hover:bg-white">
-                  Login
-                </button>
-              </Link>
-            </div>
+          <div className="navbar-end flex gap-5 items-center">
+            {user ? (
+              <div className="dropdown dropdown-end">
+                <div
+                  className="flex items-center lg:pr-5 bg-blue-300 hover:bg-blue-200 cursor-pointer"
+                  tabIndex={0}
+                >
+                  <img src={user.photoURL} alt="User" className="w-12 h-12 " />
+                  <h2 className="font-semibold lg:pl-2 text-lg hidden lg:flex">
+                    {user.displayName}
+                  </h2>
+                </div>
+                <ul className="dropdown-content menu bg-white z-[1] w-full shadow right-0">
+                  <li className="lg:hidden">
+                    <p>{user.displayName}</p>
+                  </li>
+                  <li>
+                    <Link to={"/Dashboard"}>Dashboard</Link>
+                  </li>
+                  <li>
+                    <button
+                      className="font-bold mx-2 bg-blue-500 hover:bg-blue-400 rounded-none text-white"
+                      onClick={handleSignOut}
+                    >
+                      LogOut
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            ) : (
+              <div className="text-xl font-semibold">
+                <Link to={"/SignUp"}>
+                  <button className="py-2 px-6 w-32 bg-blue-500 hover:bg-blue-100">
+                    SignUp
+                  </button>
+                </Link>
+                <Link to={"/Login"}>
+                  <button className="py-2 px-6 w-32 bg-blue-600 hover:bg-blue-300 text-white">
+                    Login
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

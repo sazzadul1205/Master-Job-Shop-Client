@@ -20,6 +20,7 @@ import Login from "../Pages/Auth/Login/Login";
 import SignUp from "../Pages/Auth/SignUp/SignUp";
 import AboutUs from "../Pages/AboutUs/AboutUs";
 import Blogs from "../Pages/Blogs/Blogs";
+import Testimonials from "../Pages/Testimonials/Testimonials";
 
 export const router = createBrowserRouter([
   {
@@ -119,6 +120,10 @@ export const router = createBrowserRouter([
       {
         path: "/Blogs",
         element: <Blogs></Blogs>,
+      },
+      {
+        path: "/Testimonials",
+        element: <Testimonials></Testimonials>,
       },
     ],
   },

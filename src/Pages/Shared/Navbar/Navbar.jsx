@@ -58,7 +58,7 @@ const Navbar = () => {
     { label: "GIGS", link: "/Gigs", subMenu: [] },
     { label: "BLOGS", link: "/Blogs", subMenu: [] },
     { label: "ABOUT US", link: "/AboutUS", subMenu: [] },
-    { label: "Testimonials", link: "/Testimonials", subMenu: [] },
+    { label: "TESTIMONIALS", link: "/Testimonials", subMenu: [] },
     {
       label: "MORE",
       link: "#",

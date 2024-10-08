@@ -1,55 +1,19 @@
 import { useState } from "react";
 import { FaArrowRight, FaFacebook, FaLinkedin } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
-import Loader from "../../Shared/Loader/Loader";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
-const FeaturedCompanyProfiles = () => {
+const FeaturedCompanyProfiles = ({ CompanyProfilesData }) => {
   const [selectedCompany, setSelectedCompany] = useState(null);
-  const axiosPublic = useAxiosPublic();
-
-  // Fetching CompanyProfilesData
-  const {
-    data: CompanyProfilesData,
-    isLoading: CompanyProfilesDataIsLoading,
-    error: CompanyProfilesDataError,
-  } = useQuery({
-    queryKey: ["CompanyProfilesData"],
-    queryFn: () => axiosPublic.get(`/Company-Profiles`).then((res) => res.data),
-  });
-
-  // Loading state
-  if (CompanyProfilesDataIsLoading) {
-    return <Loader />;
-  }
-
-  // Error state
-  if (CompanyProfilesDataError) {
-    return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
-        <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          Something went wrong. Please reload the page.
-        </p>
-        <button
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
-      </div>
-    );
-  }
 
   const openModal = (company) => {
     setSelectedCompany(company);
-    const modal = document.getElementById("Company_Profiles_view");
+    const modal = document.getElementById("View_CompanyProfiles_view");
     modal.showModal();
   };
 
   const closeModal = () => {
-    const modal = document.getElementById("Company_Profiles_view");
+    const modal = document.getElementById("View_CompanyProfiles_view");
     modal.close();
     setSelectedCompany(null);
   };
@@ -152,7 +116,7 @@ const FeaturedCompanyProfiles = () => {
       </div>
 
       {/* Modal */}
-      <dialog id="Company_Profiles_view" className="modal">
+      <dialog id="View_CompanyProfiles_view" className="modal">
         {selectedCompany && (
           <div className="modal-box bg-green-50 text-black max-w-[800px]">
             {/* Top */}
@@ -286,6 +250,34 @@ const FeaturedCompanyProfiles = () => {
       </dialog>
     </div>
   );
+};
+
+import PropTypes from "prop-types"; // Import PropTypes
+
+FeaturedCompanyProfiles.propTypes = {
+  CompanyProfilesData: PropTypes.arrayOf(
+    PropTypes.shape({
+      companyName: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+      industry: PropTypes.string.isRequired,
+      website: PropTypes.string,
+      logo: PropTypes.string,
+      description: PropTypes.string,
+      companyDetails: PropTypes.shape({
+        foundingYear: PropTypes.string,
+        employees: PropTypes.number,
+        revenue: PropTypes.string,
+        ceo: PropTypes.string,
+        services: PropTypes.arrayOf(PropTypes.string),
+        socialMedia: PropTypes.shape({
+          LinkedIn: PropTypes.string,
+          Twitter: PropTypes.string,
+          Facebook: PropTypes.string,
+        }),
+      }),
+      _id: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };
 
 export default FeaturedCompanyProfiles;

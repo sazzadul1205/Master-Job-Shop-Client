@@ -2,13 +2,9 @@ import { useState } from "react";
 import { FaArrowRight, FaStar } from "react-icons/fa";
 import Rating from "react-rating";
 import { Link } from "react-router-dom";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import Loader from "../../Shared/Loader/Loader";
-import { useQuery } from "@tanstack/react-query";
 
-const FeaturedJobs = () => {
+const FeaturedJobs = ({ PostedJobsData }) => {
   const [selectedJob, setSelectedJob] = useState(null); // State for the selected job for the modal
-  const axiosPublic = useAxiosPublic();
 
   const calculateDaysAgo = (isoString) => {
     const postedDate = new Date(isoString);
@@ -22,46 +18,14 @@ const FeaturedJobs = () => {
     return `${daysDiff} days ago`;
   };
 
-  // Fetching PostedJobsData
-  const {
-    data: PostedJobsData,
-    isLoading: PostedJobsDataIsLoading,
-    error: PostedJobsDataError,
-  } = useQuery({
-    queryKey: ["PostedJobsData"],
-    queryFn: () => axiosPublic.get(`/Posted-Job`).then((res) => res.data),
-  });
-
-  // Loading state
-  if (PostedJobsDataIsLoading) {
-    return <Loader />;
-  }
-
-  // Error state
-  if (PostedJobsDataError) {
-    return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
-        <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          Something went wrong. Please reload the page.
-        </p>
-        <button
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
-      </div>
-    );
-  }
-
   const openModal = (job) => {
     setSelectedJob(job); // Set the selected job for the modal
-    const modal = document.getElementById("my_modal_2");
+    const modal = document.getElementById("View_FeaturedJobs_Details");
     modal.showModal();
   };
 
   const closeModal = () => {
-    const modal = document.getElementById("my_modal_2");
+    const modal = document.getElementById("View_FeaturedJobs_Details");
     modal.close();
     setSelectedJob(null); // Clear selected job on modal close
   };
@@ -128,7 +92,7 @@ const FeaturedJobs = () => {
         </div>
 
         {/* View Modal */}
-        <dialog id="my_modal_2" className="modal">
+        <dialog id="View_FeaturedJobs_Details" className="modal">
           {selectedJob && (
             <div className="modal-box bg-white text-black max-w-[700px] bg-gradient-to-br from-blue-100 to-blue-50">
               {/* Top part */}
@@ -251,6 +215,30 @@ const FeaturedJobs = () => {
       </div>
     </div>
   );
+};
+
+import PropTypes from "prop-types";
+
+FeaturedJobs.propTypes = {
+  PostedJobsData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      jobTitle: PropTypes.string.isRequired,
+      companyName: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+      jobType: PropTypes.string,
+      salary: PropTypes.string,
+      postedDate: PropTypes.string.isRequired,
+      availableUntil: PropTypes.string,
+      companyLink: PropTypes.string,
+      companyLogo: PropTypes.string,
+      jobDescription: PropTypes.string,
+      responsibilities: PropTypes.arrayOf(PropTypes.string),
+      qualifications: PropTypes.arrayOf(PropTypes.string),
+      toolsAndTechnologies: PropTypes.arrayOf(PropTypes.string),
+      companyRating: PropTypes.number,
+    })
+  ).isRequired,
 };
 
 export default FeaturedJobs;

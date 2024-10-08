@@ -1,14 +1,10 @@
 import { useState } from "react";
 import { FaArrowRight, FaStar } from "react-icons/fa";
 import Rating from "react-rating";
-import Loader from "../../Shared/Loader/Loader";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
-const FeaturedGigs = () => {
+const FeaturedGigs = ({ PostedGigsData }) => {
   const [selectedGig, setSelectedGig] = useState(null);
-  const axiosPublic = useAxiosPublic();
 
   const calculateDaysAgo = (dateString) => {
     const today = new Date();
@@ -18,46 +14,14 @@ const FeaturedGigs = () => {
     return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
   };
 
-  // Fetching PostedGigsData
-  const {
-    data: PostedGigsData,
-    isLoading: PostedGigsDataIsLoading,
-    error: PostedGigsDataError,
-  } = useQuery({
-    queryKey: ["PostedGigsData"],
-    queryFn: () => axiosPublic.get(`/Posted-Gig`).then((res) => res.data),
-  });
-
-  // Loading state
-  if (PostedGigsDataIsLoading) {
-    return <Loader />;
-  }
-
-  // Error state
-  if (PostedGigsDataError) {
-    return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
-        <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          Something went wrong. Please reload the page.
-        </p>
-        <button
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
-      </div>
-    );
-  }
-
   const openModal = (gig) => {
     setSelectedGig(gig);
-    const modal = document.getElementById("my_modal_1");
+    const modal = document.getElementById("View_FeaturedGigs_Details");
     modal.showModal();
   };
 
   const closeModal = () => {
-    const modal = document.getElementById("my_modal_1");
+    const modal = document.getElementById("View_FeaturedGigs_Details");
     modal.close();
     setSelectedGig(null);
   };
@@ -138,7 +102,7 @@ const FeaturedGigs = () => {
       </div>
 
       {/* Modal */}
-      <dialog id="my_modal_1" className="modal">
+      <dialog id="View_FeaturedGigs_Details" className="modal">
         {selectedGig && (
           <div className="modal-box bg-red-50 text-black max-w-[700px]">
             {/* Top */}
@@ -223,6 +187,30 @@ const FeaturedGigs = () => {
       </dialog>
     </div>
   );
+};
+
+import PropTypes from "prop-types";
+
+FeaturedGigs.propTypes = {
+  PostedGigsData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      gigTitle: PropTypes.string,
+      gigType: PropTypes.string,
+      clientName: PropTypes.string,
+      location: PropTypes.string,
+      paymentRate: PropTypes.string,
+      duration: PropTypes.string,
+      postedDate: PropTypes.string,
+      responsibilities: PropTypes.string,
+      requiredSkills: PropTypes.string,
+      workingHours: PropTypes.string,
+      projectExpectations: PropTypes.string,
+      communication: PropTypes.string,
+      additionalBenefits: PropTypes.string,
+      rating: PropTypes.number,
+    })
+  ).isRequired,
 };
 
 export default FeaturedGigs;

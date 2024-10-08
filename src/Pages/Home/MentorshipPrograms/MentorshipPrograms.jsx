@@ -1,46 +1,10 @@
 import { Link } from "react-router-dom";
 import { FaArrowRight, FaStar } from "react-icons/fa";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
-import Loader from "../../Shared/Loader/Loader";
 import { useState } from "react";
 import Rating from "react-rating";
 
-const MentorshipPrograms = () => {
-  const axiosPublic = useAxiosPublic();
+const MentorshipPrograms = ({ MentorshipData }) => {
   const [selectedMentor, setSelectedMentor] = useState(null); // State for selected mentor
-
-  // Fetching MentorshipData
-  const {
-    data: MentorshipData,
-    isLoading: MentorshipDataIsLoading,
-    error: MentorshipDataError,
-  } = useQuery({
-    queryKey: ["MentorshipData"],
-    queryFn: () => axiosPublic.get(`/Mentorship`).then((res) => res.data),
-  });
-
-  // Loading state
-  if (MentorshipDataIsLoading) {
-    return <Loader />;
-  }
-
-  // Error state
-  if (MentorshipDataError) {
-    return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
-        <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          Something went wrong. Please reload the page.
-        </p>
-        <button
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
-      </div>
-    );
-  }
 
   const openModal = (mentor) => {
     setSelectedMentor(mentor);
@@ -237,6 +201,28 @@ const MentorshipPrograms = () => {
       </dialog>
     </div>
   );
+};
+
+import PropTypes from "prop-types";
+
+// Add this at the end of your component
+MentorshipPrograms.propTypes = {
+  MentorshipData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      mentorName: PropTypes.string.isRequired,
+      mentorImage: PropTypes.string,
+      expertise: PropTypes.string.isRequired,
+      duration: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      contactEmail: PropTypes.string.isRequired,
+      price: PropTypes.string.isRequired,
+      mentorBio: PropTypes.string.isRequired,
+      sessionFormat: PropTypes.string.isRequired,
+      languages: PropTypes.arrayOf(PropTypes.string).isRequired,
+      rating: PropTypes.number.isRequired,
+    })
+  ).isRequired,
 };
 
 export default MentorshipPrograms;

@@ -1,45 +1,9 @@
 import { useState } from "react";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
-import Loader from "../../Shared/Loader/Loader";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 
-const InternshipPrograms = () => {
+const InternshipPrograms = ({ InternshipData }) => {
   const [selectedInternship, setSelectedInternship] = useState(null); // State for selected internship
-  const axiosPublic = useAxiosPublic();
-
-  // Fetching InternshipData
-  const {
-    data: InternshipData,
-    isLoading: InternshipDataIsLoading,
-    error: InternshipDataError,
-  } = useQuery({
-    queryKey: ["InternshipData"],
-    queryFn: () => axiosPublic.get(`/Internship`).then((res) => res.data),
-  });
-
-  // Loading state
-  if (InternshipDataIsLoading) {
-    return <Loader />;
-  }
-
-  // Error state
-  if (InternshipDataError) {
-    return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
-        <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          Something went wrong. Please reload the page.
-        </p>
-        <button
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
-      </div>
-    );
-  }
 
   const openModal = (internship) => {
     setSelectedInternship(internship);
@@ -265,6 +229,31 @@ const InternshipPrograms = () => {
       </dialog>
     </div>
   );
+};
+
+import PropTypes from "prop-types";
+
+InternshipPrograms.propTypes = {
+  InternshipData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      companyName: PropTypes.string,
+      companyLogo: PropTypes.string,
+      position: PropTypes.string,
+      duration: PropTypes.string,
+      description: PropTypes.string,
+      location: PropTypes.string,
+      stipend: PropTypes.string,
+      applicationDeadline: PropTypes.string,
+      skillsRequired: PropTypes.arrayOf(PropTypes.string),
+      responsibilities: PropTypes.arrayOf(PropTypes.string),
+      qualifications: PropTypes.arrayOf(PropTypes.string),
+      contact: PropTypes.shape({
+        email: PropTypes.string.isRequired,
+        website: PropTypes.string,
+      }),
+    })
+  ).isRequired,
 };
 
 export default InternshipPrograms;

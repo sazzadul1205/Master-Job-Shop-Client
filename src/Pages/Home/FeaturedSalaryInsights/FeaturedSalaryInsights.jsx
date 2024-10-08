@@ -1,45 +1,9 @@
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import { useState } from "react";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
-import Loader from "../../Shared/Loader/Loader";
 
-const FeaturedSalaryInsights = () => {
+const FeaturedSalaryInsights = ({ SalaryInsightData }) => {
   const [selectedJob, setSelectedJob] = useState(null);
-  const axiosPublic = useAxiosPublic();
-
-  // Fetching SalaryInsightData
-  const {
-    data: SalaryInsightData,
-    isLoading: SalaryInsightDataIsLoading,
-    error: SalaryInsightDataError,
-  } = useQuery({
-    queryKey: ["SalaryInsightData"],
-    queryFn: () => axiosPublic.get(`/Salary-Insight`).then((res) => res.data),
-  });
-
-  // Loading state
-  if (SalaryInsightDataIsLoading) {
-    return <Loader />;
-  }
-
-  // Error state
-  if (SalaryInsightDataError) {
-    return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
-        <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          Something went wrong. Please reload the page.
-        </p>
-        <button
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
-      </div>
-    );
-  }
 
   const openModal = (job) => {
     setSelectedJob(job);
@@ -251,6 +215,29 @@ const FeaturedSalaryInsights = () => {
       </dialog>
     </div>
   );
+};
+
+import PropTypes from "prop-types";
+
+// Add this at the end of your component
+FeaturedSalaryInsights.propTypes = {
+  SalaryInsightData: PropTypes.arrayOf(
+    PropTypes.shape({
+      jobTitle: PropTypes.string.isRequired,
+      averageSalary: PropTypes.string.isRequired,
+      experienceLevel: PropTypes.string.isRequired,
+      jobType: PropTypes.string,
+      globalSalaryRange: PropTypes.object.isRequired,
+      education: PropTypes.string,
+      responsibilities: PropTypes.arrayOf(PropTypes.string).isRequired,
+      typicalChallenges: PropTypes.arrayOf(PropTypes.string).isRequired,
+      careerPath: PropTypes.arrayOf(PropTypes.string).isRequired,
+      commonCertifications: PropTypes.arrayOf(PropTypes.string).isRequired,
+      potentialIndustries: PropTypes.arrayOf(PropTypes.string).isRequired,
+      toolsAndTechnologies: PropTypes.arrayOf(PropTypes.string).isRequired,
+      softSkills: PropTypes.arrayOf(PropTypes.string).isRequired,
+    })
+  ).isRequired,
 };
 
 export default FeaturedSalaryInsights;

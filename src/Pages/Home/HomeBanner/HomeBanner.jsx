@@ -1,21 +1,12 @@
 import { useState, useEffect } from "react";
-import Banner1 from "../../../assets/Banner/Banner-1.png";
-import Banner2 from "../../../assets/Banner/Banner-2.png";
-import Banner3 from "../../../assets/Banner/Banner-3.png";
-import Banner4 from "../../../assets/Banner/Banner-4.png";
+import PropTypes from "prop-types"; // Importing prop-types for validation
 
-// Define the banner data array
-const HomeBannerData = [
-  { _id: 1, Link: Banner1, name: "Banner 1" },
-  { _id: 2, Link: Banner2, name: "Banner 2" },
-  { _id: 3, Link: Banner3, name: "Banner 3" },
-  { _id: 4, Link: Banner4, name: "Banner 4" },
-];
-
-const HomeBanners = () => {
+const HomeBanners = ({ HomeBannerData }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    if (!HomeBannerData || HomeBannerData.length === 0) return;
+
     // Automatically switch banners every 3 seconds
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
@@ -25,18 +16,37 @@ const HomeBanners = () => {
 
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
-  }, []);
+  }, [HomeBannerData]);
 
   return (
-    <div className="relative w-full h-[600px] pt-20">
-      {/* Banner Image */}
-      <img
-        src={HomeBannerData[currentIndex].Link}
-        alt={HomeBannerData[currentIndex].name}
-        className="w-full h-[600px] transition-opacity duration-1000 ease-in-out"
-      />
+    <div className="relative w-full h-[600px] pt-20 bg-blue-400">
+      {HomeBannerData && HomeBannerData.length > 0 && (
+        <div className="w-full h-full relative">
+          {/* Banner Image with fade effect */}
+          {HomeBannerData.map((banner, index) => (
+            <img
+              key={index}
+              src={banner.Link}
+              alt={banner.name}
+              className={`absolute inset-0 w-full h-[600px] object-cover transition-opacity duration-1000 ease-in-out ${
+                index === currentIndex ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
+};
+
+// Prop validation using prop-types
+HomeBanners.propTypes = {
+  HomeBannerData: PropTypes.arrayOf(
+    PropTypes.shape({
+      Link: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };
 
 export default HomeBanners;

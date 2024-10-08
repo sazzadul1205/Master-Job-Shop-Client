@@ -1,44 +1,7 @@
 import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
-import Loader from "../../Shared/Loader/Loader";
 
-const FeaturedCourses = () => {
-  const axiosPublic = useAxiosPublic();
-
-  // Fetching CoursesData
-  const {
-    data: CoursesData,
-    isLoading: CoursesDataIsLoading,
-    error: CoursesDataError,
-  } = useQuery({
-    queryKey: ["CoursesData"],
-    queryFn: () => axiosPublic.get(`/Courses`).then((res) => res.data),
-  });
-
-  // Loading state
-  if (CoursesDataIsLoading) {
-    return <Loader />;
-  }
-
-  // Error state
-  if (CoursesDataError) {
-    return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
-        <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          Something went wrong. Please reload the page.
-        </p>
-        <button
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
-      </div>
-    );
-  }
-
+const FeaturedCourses = ({ CoursesData }) => {
   return (
     <div className="bg-gradient-to-b from-blue-50 to-blue-400">
       <div className="max-w-[1200px] mx-auto text-black py-10">
@@ -107,6 +70,22 @@ const FeaturedCourses = () => {
       </div>
     </div>
   );
+};
+
+import PropTypes from "prop-types";
+
+// Add this at the end of your component
+FeaturedCourses.propTypes = {
+  CoursesData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      courseTitle: PropTypes.string.isRequired,
+      instructor: PropTypes.string.isRequired,
+      duration: PropTypes.string.isRequired,
+      level: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };
 
 export default FeaturedCourses;

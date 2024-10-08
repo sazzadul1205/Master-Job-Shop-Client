@@ -1,44 +1,7 @@
 import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
-import Loader from "../../Shared/Loader/Loader";
 
-const FeaturedUpcomingEvents = () => {
-  const axiosPublic = useAxiosPublic();
-
-  // Fetching UpcomingEventsData
-  const {
-    data: UpcomingEventsData,
-    isLoading: UpcomingEventsDataIsLoading,
-    error: UpcomingEventsDataError,
-  } = useQuery({
-    queryKey: ["UpcomingEventsData"],
-    queryFn: () => axiosPublic.get(`/Upcoming-Events`).then((res) => res.data),
-  });
-
-  // Loading state
-  if (UpcomingEventsDataIsLoading) {
-    return <Loader />;
-  }
-
-  // Error state
-  if (UpcomingEventsDataError) {
-    return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
-        <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          Something went wrong. Please reload the page.
-        </p>
-        <button
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
-      </div>
-    );
-  }
-
+const FeaturedUpcomingEvents = ({ UpcomingEventsData }) => {
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50">
       <div className="max-w-[1200px] mx-auto text-black py-10">
@@ -100,6 +63,22 @@ const FeaturedUpcomingEvents = () => {
       </div>
     </div>
   );
+};
+
+import PropTypes from "prop-types";
+
+// Add this at the end of your component
+FeaturedUpcomingEvents.propTypes = {
+  UpcomingEventsData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      eventTitle: PropTypes.string.isRequired,
+      date: PropTypes.string.isRequired,
+      time: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };
 
 export default FeaturedUpcomingEvents;

@@ -1,12 +1,18 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../Shared/Loader/Loader";
 import { FaArrowLeft } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../../../Provider/AuthProvider";
+import { useContext, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const CoursesDetails = () => {
   const { id } = useParams();
+  const { user } = useContext(AuthContext);
+  const [hasApplied, setHasApplied] = useState(false); // To track if user has applied
+
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
   const {
@@ -17,21 +23,68 @@ const CoursesDetails = () => {
   } = useForm();
 
   // Handle form submission for applicants
-  const onSubmit = async (data) => {
-    const currentDate = new Date().toISOString().split("T")[0]; // Get current date in yyyy-mm-dd format
+  const currentDate = new Date();
+  const formattedDateTime = currentDate.toLocaleString("en-US", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
 
+  // Handle form submission for applicants
+  const onSubmit = async (data) => {
     // Format the applicant data
     const applicantData = {
       applicantName: data.applicantName,
-      applicantEmail: data.applicantEmail,
+      applicantEmail: user.email,
       applicantImage: data.applicantImage,
       applicantDescription: data.applicantDescription,
-      registrationDate: currentDate, // registrationDate in yyyy-mm-dd format
+      registrationDate: formattedDateTime, // registrationDate in yyyy-mm-dd format
       batch: data.batch,
     };
 
     reset();
     console.log(applicantData);
+    try {
+      const response = await axiosPublic.post(
+        `/Courses/${id}/apply`,
+        applicantData
+      );
+
+      if (response.status === 200) {
+        // Show success Swal alert
+        Swal.fire({
+          title: "Success!",
+          text: "Your application has been submitted.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+
+        // Close the modal
+        document.getElementById("my_modal_1").close();
+        refetch();
+
+        // Reset the form after submission
+        reset();
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          button: "OK",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to submit the application. Please try again later.",
+        icon: "error",
+        button: "OK",
+      });
+    }
   };
 
   // Fetching course details by ID
@@ -39,10 +92,36 @@ const CoursesDetails = () => {
     data: course,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["CoursesDetailsData", id],
     queryFn: () => axiosPublic.get(`/Courses/${id}`).then((res) => res.data),
   });
+
+  // Function to check if the user has already applied
+  const checkIfApplied = async () => {
+    if (user) {
+      try {
+        const response = await axiosPublic.get(`/Courses/${id}`);
+        const { applicants } = response.data;
+
+        // Check if the user's email is in the applicants array
+        const hasApplied = applicants.some(
+          (applicant) => applicant.applicantEmail === user.email
+        );
+        setHasApplied(hasApplied);
+      } catch (error) {
+        console.error("Error checking application status:", error);
+      }
+    }
+  };
+
+  // Use effect to fetch job data and check application status when the component loads
+  useEffect(() => {
+    if (user) {
+      checkIfApplied(); // Check application status when the user is available
+    }
+  }, [id, user]);
 
   // Loading state
   if (isLoading) {
@@ -186,30 +265,76 @@ const CoursesDetails = () => {
             </ul>
           </div>
 
-          <h2 className="text-xl font-bold mt-6">Certification</h2>
-          <p className="text-lg">{course.certification}</p>
+          {/* Certification */}
+          <div>
+            <h2 className="text-xl font-bold mt-6">Certification</h2>
+            <p className="text-lg">{course.certification}</p>
+          </div>
 
-          <h2 className="text-xl font-bold mt-6">Support</h2>
+          {/* Support */}
+          <div>
+            <h2 className="text-xl font-bold mt-6">Support</h2>
 
-          <p className="text-lg">
-            <strong>Office Hours:</strong> {course.support.officeHours}
-          </p>
+            <p className="text-lg">
+              <strong>Office Hours:</strong> {course.support.officeHours}
+            </p>
 
-          <p className="text-lg">
-            <strong>Discussion Forum:</strong> {course.support.discussionForum}
-          </p>
+            <p className="text-lg">
+              <strong>Discussion Forum:</strong>{" "}
+              {course.support.discussionForum}
+            </p>
+          </div>
+        </div>
+
+        {/* Batches Section */}
+        <div className="mt-6">
+          <h2 className="text-xl font-bold">Available Batches</h2>
+          <div className="list-disc ml-5 mt-2 grid grid-cols-5 gap-5">
+            {course.batches.map((batch, index) => (
+              <div
+                key={index}
+                className="text-lg bg-gradient-to-bl from-blue-300 to-blue-50 p-5 hover:shadow-xl"
+              >
+                <strong className=" text-xl">{batch.batchName}</strong>
+                <p className="py-1">{batch.batchDate}</p>
+                <p className="py-1">{batch.batchDetails}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Applications */}
         <div className="overflow-x-auto mt-6">
           <div className="flex justify-between items-center">
             <p className="text-xl font-bold py-2">Participant Applications:</p>
-            <button
-              className="bg-green-500 hover:bg-green-600 text-lg px-8 py-1 font-semibold text-white"
-              onClick={() => document.getElementById("my_modal_1").showModal()}
-            >
-              Apply{" "}
-            </button>
+            {user ? (
+              hasApplied ? (
+                // If the user has already applied, show the "Already Applied" button
+                <button
+                  className="bg-gray-500 px-10 py-3 text-white font-bold"
+                  disabled
+                >
+                  Already Applied
+                </button>
+              ) : (
+                // If the user is logged in and hasn't applied, show the "Apply" button
+                <button
+                  className="bg-green-500 hover:bg-green-600 text-lg px-8 py-1 font-semibold text-white"
+                  onClick={() =>
+                    document.getElementById("my_modal_1").showModal()
+                  }
+                >
+                  Apply{" "}
+                </button>
+              )
+            ) : (
+              // If the user is not logged in, show the "Login" button
+              <Link to={"/Login"}>
+                <button className="bg-blue-500 hover:bg-blue-400 px-10 py-3 text-white font-bold">
+                  Login
+                </button>
+              </Link>
+            )}
           </div>
           <table className="table">
             <thead>
@@ -326,18 +451,22 @@ const CoursesDetails = () => {
 
             {/* Batch */}
             <div>
-              <label className="block text-sm font-bold mb-2">Batch</label>
-              <input
-                id="batch"
-                type="text"
-                {...register("batch", {
-                  required: "Batch is required",
-                })}
-                className="w-full p-2 border border-gray-400 bg-white"
-                placeholder="Enter batch"
-              />
+              <label className="label">Batch</label>
+              <select
+                className="select select-bordered w-full bg-white border border-gray-400"
+                {...register("batch", { required: true })}
+              >
+                <option disabled value="">
+                  Select a batch
+                </option>
+                {course.batches.map((batch, index) => (
+                  <option key={index} value={batch.batchName}>
+                    {batch.batchName}
+                  </option>
+                ))}
+              </select>
               {errors.batch && (
-                <p className="text-red-600">{errors.batch.message}</p>
+                <span className="text-red-500">This field is required</span>
               )}
             </div>
 

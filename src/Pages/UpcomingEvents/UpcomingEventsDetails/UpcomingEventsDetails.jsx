@@ -1,12 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loader from "../../Shared/Loader/Loader";
 import { FaArrowLeft } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../../../Provider/AuthProvider";
+import { useContext, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const UpcomingEventsDetails = () => {
   const { id } = useParams();
+  const { user } = useContext(AuthContext);
+  const [hasApplied, setHasApplied] = useState(false); // To track if user has applied
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
   const {
@@ -16,31 +21,107 @@ const UpcomingEventsDetails = () => {
     formState: { errors },
   } = useForm();
 
+  // Fetching event details by ID
+  const {
+    data: UpcomingEvents,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["UpcomingEventsDetailsData", id],
+    queryFn: () =>
+      axiosPublic.get(`/Upcoming-Events/${id}`).then((res) => res.data),
+  });
+
+  // Function to check if the user has already applied
+  const checkIfApplied = async () => {
+    if (user) {
+      try {
+        const response = await axiosPublic.get(`/Upcoming-Events/${id}`);
+        const { ParticipantApplications } = response.data;
+
+        // Check if the user's email is in the ParticipantApplications array
+        const hasApplied = ParticipantApplications.some(
+          (applicant) => applicant.applicantEmail === user.email
+        );
+        setHasApplied(hasApplied);
+      } catch (error) {
+        console.error("Error checking application status:", error);
+      }
+    }
+  };
+
+  // Use effect to fetch job data and check application status when the component loads
+  useEffect(() => {
+    if (user) {
+      checkIfApplied(); // Check application status when the user is available
+    }
+  }, [id, user]);
+
   // Handle form submission for applicants
+  const currentDate = new Date();
+  const formattedDateTime = currentDate.toLocaleString("en-US", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
   const onSubmit = async (data) => {
     // Format the applicant data
     const applicantData = {
       applicantName: data.applicantName,
-      applicantEmail: data.applicantEmail,
+      applicantEmail: user.email,
+      applicantImage: data.applicantImage,
+      applicantDate: formattedDateTime,
       applicantDescription: data.applicantDescription,
       applicantState: "Pending", // Default state
       applicantAnonymity: data.applicantAnonymity || "Public", // Get selected anonymity or default to Public
     };
 
     reset();
-    console.log(applicantData);
-  };
 
-  // Fetching event details by ID
-  const {
-    data: UpcomingEvents,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["UpcomingEventsDetailsData", id],
-    queryFn: () =>
-      axiosPublic.get(`/Upcoming-Events/${id}`).then((res) => res.data),
-  });
+    try {
+      const response = await axiosPublic.post(
+        `/Upcoming-Events/${id}/apply`,
+        applicantData
+      );
+
+      if (response.status === 200) {
+        // Show success Swal alert
+        Swal.fire({
+          title: "Success!",
+          text: "Your application has been submitted.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+
+        // Close the modal
+        document.getElementById("Apply-For-Event").close();
+        refetch();
+
+        // Reset the form after submission
+        reset();
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          button: "OK",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to submit the application. Please try again later.",
+        icon: "error",
+        button: "OK",
+      });
+    }
+  };
 
   // Loading state
   if (isLoading) {
@@ -119,15 +200,37 @@ const UpcomingEventsDetails = () => {
         </div>
 
         {/* List of Participant Applications */}
-        <div className="overflow-x-auto">
-          <div className="flex justify-between items-center">
+        <div className="overflow-x-auto pb-5">
+          <div className="flex justify-between items-center py-2">
             <p className="text-xl font-bold py-2">Participant Applications:</p>
-            <button
-              className="bg-green-500 hover:bg-green-600 text-lg px-8 py-1 font-semibold text-white"
-              onClick={() => document.getElementById("my_modal_1").showModal()}
-            >
-              Apply{" "}
-            </button>
+            {user ? (
+              hasApplied ? (
+                // If the user has already applied, show the "Already Applied" button
+                <button
+                  className="bg-gray-500 px-10 py-3 text-white font-bold"
+                  disabled
+                >
+                  Already Applied
+                </button>
+              ) : (
+                // If the user is logged in and hasn't applied, show the "Apply" button
+                <button
+                  className="bg-green-500 hover:bg-green-600 text-lg px-8 py-1 font-semibold text-white"
+                  onClick={() =>
+                    document.getElementById("Apply-For-Event").showModal()
+                  }
+                >
+                  Apply
+                </button>
+              )
+            ) : (
+              // If the user is not logged in, show the "Login" button
+              <Link to={"/Login"}>
+                <button className="bg-blue-500 hover:bg-blue-400 px-10 py-3 text-white font-bold">
+                  Login
+                </button>
+              </Link>
+            )}
           </div>
           <table className="table">
             {/* head */}
@@ -158,7 +261,7 @@ const UpcomingEventsDetails = () => {
       </div>
 
       {/* Modal for applying */}
-      <dialog id="my_modal_1" className="modal">
+      <dialog id="Apply-For-Event" className="modal">
         <div className="modal-box bg-white text-black border-2 border-red-500">
           <h3 className="font-bold text-xl text-center">Apply for Fair</h3>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -180,26 +283,17 @@ const UpcomingEventsDetails = () => {
               )}
             </div>
 
-            {/* Applicant Email */}
+            {/* Applicant Image */}
             <div>
               <label className="block text-sm font-bold mb-2">
-                Applicant Email
+                Applicant Image URL
               </label>
               <input
-                id="applicantEmail"
-                type="email"
-                {...register("applicantEmail", {
-                  required: "Applicant Email is required",
-                  pattern: {
-                    value: /^\S+@\S+$/i,
-                    message: "Invalid email address",
-                  },
-                })}
+                id="applicantImage"
+                type="url"
+                {...register("applicantImage")}
                 className="w-full p-2 border border-gray-300 rounded bg-white"
               />
-              {errors.applicantEmail && (
-                <p className="text-red-500">{errors.applicantEmail.message}</p>
-              )}
             </div>
 
             {/* Applicant Description */}
@@ -212,7 +306,7 @@ const UpcomingEventsDetails = () => {
                 {...register("applicantDescription", {
                   required: "Please tell us about yourself",
                 })}
-                className="w-full p-2 border border-gray-300 rounded bg-white"
+                className="w-full p-2 h-32 border border-gray-300 rounded bg-white"
               />
               {errors.applicantDescription && (
                 <p className="text-red-500">
@@ -234,10 +328,13 @@ const UpcomingEventsDetails = () => {
               </select>
             </div>
 
+            {/* Button */}
             <div className="modal-action">
               <button
                 type="button"
-                onClick={() => document.getElementById("my_modal_1").close()}
+                onClick={() =>
+                  document.getElementById("Apply-For-Event").close()
+                }
                 className="bg-red-500 hover:bg-red-600 px-5 py-3 font-semibold text-white"
               >
                 Cancel

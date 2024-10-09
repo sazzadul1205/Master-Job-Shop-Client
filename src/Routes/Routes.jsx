@@ -21,11 +21,13 @@ import SignUp from "../Pages/Auth/SignUp/SignUp";
 import AboutUs from "../Pages/AboutUs/AboutUs";
 import Blogs from "../Pages/Blogs/Blogs";
 import Testimonials from "../Pages/Testimonials/Testimonials";
+import NotFound from "../Pages/NotFound/NotFound";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout></MainLayout>,
+    errorElement: <NotFound></NotFound>,
     children: [
       {
         path: "/",

@@ -60,6 +60,7 @@ const MentorshipDetails = () => {
       }
     }
   };
+  
   // Function to check if the user has already Review
   const checkIfReview = async () => {
     if (user) {
@@ -94,8 +95,8 @@ const MentorshipDetails = () => {
       applicantImage: data.applicantImage,
       applicantDetails: data.applicantDetails,
     };
-    console.log(applicantData);
-    resetApplicant();
+
+
     try {
       const response = await axiosPublic.post(
         `/Mentorship/${id}/applyApplicant`,
@@ -116,7 +117,7 @@ const MentorshipDetails = () => {
         refetch();
 
         // Reset the form after submission
-        resetReview();
+        resetApplicant();
       } else {
         Swal.fire({
           title: "Error!",

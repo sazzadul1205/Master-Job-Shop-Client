@@ -69,7 +69,6 @@ const Navbar = () => {
         { label: "COURSES", link: "/Courses" },
         { label: "MENTORSHIP", link: "/Mentorship" },
         { label: "INTERNSHIPS", link: "/Internship" },
-        { label: "Why Choose Us", link: "/Why-choose-us" },
       ],
     },
   ];

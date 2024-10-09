@@ -1,12 +1,17 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../Shared/Loader/Loader";
 import { FaArrowLeft } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../../../Provider/AuthProvider";
+import { useContext, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const InternshipDetails = () => {
   const { id } = useParams();
+  const { user } = useContext(AuthContext);
+  const [hasApplied, setHasApplied] = useState(false); // To track if user has applied
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
   const {
@@ -16,12 +21,48 @@ const InternshipDetails = () => {
     formState: { errors },
   } = useForm();
 
+  // Fetching Internship details by ID
+  const {
+    data: Internship,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["InternshipDetailsData", id],
+    queryFn: () => axiosPublic.get(`/Internship/${id}`).then((res) => res.data),
+  });
+
+  // Function to check if the user has already applied
+  const checkIfApplied = async () => {
+    if (user) {
+      try {
+        const response = await axiosPublic.get(`/Internship/${id}`);
+        const { applicants } = response.data;
+
+        // Check if the user's email is in the applicants array
+        const hasApplied = applicants.some(
+          (applicants) => applicants.applicantEmail === user.email
+        );
+        setHasApplied(hasApplied);
+      } catch (error) {
+        console.error("Error checking application status:", error);
+      }
+    }
+  };
+
+  // Use effect to fetch job data and check application status when the component loads
+  useEffect(() => {
+    if (user) {
+      checkIfApplied(); // Check application status when the user is available
+    }
+  }, [id, user]);
+
   // Handle form submission for applicants
   const onSubmit = async (data) => {
     // Format the applicant data
     const applicantData = {
       applicantName: data.applicantName,
-      applicantEmail: data.applicantEmail,
+      applicantEmail: user.email,
       applicantImage: data.applicantImage,
       aboutApplicant: data.aboutApplicant,
       portfolioLink: data.portfolioLink,
@@ -30,17 +71,45 @@ const InternshipDetails = () => {
 
     reset();
     console.log(applicantData);
-  };
+    try {
+      const response = await axiosPublic.post(
+        `/Internship/${id}/apply`,
+        applicantData
+      );
 
-  // Fetching Internship details by ID
-  const {
-    data: Internship,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["InternshipDetailsData", id],
-    queryFn: () => axiosPublic.get(`/Internship/${id}`).then((res) => res.data),
-  });
+      if (response.status === 200) {
+        // Show success Swal alert
+        Swal.fire({
+          title: "Success!",
+          text: "Your application has been submitted.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+
+        // Close the modal
+        document.getElementById("Add_Application").close();
+        refetch();
+
+        // Reset the form after submission
+        reset();
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          button: "OK",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to submit the application. Please try again later.",
+        icon: "error",
+        button: "OK",
+      });
+    }
+  };
 
   // Loading state
   if (isLoading) {
@@ -207,16 +276,37 @@ const InternshipDetails = () => {
               <p className="text-xl font-bold py-2">
                 Participant Applications:
               </p>
-              <button
-                className="bg-green-500 hover:bg-green-600 px-10 py-2 text-white font-semibold"
-                onClick={() =>
-                  document.getElementById("add_Application").showModal()
-                }
-              >
-                Add Application
-              </button>
+
+              {user ? (
+                hasApplied ? (
+                  // If the user has already applied, show the "Already Applied" button
+                  <button
+                    className="bg-gray-500 px-10 py-3 text-white font-bold"
+                    disabled
+                  >
+                    Already Applied
+                  </button>
+                ) : (
+                  // If the user is logged in and hasn't applied, show the "Apply" button
+                  <button
+                    className="bg-green-500 hover:bg-green-600 px-10 py-2 text-white font-semibold"
+                    onClick={() =>
+                      document.getElementById("Add_Application").showModal()
+                    }
+                  >
+                    Add Application
+                  </button>
+                )
+              ) : (
+                // If the user is not logged in, show the "Login" button
+                <Link to={"/Login"}>
+                  <button className="bg-blue-500 hover:bg-blue-400 px-10 py-3 text-white font-bold">
+                    Login
+                  </button>
+                </Link>
+              )}
             </div>
-            <table className="table w-full border border-gray-300">
+            <table className="table w-full">
               <thead>
                 <tr className="bg-blue-500 text-white text-md">
                   <th>Image</th>
@@ -250,7 +340,7 @@ const InternshipDetails = () => {
       </div>
 
       {/* Modal for Add Reviews */}
-      <dialog id="add_Application" className="modal">
+      <dialog id="Add_Application" className="modal">
         <div className="modal-box bg-white text-black border-2 border-red-500">
           <h3 className="font-bold text-xl text-center">Add Reviews</h3>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -270,25 +360,6 @@ const InternshipDetails = () => {
               />
               {errors.applicantName && (
                 <p className="text-red-600">{errors.applicantName.message}</p>
-              )}
-            </div>
-
-            {/* Applicant Email */}
-            <div>
-              <label className="block text-sm font-bold mb-2">
-                Applicant Email
-              </label>
-              <input
-                id="applicantEmail"
-                type="email"
-                {...register("applicantEmail", {
-                  required: "applicantEmail is required",
-                })}
-                className="w-full p-2 border border-gray-400 bg-white"
-                placeholder="Enter Applicant Email"
-              />
-              {errors.applicantEmail && (
-                <p className="text-red-600">{errors.applicantEmail.message}</p>
               )}
             </div>
 
@@ -321,7 +392,7 @@ const InternshipDetails = () => {
                 {...register("aboutApplicant", {
                   required: "About Applicant is required",
                 })}
-                className="w-full p-2 border border-gray-400 bg-white"
+                className="w-full p-2 border h-36 border-gray-400 bg-white"
                 placeholder="Enter About Applicant"
               />
               {errors.aboutApplicant && (
@@ -372,7 +443,7 @@ const InternshipDetails = () => {
               <button
                 type="button"
                 onClick={() =>
-                  document.getElementById("add_Application").close()
+                  document.getElementById("Add_Application").close()
                 }
                 className="bg-red-500 hover:bg-red-600 px-5 py-3 font-semibold text-white"
               >

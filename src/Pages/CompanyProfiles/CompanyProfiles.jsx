@@ -99,8 +99,8 @@ const CompanyProfiles = () => {
         <div className="flex flex-col md:flex-row  space-x-4 py-3">
           {/* Title */}
           <div className="text-black">
-            <p className="text-2xl font-bold ">Our Posted Gigs</p>
-            <p>Find New and Profitable Gigs you can work on</p>
+            <p className="text-2xl font-bold ">Our Companies</p>
+            <p>Find The company ou want to work for and its info</p>
           </div>
 
           {/* Search bar */}

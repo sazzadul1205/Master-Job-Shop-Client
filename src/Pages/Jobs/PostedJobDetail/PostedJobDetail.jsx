@@ -140,6 +140,9 @@ const PostedJobDetail = () => {
     );
   }
 
+  console.log(id);
+  console.log(jobDetails);
+
   // Render job details once data is fetched
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50 ">
@@ -213,11 +216,11 @@ const PostedJobDetail = () => {
             <p>{jobDetails.jobDescription}</p>
           </div>
 
-          {/* Responsibilities */}
+          {/* responsibilities */}
           <div className="text-xl mt-8">
-            <h4 className="font-semibold">Responsibilities:</h4>
+            <h4 className="font-semibold">responsibilities:</h4>
             <ul className="list-disc pl-5 mb-4">
-              {jobDetails.responsibilities.map((responsibility, index) => (
+              {jobDetails?.responsibilities?.map((responsibility, index) => (
                 <li key={index}>{responsibility}</li>
               ))}
             </ul>
@@ -227,7 +230,7 @@ const PostedJobDetail = () => {
           <div className="text-xl mt-8">
             <h4 className="font-semibold">Qualifications:</h4>
             <ul className="list-disc pl-5 mb-4">
-              {jobDetails.qualifications.map((qualification, index) => (
+              {jobDetails.qualifications?.map((qualification, index) => (
                 <li key={index}>{qualification}</li>
               ))}
             </ul>
@@ -238,7 +241,7 @@ const PostedJobDetail = () => {
             <div className="text-xl mt-8">
               <h4 className="font-semibold">Tools and Technologies:</h4>
               <ul className="list-disc gap-3 mb-4 flex mt-2">
-                {jobDetails.toolsAndTechnologies.map((tool, index) => (
+                {jobDetails.toolsAndTechnologies?.map((tool, index) => (
                   <p key={index} className="py-1 px-6 bg-gray-300 rounded-full">
                     {tool}
                   </p>
@@ -337,6 +340,7 @@ const PostedJobDetail = () => {
             </tbody>
           </table>
         </div>
+
       </div>
 
       {/* Modal for applying */}

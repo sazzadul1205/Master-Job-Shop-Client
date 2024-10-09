@@ -201,13 +201,13 @@ const UpcomingEventsDetails = () => {
 
         {/* List of Participant Applications */}
         <div className="overflow-x-auto pb-5">
-          <div className="flex justify-between items-center py-2">
+          <div className="flex justify-between items-center py-5">
             <p className="text-xl font-bold py-2">Participant Applications:</p>
             {user ? (
               hasApplied ? (
                 // If the user has already applied, show the "Already Applied" button
                 <button
-                  className="bg-gray-500 px-10 py-3 text-white font-bold"
+                  className="bg-gray-500 px-10 py-5 text-white font-bold"
                   disabled
                 >
                   Already Applied

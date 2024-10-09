@@ -46,7 +46,6 @@ const CoursesDetails = () => {
     };
 
     reset();
-    console.log(applicantData);
     try {
       const response = await axiosPublic.post(
         `/Courses/${id}/apply`,
@@ -296,7 +295,7 @@ const CoursesDetails = () => {
                 className="text-lg bg-gradient-to-bl from-blue-300 to-blue-50 p-5 hover:shadow-xl"
               >
                 <strong className=" text-xl">{batch.batchName}</strong>
-                <p className="py-1">{batch.batchDate}</p>
+                <p className="py-1">{batch.batchDate} {batch.startDate}</p>
                 <p className="py-1">{batch.batchDetails}</p>
               </div>
             ))}
@@ -305,7 +304,7 @@ const CoursesDetails = () => {
 
         {/* Applications */}
         <div className="overflow-x-auto mt-6">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center py-5">
             <p className="text-xl font-bold py-2">Participant Applications:</p>
             {user ? (
               hasApplied ? (

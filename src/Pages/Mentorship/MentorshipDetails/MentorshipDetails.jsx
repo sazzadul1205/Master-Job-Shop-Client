@@ -1,27 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loader from "../../Shared/Loader/Loader";
 import { FaArrowLeft, FaArrowRight, FaStar } from "react-icons/fa";
 import Rating from "react-rating";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../../../Provider/AuthProvider";
+import Swal from "sweetalert2";
 
 const MentorshipDetails = () => {
   const { id } = useParams();
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
+  const [hasApplied, setHasApplied] = useState(false); // To track if user has applied
+  const [hasReview, setHasReview] = useState(false); // To track if user has applied
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const [ratingValue, setRatingValue] = useState(0);
   const reviewsPerPage = 3;
-
   const {
     register: registerApplicant,
     handleSubmit: handleApplicantSubmit,
     reset: resetApplicant,
     formState: { errors: applicantErrors },
   } = useForm();
-
   const {
     register: registerReview,
     handleSubmit: handleReviewSubmit,
@@ -29,41 +32,160 @@ const MentorshipDetails = () => {
     formState: { errors: reviewErrors },
   } = useForm();
 
-  // Handle form submission for applicants
-  const onSubmitApplicant = async (data) => {
-    const applicantData = {
-      applicantName: data.applicantName,
-      applicantEmail: data.applicantEmail,
-      applicantImage: data.applicantImage,
-      applicantDescription: data.applicantDescription,
-    };
-
-    console.log(applicantData);
-    resetApplicant();
-  };
-
-  // Handle form submission for reviews
-  const onSubmitReview = async (data) => {
-    const reviewData = {
-      reviewerName: data.reviewerName,
-      reviewerImage: data.reviewerImage,
-      reviewText: data.reviewText,
-      rating: ratingValue,
-    };
-
-    console.log(reviewData);
-    resetReview();
-  };
-
   // Fetching Mentorship details by ID
   const {
     data: Mentorship,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["MentorshipDetailsData", id],
     queryFn: () => axiosPublic.get(`/Mentorship/${id}`).then((res) => res.data),
   });
+
+  // Function to check if the user has already applied
+  const checkIfApplied = async () => {
+    if (user) {
+      try {
+        const response = await axiosPublic.get(`/Mentorship/${id}`);
+        const { applicant } = response.data;
+
+        // Check if the user's email is in the applicant array
+        const hasApplied = applicant.some(
+          (applicant) => applicant.applicantEmail === user.email
+        );
+        setHasApplied(hasApplied);
+      } catch (error) {
+        console.error("Error checking application status:", error);
+      }
+    }
+  };
+  // Function to check if the user has already Review
+  const checkIfReview = async () => {
+    if (user) {
+      try {
+        const response = await axiosPublic.get(`/Mentorship/${id}`);
+        const { reviews } = response.data;
+
+        // Check if the user's email is in the reviews array
+        const hasApplied = reviews.some(
+          (reviews) => reviews.reviewerEmail === user.email
+        );
+        setHasReview(hasApplied);
+      } catch (error) {
+        console.error("Error checking application status:", error);
+      }
+    }
+  };
+
+  // Use effect to fetch job data and check application status when the component loads
+  useEffect(() => {
+    if (user) {
+      checkIfApplied(); // Check application status when the user is available
+      checkIfReview();
+    }
+  }, [id, user]);
+
+  // Handle form submission for applicants
+  const onSubmitApplicant = async (data) => {
+    const applicantData = {
+      applicantName: data.applicantName,
+      applicantEmail: user.email,
+      applicantImage: data.applicantImage,
+      applicantDetails: data.applicantDetails,
+    };
+    console.log(applicantData);
+    resetApplicant();
+    try {
+      const response = await axiosPublic.post(
+        `/Mentorship/${id}/applyApplicant`,
+        applicantData
+      );
+
+      if (response.status === 200) {
+        // Show success Swal alert
+        Swal.fire({
+          title: "Success!",
+          text: "Your application has been submitted.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+
+        // Close the modal
+        document.getElementById("Add_applicant").close();
+        refetch();
+
+        // Reset the form after submission
+        resetReview();
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          button: "OK",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to submit the application. Please try again later.",
+        icon: "error",
+        button: "OK",
+      });
+    }
+  };
+
+  // Handle form submission for reviews
+  const onSubmitReview = async (data) => {
+    const reviewData = {
+      reviewerName: user.displayName,
+      reviewerEmail: user.email,
+      reviewerImage: user.photoURL,
+      reviewText: data.reviewText,
+      rating: ratingValue,
+    };
+
+    resetReview();
+    try {
+      const response = await axiosPublic.post(
+        `/Mentorship/${id}/applyReview`,
+        reviewData
+      );
+
+      if (response.status === 200) {
+        // Show success Swal alert
+        Swal.fire({
+          title: "Success!",
+          text: "Your application has been submitted.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+
+        // Close the modal
+        document.getElementById("Add_Reviews").close();
+        refetch();
+
+        // Reset the form after submission
+        resetReview();
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          button: "OK",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to submit the application. Please try again later.",
+        icon: "error",
+        button: "OK",
+      });
+    }
+  };
 
   // Loading state
   if (isLoading) {
@@ -178,16 +300,36 @@ const MentorshipDetails = () => {
           {/* Reviews Section */}
           <div className="py-5">
             {/* Top */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center py-5">
               <p className="text-xl font-bold py-2">Reviews:</p>
-              <button
-                className="bg-green-500 hovr:bg-green-600 px-10 py-2 text-white font-semibold"
-                onClick={() =>
-                  document.getElementById("Add_Reviews").showModal()
-                }
-              >
-                Make Review
-              </button>
+              {user ? (
+                hasReview ? (
+                  // If the user has already applied, show the "Already Applied" button
+                  <button
+                    className="bg-gray-500 px-10 py-3 text-white font-bold"
+                    disabled
+                  >
+                    Already Applied
+                  </button>
+                ) : (
+                  // If the user is logged in and hasn't applied, show the "Apply" button
+                  <button
+                    className="bg-green-500 hover:bg-green-600 px-10 py-2 text-white font-semibold"
+                    onClick={() =>
+                      document.getElementById("Add_Reviews").showModal()
+                    }
+                  >
+                    Make Review
+                  </button>
+                )
+              ) : (
+                // If the user is not logged in, show the "Login" button
+                <Link to={"/Login"}>
+                  <button className="bg-blue-500 hover:bg-blue-400 px-10 py-3 text-white font-bold">
+                    Login
+                  </button>
+                </Link>
+              )}
             </div>
             {/* Bottom */}
             <div className="flex justify-between items-center mb-4">
@@ -286,18 +428,38 @@ const MentorshipDetails = () => {
 
           {/* Applications */}
           <div className="overflow-x-auto mt-6">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center py-5">
               <p className="text-xl font-bold py-2">
                 Participant Applications:
               </p>
-              <button
-                className="bg-green-500 hover:bg-green-600 text-lg px-8 py-1 font-semibold text-white"
-                onClick={() =>
-                  document.getElementById("Add_applicant").showModal()
-                }
-              >
-                Apply{" "}
-              </button>
+              {user ? (
+                hasApplied ? (
+                  // If the user has already applied, show the "Already Applied" button
+                  <button
+                    className="bg-gray-500 px-10 py-3 text-white font-bold"
+                    disabled
+                  >
+                    Already Applied
+                  </button>
+                ) : (
+                  // If the user is logged in and hasn't applied, show the "Apply" button
+                  <button
+                    className="bg-green-500 hover:bg-green-600 text-lg px-8 py-1 font-semibold text-white"
+                    onClick={() =>
+                      document.getElementById("Add_applicant").showModal()
+                    }
+                  >
+                    Apply{" "}
+                  </button>
+                )
+              ) : (
+                // If the user is not logged in, show the "Login" button
+                <Link to={"/Login"}>
+                  <button className="bg-blue-500 hover:bg-blue-400 px-10 py-3 text-white font-bold">
+                    Login
+                  </button>
+                </Link>
+              )}
             </div>
             <table className="table">
               <thead>
@@ -358,27 +520,6 @@ const MentorshipDetails = () => {
               )}
             </div>
 
-            {/* Applicant Email */}
-            <div>
-              <label className="block text-sm font-bold mb-2">
-                Applicant Email
-              </label>
-              <input
-                id="applicantEmail"
-                type="email"
-                {...registerApplicant("applicantEmail", {
-                  required: "Applicant Email is required",
-                })}
-                className="w-full p-2 border border-gray-400 bg-white"
-                placeholder="Enter Applicant Email"
-              />
-              {applicantErrors.applicantEmail && (
-                <p className="text-red-600">
-                  {applicantErrors.applicantEmail.message}
-                </p>
-              )}
-            </div>
-
             {/* Applicant Image */}
             <div>
               <label className="block text-sm font-bold mb-2">
@@ -400,22 +541,22 @@ const MentorshipDetails = () => {
               )}
             </div>
 
-            {/* Applicant Description */}
+            {/* Applicant Details */}
             <div>
               <label className="block text-sm font-bold mb-2">
-                Applicant Description
+                Applicant Details
               </label>
               <textarea
-                id="applicantDescription"
-                {...registerApplicant("applicantDescription", {
-                  required: "Applicant Description is required",
+                id="applicantDetails"
+                {...registerApplicant("applicantDetails", {
+                  required: "Applicant Details is required",
                 })}
-                className="w-full p-2 border border-gray-400 bg-white"
-                placeholder="Enter applicant description"
+                className="w-full p-2 h-32 border border-gray-400 bg-white"
+                placeholder="Enter Applicant Details"
               />
-              {applicantErrors.applicantDescription && (
+              {applicantErrors.applicantDetails && (
                 <p className="text-red-600">
-                  {applicantErrors.applicantDescription.message}
+                  {applicantErrors.applicantDetails.message}
                 </p>
               )}
             </div>
@@ -448,48 +589,6 @@ const MentorshipDetails = () => {
             onSubmit={handleReviewSubmit(onSubmitReview)}
             className="space-y-4"
           >
-            {/* Reviewer Name */}
-            <div>
-              <label className="block text-sm font-bold mb-2">
-                Reviewer Name
-              </label>
-              <input
-                id="reviewerName"
-                type="text"
-                {...registerReview("reviewerName", {
-                  required: "reviewerName is required",
-                })}
-                className="w-full p-2 border border-gray-400 bg-white"
-                placeholder="Enter Reviewer Name"
-              />
-              {reviewErrors.reviewerName && (
-                <p className="text-red-600">
-                  {reviewErrors.reviewerName.message}
-                </p>
-              )}
-            </div>
-
-            {/* Reviewer Image */}
-            <div>
-              <label className="block text-sm font-bold mb-2">
-                Reviewer Image URL
-              </label>
-              <input
-                id="reviewerImage"
-                type="text"
-                {...registerReview("reviewerImage", {
-                  required: "Reviewer Image URL is required",
-                })}
-                className="w-full p-2 border border-gray-400 bg-white"
-                placeholder="Enter Reviewer Image URL"
-              />
-              {reviewErrors.reviewerImage && (
-                <p className="text-red-600">
-                  {reviewErrors.reviewerImage.message}
-                </p>
-              )}
-            </div>
-
             {/* Review Text */}
             <div>
               <label className="block text-sm font-bold mb-2">
@@ -500,7 +599,7 @@ const MentorshipDetails = () => {
                 {...registerReview("reviewText", {
                   required: "Review Text is required",
                 })}
-                className="w-full p-2 border border-gray-400 bg-white"
+                className="w-full p-2 h-44 border border-gray-400 bg-white"
                 placeholder="Enter Review Text"
               />
               {reviewErrors.reviewText && (
@@ -510,6 +609,7 @@ const MentorshipDetails = () => {
               )}
             </div>
 
+            {/* Rating */}
             <div>
               <label className="block text-sm font-bold mb-2">Rating</label>
               <Rating

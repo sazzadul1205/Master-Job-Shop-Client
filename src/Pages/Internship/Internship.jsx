@@ -25,6 +25,7 @@ const Internship = () => {
     queryFn: () => axiosPublic.get(`/Internship`).then((res) => res.data),
   });
 
+
   // Loading state
   if (InternshipDataIsLoading) {
     return <Loader />;

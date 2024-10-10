@@ -22,6 +22,8 @@ import AboutUs from "../Pages/AboutUs/AboutUs";
 import Blogs from "../Pages/Blogs/Blogs";
 import Testimonials from "../Pages/Testimonials/Testimonials";
 import NotFound from "../Pages/NotFound/NotFound";
+import DashboardLayout from "../Layouts/DashboardLayout";
+import Overview from "../DashboardPages/Admin/Overview/Overview";
 
 export const router = createBrowserRouter([
   {
@@ -126,6 +128,16 @@ export const router = createBrowserRouter([
       {
         path: "/Testimonials",
         element: <Testimonials></Testimonials>,
+      },
+    ],
+  },
+  {
+    path: "/Dashboard",
+    element: <DashboardLayout></DashboardLayout>,
+    children: [
+      {
+        path: "Overview",
+        element: <Overview></Overview>,
       },
     ],
   },

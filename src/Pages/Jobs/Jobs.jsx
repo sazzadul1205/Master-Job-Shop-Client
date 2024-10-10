@@ -89,7 +89,7 @@ const Jobs = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className="mx-auto max-w-[1200px] pt-20">
+      <div className="mx-auto max-w-[1250px] pt-20">
         <div className="text-black pt-5">
           <h1 className="text-2xl font-bold m-0">Our Posted Jobs</h1>
           <p>Find Your Preferred Job</p>
@@ -163,7 +163,7 @@ const Jobs = () => {
             </p>
           }
         >
-          <div className="grid grid-cols-3 gap-4 pb-10 py-10">
+          <div className="grid grid-cols-3 gap-4 pb-10 px-5 py-10">
             {filteredJobs.slice(0, currentPage * jobsPerPage).map((job) => (
               <div
                 key={job._id}

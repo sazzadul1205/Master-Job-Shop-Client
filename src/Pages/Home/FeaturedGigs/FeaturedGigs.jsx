@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { FaArrowRight, FaStar } from "react-icons/fa";
-import Rating from "react-rating";
+import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import ModalGigDetails from "../../Shared/ModalGigDetails/ModalGigDetails";
 
 const FeaturedGigs = ({ PostedGigsData }) => {
   const [selectedGig, setSelectedGig] = useState(null);
@@ -104,92 +105,12 @@ const FeaturedGigs = ({ PostedGigsData }) => {
       {/* Modal */}
       <dialog id="View_FeaturedGigs_Details" className="modal">
         {selectedGig && (
-          <div className="modal-box bg-red-50 text-black max-w-[700px]">
-            {/* Top */}
-            <div className="py-1">
-              <p className="font-bold text-2xl">{selectedGig.gigTitle}</p>
-              <p className="text-lg">
-                <span className="font-bold mr-5">Client Name:</span>
-                {selectedGig.clientName}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold mr-5">Gig Type:</span>
-                {selectedGig.gigType}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold mr-5">Location:</span>
-                {selectedGig.location}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold mr-5">Payment Rate:</span>
-                {selectedGig.paymentRate}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold mr-5">Duration:</span>
-                {selectedGig.duration}
-              </p>
-            </div>
-
-            <p className="text-lg py-3 leading-5">
-              <span className="font-bold pr-3">Responsibilities:</span>
-              {selectedGig.responsibilities}
-            </p>
-            <p className="text-lg py-3 leading-5">
-              <span className="font-bold pr-3">Required Skills:</span>
-              {selectedGig.requiredSkills}
-            </p>
-            <p className="text-lg py-3 leading-5">
-              <span className="font-bold pr-3">Working Hours:</span>
-              {selectedGig.workingHours}
-            </p>
-            <p className="text-lg py-3 leading-5">
-              <span className="font-bold pr-3">Project Expectations:</span>
-              {selectedGig.projectExpectations}
-            </p>
-            <p className="text-lg py-3 leading-5">
-              <span className="font-bold pr-3">Communication:</span>
-              {selectedGig.communication}
-            </p>
-            <p className="text-lg py-3 leading-5">
-              <span className="font-bold pr-3">Additional Benefits:</span>
-              {selectedGig.additionalBenefits}
-            </p>
-            <div className="flex justify-between items-center mt-5">
-              <p>
-                <span className="font-bold">Posted:</span>
-                {new Date(selectedGig.postedDate).toLocaleDateString()}
-              </p>
-              <div>
-                <h4 className="font-semibold mb-2">Company Rating:</h4>
-                <Rating
-                  initialRating={selectedGig.rating}
-                  emptySymbol={<FaStar className="text-gray-400 text-2xl" />}
-                  fullSymbol={<FaStar className="text-yellow-500 text-2xl" />}
-                  readonly
-                />
-              </div>
-            </div>
-            <div className="modal-action">
-              <Link to={`/PostedGigsDetails/${selectedGig._id}`}>
-                <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
-                  Apply Now
-                </button>
-              </Link>
-              <button
-                className="bg-red-500 hover:bg-red-600 px-5 py-2 text-lg font-semibold text-white"
-                onClick={closeModal}
-              >
-                Close
-              </button>
-            </div>
-          </div>
+          <ModalGigDetails selectedGig={selectedGig} closeModal={closeModal} />
         )}
       </dialog>
     </div>
   );
 };
-
-import PropTypes from "prop-types";
 
 FeaturedGigs.propTypes = {
   PostedGigsData: PropTypes.arrayOf(

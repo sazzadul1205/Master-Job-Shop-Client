@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import Swal from "sweetalert2";
 
-const ModalCard = ({ id, refetch, jobDetails }) => {
+const JobModalCard = ({ id, refetch, jobDetails }) => {
   const { user } = useContext(AuthContext);
   const axiosPublic = useAxiosPublic();
   const {
@@ -169,7 +169,7 @@ const ModalCard = ({ id, refetch, jobDetails }) => {
 };
 
 // Define PropTypes for the component
-ModalCard.propTypes = {
+JobModalCard.propTypes = {
   id: PropTypes.string.isRequired,
   refetch: PropTypes.func.isRequired,
   jobDetails: PropTypes.shape({
@@ -180,4 +180,4 @@ ModalCard.propTypes = {
   }).isRequired,
 };
 
-export default ModalCard;
+export default JobModalCard;

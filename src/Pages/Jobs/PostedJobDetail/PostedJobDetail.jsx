@@ -6,7 +6,7 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loader from "../../Shared/Loader/Loader";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import { useContext, useEffect, useState } from "react";
-import ModalCard from "./ModalCard/ModalCard";
+import JobModalCard from "./JobModalCard/JobModalCard";
 
 const PostedJobDetail = () => {
   const { id } = useParams();
@@ -184,11 +184,11 @@ const PostedJobDetail = () => {
         </div>
       </div>
       <dialog id="Apply_To_Job" className="modal">
-        <ModalCard
+        <JobModalCard
           jobDetails={jobDetails}
           id={id}
           refetch={refetch}
-        ></ModalCard>
+        ></JobModalCard>
       </dialog>
     </div>
   );

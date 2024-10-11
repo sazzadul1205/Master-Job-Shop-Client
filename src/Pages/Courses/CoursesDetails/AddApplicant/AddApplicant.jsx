@@ -56,7 +56,7 @@ const AddApplicant = ({ id, refetch, course }) => {
 
       // Post the log of the application
       const logResponse = await axiosPublic.post(
-        `/Apply-To-Job-Log`,
+        `/Apply-To-Course-Log`,
         applyToJobLogData
       );
 

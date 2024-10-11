@@ -45,12 +45,10 @@ const AddReviews = ({ refetch, id, Mentorship }) => {
       name: user.displayName,
       expertise: Mentorship.expertise,
       reviewText: data.reviewText,
-      jobId: Mentorship._id,
+      MentorshipOId: Mentorship._id,
       appliedDate: formattedDateTime,
     };
 
-    console.log(reviewData);
-    console.log(ReviewLogData);
 
     try {
       const applyResponse = await axiosPublic.post(
@@ -60,7 +58,7 @@ const AddReviews = ({ refetch, id, Mentorship }) => {
 
       // Post the log of the application
       const logResponse = await axiosPublic.post(
-        `/Apply-To-Job-Log`,
+        `/Review-To-Mentorship-Log`,
         ReviewLogData
       );
 

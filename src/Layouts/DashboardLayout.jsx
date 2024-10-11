@@ -8,19 +8,7 @@ const DashboardLayout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Admin/Manager Links
-  const DashboardNavLink = [
-    { to: "Overview", label: "Overview" },
-    { to: "History", label: "History" },
-    { to: "AddProduct", label: "Add Product" },
-    { to: "ManageDelivery", label: "Manage Delivery" },
-    { to: "ManageProducts", label: "Manage Products" },
-    { to: "ManageUsers", label: "Manage Users" },
-    { to: "ManageBlogs", label: "Manage Blogs" },
-    { to: "ManageHomeBanner", label: "Manage Home Banner" },
-    { to: "ManageProductBanners", label: "Manage Product Banners" },
-    { to: "ManageBrands", label: "Manage Brands" },
-    { to: "ManageFAQ", label: "Manage FAQ" },
-  ];
+  const DashboardNavLink = [{ to: "AdminOverview", label: "Admin Overview" }];
 
   // Generate navigation items
   const adminNav = DashboardNavLink.map((link) => {
@@ -29,12 +17,12 @@ const DashboardLayout = () => {
         <NavLink
           to={link.to}
           className={({ isActive }) =>
-            `text-lg font-semibold relative group py-2 px-4 transition-colors duration-300 text-black hover:text-black hover:bg-sky-400 rounded-none ${
-              isActive ? "text-black" : "text-black"
-            }`
+            `text-lg font-semibold relative group py-2 px-4 transition-colors duration-300 rounded-none
+              ${isActive ? "bg-blue-500 text-white" : "text-black"}`
           }
         >
-          {link.label}
+          <span className="absolute inset-0 w-full h-full bg-blue-500 transition-transform duration-500 ease-out scale-x-0 origin-left group-hover:scale-x-100 z-[-1]"></span>
+          <span className="relative z-10">{link.label}</span>
         </NavLink>
       </li>
     );

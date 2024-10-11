@@ -23,7 +23,7 @@ import Blogs from "../Pages/Blogs/Blogs";
 import Testimonials from "../Pages/Testimonials/Testimonials";
 import NotFound from "../Pages/NotFound/NotFound";
 import DashboardLayout from "../Layouts/DashboardLayout";
-import Overview from "../DashboardPages/Admin/Overview/Overview";
+import AdminOverview from "../DashboardPages/Admin/AdminOverview/AdminOverview";
 
 export const router = createBrowserRouter([
   {
@@ -136,8 +136,8 @@ export const router = createBrowserRouter([
     element: <DashboardLayout></DashboardLayout>,
     children: [
       {
-        path: "Overview",
-        element: <Overview></Overview>,
+        path: "AdminOverview",
+        element: <AdminOverview></AdminOverview>,
       },
     ],
   },

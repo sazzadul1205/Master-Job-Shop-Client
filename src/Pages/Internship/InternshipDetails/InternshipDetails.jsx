@@ -3,10 +3,9 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../Shared/Loader/Loader";
 import { FaArrowLeft } from "react-icons/fa";
-import { useForm } from "react-hook-form";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import { useContext, useEffect, useState } from "react";
-import Swal from "sweetalert2";
+import AddInternshipApplicant from "./AddInternshipApplicant/AddInternshipApplicant";
 
 const InternshipDetails = () => {
   const { id } = useParams();
@@ -14,12 +13,6 @@ const InternshipDetails = () => {
   const [hasApplied, setHasApplied] = useState(false); // To track if user has applied
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
 
   // Fetching Internship details by ID
   const {
@@ -56,60 +49,6 @@ const InternshipDetails = () => {
       checkIfApplied(); // Check application status when the user is available
     }
   }, [id, user]);
-
-  // Handle form submission for applicants
-  const onSubmit = async (data) => {
-    // Format the applicant data
-    const applicantData = {
-      applicantName: data.applicantName,
-      applicantEmail: user.email,
-      applicantImage: data.applicantImage,
-      aboutApplicant: data.aboutApplicant,
-      portfolioLink: data.portfolioLink,
-      resumeLink: data.resumeLink,
-    };
-
-    reset();
-    console.log(applicantData);
-    try {
-      const response = await axiosPublic.post(
-        `/Internship/${id}/apply`,
-        applicantData
-      );
-
-      if (response.status === 200) {
-        // Show success Swal alert
-        Swal.fire({
-          title: "Success!",
-          text: "Your application has been submitted.",
-          icon: "success",
-          confirmButtonText: "OK",
-        });
-
-        // Close the modal
-        document.getElementById("Add_Application").close();
-        refetch();
-
-        // Reset the form after submission
-        reset();
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: "Something went wrong. Please try again.",
-          icon: "error",
-          button: "OK",
-        });
-      }
-    } catch (error) {
-      console.error("Error submitting application:", error);
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to submit the application. Please try again later.",
-        icon: "error",
-        button: "OK",
-      });
-    }
-  };
 
   // Loading state
   if (isLoading) {
@@ -270,13 +209,10 @@ const InternshipDetails = () => {
             {Internship.description}
           </p>
 
-          {/* Applications */}
-          <div className="overflow-x-auto mt-6">
-            <div className="flex justify-between items-center">
-              <p className="text-xl font-bold py-2">
-                Participant Applications:
-              </p>
-
+          <div className="text-xl bg-sky-100 py-3 px-5 flex justify-between items-center">
+            <p>People Applied: {Internship?.applicants?.length || 0}</p>{" "}
+            {/* Displaying the total count */}
+            <div>
               {user ? (
                 hasApplied ? (
                   // If the user has already applied, show the "Already Applied" button
@@ -306,158 +242,17 @@ const InternshipDetails = () => {
                 </Link>
               )}
             </div>
-            <table className="table w-full">
-              <thead>
-                <tr className="bg-blue-500 text-white text-md">
-                  <th>Image</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>About</th>
-                  <th>Portfolio Link</th>
-                  <th>Resume Link</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Internship.applicants.map((applicant, index) => (
-                  <tr key={index}>
-                    <td>
-                      <img
-                        src={applicant.applicantEmail}
-                        alt={applicant.applicantName}
-                      />
-                    </td>
-                    <td>{applicant.applicantName}</td>
-                    <td>{applicant.applicantEmail}</td>
-                    <td>{applicant.aboutApplicant}</td>
-                    <td>{applicant.portfolioLink}</td>
-                    <td>{applicant.resumeLink}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
 
       {/* Modal for Add Reviews */}
       <dialog id="Add_Application" className="modal">
-        <div className="modal-box bg-white text-black border-2 border-red-500">
-          <h3 className="font-bold text-xl text-center">Add Reviews</h3>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Applicant Name */}
-            <div>
-              <label className="block text-sm font-bold mb-2">
-                Applicant Name
-              </label>
-              <input
-                id="applicantName"
-                type="text"
-                {...register("applicantName", {
-                  required: "applicantName is required",
-                })}
-                className="w-full p-2 border border-gray-400 bg-white"
-                placeholder="Enter Applicant Name"
-              />
-              {errors.applicantName && (
-                <p className="text-red-600">{errors.applicantName.message}</p>
-              )}
-            </div>
-
-            {/* applicant Image */}
-            <div>
-              <label className="block text-sm font-bold mb-2">
-                applicant Image URL
-              </label>
-              <input
-                id="applicantImage"
-                type="url"
-                {...register("applicantImage", {
-                  required: "applicant Image URL is required",
-                })}
-                className="w-full p-2 border border-gray-400 bg-white"
-                placeholder="Enter applicant Image URL"
-              />
-              {errors.applicantImage && (
-                <p className="text-red-600">{errors.applicantImage.message}</p>
-              )}
-            </div>
-
-            {/* About Applicant */}
-            <div>
-              <label className="block text-sm font-bold mb-2">
-                About Applicant
-              </label>
-              <textarea
-                id="aboutApplicant"
-                {...register("aboutApplicant", {
-                  required: "About Applicant is required",
-                })}
-                className="w-full p-2 border h-36 border-gray-400 bg-white"
-                placeholder="Enter About Applicant"
-              />
-              {errors.aboutApplicant && (
-                <p className="text-red-600">{errors.aboutApplicant.message}</p>
-              )}
-            </div>
-
-            {/* Portfolio Link */}
-            <div>
-              <label className="block text-sm font-bold mb-2">
-                Portfolio Link URL
-              </label>
-              <input
-                id="portfolioLink"
-                type="url"
-                {...register("portfolioLink", {
-                  required: "Portfolio Link URL is required",
-                })}
-                className="w-full p-2 border border-gray-400 bg-white"
-                placeholder="Enter Portfolio Link URL"
-              />
-              {errors.portfolioLink && (
-                <p className="text-red-600">{errors.portfolioLink.message}</p>
-              )}
-            </div>
-
-            {/* Resume Link */}
-            <div>
-              <label className="block text-sm font-bold mb-2">
-                Resume Link URL
-              </label>
-              <input
-                id="resumeLink"
-                type="url"
-                {...register("resumeLink", {
-                  required: "Resume Link URL is required",
-                })}
-                className="w-full p-2 border border-gray-400 bg-white"
-                placeholder="Enter Resume Link URL"
-              />
-              {errors.resumeLink && (
-                <p className="text-red-600">{errors.resumeLink.message}</p>
-              )}
-            </div>
-
-            {/* Submit Button */}
-            <div className="modal-action">
-              <button
-                type="button"
-                onClick={() =>
-                  document.getElementById("Add_Application").close()
-                }
-                className="bg-red-500 hover:bg-red-600 px-5 py-3 font-semibold text-white"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-green-500 hover:bg-green-600 px-5 py-3 font-semibold text-white"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
-        </div>
+        <AddInternshipApplicant
+          refetch={refetch}
+          Internship={Internship}
+          id={id}
+        ></AddInternshipApplicant>
       </dialog>
     </div>
   );

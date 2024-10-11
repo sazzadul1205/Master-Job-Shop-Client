@@ -8,7 +8,10 @@ const DashboardLayout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Admin/Manager Links
-  const DashboardNavLink = [{ to: "AdminOverview", label: "Admin Overview" }];
+  const DashboardNavLink = [
+    { to: "AdminOverview", label: "Admin Overview" },
+    { to: "AdminManageUsers", label: "Manage Users" },
+  ];
 
   // Generate navigation items
   const adminNav = DashboardNavLink.map((link) => {

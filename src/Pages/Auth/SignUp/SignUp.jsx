@@ -33,10 +33,10 @@ const SignUp = () => {
     const { email, password, displayName, photoURL } = data;
 
     const UserData = {
-      name: displayName,
+      displayName: displayName,
       email: email,
       role: "member",
-      creationTime: formattedDateTime,
+      createdDate: formattedDateTime,
       photoURL: photoURL,
     };
 

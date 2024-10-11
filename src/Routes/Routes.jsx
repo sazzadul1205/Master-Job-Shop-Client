@@ -24,6 +24,7 @@ import Testimonials from "../Pages/Testimonials/Testimonials";
 import NotFound from "../Pages/NotFound/NotFound";
 import DashboardLayout from "../Layouts/DashboardLayout";
 import AdminOverview from "../DashboardPages/Admin/AdminOverview/AdminOverview";
+import AdminManageUsers from "../DashboardPages/Admin/AdminManageUsers/AdminManageUsers";
 
 export const router = createBrowserRouter([
   {
@@ -138,6 +139,10 @@ export const router = createBrowserRouter([
       {
         path: "AdminOverview",
         element: <AdminOverview></AdminOverview>,
+      },
+      {
+        path: "ManageUsers",
+        element: <AdminManageUsers></AdminManageUsers>,
       },
     ],
   },

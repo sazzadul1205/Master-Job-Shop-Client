@@ -60,8 +60,8 @@ const Login = () => {
           displayName: user.displayName,
           email: user.email,
           role: "member",
-          photoURL: user.photoURL,
           createdDate: formattedDateTime,
+          photoURL: user.photoURL,
         };
 
         // Check if user already exists

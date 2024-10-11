@@ -89,12 +89,14 @@ const Jobs = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className="mx-auto max-w-[1250px] pt-20">
-        <div className="text-black pt-5">
+      <div className=" pt-20">
+        {/* Title */}
+        <div className="text-black pt-5 mx-auto max-w-[1200px]">
           <h1 className="text-2xl font-bold m-0">Our Posted Jobs</h1>
           <p>Find Your Preferred Job</p>
         </div>
-        <div className="flex justify-between items-center py-3">
+
+        <div className="flex justify-between items-center py-3 mx-auto max-w-[1200px]">
           {/* Search */}
           <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
             <input
@@ -163,7 +165,7 @@ const Jobs = () => {
             </p>
           }
         >
-          <div className="grid grid-cols-3 gap-4 pb-10 px-5 py-10">
+          <div className="grid grid-cols-3 gap-5 py-10 mx-auto max-w-[1200px]">
             {filteredJobs.slice(0, currentPage * jobsPerPage).map((job) => (
               <div
                 key={job._id}

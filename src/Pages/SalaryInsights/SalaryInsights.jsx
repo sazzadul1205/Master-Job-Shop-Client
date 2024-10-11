@@ -105,14 +105,14 @@ const SalaryInsights = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className="mx-auto max-w-[1200px] pt-20">
+      <div className=" pt-20">
         {/* Title */}
-        <div className="text-black pt-3">
+        <div className="text-black pt-3 mx-auto max-w-[1200px]">
           <p className="text-2xl font-bold">Salary Insights</p>
           <p>Know about the salary insights of different industries.</p>
         </div>
         {/* Search Box and Filters */}
-        <div className="flex flex-col md:flex-row space-x-4 py-3 ">
+        <div className="flex justify-between mx-auto max-w-[1200px] gap-5 py-3 ">
           {/* Search bar */}
           <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
             <input
@@ -185,7 +185,7 @@ const SalaryInsights = () => {
           }
         >
           {/* Salary Cards Section */}
-          <div className="grid grid-cols-3 gap-4 py-10">
+          <div className="grid grid-cols-3 gap-4 py-10 mx-auto max-w-[1200px]">
             {currentJobs.map((salaryInsight, index) => (
               <div
                 key={index}

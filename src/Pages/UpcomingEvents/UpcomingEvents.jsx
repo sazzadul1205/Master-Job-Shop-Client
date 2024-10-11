@@ -60,7 +60,7 @@ const UpcomingEvents = () => {
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
       <div className=" pt-20">
         {/* Search Box and Filters */}
-        <div className="flex flex-col md:flex-row justify-between space-x-4 pt-5 mx-auto max-w-[1200px]">
+        <div className="flex justify-between gap-5 mx-auto max-w-[1200px] pt-5">
           {/* Title */}
           <div className="text-black">
             <p className="text-2xl font-bold">Our Upcoming Events</p>
@@ -96,7 +96,7 @@ const UpcomingEvents = () => {
             </p>
           }
         >
-          <div className="grid grid-cols-3 gap-4 pt-5 mx-auto max-w-[1200px]">
+          <div className="grid grid-cols-3 gap-5 pt-5 mx-auto max-w-[1200px]">
             {filteredEvents.length > 0 ? (
               filteredEvents
                 .slice(0, currentPage * eventsPerPage) // Display events based on current page

@@ -115,14 +115,15 @@ const Gigs = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className="mx-auto max-w-[1250px] pt-20">
-        <div className="text-black">
+      <div className=" pt-20">
+        {/* Title */}
+        <div className="text-black mx-auto max-w-[1250px]">
           <h1 className="text-2xl font-bold m-0 pt-5">Our Posted Gigs</h1>
           <p>Find New and Profitable Gigs you can work on</p>
         </div>
 
         {/* Filter and Search Section */}
-        <div className="flex space-x-4 py-3">
+        <div className="flex space-x-4 py-3 mx-auto max-w-[1250px]">
           <div>
             <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
               <input
@@ -177,7 +178,7 @@ const Gigs = () => {
             </p>
           }
         >
-          <div className="grid grid-cols-3 gap-4 py-10 px-5 text-black">
+          <div className="grid grid-cols-3 gap-5 py-10 text-black mx-auto max-w-[1250px]">
             {filteredGigs
               .slice(0, currentPage * jobsPerPage)
               .map((gig, index) => (

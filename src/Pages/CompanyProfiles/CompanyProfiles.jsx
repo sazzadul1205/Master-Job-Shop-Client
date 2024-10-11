@@ -109,15 +109,15 @@ const CompanyProfiles = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className="mx-auto max-w-[1200px] pt-20">
+      <div className=" pt-20">
         {/* Title */}
-        <div className="text-black pt-4">
+        <div className="text-black pt-4 mx-auto max-w-[1200px]">
           <p className="text-2xl font-bold ">Our Companies</p>
           <p>Find The company you want to work for and its info</p>
         </div>
 
         {/* Search Box and Filters */}
-        <div className="flex flex-col md:flex-row  space-x-4 py-3">
+        <div className="flex justify-between gap-5 mx-auto max-w-[1200px] py-3">
           {/* Search bar */}
           <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
             <input
@@ -189,7 +189,7 @@ const CompanyProfiles = () => {
             </p>
           }
         >
-          <div className="grid grid-cols-3 gap-4 py-10">
+          <div className="grid grid-cols-3 gap-5 py-10 mx-auto max-w-[1200px]">
             {currentCompanies.map((company, index) => {
               const {
                 companyName,

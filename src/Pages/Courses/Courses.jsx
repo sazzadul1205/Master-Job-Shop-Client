@@ -72,15 +72,14 @@ const Courses = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className="mx-auto max-w-[1200px] pt-20">
+      <div className=" pt-20">
+        {/* Title */}
+        <div className="text-black mx-auto max-w-[1200px]">
+          <h1 className="text-2xl font-bold m-0 pt-5">Our Course</h1>
+          <p>Join our Courses to get more Experience</p>
+        </div>
         {/* Top Section */}
-        <div className="flex justify-between items-center gap-5 pt-0">
-          {/* Title */}
-          <div className="text-black">
-            <h1 className="text-2xl font-bold m-0 pt-5">Our Course</h1>
-            <p>Join our Courses to get more Experience</p>
-          </div>
-
+        <div className="flex justify-between items-center mx-auto max-w-[1200px] gap-5 pt-5">
           {/* Search */}
           <div>
             <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
@@ -142,7 +141,7 @@ const Courses = () => {
         </div>
 
         {/* Course Cards Section */}
-        <div className="grid grid-cols-3 gap-4 py-5">
+        <div className="grid grid-cols-3 gap-4 py-5 mx-auto max-w-[1200px]">
           {currentJobs.map((course, index) => (
             <div
               key={index}

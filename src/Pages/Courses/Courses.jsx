@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
+import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from "../Shared/Loader/Loader";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -8,11 +9,13 @@ import { Link } from "react-router-dom";
 const Courses = () => {
   const axiosPublic = useAxiosPublic();
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const [selectedLevel, setSelectedLevel] = useState("");
-  const [selectedFormat, setSelectedFormat] = useState("");
-
-  const jobsPerPage = 9;
+  const [selectedDuration, setSelectedDuration] = useState("");
+  const [selectedCertification, setSelectedCertification] = useState("");
+  const [courses, setCourses] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const coursesPerPage = 9;
 
   // Fetching CoursesData
   const {
@@ -23,6 +26,24 @@ const Courses = () => {
     queryKey: ["CoursesData"],
     queryFn: () => axiosPublic.get(`/Courses`).then((res) => res.data),
   });
+
+  useEffect(() => {
+    if (CoursesData) {
+      setCourses(CoursesData.slice(0, coursesPerPage));
+    }
+  }, [CoursesData]);
+
+  const loadMoreCourses = () => {
+    const nextPage = currentPage + 1;
+    const newCourses = CoursesData.slice(0, nextPage * coursesPerPage);
+    setCourses(newCourses);
+    setCurrentPage(nextPage);
+
+    // Check if more courses are available
+    if (newCourses.length >= CoursesData.length) {
+      setHasMore(false);
+    }
+  };
 
   // Loading state
   if (CoursesDataIsLoading) {
@@ -46,38 +67,43 @@ const Courses = () => {
     );
   }
 
-  // Extract unique levels and formats from CoursesData
-  const levels = [...new Set(CoursesData.map((course) => course.level))];
-  const formats = [...new Set(CoursesData.map((course) => course.format))];
+  // Extract unique levels, durations, and certifications from CoursesData
+  const levels = [...new Set(CoursesData?.map((course) => course.level))];
+  const durations = [...new Set(CoursesData?.map((course) => course.duration))];
+  const certifications = [
+    ...new Set(CoursesData?.map((course) => course.certification)),
+  ];
 
-  // Filtered Courses based on search term, selected level, and selected format
-  const filteredCourses = CoursesData.filter((course) => {
+  // Filtered Courses based on search term, selected level, selected duration, and selected certification
+  const filteredCourses = courses.filter((course) => {
     const matchesSearchTerm =
       course.courseTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
       course.instructor.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesLevel = selectedLevel ? course.level === selectedLevel : true;
-    const matchesFormat = selectedFormat
-      ? course.format === selectedFormat
+    const matchesDuration = selectedDuration
+      ? course.duration === selectedDuration
+      : true;
+    const matchesCertification = selectedCertification
+      ? course.certification === selectedCertification
       : true;
 
-    return matchesSearchTerm && matchesLevel && matchesFormat;
+    return (
+      matchesSearchTerm &&
+      matchesLevel &&
+      matchesDuration &&
+      matchesCertification
+    );
   });
-
-  // Pagination logic
-  const totalPages = Math.ceil(filteredCourses.length / jobsPerPage);
-  const currentJobs = filteredCourses.slice(
-    (currentPage - 1) * jobsPerPage,
-    currentPage * jobsPerPage
-  );
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className=" pt-20">
+      <div className="pt-20">
         {/* Title */}
         <div className="text-black mx-auto max-w-[1200px]">
-          <h1 className="text-2xl font-bold m-0 pt-5">Our Course</h1>
-          <p>Join our Courses to get more Experience</p>
+          <h1 className="text-2xl font-bold m-0 pt-5">Our Courses</h1>
+          <p>Join our Courses to get more experience</p>
         </div>
+
         {/* Top Section */}
         <div className="flex justify-between items-center mx-auto max-w-[1200px] gap-5 pt-5">
           {/* Search */}
@@ -96,7 +122,7 @@ const Courses = () => {
 
           {/* Dropdown for Level Title Filter */}
           <select
-            className="border border-gray-300 p-2 w-[200px] bg-white text-black"
+            className="border border-gray-300 p-3 w-[200px] bg-white text-black"
             value={selectedLevel}
             onChange={(e) => setSelectedLevel(e.target.value)}
           >
@@ -108,14 +134,28 @@ const Courses = () => {
             ))}
           </select>
 
-          {/* Dropdown for Format Title Filter */}
+          {/* Dropdown for Duration Filter */}
           <select
-            className="border border-gray-300 p-2 w-[200px] bg-white text-black"
-            value={selectedFormat}
-            onChange={(e) => setSelectedFormat(e.target.value)}
+            className="border border-gray-300 p-3 w-[200px] bg-white text-black"
+            value={selectedDuration}
+            onChange={(e) => setSelectedDuration(e.target.value)}
           >
-            <option value="">All Level Titles</option>
-            {formats.map((title, index) => (
+            <option value="">Course Duration</option>
+            {durations.map((title, index) => (
+              <option key={index} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+
+          {/* Dropdown for Certification Filter */}
+          <select
+            className="border border-gray-300 p-3 w-[200px] bg-white text-black"
+            value={selectedCertification}
+            onChange={(e) => setSelectedCertification(e.target.value)}
+          >
+            <option value="">Certifications</option>
+            {certifications.map((title, index) => (
               <option key={index} value={title}>
                 {title}
               </option>
@@ -123,68 +163,68 @@ const Courses = () => {
           </select>
         </div>
 
-        {/* Pagination */}
-        <div className="flex justify-end space-x-2">
-          {[...Array(totalPages).keys()].map((num) => (
-            <button
-              key={num}
-              className={`px-4 py-2 font-semibold text-lg ${
-                currentPage === num + 1
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-black"
-              }`}
-              onClick={() => setCurrentPage(num + 1)}
-            >
-              {num + 1}
-            </button>
-          ))}
-        </div>
+        {/* Infinite Scroll */}
+        <InfiniteScroll
+          dataLength={courses.length}
+          next={loadMoreCourses}
+          hasMore={hasMore}
+          loader={
+            <h4 className="text-2xl text-center font-bold py-5 text-blue-500">
+              Loading...
+            </h4>
+          }
+          endMessage={
+            <p className="text-2xl text-center font-bold py-5 text-red-500">
+              No more courses to load
+            </p>
+          }
+        >
+          {/* Course Cards Section */}
+          <div className="grid grid-cols-3 gap-4 py-5 mx-auto max-w-[1200px]">
+            {filteredCourses.map((course, index) => (
+              <div
+                key={index}
+                className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-blue-50 hover:shadow-2xl"
+              >
+                <div className="card-body">
+                  {/* Course Title */}
+                  <p className="font-bold text-2xl">
+                    {course.courseTitle || "Course Title"}
+                  </p>
 
-        {/* Course Cards Section */}
-        <div className="grid grid-cols-3 gap-4 py-5 mx-auto max-w-[1200px]">
-          {currentJobs.map((course, index) => (
-            <div
-              key={index}
-              className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-blue-50 hover:shadow-2xl"
-            >
-              <div className="card-body">
-                {/* Course Title */}
-                <p className="font-bold text-2xl">
-                  {course.courseTitle || "Course Title"}
-                </p>
+                  {/* Instructor Name */}
+                  <p className="text-gray-500">
+                    Instructor: {course.instructor || "Instructor Name"}
+                  </p>
 
-                {/* Instructor Name */}
-                <p className="text-gray-500">
-                  Instructor: {course.instructor || "Instructor Name"}
-                </p>
+                  {/* Duration */}
+                  <p className="text-gray-500">
+                    Duration: {course.duration || "Duration"}
+                  </p>
 
-                {/* Duration */}
-                <p className="text-gray-500">
-                  Duration: {course.duration || "Duration"}
-                </p>
+                  {/* Level */}
+                  <p className="text-gray-500">
+                    Level: {course.level || "Beginner/Intermediate/Advanced"}
+                  </p>
 
-                {/* Level */}
-                <p className="text-gray-500">
-                  Level: {course.level || "Beginner/Intermediate/Advanced"}
-                </p>
+                  {/* Description */}
+                  <p className="text-gray-700 mt-2">
+                    {course.description || "Course Description"}
+                  </p>
 
-                {/* Description */}
-                <p className="text-gray-700 mt-2">
-                  {course.description || "Course Description"}
-                </p>
-
-                {/* Card Actions */}
-                <div className="card-actions justify-end mt-5">
-                  <Link to={`/Courses/${course._id}`}>
-                    <button className="bg-blue-500 hover:bg-blue-600 px-5 py-2 text-lg font-semibold text-white">
-                      Enroll Now
-                    </button>
-                  </Link>
+                  {/* Card Actions */}
+                  <div className="card-actions justify-end mt-5">
+                    <Link to={`/Courses/${course._id}`}>
+                      <button className="bg-blue-500 hover:bg-blue-600 px-5 py-2 text-lg font-semibold text-white">
+                        Enroll Now
+                      </button>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </InfiniteScroll>
       </div>
     </div>
   );

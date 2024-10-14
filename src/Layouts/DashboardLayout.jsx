@@ -11,6 +11,7 @@ const DashboardLayout = () => {
   const DashboardNavLink = [
     { to: "AdminOverview", label: "Admin Overview" },
     { to: "AdminManageUsers", label: "Manage Users" },
+    { to: "ManageJobs", label: "Manage Jobs" },
   ];
 
   // Generate navigation items

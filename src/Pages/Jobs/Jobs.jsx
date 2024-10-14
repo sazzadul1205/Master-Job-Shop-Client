@@ -165,7 +165,7 @@ const Jobs = () => {
             </p>
           }
         >
-          <div className="grid grid-cols-3 gap- py-10 mx-auto max-w-[1200px]">
+          <div className="grid grid-cols-3 gap-5 py-10 mx-auto max-w-[1200px]">
             {filteredJobs.slice(0, currentPage * jobsPerPage).map((job) => (
               <div
                 key={job._id}

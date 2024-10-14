@@ -2,6 +2,7 @@ import { FaStar } from "react-icons/fa";
 import Rating from "react-rating";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import NoLogo from "../../../assets/NoLogo.png";
 
 const ModalJobDetails = ({ selectedJob, closeModal }) => {
   return (
@@ -49,7 +50,7 @@ const ModalJobDetails = ({ selectedJob, closeModal }) => {
         {/* Image */}
         {selectedJob.companyLogo && (
           <img
-            src={selectedJob.companyLogo}
+            src={selectedJob.companyLogo || NoLogo}
             alt={selectedJob.companyName}
             className="border border-gray-200"
           />

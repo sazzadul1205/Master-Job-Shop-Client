@@ -25,6 +25,7 @@ import NotFound from "../Pages/NotFound/NotFound";
 import DashboardLayout from "../Layouts/DashboardLayout";
 import AdminOverview from "../DashboardPages/Admin/AdminOverview/AdminOverview";
 import AdminManageUsers from "../DashboardPages/Admin/AdminManageUsers/AdminManageUsers";
+import ManageJobs from "../DashboardPages/Admin/ManageJobs/ManageJobs";
 
 export const router = createBrowserRouter([
   {
@@ -141,8 +142,12 @@ export const router = createBrowserRouter([
         element: <AdminOverview></AdminOverview>,
       },
       {
-        path: "ManageUsers",
+        path: "AdminManageUsers",
         element: <AdminManageUsers></AdminManageUsers>,
+      },
+      {
+        path: "ManageJobs",
+        element: <ManageJobs></ManageJobs>,
       },
     ],
   },

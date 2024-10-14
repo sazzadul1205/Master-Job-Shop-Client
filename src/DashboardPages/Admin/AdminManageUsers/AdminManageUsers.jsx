@@ -101,6 +101,8 @@ const AdminManageUsers = () => {
       });
 
       // Show success message
+      console.log(response);
+      
       Swal.fire({
         icon: "success",
         title: "Role Updated Successfully",

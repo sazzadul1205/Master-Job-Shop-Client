@@ -109,10 +109,12 @@ const PostedJobDetail = () => {
               />
             )}
           </div>
+
           <div className="text-xl mt-8">
             <h4 className="font-semibold">Description:</h4>
             <p>{jobDetails.jobDescription}</p>
           </div>
+
           <div className="text-xl mt-8">
             <h4 className="font-semibold">Responsibilities:</h4>
             <ul className="list-disc pl-5 mb-4">
@@ -121,6 +123,7 @@ const PostedJobDetail = () => {
               ))}
             </ul>
           </div>
+
           <div className="text-xl mt-8">
             <h4 className="font-semibold">Qualifications:</h4>
             <ul className="list-disc pl-5 mb-4">
@@ -129,6 +132,7 @@ const PostedJobDetail = () => {
               ))}
             </ul>
           </div>
+
           <div className="flex items-center justify-between">
             <div className="text-xl mt-8">
               <h4 className="font-semibold">Tools and Technologies:</h4>
@@ -140,6 +144,7 @@ const PostedJobDetail = () => {
                 ))}
               </ul>
             </div>
+            
             <div>
               <h4 className="font-semibold mb-2">Company Rating:</h4>
               <Rating
@@ -150,6 +155,7 @@ const PostedJobDetail = () => {
               />
             </div>
           </div>
+
         </div>
         <div className="text-xl bg-sky-100 py-3 px-5 flex justify-between items-center">
           <p>People Applied: {jobDetails?.PeopleApplied?.length || 0}</p>{" "}

@@ -13,6 +13,7 @@ const DashboardLayout = () => {
     { to: "AdminManageUsers", label: "Manage Users" },
     { to: "ManageJobs", label: "Manage Jobs" },
     { to: "ManageGigs", label: "Manage Gigs" },
+    { to: "ManageCompany", label: "Manage Company" },
   ];
 
   // Generate navigation items

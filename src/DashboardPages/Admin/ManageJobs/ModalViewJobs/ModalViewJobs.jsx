@@ -5,10 +5,10 @@ import Rating from "react-rating";
 
 const ModalViewJobs = ({ jobData }) => {
   return (
-    <div className="modal-box bg-white max-w-[1000px] px-0">
+    <div className="modal-box bg-white max-w-[1000px] p-0 pb-10">
       {/* Top part */}
-      <div className="flex justify-between items-center pb-3 border-b-2 border-black px-5 text-xl">
-        <p>View Job Details</p>
+      <div className="flex justify-between items-center p-5 bg-gray-400 text-white border-b-2 border-black">
+        <p className="font-bold text-xl">View Job Details</p>
         <button
           onClick={() => document.getElementById("Modal_Job_View").close()}
         >

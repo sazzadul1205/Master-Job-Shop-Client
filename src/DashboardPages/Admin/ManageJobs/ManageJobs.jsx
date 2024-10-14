@@ -162,9 +162,6 @@ const ManageJobs = () => {
             </svg>
           </label>
         </div>
-        <button className="bg-green-500 hover:bg-green-400 text-white font-semibold w-40 py-3">
-          Add Jobs
-        </button>
       </div>
 
       {/* Delete selected jobs button */}

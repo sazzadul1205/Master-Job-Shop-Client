@@ -26,6 +26,7 @@ import DashboardLayout from "../Layouts/DashboardLayout";
 import AdminOverview from "../DashboardPages/Admin/AdminOverview/AdminOverview";
 import AdminManageUsers from "../DashboardPages/Admin/AdminManageUsers/AdminManageUsers";
 import ManageJobs from "../DashboardPages/Admin/ManageJobs/ManageJobs";
+import ManageGigs from "../DashboardPages/Admin/ManageGigs/ManageGigs";
 
 export const router = createBrowserRouter([
   {
@@ -148,6 +149,10 @@ export const router = createBrowserRouter([
       {
         path: "ManageJobs",
         element: <ManageJobs></ManageJobs>,
+      },
+      {
+        path: "ManageGigs",
+        element: <ManageGigs></ManageGigs>,
       },
     ],
   },

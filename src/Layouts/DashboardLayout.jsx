@@ -12,6 +12,7 @@ const DashboardLayout = () => {
     { to: "AdminOverview", label: "Admin Overview" },
     { to: "AdminManageUsers", label: "Manage Users" },
     { to: "ManageJobs", label: "Manage Jobs" },
+    { to: "ManageGigs", label: "Manage Gigs" },
   ];
 
   // Generate navigation items
@@ -21,7 +22,7 @@ const DashboardLayout = () => {
         <NavLink
           to={link.to}
           className={({ isActive }) =>
-            `text-lg font-semibold relative group py-2 px-4 transition-colors duration-300 rounded-none
+            `text-lg font-semibold relative group py-2 px-4 transition-colors duration-300 rounded-none hover:text-white
               ${isActive ? "bg-blue-500 text-white" : "text-black"}`
           }
         >

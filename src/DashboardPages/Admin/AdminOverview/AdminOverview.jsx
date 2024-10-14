@@ -87,8 +87,16 @@ const AdminOverview = () => {
       value: queryResults[2]?.data?.count,
       to: "Dashboard/ManageGigs",
     },
-    { title: "Total Company Profiles", value: queryResults[3]?.data?.count },
-    { title: "Total Salary Insights", value: queryResults[4]?.data?.count },
+    {
+      title: "Total Company Profiles",
+      value: queryResults[3]?.data?.count,
+      to: "Dashboard/ManageCompany",
+    },
+    {
+      title: "Total Salary Insights",
+      value: queryResults[4]?.data?.count,
+      to: "Dashboard/ManageSalaryInsight",
+    },
     { title: "Total Upcoming Events", value: queryResults[5]?.data?.count },
     { title: "Total Courses", value: queryResults[6]?.data?.count },
     { title: "Total Mentorships", value: queryResults[7]?.data?.count },

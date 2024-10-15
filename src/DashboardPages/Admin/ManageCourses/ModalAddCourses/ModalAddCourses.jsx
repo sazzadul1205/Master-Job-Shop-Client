@@ -1,16 +1,25 @@
 import { ImCross } from "react-icons/im";
 import { useForm, useFieldArray } from "react-hook-form";
+import { AuthContext } from "../../../../Provider/AuthProvider";
+import { useContext } from "react";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import Swal from "sweetalert2";
+import PropTypes from "prop-types";
 
-const ModalAddCourses = () => {
+const ModalAddCourses = ({ refetch }) => {
+  const { user } = useContext(AuthContext);
+  const axiosPublic = useAxiosPublic();
+
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
       batches: [{ batchName: "", batchDate: "", batchDetails: "" }],
-      schedule: [{ week: "", topic: "" }],
+      schedule: [{ week: "", topic: "", scheduleDetails: "" }],
       prerequisites: [""],
       learningOutcomes: [""],
       assessments: [""],
@@ -18,21 +27,64 @@ const ModalAddCourses = () => {
     },
   });
 
+  // Field Arrays
   const {
     fields: batchFields,
     append: appendBatch,
     remove: removeBatch,
-  } = useFieldArray({ control, name: "batches" });
+  } = useFieldArray({
+    control,
+    name: "batches",
+  });
 
   const {
     fields: scheduleFields,
     append: appendSchedule,
     remove: removeSchedule,
-  } = useFieldArray({ control, name: "schedule" });
+  } = useFieldArray({
+    control,
+    name: "schedule",
+  });
 
+  const {
+    fields: prerequisiteFields,
+    append: appendPrerequisite,
+    remove: removePrerequisite,
+  } = useFieldArray({
+    control,
+    name: "prerequisites",
+  });
+
+  const {
+    fields: learningOutcomeFields,
+    append: appendLearningOutcome,
+    remove: removeLearningOutcome,
+  } = useFieldArray({
+    control,
+    name: "learningOutcomes",
+  });
+
+  const {
+    fields: assessmentFields,
+    append: appendAssessment,
+    remove: removeAssessment,
+  } = useFieldArray({
+    control,
+    name: "assessments",
+  });
+
+  const {
+    fields: targetAudienceFields,
+    append: appendTargetAudience,
+    remove: removeTargetAudience,
+  } = useFieldArray({
+    control,
+    name: "targetAudience",
+  });
+
+  // Handlers for removing batch and schedule
   const handleRemoveBatch = (index) => {
     removeBatch(index);
-    // If no batch fields are left, append an empty one
     if (batchFields.length === 1) {
       appendBatch({ batchName: "", batchDate: "", batchDetails: "" });
     }
@@ -40,14 +92,14 @@ const ModalAddCourses = () => {
 
   const handleRemoveSchedule = (index) => {
     removeSchedule(index);
-    // If no schedule fields are left, append an empty one
     if (scheduleFields.length === 1) {
-      appendSchedule({ week: "", topic: "" });
+      appendSchedule({ week: "", topic: "", scheduleDetails: "" });
     }
   };
 
+  // Batch Fields Rendering
   const renderBatchFields = () => (
-    <div className="mb-3 ">
+    <div className="mb-3">
       <div className="border-b-2 border-black">
         <p className="font-bold py-3">Batches</p>
       </div>
@@ -57,7 +109,7 @@ const ModalAddCourses = () => {
           className="space-y-3 mb-4 pt-3 border border-gray-300 p-5"
         >
           <div className="flex items-center">
-            <p className="font-bold w-28">Batch Name : </p>
+            <p className="font-bold w-28">Batch Name:</p>
             <input
               className="input input-bordered w-full bg-white border-black rounded-none"
               {...register(`batches.${index}.batchName`)}
@@ -65,7 +117,7 @@ const ModalAddCourses = () => {
             />
           </div>
           <div className="flex items-center">
-            <p className="font-bold w-28">Batch Date : </p>
+            <p className="font-bold w-28">Batch Date:</p>
             <input
               className="input input-bordered w-full bg-white border-black rounded-none"
               {...register(`batches.${index}.batchDate`)}
@@ -73,7 +125,7 @@ const ModalAddCourses = () => {
             />
           </div>
           <div className="flex">
-            <p className="font-bold w-28">Batch Details : </p>
+            <p className="font-bold w-28">Batch Details:</p>
             <textarea
               className="input input-bordered w-full bg-white border-black rounded-none p-2 h-32"
               {...register(`batches.${index}.batchDetails`)}
@@ -103,8 +155,9 @@ const ModalAddCourses = () => {
     </div>
   );
 
+  // Schedule Fields Rendering
   const renderScheduleFields = () => (
-    <div className="mb-3 ">
+    <div className="mb-3">
       <div className="border-b-2 border-black">
         <p className="font-bold py-3">Schedule</p>
       </div>
@@ -114,7 +167,7 @@ const ModalAddCourses = () => {
           className="space-y-2 mb-4 pt-3 border border-gray-300 p-5"
         >
           <div className="flex items-center">
-            <p className="font-bold w-36">Schedule Name : </p>
+            <p className="font-bold w-36">Week:</p>
             <input
               className="input input-bordered w-full bg-white border-black rounded-none"
               {...register(`schedule.${index}.week`)}
@@ -122,7 +175,7 @@ const ModalAddCourses = () => {
             />
           </div>
           <div className="flex items-center">
-            <p className="font-bold w-36">Schedule Name : </p>
+            <p className="font-bold w-36">Topic:</p>
             <input
               className="input input-bordered w-full bg-white border-black rounded-none"
               {...register(`schedule.${index}.topic`)}
@@ -130,11 +183,11 @@ const ModalAddCourses = () => {
             />
           </div>
           <div className="flex">
-            <p className="font-bold w-36">Schedule Details : </p>
+            <p className="font-bold w-36">Schedule Details:</p>
             <textarea
               className="input input-bordered w-full bg-white border-black rounded-none p-2 h-32"
-              {...register(`batches.${index}.batchDetails`)}
-              placeholder="Enter batch details"
+              {...register(`schedule.${index}.scheduleDetails`)}
+              placeholder="Enter schedule details"
             />
           </div>
           <div className="flex justify-end">
@@ -151,7 +204,9 @@ const ModalAddCourses = () => {
       <button
         type="button"
         className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-2"
-        onClick={() => appendSchedule({ week: "", topic: "" })}
+        onClick={() =>
+          appendSchedule({ week: "", topic: "", scheduleDetails: "" })
+        }
       >
         Add Schedule
       </button>
@@ -160,11 +215,11 @@ const ModalAddCourses = () => {
 
   const renderFieldArray = (
     fields,
-    name,
-    label,
-    appendFn,
+    registerFn,
     removeFn,
-    placeholder
+    addFn,
+    label,
+    name
   ) => (
     <div className="mb-3">
       <label className="font-bold ">{label}</label>
@@ -172,8 +227,9 @@ const ModalAddCourses = () => {
         <div key={item.id} className="flex space-x-2 mt-1">
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
-            {...register(`${name}.${index}`)}
-            placeholder={placeholder}
+            {...registerFn(`${name}.${index}`)}
+            defaultValue={item}
+            placeholder={`Enter ${label.toLowerCase().slice(0, -1)}`}
           />
           <button
             type="button"
@@ -184,19 +240,74 @@ const ModalAddCourses = () => {
           </button>
         </div>
       ))}
+      {fields.length === 0 && addFn("")}
       <button
         type="button"
         className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-2"
-        onClick={() => appendFn("")}
+        onClick={() => addFn("")}
       >
-        Add {label}
+        Add {label.slice(0, -1)}
       </button>
     </div>
   );
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // Call your API to add course data
+  const onSubmit = async (data) => {
+    const formattedData = {
+      courseTitle: data.courseTitle,
+      instructor: data.instructor,
+      duration: data.duration,
+      postedBy: user.email,
+      level: data.level,
+      description: data.description,
+      format: data.format,
+      batches: data.batches.map((batch) => ({
+        batchName: batch.batchName,
+        batchDate: batch.batchDate,
+        batchDetails: batch.batchDetails,
+      })),
+      prerequisites: data.prerequisites,
+      learningOutcomes: data.learningOutcomes,
+      schedule: data.schedule.map((scheduleItem) => ({
+        week: scheduleItem.week,
+        topic: scheduleItem.topic,
+        scheduleDetails: scheduleItem.scheduleDetails,
+      })),
+      assessments: data.assessments,
+      targetAudience: data.targetAudience,
+      certification: data.certification,
+      support: {
+        officeHours: data.officeHours,
+        discussionForum: data.discussionForum,
+      },
+      applicants: [],
+    };
+
+    console.log(formattedData);
+
+    try {
+      const response = await axiosPublic.post("/Courses", formattedData);
+
+      // Success alert
+      Swal.fire({
+        icon: "success",
+        title: "Event Added",
+        text: "The event has been added successfully!",
+      });
+
+      document.getElementById("Create_New_Courses").close();
+      refetch();
+      reset();
+      console.log(response);
+    } catch (error) {
+      console.error("Error adding event:", error);
+
+      // Error alert
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to add the event. Please try again later.",
+      });
+    }
   };
 
   return (
@@ -204,7 +315,7 @@ const ModalAddCourses = () => {
       <div className="flex justify-between items-center p-5 bg-gray-400 text-white border-b-2 border-black">
         <p>Add New Course</p>
         <button
-          onClick={() => document.getElementById("Create_New_Events").close()}
+          onClick={() => document.getElementById("Create_New_Courses").close()}
         >
           <ImCross className="hover:text-black font-bold" />
         </button>
@@ -304,61 +415,119 @@ const ModalAddCourses = () => {
           )}
         </div>
 
-        {/* Prerequisites */}
-        {renderFieldArray(
-          prerequisiteFields,
-          "prerequisites",
-          "Prerequisites",
-          appendPrerequisite,
-          removePrerequisite,
-          "Enter prerequisite"
-        )}
-
-        {/* Learning Outcomes */}
-        {renderFieldArray(
-          learningOutcomeFields,
-          "learningOutcomes",
-          "Learning Outcomes",
-          appendLearningOutcome,
-          removeLearningOutcome,
-          "Enter learning outcome"
-        )}
-
-        {/* Assessments */}
-        {renderFieldArray(
-          assessmentFields,
-          "assessments",
-          "Assessments",
-          appendAssessment,
-          removeAssessment,
-          "Enter assessment"
-        )}
-
-        {/* Target Audience */}
-        {renderFieldArray(
-          targetAudienceFields,
-          "targetAudience",
-          "Target Audience",
-          appendTargetAudience,
-          removeTargetAudience,
-          "Enter target audience"
-        )}
-
         {/* Batches */}
-        {renderBatchFields()}
+        <div>{renderBatchFields()}</div>
+
+        {/* prerequisites */}
+        <div className="mb-4">
+          {renderFieldArray(
+            prerequisiteFields,
+            register,
+            removePrerequisite,
+            appendPrerequisite,
+            "Prerequisites",
+            "prerequisites"
+          )}
+        </div>
+
+        {/* learningOutcomes */}
+        <div className="mb-4">
+          {renderFieldArray(
+            learningOutcomeFields,
+            register,
+            removeLearningOutcome,
+            appendLearningOutcome,
+            "Learning Outcomes",
+            "learningOutcomes"
+          )}
+        </div>
 
         {/* Schedule */}
-        {renderScheduleFields()}
+        <div>{renderScheduleFields()}</div>
 
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 mt-4"
-        >
-          Submit
-        </button>
+        {/* assessments */}
+        <div className="mb-4">
+          {renderFieldArray(
+            assessmentFields,
+            register,
+            removeAssessment,
+            appendAssessment,
+            "Assessments",
+            "assessments"
+          )}
+        </div>
+
+        {/* targetAudience */}
+        <div className="mb-4">
+          {renderFieldArray(
+            targetAudienceFields,
+            register,
+            removeTargetAudience,
+            appendTargetAudience,
+            "Target Audience",
+            "targetAudience"
+          )}
+        </div>
+
+        {/* Certification */}
+        <div className="mb-4">
+          <label className="block text-black font-bold">Certification:</label>
+          <input
+            type="text"
+            {...register("certification", {
+              required: "Certification is required",
+            })}
+            className={`border p-2 w-full mt-2 bg-white ${
+              errors.certification ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.certification && (
+            <span className="text-red-500">{errors.certification.message}</span>
+          )}
+        </div>
+
+        {/* Support */}
+        <div className="mb-4">
+          <label className="block text-black font-bold">Support:</label>
+          <div className="mb-2 mt-5">
+            <label>Office Hours:</label>
+            <input
+              type="text"
+              {...register("officeHours")}
+              className="border p-2 w-full mt-1 bg-white border-gray-300"
+            />
+          </div>
+          <div>
+            <label>Discussion Forum:</label>
+            <input
+              type="text"
+              {...register("discussionForum")}
+              className="border p-2 w-full mt-1 bg-white border-gray-300"
+            />
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-14"
+          >
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   );
 };
 
 export default ModalAddCourses;
+
+// PropTypes validation
+ModalAddCourses.propTypes = {
+    user: PropTypes.shape({
+      email: PropTypes.string.isRequired,
+      displayName: PropTypes.string.isRequired,
+    }).isRequired,
+    refetch: PropTypes.func.isRequired, // Add refetch to prop types
+  };

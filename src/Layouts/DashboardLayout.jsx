@@ -17,6 +17,7 @@ const DashboardLayout = () => {
     { to: "ManageSalaryInsight", label: "Manage Salary Insight" },
     { to: "ManageUpcomingEvent", label: "Manage Upcoming Event" },
     { to: "ManageCourses", label: "Manage Courses" },
+    { to: "ManageMentorship", label: "Manage Mentorship" },
   ];
 
   // Generate navigation items

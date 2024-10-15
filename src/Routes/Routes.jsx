@@ -31,6 +31,7 @@ import ManageCompany from "../DashboardPages/Admin/ManageCompany/ManageCompany";
 import ManageSalaryInsights from "../DashboardPages/Admin/ManageSalaryInsights/ManageSalaryInsights";
 import ManageUpcomingEvents from "../DashboardPages/Admin/ManageUpcomingEvents/ManageUpcomingEvents";
 import ManageCourses from "../DashboardPages/Admin/ManageCourses/ManageCourses";
+import ManageMentorship from "../DashboardPages/Admin/ManageMentorship/ManageMentorship";
 
 export const router = createBrowserRouter([
   {
@@ -173,6 +174,10 @@ export const router = createBrowserRouter([
       {
         path: "ManageCourses",
         element: <ManageCourses></ManageCourses>,
+      },
+      {
+        path: "ManageMentorship",
+        element: <ManageMentorship></ManageMentorship>,
       },
     ],
   },

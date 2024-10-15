@@ -19,6 +19,7 @@ const ManageCourses = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const { register, handleSubmit, reset } = useForm();
+
   // Fetching Courses Data
   const {
     data: CoursesData = [], // Default to empty array

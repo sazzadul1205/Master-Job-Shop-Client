@@ -107,7 +107,11 @@ const AdminOverview = () => {
       value: queryResults[6]?.data?.count,
       to: "Dashboard/ManageCourses",
     },
-    { title: "Total Mentorships", value: queryResults[7]?.data?.count },
+    {
+      title: "Total Mentorships",
+      value: queryResults[7]?.data?.count,
+      to: "Dashboard/ManageMentorship",
+    },
     { title: "Total Internships", value: queryResults[8]?.data?.count },
     { title: "Total Newsletters", value: queryResults[9]?.data?.count },
     { title: "Total Testimonials", value: queryResults[10]?.data?.count },

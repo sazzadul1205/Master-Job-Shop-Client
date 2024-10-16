@@ -18,6 +18,8 @@ const DashboardLayout = () => {
     { to: "ManageUpcomingEvent", label: "Manage Upcoming Event" },
     { to: "ManageCourses", label: "Manage Courses" },
     { to: "ManageMentorship", label: "Manage Mentorship" },
+    { to: "ManageInternship", label: "Manage Internship" },
+    { to: "ManageNewsLetter", label: "Manage NewsLetter" },
   ];
 
   // Generate navigation items

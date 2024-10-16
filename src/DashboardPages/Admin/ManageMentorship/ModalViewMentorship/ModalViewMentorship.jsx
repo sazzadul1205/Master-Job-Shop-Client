@@ -8,7 +8,7 @@ const ModalViewMentorship = ({ mentorData }) => {
     <div className="modal-box bg-white max-w-[1000px] p-0 pb-10">
       {/* Top part */}
       <div className="flex justify-between items-center p-5 bg-gray-400 text-white border-b-2 border-black">
-        <p className="font-bold text-xl">View Course Details</p>
+        <p className="font-bold text-xl">View Mentorship</p>
         <button
           onClick={() =>
             document.getElementById("Modal_Mentorship_View").close()

@@ -112,7 +112,7 @@ const SalaryInsights = () => {
           <p>Know about the salary insights of different industries.</p>
         </div>
         {/* Search Box and Filters */}
-        <div className="flex justify-between mx-auto max-w-[1200px] gap-5 py-3 ">
+        <div className="flex  mx-auto max-w-[1200px] gap-5 py-3 ">
           {/* Search bar */}
           <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
             <input
@@ -127,9 +127,9 @@ const SalaryInsights = () => {
 
           {/* Career Path Selector */}
           <select
-            className="input input-bordered bg-white text-black w-[300px]"
             value={selectedCareerPath}
             onChange={(e) => setSelectedCareerPath(e.target.value)}
+            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
           >
             <option value="">All Career Paths</option>
             {careerPaths.map((path, index) => (
@@ -141,9 +141,9 @@ const SalaryInsights = () => {
 
           {/* Industry Selector */}
           <select
-            className="input input-bordered bg-white text-black w-[300px]"
             value={selectedIndustry}
             onChange={(e) => setSelectedIndustry(e.target.value)}
+            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
           >
             <option value="">All Industries</option>
             {potentialIndustries.map((industry, index) => (
@@ -155,9 +155,9 @@ const SalaryInsights = () => {
 
           {/* Skills Selector */}
           <select
-            className="input input-bordered bg-white text-black w-[300px]"
             value={selectedSkill}
             onChange={(e) => setSelectedSkill(e.target.value)}
+            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
           >
             <option value="">All Skills</option>
             {skills.map((skill, index) => (

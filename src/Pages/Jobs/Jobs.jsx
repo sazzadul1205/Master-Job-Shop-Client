@@ -96,7 +96,7 @@ const Jobs = () => {
           <p>Find Your Preferred Job</p>
         </div>
 
-        <div className="flex justify-between items-center py-3 mx-auto max-w-[1200px]">
+        <div className="flex justify-between items-center py-3 mx-auto max-w-[1200px] text-black">
           {/* Search */}
           <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
             <input
@@ -106,11 +106,12 @@ const Jobs = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <FaSearch className="h-3 w-4 opacity-70 text-black" />
+            <FaSearch className="h-5 w-5 opacity-70 text-black" />
           </label>
+
           {/* Job title */}
           <select
-            className="border border-gray-300 p-2 w-[200px] bg-white text-black"
+            className="border border-gray-300 p-2 w-[230px] py-3 bg-white text-black"
             value={selectedTitle}
             onChange={(e) => setSelectedTitle(e.target.value)}
           >
@@ -123,7 +124,7 @@ const Jobs = () => {
           </select>
           {/* Job Type */}
           <select
-            className="border border-gray-300 p-2 w-[200px] bg-white text-black"
+            className="border border-gray-300 p-2 w-[230px] py-3 bg-white text-black"
             value={selectedJobType}
             onChange={(e) => setSelectedJobType(e.target.value)}
           >
@@ -136,7 +137,7 @@ const Jobs = () => {
           </select>
           {/* Location Selector */}
           <select
-            className="border border-gray-300 p-2 w-[200px] bg-white text-black"
+            className="border border-gray-300 p-2 w-[230px] py-3 bg-white text-black"
             value={selectedLocation}
             onChange={(e) => setSelectedLocation(e.target.value)}
           >

@@ -68,7 +68,7 @@ const UpcomingEvents = () => {
           </div>
 
           {/* Search bar */}
-          <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
+          <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white text-black">
             <input
               type="text"
               className="grow py-2 px-3 focus:outline-none"

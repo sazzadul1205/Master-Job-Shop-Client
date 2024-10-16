@@ -11,7 +11,7 @@ const CompanyProfiles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
-  const [selectedService, setSelectedService] = useState(""); // New state for services
+  const [selectedService, setSelectedService] = useState(""); // State for services
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 9;
@@ -20,20 +20,16 @@ const CompanyProfiles = () => {
   // Fetching CompanyProfilesData
   const {
     data: CompanyProfilesData,
-    isLoading: CompanyProfilesDataIsLoading,
-    error: CompanyProfilesDataError,
+    isLoading,
+    error,
   } = useQuery({
     queryKey: ["CompanyProfilesData"],
-    queryFn: () => axiosPublic.get(`/Company-Profiles`).then((res) => res.data),
+    queryFn: () => axiosPublic.get("/Company-Profiles").then((res) => res.data),
   });
 
-  // Loading state
-  if (CompanyProfilesDataIsLoading) {
-    return <Loader />;
-  }
-
-  // Error state
-  if (CompanyProfilesDataError) {
+  // Loading and Error states
+  if (isLoading) return <Loader />;
+  if (error) {
     return (
       <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
         <p className="text-center text-red-500 font-bold text-3xl mb-8">
@@ -49,14 +45,13 @@ const CompanyProfiles = () => {
     );
   }
 
-  // Extract unique industries, locations, and services from CompanyProfilesData
+  // Extract unique industries, locations, and services
   const uniqueIndustries = [
     ...new Set(CompanyProfilesData.map((company) => company.industry)),
   ];
   const uniqueLocations = [
     ...new Set(CompanyProfilesData.map((company) => company.location)),
   ];
-
   const uniqueServices = [
     ...new Set(
       CompanyProfilesData.flatMap(
@@ -65,7 +60,7 @@ const CompanyProfiles = () => {
     ),
   ];
 
-  // Search and filter functionality
+  // Filtering functionality
   const filteredCompanies = CompanyProfilesData.filter((company) => {
     const matchesSearch = company.companyName
       .toLowerCase()
@@ -84,11 +79,8 @@ const CompanyProfiles = () => {
     );
   });
 
-  // Infinite scroll logic
-  const loadMoreJobs = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
-  };
-
+  // Infinite Scroll logic
+  const loadMoreCompanies = () => setCurrentPage((prevPage) => prevPage + 1);
   const hasMore = currentPage * jobsPerPage < filteredCompanies.length;
   const currentCompanies = filteredCompanies.slice(
     0,
@@ -109,16 +101,16 @@ const CompanyProfiles = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className=" pt-20">
+      <div className="pt-20">
         {/* Title */}
         <div className="text-black pt-4 mx-auto max-w-[1200px]">
-          <p className="text-2xl font-bold ">Our Companies</p>
-          <p>Find The company you want to work for and its info</p>
+          <p className="text-2xl font-bold">Our Companies</p>
+          <p>Find the company you want to work for and its info</p>
         </div>
 
         {/* Search Box and Filters */}
-        <div className="flex justify-between gap-5 mx-auto max-w-[1200px] py-3">
-          {/* Search bar */}
+        <div className="flex space-x-1 gap-5 mx-auto max-w-[1200px] py-3 text-black">
+          {/* Search Bar */}
           <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
             <input
               type="text"
@@ -127,14 +119,14 @@ const CompanyProfiles = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <FaSearch className="h-4 w-4 opacity-70 text-black" />
+            <FaSearch className="h-5 w-5 opacity-70 text-black" />
           </label>
 
           {/* Industry Filter */}
           <select
             value={selectedIndustry}
             onChange={(e) => setSelectedIndustry(e.target.value)}
-            className="select select-bordered bg-white px-4 py-2 w-64 text-black"
+            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
           >
             <option value="">All Industries</option>
             {uniqueIndustries.map((industry, index) => (
@@ -148,7 +140,7 @@ const CompanyProfiles = () => {
           <select
             value={selectedLocation}
             onChange={(e) => setSelectedLocation(e.target.value)}
-            className="select select-bordered bg-white px-4 py-2 w-64 text-black"
+            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
           >
             <option value="">All Locations</option>
             {uniqueLocations.map((location, index) => (
@@ -162,7 +154,7 @@ const CompanyProfiles = () => {
           <select
             value={selectedService}
             onChange={(e) => setSelectedService(e.target.value)}
-            className="select select-bordered bg-white px-4 py-2 w-64 text-black"
+            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
           >
             <option value="">All Services</option>
             {uniqueServices.map((service, index) => (
@@ -176,7 +168,7 @@ const CompanyProfiles = () => {
         {/* Company Cards Section with Infinite Scroll */}
         <InfiniteScroll
           dataLength={currentCompanies.length}
-          next={loadMoreJobs}
+          next={loadMoreCompanies}
           hasMore={hasMore}
           loader={
             <h4 className="text-2xl text-center font-bold py-5 text-blue-500">
@@ -199,7 +191,6 @@ const CompanyProfiles = () => {
                 logo,
                 description,
               } = company;
-
               return (
                 <div
                   key={index}

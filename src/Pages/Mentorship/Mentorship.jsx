@@ -116,7 +116,7 @@ const Mentorship = () => {
         </div>
 
         {/* Top Section */}
-        <div className="flex justify-between items-center gap-5 pt-5 mx-auto max-w-[1200px]">
+        <div className="flex space-x-2 items-center pt-5 mx-auto max-w-[1200px] text-black">
           {/* Search */}
           <div>
             <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
@@ -134,7 +134,7 @@ const Mentorship = () => {
           {/* Session Format Dropdown */}
           <select
             name="sessionFormat"
-            className="border border-gray-300 rounded w-[300px] p-2 bg-white text-black"
+            className="border border-gray-300 rounded w-[400px] p-2 py-3 bg-white"
             onChange={handleFilterChange}
             value={selectedSessionFormat}
           >
@@ -149,7 +149,7 @@ const Mentorship = () => {
           {/* Expertise Dropdown */}
           <select
             name="expertise"
-            className="border border-gray-300 rounded w-[300px] p-2 bg-white text-black"
+            className="border border-gray-300 rounded w-[400px] p-2 py-3 bg-white"
             onChange={handleFilterChange}
             value={selectedExpertise}
           >
@@ -164,7 +164,7 @@ const Mentorship = () => {
           {/* Duration Dropdown */}
           <select
             name="duration"
-            className="border border-gray-300 rounded w-[300px] p-2 bg-white text-black"
+            className="border border-gray-300 rounded w-[400px] p-2 py-3 bg-white"
             onChange={handleFilterChange}
             value={selectedDuration}
           >

@@ -123,9 +123,9 @@ const Gigs = () => {
         </div>
 
         {/* Filter and Search Section */}
-        <div className="flex space-x-4 py-3 mx-auto max-w-[1250px]">
+        <div className="flex space-x-1 py-3 mx-auto max-w-[1250px] text-black ">
           <div>
-            <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
+            <label className="input input-bordered flex items-center gap-2 w-[450px] bg-white">
               <input
                 type="text"
                 className="grow py-2 px-3 focus:outline-none"
@@ -133,7 +133,7 @@ const Gigs = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <FaSearch className="h-4 w-4 opacity-70 text-black" />
+              <FaSearch className="h-5 w-5 opacity-70 text-black" />
             </label>
           </div>
 
@@ -147,7 +147,7 @@ const Gigs = () => {
             <select
               key={index}
               name={name}
-              className="border border-gray-300 rounded p-2 bg-white text-black"
+              className="border border-gray-300 rounded p-2 bg-white text-black w-[220px]"
               onChange={handleFilterChange}
             >
               <option value="">

@@ -23,8 +23,6 @@ const PostedJobDetail = () => {
   } = useQuery({
     queryKey: ["PostedJobsDetailsData", id],
     queryFn: () => axiosPublic.get(`/Posted-Job/${id}`).then((res) => res.data),
-    // Setting staleTime to 5 minutes to reduce unnecessary calls
-    staleTime: 300000, // 5 minutes
   });
 
   useEffect(() => {
@@ -36,6 +34,8 @@ const PostedJobDetail = () => {
     }
   }, [user, jobDetails]);
 
+  console.log(jobDetails);
+  
   if (isLoading) return <Loader />;
 
   if (error)
@@ -144,7 +144,7 @@ const PostedJobDetail = () => {
                 ))}
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-2">Company Rating:</h4>
               <Rating
@@ -155,7 +155,6 @@ const PostedJobDetail = () => {
               />
             </div>
           </div>
-
         </div>
         <div className="text-xl bg-sky-100 py-3 px-5 flex justify-between items-center">
           <p>People Applied: {jobDetails?.PeopleApplied?.length || 0}</p>{" "}
@@ -189,6 +188,8 @@ const PostedJobDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Add Modal */}
       <dialog id="Apply_To_Job" className="modal">
         <JobModalCard
           jobDetails={jobDetails}

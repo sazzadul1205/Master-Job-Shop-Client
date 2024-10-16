@@ -105,7 +105,7 @@ const Courses = () => {
         </div>
 
         {/* Top Section */}
-        <div className="flex justify-between items-center mx-auto max-w-[1200px] gap-5 pt-5">
+        <div className="flex  items-center mx-auto max-w-[1200px] gap-5 pt-5 text-black">
           {/* Search */}
           <div>
             <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
@@ -122,7 +122,7 @@ const Courses = () => {
 
           {/* Dropdown for Level Title Filter */}
           <select
-            className="border border-gray-300 p-3 w-[200px] bg-white text-black"
+            className="border border-gray-300 p-3 w-[300px] bg-white text-black"
             value={selectedLevel}
             onChange={(e) => setSelectedLevel(e.target.value)}
           >
@@ -136,7 +136,7 @@ const Courses = () => {
 
           {/* Dropdown for Duration Filter */}
           <select
-            className="border border-gray-300 p-3 w-[200px] bg-white text-black"
+            className="border border-gray-300 p-3 w-[300px] bg-white text-black"
             value={selectedDuration}
             onChange={(e) => setSelectedDuration(e.target.value)}
           >
@@ -150,7 +150,7 @@ const Courses = () => {
 
           {/* Dropdown for Certification Filter */}
           <select
-            className="border border-gray-300 p-3 w-[200px] bg-white text-black"
+            className="border border-gray-300 p-3 w-[300px] bg-white text-black"
             value={selectedCertification}
             onChange={(e) => setSelectedCertification(e.target.value)}
           >

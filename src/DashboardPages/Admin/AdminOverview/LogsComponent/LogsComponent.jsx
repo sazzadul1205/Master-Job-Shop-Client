@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../../../Pages/Shared/Loader/Loader";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const formatTimeAgo = (dateString) => {
   const date = new Date(dateString);
@@ -28,15 +28,32 @@ const formatTimeAgo = (dateString) => {
 const LogEntry = ({ log, type, logType }) => (
   <div className="p-4 mb-3 border border-gray-200 rounded-lg bg-gray-50 hover:shadow-xl">
     <p className="font-semibold">
-      <span className="text-blue-500">{log.name}</span> applied for{" "}
-      <span className="text-green-500">{log[type]}</span> at{" "}
-      <span className="text-purple-500">
-        {log.companyName || log.clientName || log.organizer || log.mentorName}
-      </span>
+      {logType === "DeleteLog" ? (
+        <>
+          <span className="text-red-500">Deleted By: {log.DeletedBy}</span>{" "}
+          deleted <span className="text-purple-500">{log.deletedContent}</span>{" "}
+          posted by <span className="text-blue-500">{log.PostedBy}</span>
+          <p>Reason: {log.reason}</p>
+        </>
+      ) : (
+        <>
+          <span className="text-blue-500">{log.name}</span> applied for{" "}
+          <span className="text-green-500">{log[type]}</span> at{" "}
+          <span className="text-purple-500">
+            {log.companyName ||
+              log.clientName ||
+              log.organizer ||
+              log.mentorName}
+          </span>
+        </>
+      )}
     </p>
-    {type === "mentorName" && <p>Duration: {log.duration}</p>}
+    {type === "mentorName" && logType !== "DeleteLog" && (
+      <p>Duration: {log.duration}</p>
+    )}
     <p className="text-gray-500 text-sm">
-      Applied: {formatTimeAgo(log.appliedDate || log.reviewedDate)}
+      Applied:{" "}
+      {formatTimeAgo(log.appliedDate || log.reviewedDate || log.DeletedDate)}
     </p>
     <p className="text-gray-500 text-xs italic">
       Log Type: <span className="font-semibold">{logType}</span>
@@ -47,7 +64,7 @@ const LogEntry = ({ log, type, logType }) => (
 LogEntry.propTypes = {
   log: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
     companyName: PropTypes.string,
     clientName: PropTypes.string,
     organizer: PropTypes.string,
@@ -55,6 +72,11 @@ LogEntry.propTypes = {
     duration: PropTypes.string,
     appliedDate: PropTypes.string,
     reviewedDate: PropTypes.string,
+    DeletedBy: PropTypes.string,
+    deletedContent: PropTypes.string,
+    PostedBy: PropTypes.string,
+    reason: PropTypes.string,
+    DeletedDate: PropTypes.string,
   }).isRequired,
   type: PropTypes.string.isRequired,
   logType: PropTypes.string.isRequired,
@@ -84,9 +106,10 @@ const LogsComponent = () => {
     },
     { key: "CourseLog", url: "/Apply-To-Course-Log", type: "CourseName" },
     { key: "InternshipLog", url: "/Apply-To-Internship-Log", type: "position" },
+    { key: "DeleteLog", url: "/Delete-Log", type: "Delete" },
   ];
 
-  const logData = logQueries.map(({ key, url, type }) =>
+  const logData = logQueries.map(({ key, url }) =>
     useQuery({
       queryKey: [key],
       queryFn: () => fetchLogData(url),
@@ -116,11 +139,11 @@ const LogsComponent = () => {
     return acc;
   }, []);
 
-  // Sort combined logs by appliedDate or reviewedDate
+  // Sort combined logs by appliedDate, reviewedDate, or DeletedDate
   combinedLogs.sort(
     (a, b) =>
-      new Date(b.appliedDate || b.reviewedDate) -
-      new Date(a.appliedDate || a.reviewedDate)
+      new Date(b.appliedDate || b.reviewedDate || b.DeletedDate) -
+      new Date(a.appliedDate || a.reviewedDate || a.DeletedDate)
   );
 
   // Get the top 10 most recent logs

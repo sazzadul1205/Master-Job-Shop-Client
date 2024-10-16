@@ -103,14 +103,15 @@ const Internship = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className="mx-auto max-w-[1200px] pt-20">
+      <div className=" pt-20">
         {/* Title */}
-        <div className="text-black pb-5">
+        <div className="text-black pb-5 mx-auto max-w-[1200px]">
           <h1 className="text-2xl font-bold m-0 pt-5">Our Internship</h1>
           <p>Join our Internship to gain more experience</p>
         </div>
+
         {/* Top Section */}
-        <div className="flex justify-between items-center gap-5 pt-0">
+        <div className="flex items-center space-x-2 mx-auto max-w-[1200px] text-black">
           {/* Search */}
           <div>
             <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
@@ -128,7 +129,7 @@ const Internship = () => {
           {/* Position Dropdown */}
           <select
             name="position"
-            className="border border-gray-300 rounded w-[300px] p-2 bg-white text-black"
+            className="border border-gray-300 rounded w-[300px] p-2 py-3 bg-white"
             onChange={(e) => setSelectedPosition(e.target.value)}
             value={selectedPosition}
           >
@@ -143,7 +144,7 @@ const Internship = () => {
           {/* Location Dropdown */}
           <select
             name="location"
-            className="border border-gray-300 rounded w-[300px] p-2 bg-white text-black"
+            className="border border-gray-300 rounded w-[300px] p-2 py-3 bg-white"
             onChange={(e) => setSelectedLocation(e.target.value)}
             value={selectedLocation}
           >
@@ -158,7 +159,7 @@ const Internship = () => {
           {/* Skills Dropdown */}
           <select
             name="skillsRequired"
-            className="border border-gray-300 rounded w-[300px] p-2 bg-white text-black"
+            className="border border-gray-300 rounded w-[300px] p-2 py-3 bg-white"
             onChange={(e) => setSelectedSkill(e.target.value)}
             value={selectedSkill}
           >
@@ -188,7 +189,7 @@ const Internship = () => {
           }
         >
           {/* Internship Cards Section */}
-          <div className="grid grid-cols-3 gap-4 py-10">
+          <div className="grid grid-cols-3 gap-4 py-10 mx-auto max-w-[1200px]">
             {filteredInternships
               .slice(0, currentPage * itemsPerPage)
               .map((internship, index) => (

@@ -1,67 +1,74 @@
 import { useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../../../Provider/AuthProvider";
-import { useContext } from "react";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 
-const ModalAddGig = ({ refetch }) => {
-  const axiosPublic = useAxiosPublic();
+const ModalEditGig = ({ editGigData, refetch }) => {
   const { user } = useContext(AuthContext);
+  const axiosPublic = useAxiosPublic();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
+    setValue,
   } = useForm();
+
+  // Prepopulate form with existing gig data for editing
+  useEffect(() => {
+    if (editGigData) {
+      setValue("gigTitle", editGigData.gigTitle);
+      setValue("clientName", editGigData.clientName);
+      setValue("clientType", editGigData.clientType || "N/A");
+      setValue("gigType", editGigData.gigType);
+      setValue("location", editGigData.location);
+      setValue("paymentRate", editGigData.paymentRate);
+      setValue("duration", editGigData.duration);
+      setValue("responsibilities", editGigData.responsibilities);
+      setValue("requiredSkills", editGigData.requiredSkills);
+      setValue("workingHours", editGigData.workingHours || "N/A");
+      setValue("projectExpectations", editGigData.projectExpectations || "N/A");
+      setValue("communication", editGigData.communication || "N/A");
+      setValue("additionalBenefits", editGigData.additionalBenefits || "N/A");
+    }
+  }, [editGigData, setValue]);
 
   const onSubmit = async (data) => {
     const formattedData = {
-      gigTitle: data.gigTitle,
-      clientName: data.clientName,
-      clientType: data.clientType || "N/A",
-      gigType: data.gigType,
-      location: data.location,
-      paymentRate: data.paymentRate,
-      duration: data.duration,
-      rating: "0",
-      responsibilities: data.responsibilities,
-      requiredSkills: data.requiredSkills,
-      workingHours: data.workingHours || "N/A",
-      projectExpectations: data.projectExpectations || "N/A",
-      communication: data.communication || "N/A",
-      additionalBenefits: data.additionalBenefits || "N/A",
+      ...data,
       postedDate: new Date().toISOString(),
       PostedBy: user.email,
-      peopleBided: [],
-      ApproveState: "InProgress",
     };
 
     try {
-      const response = await axiosPublic.post("/Posted-Gig", formattedData);
+      const response = await axiosPublic.put(
+        `/Posted-Gig/${editGigData._id}`,
+        formattedData
+      );
+      console.log(response);
 
       // Show success alert
       Swal.fire({
         title: "Success!",
-        text: "Gig posted successfully!",
+        text: "Gig updated successfully!",
         icon: "success",
         confirmButtonText: "Okay",
       });
 
-      // Optionally close the modal here if needed
-      document.getElementById("Create_New_Gig").close();
+      // Close the modal and refetch data
+      document.getElementById("Edit_Gig").close();
       reset();
       refetch();
-
-      console.log("Job posted successfully:", response.data);
     } catch (error) {
-      console.error("Error posting gig:", error);
+      console.error("Error updating gig:", error);
 
       // Show error alert
       Swal.fire({
         title: "Error!",
-        text: "There was an error posting the gig. Please try again.",
+        text: "There was an error updating the gig. Please try again.",
         icon: "error",
         confirmButtonText: "Okay",
       });
@@ -71,11 +78,9 @@ const ModalAddGig = ({ refetch }) => {
   return (
     <div className="modal-box bg-white max-w-[800px] p-0">
       <div className="flex justify-between items-center p-5 bg-gray-400 text-white border-b-2 border-black">
-        <p>Add New Gig</p>
-        <button
-          onClick={() => document.getElementById("Create_New_Gig").close()}
-        >
-          <ImCross className="hover:text-black font-bold" />
+        <p>Edit Gig</p>
+        <button onClick={() => document.getElementById("Edit_Gig").close()}>
+          <ImCross className="hover:text-gray-700" />
         </button>
       </div>
 
@@ -95,6 +100,7 @@ const ModalAddGig = ({ refetch }) => {
           )}
         </div>
 
+        {/* Client Name */}
         <div className="mb-4">
           <label className="block text-black font-bold">Client Name:</label>
           <input
@@ -109,6 +115,7 @@ const ModalAddGig = ({ refetch }) => {
           )}
         </div>
 
+        {/* Client Type */}
         <div className="mb-4">
           <label className="block text-black font-bold">Client Type:</label>
           <input
@@ -118,6 +125,7 @@ const ModalAddGig = ({ refetch }) => {
           />
         </div>
 
+        {/* Gig Type */}
         <div className="mb-4">
           <label className="block text-black font-bold">Gig Type:</label>
           <input
@@ -132,6 +140,7 @@ const ModalAddGig = ({ refetch }) => {
           )}
         </div>
 
+        {/* Location */}
         <div className="mb-4">
           <label className="block text-black font-bold">Location:</label>
           <input
@@ -146,6 +155,7 @@ const ModalAddGig = ({ refetch }) => {
           )}
         </div>
 
+        {/* Payment Rate */}
         <div className="mb-4">
           <label className="block text-black font-bold">Payment Rate:</label>
           <input
@@ -162,6 +172,7 @@ const ModalAddGig = ({ refetch }) => {
           )}
         </div>
 
+        {/* Duration */}
         <div className="mb-4">
           <label className="block text-black font-bold">Duration:</label>
           <input
@@ -176,6 +187,7 @@ const ModalAddGig = ({ refetch }) => {
           )}
         </div>
 
+        {/* Responsibilities */}
         <div className="mb-4">
           <label className="block text-black font-bold">
             Responsibilities:
@@ -195,6 +207,7 @@ const ModalAddGig = ({ refetch }) => {
           )}
         </div>
 
+        {/* Required Skills */}
         <div className="mb-4">
           <label className="block text-black font-bold">Required Skills:</label>
           <textarea
@@ -212,6 +225,7 @@ const ModalAddGig = ({ refetch }) => {
           )}
         </div>
 
+        {/* Working Hours */}
         <div className="mb-4">
           <label className="block text-black font-bold">Working Hours:</label>
           <input
@@ -221,6 +235,7 @@ const ModalAddGig = ({ refetch }) => {
           />
         </div>
 
+        {/* Project Expectations */}
         <div className="mb-4">
           <label className="block text-black font-bold">
             Project Expectations:
@@ -231,6 +246,7 @@ const ModalAddGig = ({ refetch }) => {
           />
         </div>
 
+        {/* Communication */}
         <div className="mb-4">
           <label className="block text-black font-bold">Communication:</label>
           <textarea
@@ -239,6 +255,7 @@ const ModalAddGig = ({ refetch }) => {
           />
         </div>
 
+        {/* Additional Benefits */}
         <div className="mb-4">
           <label className="block text-black font-bold">
             Additional Benefits:
@@ -248,13 +265,13 @@ const ModalAddGig = ({ refetch }) => {
             className="border p-2 w-full mt-2 bg-white"
           />
         </div>
-        
+
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-14"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            Post Gig
+            Update Gig
           </button>
         </div>
       </form>
@@ -262,13 +279,9 @@ const ModalAddGig = ({ refetch }) => {
   );
 };
 
-export default ModalAddGig;
-
-// PropTypes validation
-ModalAddGig.propTypes = {
-  user: PropTypes.shape({
-    email: PropTypes.string.isRequired,
-    displayName: PropTypes.string.isRequired,
-  }).isRequired,
-  refetch: PropTypes.func.isRequired, // Add refetch to prop types
+ModalEditGig.propTypes = {
+  editGigData: PropTypes.object.isRequired,
+  refetch: PropTypes.func.isRequired,
 };
+
+export default ModalEditGig;

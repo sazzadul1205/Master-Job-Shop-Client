@@ -35,6 +35,7 @@ import ManageMentorship from "../DashboardPages/Admin/ManageMentorship/ManageMen
 import ManageInternship from "../DashboardPages/Admin/ManageInternship/ManageInternship";
 import ManageNewsletter from "../DashboardPages/Admin/ManageNewsletter/ManageNewsletter";
 import ManageTestimonials from "../DashboardPages/Admin/ManageTestimonials/ManageTestimonials";
+import ManageBlogs from "../DashboardPages/Admin/ManageBlogs/ManageBlogs";
 
 export const router = createBrowserRouter([
   {
@@ -192,8 +193,12 @@ export const router = createBrowserRouter([
       },
       {
         path: "ManageTestimonials",
-        element: <ManageTestimonials></ManageTestimonials>
-      }
+        element: <ManageTestimonials></ManageTestimonials>,
+      },
+      {
+        path: "ManageBlogs",
+        element: <ManageBlogs></ManageBlogs>,
+      },
     ],
   },
 ]);

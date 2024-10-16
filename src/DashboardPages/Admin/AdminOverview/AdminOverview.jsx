@@ -127,7 +127,11 @@ const AdminOverview = () => {
       value: queryResults[10]?.data?.count,
       to: "Dashboard/ManageTestimonials",
     },
-    { title: "Total Blogs", value: queryResults[11]?.data?.count },
+    {
+      title: "Total Blogs",
+      value: queryResults[11]?.data?.count,
+      to: "Dashboard/ManageBlogs",
+    },
   ];
 
   // Function to refresh the data by invalidating queries instead of reloading the page

@@ -1,32 +1,33 @@
 import { FaSearch } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../../Pages/Shared/Loader/Loader";
+import ModalViewBlogs from "./ModalViewBlogs/ModalViewBlogs";
 import { CiViewBoard } from "react-icons/ci";
-import { MdDelete } from "react-icons/md";
 import { useContext, useState } from "react";
-import ModalViewInternship from "./ModalViewInternship/ModalViewInternship";
-import Swal from "sweetalert2"; // Assuming Swal is imported for alerts
+import ModalAddBlogs from "./ModalAddBlogs/ModalAddBlogs";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 import { AuthContext } from "../../../Provider/AuthProvider";
 
-const ManageInternship = () => {
+const ManageBlogs = () => {
   const axiosPublic = useAxiosPublic();
   const { user } = useContext(AuthContext);
-  const [viewInternshipData, setViewInternshipData] = useState(null);
-  const [selectedInternshipId, setSelectedInternshipId] = useState(null);
+  const [viewBlogData, setViewBlogData] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedBlogId, setSelectedBlogId] = useState(null);
   const { register, handleSubmit, reset } = useForm();
 
-  // Fetch Internship data
+  // Fetch Blogs data
   const {
-    data: InternshipData = [],
+    data: BlogsData = [],
     isLoading,
     error,
     refetch,
   } = useQuery({
-    queryKey: ["InternshipData"],
-    queryFn: () => axiosPublic.get(`/Internship`).then((res) => res.data),
+    queryKey: ["BlogsData"],
+    queryFn: () => axiosPublic.get(`/Blogs`).then((res) => res.data),
   });
 
   // Handle loading state
@@ -49,65 +50,64 @@ const ManageInternship = () => {
     );
   }
 
-  // View internship details
-  const handleViewInternship = (intern) => {
-    setViewInternshipData(intern);
-    document.getElementById("Modal_Internship_View").showModal();
+  // View blog details
+  const handleViewBlog = (blog) => {
+    setViewBlogData(blog);
+    document.getElementById("Modal_Blog_View").showModal();
   };
 
   // Show delete confirmation modal
-  const handleSingleDelete = (internshipID) => {
-    setSelectedInternshipId(internshipID);
+  const handleSingleDelete = (blog) => {
+    setSelectedBlogId(blog._id);
+    setViewBlogData(blog); // Set the blog data you're deleting
     setShowDeleteModal(true);
   };
 
-  // Current date for deletion log
-  const currentDate = new Date();
-  const formattedDateTime = currentDate.toLocaleString("en-US", {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  });
-
   // Handle form submission for deletion
   const onSubmit = async (data) => {
+    const currentDate = new Date();
+    const formattedDateTime = currentDate.toLocaleString("en-US", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+
     try {
-      const internship = InternshipData.find(
-        (intern) => intern._id === selectedInternshipId
-      );
       const deleteLogData = {
-        DeletedBy: user.email, // Replace with dynamic user email
-        PostedBy: internship?.postedBy,
+        DeletedBy: user.email,
+        PostedBy: viewBlogData?.postedBy, // Ensure this data is from the blog being deleted
         DeletedDate: formattedDateTime,
-        Type: "Internship",
-        deletedContent: internship?.companyName,
+        Type: "Blog",
+        deletedContent: viewBlogData?.title,
         reason: data.deleteReason,
       };
 
-      // Log deletion and delete the internship
+      console.log(deleteLogData);
+
+      // Post delete log data and delete the blog
       await axiosPublic.post(`/Delete-Log`, [deleteLogData]);
-      await axiosPublic.delete(`/Internship/${selectedInternshipId}`);
+      await axiosPublic.delete(`/Blogs/${selectedBlogId}`);
 
       Swal.fire({
         icon: "success",
         title: "Success!",
-        text: "Internship deleted successfully.",
+        text: "Blog deleted successfully.",
         confirmButtonText: "Okay",
       });
 
       refetch();
       reset();
       setShowDeleteModal(false);
-      setSelectedInternshipId(null);
+      setSelectedBlogId(null);
     } catch (error) {
-      console.error("Error deleting internship:", error);
+      console.error("Error deleting blog:", error);
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Failed to delete internship. Please try again.",
+        text: "Failed to delete blog. Please try again.",
         confirmButtonText: "Okay",
       });
     }
@@ -115,12 +115,10 @@ const ManageInternship = () => {
 
   return (
     <div className="bg-white min-h-screen border border-black text-black">
-      {/* Title */}
       <p className="text-2xl font-bold text-white pl-10 py-4 bg-blue-400">
-        Manage Internship
+        Manage Blogs
       </p>
 
-      {/* Search Bar */}
       <div className="py-5 flex justify-between items-center px-5">
         <label className="input input-bordered flex items-center gap-2 bg-white border-gray-400 w-[500px]">
           <input type="text" className="grow" placeholder="Search" />
@@ -128,39 +126,53 @@ const ManageInternship = () => {
         </label>
       </div>
 
-      {/* Internship Table */}
+      <div className="flex justify-between mx-5 my-2">
+        <button
+          className="bg-green-500 hover:bg-green-300 px-10 py-2 text-white font-bold"
+          onClick={() => document.getElementById("Create_New_Blog").showModal()}
+        >
+          + Add New Blog
+        </button>
+      </div>
+
       <div className="overflow-x-auto p-2">
         <table className="table border border-black">
           <thead className="bg-gray-500 text-white">
             <tr>
-              <th>No</th>
-              <th>Company Name</th>
-              <th>Position</th>
-              <th>Duration</th>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Author</th>
               <th>Posted By</th>
-              <th>Actions</th>
+              <th>Date</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {InternshipData.length > 0 ? (
-              InternshipData.map((intern, index) => (
-                <tr key={intern._id}>
-                  <td>{index + 1}</td>
-                  <td>{intern?.companyName}</td>
-                  <td>{intern?.position}</td>
-                  <td>{intern?.duration}</td>
-                  <td>{intern?.postedBy}</td>
+            {BlogsData.length > 0 ? (
+              BlogsData.map((blog) => (
+                <tr key={blog._id}>
+                  <td>
+                    <img
+                      src={blog.image}
+                      alt={blog.title}
+                      className="w-14 h-14"
+                    />
+                  </td>
+                  <td>{blog.title}</td>
+                  <td>{blog.author}</td>
+                  <td>{blog.postedBy}</td>
+                  <td>{blog.date}</td>
                   <td>
                     <div className="flex gap-2">
                       <button
                         className="bg-yellow-500 hover:bg-yellow-400 p-2 text-white text-2xl"
-                        onClick={() => handleViewInternship(intern)}
+                        onClick={() => handleViewBlog(blog)}
                       >
                         <CiViewBoard />
                       </button>
                       <button
                         className="bg-red-500 hover:bg-red-400 p-2 text-white text-2xl"
-                        onClick={() => handleSingleDelete(intern._id)}
+                        onClick={() => handleSingleDelete(blog)}
                       >
                         <MdDelete />
                       </button>
@@ -171,7 +183,7 @@ const ManageInternship = () => {
             ) : (
               <tr>
                 <td colSpan="6" className="text-center">
-                  No internships found.
+                  No blogs found.
                 </td>
               </tr>
             )}
@@ -179,20 +191,21 @@ const ManageInternship = () => {
         </table>
       </div>
 
-      {/* View Internship Modal */}
-      <dialog id="Modal_Internship_View" className="modal">
-        {viewInternshipData && (
-          <ModalViewInternship internshipData={viewInternshipData} />
-        )}
+      {/* Modals */}
+      <dialog id="Modal_Blog_View" className="modal">
+        {viewBlogData && <ModalViewBlogs blogData={viewBlogData} />}
       </dialog>
 
-      {/* Delete Confirmation Modal */}
+      <dialog id="Create_New_Blog" className="modal">
+        <ModalAddBlogs refetch={refetch} />
+      </dialog>
+
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-8 rounded-lg w-[500px] shadow-lg">
-            <h2 className="text-xl font-bold mb-4">Delete Internship</h2>
+            <h2 className="text-xl font-bold mb-4">Delete Blog</h2>
             <p className="font-bold mb-4">
-              Are you sure you want to delete this internship?
+              Are you sure you want to delete this blog?
             </p>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
@@ -225,8 +238,9 @@ const ManageInternship = () => {
           </div>
         </div>
       )}
+      
     </div>
   );
 };
 
-export default ManageInternship;
+export default ManageBlogs;

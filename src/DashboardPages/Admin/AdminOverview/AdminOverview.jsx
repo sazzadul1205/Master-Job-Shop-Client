@@ -122,7 +122,11 @@ const AdminOverview = () => {
       value: queryResults[9]?.data?.count,
       to: "Dashboard/ManageNewsLetter",
     },
-    { title: "Total Testimonials", value: queryResults[10]?.data?.count },
+    {
+      title: "Total Testimonials",
+      value: queryResults[10]?.data?.count,
+      to: "Dashboard/ManageTestimonials",
+    },
     { title: "Total Blogs", value: queryResults[11]?.data?.count },
   ];
 

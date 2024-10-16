@@ -1,43 +1,73 @@
 import { useQuery } from "@tanstack/react-query";
-import { useContext, useState } from "react";
-import { useForm } from "react-hook-form"; // Import react-hook-form
+import { useContext, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loader from "../../../Pages/Shared/Loader/Loader";
 import { CiViewBoard } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import ModalViewJobs from "./ModalViewJobs/ModalViewJobs";
 import { AuthContext } from "../../../Provider/AuthProvider";
-import { FaSearch } from "react-icons/fa";
-import Swal from "sweetalert2"; // Import SweetAlert
+import { FaEdit, FaSearch } from "react-icons/fa";
+import Swal from "sweetalert2";
 import ModalAddJob from "./ModalAddJob/ModalAddJob";
+import ModalEditJob from "./ModalEditJob/ModalEditJob";
 
 const ManageJobs = () => {
   const axiosPublic = useAxiosPublic();
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const [selectedJobs, setSelectedJobs] = useState([]);
-  const [viewJobData, setViewJobData] = useState(null); // state to hold job details for modal
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // control delete modal visibility
-
+  const [viewJobData, setViewJobData] = useState(null);
+  const [editJobData, setEditJobData] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { register, handleSubmit, reset } = useForm();
+  const [loadingDelay, setLoadingDelay] = useState(true); // New state for loading delay
 
-  // Fetching Posted Job Data
+  // Fetch user data to check the role
   const {
-    data: PostedJobData = [], // default to empty array
+    data: usersData = [],
+    isLoading: usersDataIsLoading,
+    error: usersDataError,
+  } = useQuery({
+    queryKey: ["MyUsersData"],
+    queryFn: () =>
+      axiosPublic.get(`/Users?email=${user?.email}`).then((res) => res.data),
+    enabled: !!user?.email, // Only run this query if user.email is defined
+  });
+
+  // Fetch job data based on user role
+  const jobQueryKey =
+    usersData?.role === "Admin" || usersData?.role === "Manager"
+      ? "/Posted-Job"
+      : `/Posted-Job?email=${user?.email}`;
+
+  const {
+    data: PostedJobData = [],
     isLoading: PostedJobDataIsLoading,
     error: PostedJobDataError,
     refetch,
   } = useQuery({
-    queryKey: ["PostedJobData"],
-    queryFn: () => axiosPublic.get(`/Posted-Job`).then((res) => res.data),
+    queryKey: ["PostedJobData", jobQueryKey],
+    queryFn: () => axiosPublic.get(jobQueryKey).then((res) => res.data),
+    enabled: !!user?.email, // Only run this query if user.email is defined
   });
 
-  // Loading state
-  if (PostedJobDataIsLoading) {
-    return <Loader />;
+  // Use effect to simulate loading delay
+  useEffect(() => {
+    if (!usersDataIsLoading && !PostedJobDataIsLoading) {
+      const timer = setTimeout(() => {
+        setLoadingDelay(false); // Set loadingDelay to false after 1 second
+      }, 1000); // Adjust the time as needed
+
+      return () => clearTimeout(timer); // Clear timeout on component unmount
+    }
+  }, [usersDataIsLoading, PostedJobDataIsLoading]);
+
+  if (loading || loadingDelay) {
+    return <Loader />; // Show loader while loading
   }
 
-  // Error state
-  if (PostedJobDataError) {
+  // Handle errors gracefully
+  if (PostedJobDataError || usersDataError) {
     return (
       <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
         <p className="text-center text-red-500 font-bold text-3xl mb-8">
@@ -53,7 +83,23 @@ const ManageJobs = () => {
     );
   }
 
-  // Handle checkbox click
+  // If user is not logged in, display a message
+  if (!user) {
+    return (
+      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
+        <p className="text-center text-red-500 font-bold text-3xl mb-8">
+          You must be logged in to manage jobs.
+        </p>
+        <button
+          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
+          onClick={() => window.location.reload()}
+        >
+          Reload
+        </button>
+      </div>
+    );
+  }
+
   const handleCheckboxClick = (id) => {
     setSelectedJobs((prevSelectedJobs) =>
       prevSelectedJobs.includes(id)
@@ -62,23 +108,20 @@ const ManageJobs = () => {
     );
   };
 
-  // Handle delete selected jobs (opens the modal)
   const handleDeleteSelectedJobs = () => {
     if (selectedJobs.length === 0) {
       alert("No jobs selected for deletion.");
       return;
     }
-    setShowDeleteModal(true); // Show delete modal
+    setShowDeleteModal(true);
   };
 
-  // Handle single job deletion (opens the same modal)
   const handleSingleDelete = (jobId) => {
-    setSelectedJobs([jobId]); // Set the single job as the only selected job
-    setShowDeleteModal(true); // Open delete confirmation modal
+    setSelectedJobs([jobId]);
+    setShowDeleteModal(true);
   };
 
-  const currentDate = new Date();
-  const formattedDateTime = currentDate.toLocaleString("en-US", {
+  const formattedDateTime = new Date().toLocaleString("en-US", {
     year: "numeric",
     month: "numeric",
     day: "numeric",
@@ -87,11 +130,9 @@ const ManageJobs = () => {
     hour12: true,
   });
 
-  // Input
   const onSubmit = async (data) => {
     const deleteJobLogData = selectedJobs.map((jobId) => {
       const job = PostedJobData.find((job) => job._id === jobId);
-
       return {
         DeletedBy: user.email,
         PostedBy: job.postedBy.email,
@@ -103,15 +144,11 @@ const ManageJobs = () => {
     });
 
     try {
-      // Post log data to the Delete-Log server
       await axiosPublic.post(`/Delete-Log`, deleteJobLogData);
-
-      // Delete jobs by ID
       await axiosPublic.delete(`/Posted-Job/delete`, {
         data: { jobsToDelete: selectedJobs },
       });
 
-      // Show success message
       Swal.fire({
         icon: "success",
         title: "Success!",
@@ -124,7 +161,6 @@ const ManageJobs = () => {
       refetch();
     } catch (error) {
       console.error("Error deleting jobs:", error);
-      // Show error message
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -134,56 +170,46 @@ const ManageJobs = () => {
     }
   };
 
-  // Handle view job
   const handleViewJob = (job) => {
-    setViewJobData(job); // Set the selected job details
-    document.getElementById("Modal_Job_View").showModal(); // Show the modal
+    setViewJobData(job);
+    document.getElementById("Modal_Job_View").showModal();
+  };
+
+  const handleEditJob = (job) => {
+    setEditJobData(job); // Set the job data for editing
+    document.getElementById("Edit_Job").showModal();
   };
 
   return (
     <div className="bg-white min-h-screen border border-black text-black">
-      {/* Title */}
       <p className="text-2xl font-bold text-white pl-10 py-4 bg-blue-400">
         Manage Jobs
       </p>
 
-      {/* Search */}
       <div className="py-5 flex justify-between items-center px-5">
-        <div>
-          <label className="input input-bordered flex items-center gap-2 bg-white border-gray-400 w-[500px]">
-            <input type="text" className="grow" placeholder="Search" />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              className="h-4 w-4 opacity-70"
-            >
-              <FaSearch />
-            </svg>
-          </label>
-        </div>
+        <label className="input input-bordered flex items-center gap-2 bg-white border-gray-400 w-[500px]">
+          <input type="text" className="grow" placeholder="Search" />
+          <FaSearch className="h-4 w-4 opacity-70" />
+        </label>
       </div>
 
-      {/* Delete selected jobs button */}
       <div className="flex justify-between mx-5 my-2">
         <button
-          className="bg-green-500 hover:bg-green-300 px-10 py-2 text-white font-bold"
+          className="bg-green-500 hover:bg-green-300 w-48 py-1 text-lg text-white font-bold"
           onClick={() => document.getElementById("Create_New_Job").showModal()}
         >
           + Add New Job
         </button>
         <button
-          className="bg-red-500 hover:bg-red-300 px-10 py-2 text-white font-bold"
+          className="bg-red-500 hover:bg-red-300 w-48 py-1 text-lg text-white font-bold"
           onClick={handleDeleteSelectedJobs}
         >
           Delete
         </button>
       </div>
 
-      {/* Job Table */}
       <div className="overflow-x-auto p-2">
         <table className="table border border-black">
-          {/* Table Header */}
           <thead className="text-black">
             <tr className="bg-gray-500 text-white">
               <th>No</th>
@@ -196,7 +222,6 @@ const ManageJobs = () => {
             </tr>
           </thead>
           <tbody>
-            {/* Mapping through fetched jobs */}
             {PostedJobData.map((job, index) => (
               <tr
                 key={job._id}
@@ -207,28 +232,36 @@ const ManageJobs = () => {
                   <label>
                     <input
                       type="checkbox"
-                      className="checkbox border border-black w-5 h-5 "
+                      className="checkbox border border-black w-5 h-5"
                       checked={selectedJobs.includes(job._id)}
                       onChange={() => handleCheckboxClick(job._id)}
                     />
                   </label>
                 </th>
-
                 <td>{job?.jobTitle}</td>
                 <td>{job?.companyName}</td>
                 <td>{job?.jobType}</td>
                 <td>{new Date(job.postedDate).toLocaleDateString()}</td>
                 <td>
                   <div className="flex gap-2">
+                    {usersData?.role === "Admin" ||
+                    usersData?.role === "Manager" ? null : (
+                      <button
+                        className="bg-green-500 hover:bg-green-400 p-2 text-white text-2xl"
+                        onClick={() => handleEditJob(job)}
+                      >
+                        <FaEdit />
+                      </button>
+                    )}
                     <button
                       className="bg-yellow-500 hover:bg-yellow-400 p-2 text-white text-2xl"
-                      onClick={() => handleViewJob(job)} // Pass job data on view
+                      onClick={() => handleViewJob(job)}
                     >
                       <CiViewBoard />
                     </button>
                     <button
                       className="bg-red-500 hover:bg-red-400 p-2 text-white text-2xl"
-                      onClick={() => handleSingleDelete(job._id)} // Open delete modal for single job
+                      onClick={() => handleSingleDelete(job._id)}
                     >
                       <MdDelete />
                     </button>
@@ -240,16 +273,18 @@ const ManageJobs = () => {
         </table>
       </div>
 
-      {/* View job modal */}
       <dialog id="Modal_Job_View" className="modal">
         <ModalViewJobs jobData={viewJobData} />
       </dialog>
 
       <dialog id="Create_New_Job" className="modal">
-        <ModalAddJob refetch={refetch}></ModalAddJob>
+        <ModalAddJob refetch={refetch} />
       </dialog>
 
-      {/* Delete modal (simple example) */}
+      <dialog id="Edit_Job" className="modal">
+        <ModalEditJob editJobData={editJobData} refetch={refetch} />
+      </dialog>
+
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-8 rounded-lg w-[1000px] shadow-lg">
@@ -258,60 +293,28 @@ const ManageJobs = () => {
             <ul className="mb-4">
               {selectedJobs.map((jobId) => {
                 const job = PostedJobData.find((job) => job._id === jobId);
-                return (
-                  <li key={jobId} className="py-2">
-                    <div className="flex-col">
-                      <p>{jobId}</p>
-                      <p>
-                        <span className="font-semibold">Title: </span>
-                        {job.jobTitle}
-                      </p>
-                      <p>
-                        <span className="font-semibold">Name: </span>
-                        {job.postedBy.name}
-                      </p>
-                      <p>
-                        <span className="font-semibold">Email: </span>
-                        {job.postedBy.email}
-                      </p>
-                    </div>
-                  </li>
-                );
+                return <li key={jobId}>{job?.jobTitle}</li>;
               })}
             </ul>
-
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* Delete Reason */}
-              <div>
-                <label htmlFor="deleteReason" className="block font-semibold">
-                  Reason for Deletion:
-                </label>
-
-                <textarea
-                  {...register("deleteReason")}
-                  type="text"
-                  id="deleteReason"
-                  className="input input-bordered border border-gray-400 w-full mt-2 bg-white h-60"
-                  required
-                ></textarea>
-              </div>
-
-              {/* Buttons */}
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowDeleteModal(false)} // Close modal
-                  className="bg-gray-400 hover:bg-gray-300 px-4 py-2"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-red-500 hover:bg-red-400 px-4 py-2 text-white"
-                >
-                  Confirm Delete
-                </button>
-              </div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <textarea
+                className="textarea textarea-bordered w-full"
+                placeholder="Enter the reason for deletion"
+                {...register("deleteReason", { required: true })}
+              ></textarea>
+              <button
+                type="submit"
+                className="bg-red-500 hover:bg-red-400 px-4 py-2 text-white font-bold mt-4"
+              >
+                Confirm Delete
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                className="bg-gray-500 hover:bg-gray-400 px-4 py-2 text-white font-bold mt-4 ml-2"
+              >
+                Cancel
+              </button>
             </form>
           </div>
         </div>

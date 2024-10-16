@@ -3,124 +3,98 @@ import { useState } from "react";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loader from "../../../Pages/Shared/Loader/Loader";
 import { FaSearch } from "react-icons/fa";
-import Swal from "sweetalert2"; // Import SweetAlert
+import Swal from "sweetalert2";
 
 const AdminManageUsers = () => {
   const axiosPublic = useAxiosPublic();
 
-  // State for search term, selected role, and modal data
+  // State hooks
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
-  const [selectedUser, setSelectedUser] = useState(null); // New state for selected user data
-  const [userRole, setUserRole] = useState(""); // Single role for the selected user
-  const [companyCode, setCompanyCode] = useState(""); // State for company code
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userRole, setUserRole] = useState("");
+  const [companyCode, setCompanyCode] = useState("");
 
-  // Fetching Users Data
+  // Fetching users data
   const {
-    data: usersData = [], // default to empty array
-    isLoading: usersDataIsLoading,
-    error: usersDataError,
+    data: usersData = [],
+    isLoading,
+    error,
     refetch,
   } = useQuery({
     queryKey: ["UsersData"],
-    queryFn: () => axiosPublic.get(`/Users`).then((res) => res.data),
+    queryFn: () => axiosPublic.get("/Users").then((res) => res.data),
   });
 
-  // Loading state
-  if (usersDataIsLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
+  if (error) return renderError();
 
-  // Error state
-  if (usersDataError) {
-    return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
-        <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          Something went wrong. Please reload the page.
-        </p>
-        <button
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
-      </div>
-    );
-  }
-
-  // Filter users based on search term and selected role
+  // Filter users
   const filteredUsers = usersData.filter((user) => {
     const matchesSearchTerm =
-      (user.displayName &&
-        user.displayName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (user.email &&
-        user.email.toLowerCase().includes(searchTerm.toLowerCase()));
+      (user.displayName || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (user.email || "").toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = selectedRole ? user.role === selectedRole : true;
     return matchesSearchTerm && matchesRole;
   });
 
-  // Get unique roles for the dropdown
-  const roles = [
-    "User",
-    "Company",
-    "Job Seeker",
-    "Mentor",
-    "Event Organizer",
-    "Course Instructor",
-    "Bidder",
-    "Manager",
-  ];
+  // Unique roles
+  const roles = ["Member", "Manager"];
 
-  // Handle role selection
   const handleRoleChange = (e) => {
-    const selectedRole = e.target.value;
-    setUserRole(selectedRole);
-
-    // Generate a company code for bidders or companies
-    if (selectedRole === "Bidder" || selectedRole === "Company") {
-      setCompanyCode(Math.random().toString(36).substring(2, 10).toUpperCase());
-    } else {
-      setCompanyCode(""); // Clear company code if role is not "Bidder"
-    }
+    const selected = e.target.value;
+    setUserRole(selected);
+    setCompanyCode(
+      selected === "Bidder" || selected === "Company"
+        ? Math.random().toString(36).substring(2, 10).toUpperCase()
+        : ""
+    );
   };
 
-  // Open modal with user data
   const openEditModal = (user) => {
     setSelectedUser(user);
-    setUserRole(user.role); // Set current role in the state
+    setUserRole(user.role);
     document.getElementById("my_modal_1").showModal();
   };
 
-  // Update user role in the backend and show success/failure alerts
   const handleRoleUpdate = async () => {
     try {
-      // Make an API call to update the user's role
-      const response = await axiosPublic.put(`/Users/${selectedUser._id}`, {
-        role: userRole, // Send the selected role
-        companyCode: companyCode, // Send company code if generated
+      await axiosPublic.put(`/Users/${selectedUser._id}`, {
+        role: userRole,
+        companyCode,
       });
-
-      // Show success message
-      console.log(response);
-      
       Swal.fire({
         icon: "success",
         title: "Role Updated Successfully",
         text: `User ${selectedUser.displayName}'s role has been updated to ${userRole}!`,
       });
-
-      // Close the modal after success
       document.getElementById("my_modal_1").close();
       refetch();
     } catch (error) {
-      // Show error message if the request fails
       Swal.fire({
         icon: "error",
-        title: "Error"+ {error},
+        title: "Error",
         text: "Failed to update the role. Please try again later.",
       });
+      console.log(error);
     }
   };
+
+  const renderError = () => (
+    <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
+      <p className="text-center text-red-500 font-bold text-3xl mb-8">
+        Something went wrong. Please reload the page.
+      </p>
+      <button
+        className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
+        onClick={() => window.location.reload()}
+      >
+        Reload
+      </button>
+    </div>
+  );
 
   return (
     <div className="bg-white min-h-screen border border-black">
@@ -130,40 +104,33 @@ const AdminManageUsers = () => {
 
       {/* Search and Role Filter */}
       <div className="flex items-center justify-between p-4 text-black gap-10">
-        {/* Search Box */}
-        <div>
-          <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
-            <input
-              type="text"
-              className="grow py-2 px-3 focus:outline-none"
-              placeholder="Search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <FaSearch className="h-4 w-4 opacity-70 text-black" />
-          </label>
-        </div>
+        <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
+          <input
+            type="text"
+            className="grow py-2 px-3 focus:outline-none"
+            placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <FaSearch className="h-4 w-4 opacity-70 text-black" />
+        </label>
 
-        {/* Role Dropdown */}
-        <div>
-          <select
-            className="border border-gray-300 p-2 w-[200px] bg-white text-black"
-            value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value)}
-          >
-            <option value="">All Roles</option>
-            {roles.map((role) => (
-              <option key={role} value={role}>
-                {role}
-              </option>
-            ))}
-          </select>
-        </div>
+        <select
+          className="border border-gray-300 p-2 w-[200px] bg-white text-black"
+          value={selectedRole}
+          onChange={(e) => setSelectedRole(e.target.value)}
+        >
+          <option value="">All Roles</option>
+          {roles.map((role) => (
+            <option key={role} value={role}>
+              {role}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="overflow-x-auto p-2 text-black">
         <table className="table-auto w-full">
-          {/* Table Head */}
           <thead>
             <tr className="bg-blue-500 text-white">
               <th className="p-2">#</th>
@@ -175,7 +142,6 @@ const AdminManageUsers = () => {
             </tr>
           </thead>
           <tbody>
-            {/* Mapping through filteredUsers to display each user's details */}
             {filteredUsers.map((user, index) => (
               <tr key={user._id} className="bg-gray-100 hover:bg-gray-200">
                 <td className="p-2">{index + 1}</td>
@@ -188,7 +154,7 @@ const AdminManageUsers = () => {
                 <td className="p-2">
                   <button
                     className="bg-gray-200 hover:bg-gray-400 hover:text-white border border-gray-500 px-10 py-1"
-                    onClick={() => openEditModal(user)} // Open modal with user data
+                    onClick={() => openEditModal(user)}
                   >
                     Edit
                   </button>
@@ -205,18 +171,18 @@ const AdminManageUsers = () => {
           {selectedUser && (
             <>
               <h3 className="font-bold text-xl">Edit User:</h3>
-              <p className="py-2 tet-lg grid grid-cols-2">
+              <p className="py-2 grid grid-cols-2">
                 <span className="font-bold">Name:</span>{" "}
                 {selectedUser.displayName}
               </p>
-              <p className="py-2 tet-lg grid grid-cols-2">
+              <p className="py-2 grid grid-cols-2">
                 <span className="font-bold">Email:</span> {selectedUser.email}
               </p>
-              <p className="py-2 tet-lg grid grid-cols-2">
-                <span className="font-bold"> Created Date:</span>{" "}
+              <p className="py-2 grid grid-cols-2">
+                <span className="font-bold">Created Date:</span>{" "}
                 {new Date(selectedUser.createdDate).toLocaleDateString()}
               </p>
-              <p className="py-2 tet-lg grid grid-cols-2">
+              <p className="py-2 grid grid-cols-2">
                 <span className="font-bold">Current Role:</span>{" "}
                 {selectedUser.role}
               </p>
@@ -224,7 +190,6 @@ const AdminManageUsers = () => {
               {/* Role Selector */}
               <div className="py-2">
                 <label className="block font-semibold mb-1">Select Role</label>
-                {/* Check if the user is an admin */}
                 {selectedUser.role === "Admin" ? (
                   <p className="text-red-500">Admin role cannot be changed.</p>
                 ) : (
@@ -244,23 +209,23 @@ const AdminManageUsers = () => {
 
               {/* Company Code */}
               {companyCode && (
-                <p className="py-2 text-lg grid grid-cols-2">
+                <p className="py-2 grid grid-cols-2">
                   <span className="font-bold">Generated Code:</span>{" "}
                   {companyCode}
                 </p>
               )}
 
               {/* Modal Actions */}
-              <div className="modal-action text-white">
+              <div className="modal-action">
                 <button
-                  className=" bg-blue-500 hover:bg-blue-600 px-10 py-2 disabled:bg-gray-500"
-                  disabled={selectedUser.role === "Admin"} // Disable update button for admins
+                  className="bg-blue-500 hover:bg-blue-600 px-10 py-2 disabled:bg-gray-500"
+                  disabled={selectedUser.role === "Admin"}
                   onClick={handleRoleUpdate}
                 >
                   Update Role
                 </button>
                 <button
-                  className=" bg-red-500 hover:bg-red-600 px-10 py-2"
+                  className="bg-red-500 hover:bg-red-600 px-10 py-2"
                   onClick={() => document.getElementById("my_modal_1").close()}
                 >
                   Close

@@ -81,6 +81,54 @@ const ModalViewGigs = ({ GigData }) => {
             </div>
           </div>
         </div>
+
+        <div className="overflow-x-auto p-5">
+          {GigData?.peopleBided?.length > 0 ? (
+            <table className="table border border-gray-300 w-full">
+              <thead className="bg-blue-200 text-black">
+                <tr>
+                  <th>Image</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>About Bider</th>
+                  <th>Applied Date</th>
+                  <th>Resume</th>
+                </tr>
+              </thead>
+              <tbody>
+                {GigData?.peopleBided?.map((applicant, i) => (
+                  <tr key={i}>
+                    <td>
+                      <img
+                        src={applicant.biderImage}
+                        alt={applicant.biderName}
+                        className="w-12 h-12"
+                      />
+                    </td>
+                    <td>{applicant.biderName}</td>
+                    <td>{applicant.biderEmail}</td>
+                    <td>{applicant.AboutBider}</td>
+                    <td>{applicant.appliedDate}</td>
+                    <td>
+                      <a
+                        href={applicant.resumeLink}
+                        className="text-blue-500 underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View Resume
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="text-center text-red-500 font-bold text-lg">
+              No applicants yet.
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

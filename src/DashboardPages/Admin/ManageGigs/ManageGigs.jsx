@@ -177,11 +177,11 @@ const ManageGigs = () => {
     document.getElementById("Modal_Gig_View").showModal(); // Show the modal
   };
 
-  const handleEditJob = (gig) => {
+  const handleEditGig = (gig) => {
     setEditGigData(gig); // Set the job data for editing
     document.getElementById("Edit_Gig").showModal(); // Show the modal
   };
-  
+
   return (
     <div className="bg-white min-h-screen border border-black text-black">
       {/* Title */}
@@ -269,7 +269,7 @@ const ManageGigs = () => {
                     usersData?.role === "Manager" ? null : (
                       <button
                         className="bg-green-500 hover:bg-green-400 p-2 text-white text-2xl"
-                        onClick={() => handleEditJob(gig)}
+                        onClick={() => handleEditGig(gig)}
                       >
                         <FaEdit />
                       </button>

@@ -23,6 +23,7 @@ const DashboardLayout = () => {
     { to: "ManageTestimonials", label: "Manage Testimonials" },
     { to: "ManageBlogs", label: "Manage Blogs" },
     { to: "DetailedLog", label: "Detailed Log" },
+    { to: "ManageJobApplicants", label: "Manage Job Applicants" },
   ];
 
   // Generate navigation items

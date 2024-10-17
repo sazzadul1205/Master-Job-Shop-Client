@@ -37,6 +37,7 @@ import ManageNewsletter from "../DashboardPages/Admin/ManageNewsletter/ManageNew
 import ManageTestimonials from "../DashboardPages/Admin/ManageTestimonials/ManageTestimonials";
 import ManageBlogs from "../DashboardPages/Admin/ManageBlogs/ManageBlogs";
 import DetailsLogs from "../DashboardPages/Admin/DetailsLogs/DetailsLogs";
+import ManageJobApplicant from "../DashboardPages/User/ManageJobApplicant/ManageJobApplicant";
 
 export const router = createBrowserRouter([
   {
@@ -204,6 +205,10 @@ export const router = createBrowserRouter([
         path: "DetailedLog",
         element: <DetailsLogs></DetailsLogs>,
       },
+      {
+        path: "ManageJobApplicants",
+        element: <ManageJobApplicant></ManageJobApplicant>
+      }
     ],
   },
 ]);

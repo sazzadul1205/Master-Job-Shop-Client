@@ -1,0 +1,37 @@
+{
+    "_id": "670fba4050f489c2d089dd54",
+    "eventTitle": "AI & Machine Learning Conference",
+    "date": "2024-11-10",
+    "time": "9:00 AM - 5:00 PM",
+    "location": "Boston, MA, USA",
+    "description": "Explore the future of AI and machine learning technologies with industry experts.",
+    "organizer": "AI Innovators Group",
+    "participationCriteria": "Professionals and enthusiasts with a background in AI or data science.",
+    "postedBy": "Admin",
+    "requiredResources": [
+      "Laptop",
+      "Notebook"
+    ],
+    "registrationLink": "https://aiinnovators.com/mlconference",
+    "contactEmail": "events@aiinnovators.com",
+    "participationFee": "$100",
+    "participationLimit": 300,
+    "ParticipantApplications": [
+      {
+        "applicantName": "Sazzadul Islam Molla",
+        "applicantEmail": "psazzadul@gmail.com",
+        "applicantImage": "https://i.ibb.co/applicant1.jpg",
+        "applicantDate": "10/10/2024, 10:13 PM",
+        "applicantDescription": "fdsgdsagsdgsa",
+        "applicantState": "Approved"
+      },
+      {
+        "applicantName": "afaf",
+        "applicantEmail": "psazzadul@gmail.com",
+        "applicantImage": "https://i.ibb.co/applicant1.jpg",
+        "applicantDate": "10/10/2024, 10:17 PM",
+        "applicantDescription": "fcsafasfsa",
+        "applicantState": "Pending"
+      }
+    ]
+  },

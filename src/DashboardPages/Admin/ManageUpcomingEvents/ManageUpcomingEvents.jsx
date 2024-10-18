@@ -77,7 +77,6 @@ const ManageEvents = () => {
   });
 
   // Input submission for deletion reason
-  // Input submission for deletion reason
   const onSubmit = async (data) => {
     const event = UpcomingEventsData.find(
       (event) => event._id === selectedEventId

@@ -40,6 +40,7 @@ import DetailsLogs from "../DashboardPages/Admin/DetailsLogs/DetailsLogs";
 import ManageJobApplicant from "../DashboardPages/User/ManageJobApplicant/ManageJobApplicant";
 import ManageGigApplicant from "../DashboardPages/User/ManageGigApplicant/ManageGigApplicant";
 import ManageCompanyInfo from "../DashboardPages/User/MangeCompanyInfo/MangeCompanyInfo";
+import ManageMyEvent from "../DashboardPages/User/ManageMyEvent/ManageMyEvent";
 
 export const router = createBrowserRouter([
   {
@@ -218,6 +219,10 @@ export const router = createBrowserRouter([
       {
         path: "ManageCompanyInfo",
         element: <ManageCompanyInfo></ManageCompanyInfo>,
+      },
+      {
+        path: "ManageMyevent",
+        element: <ManageMyEvent></ManageMyEvent>,
       },
     ],
   },

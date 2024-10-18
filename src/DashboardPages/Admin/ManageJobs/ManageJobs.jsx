@@ -19,8 +19,8 @@ const ManageJobs = () => {
   const [viewJobData, setViewJobData] = useState(null);
   const [editJobData, setEditJobData] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const { register, handleSubmit, reset } = useForm();
   const [loadingDelay, setLoadingDelay] = useState(true); // New state for loading delay
+  const { register, handleSubmit, reset } = useForm();
 
   // Fetch user data to check the role
   const {

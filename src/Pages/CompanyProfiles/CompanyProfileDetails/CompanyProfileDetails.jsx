@@ -99,7 +99,7 @@ const CompanyProfileDetails = () => {
         </button>
 
         {/* Company Profile Details */}
-        <div className="">
+        <div className="px-1">
           {/* Top section */}
           <div className="flex justify-between">
             <div className="py-2">

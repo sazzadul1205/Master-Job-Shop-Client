@@ -27,6 +27,7 @@ const DashboardLayout = () => {
     { to: "ManageGigApplicant", label: "Manage Gig Applicants" },
     { to: "ManageCompanyInfo", label: "Manage Company Info" },
     { to: "ManageMyEvent", label: "Manage My Event" },
+    { to: "ManageMyCourse", label: "Manage My Course" },
   ];
 
   // Generate navigation items

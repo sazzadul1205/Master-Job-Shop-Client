@@ -1,37 +1,151 @@
 {
-    "_id": "670fba4050f489c2d089dd54",
-    "eventTitle": "AI & Machine Learning Conference",
-    "date": "2024-11-10",
-    "time": "9:00 AM - 5:00 PM",
-    "location": "Boston, MA, USA",
-    "description": "Explore the future of AI and machine learning technologies with industry experts.",
-    "organizer": "AI Innovators Group",
-    "participationCriteria": "Professionals and enthusiasts with a background in AI or data science.",
-    "postedBy": "Admin",
-    "requiredResources": [
-      "Laptop",
-      "Notebook"
-    ],
-    "registrationLink": "https://aiinnovators.com/mlconference",
-    "contactEmail": "events@aiinnovators.com",
-    "participationFee": "$100",
-    "participationLimit": 300,
-    "ParticipantApplications": [
-      {
-        "applicantName": "Sazzadul Islam Molla",
-        "applicantEmail": "psazzadul@gmail.com",
-        "applicantImage": "https://i.ibb.co/applicant1.jpg",
-        "applicantDate": "10/10/2024, 10:13 PM",
-        "applicantDescription": "fdsgdsagsdgsa",
-        "applicantState": "Approved"
-      },
-      {
-        "applicantName": "afaf",
-        "applicantEmail": "psazzadul@gmail.com",
-        "applicantImage": "https://i.ibb.co/applicant1.jpg",
-        "applicantDate": "10/10/2024, 10:17 PM",
-        "applicantDescription": "fcsafasfsa",
-        "applicantState": "Pending"
-      }
-    ]
+  "_id": "67127dc693112d66f3e987d9",
+  "courseTitle": "Full Stack Web Development",
+  "instructor": "John Doe",
+  "duration": "12 weeks",
+  "level": "Intermediate",
+  "postedBy": "Admin",
+  "description": "Learn to build modern web applications using HTML, CSS, JavaScript, and React.",
+  "format": "Online, Self-paced with Live Sessions",
+  "batches": [
+    {
+      "batchName": "Batch A",
+      "batchDate": "2024-01-01",
+      "batchDetails": "Morning batch from 10 AM to 12 PM, suitable for students and professionals."
+    },
+    {
+      "batchName": "Batch B",
+      "batchDate": "2024-01-08",
+      "batchDetails": "Evening batch from 6 PM to 8 PM, designed for working professionals."
+    }
+  ],
+  "prerequisites": [
+    "Basic understanding of HTML, CSS, and JavaScript",
+    "Familiarity with programming concepts",
+    "Experience with Git and version control (recommended)"
+  ],
+  "learningOutcomes": [
+    "Build responsive web applications using React",
+    "Understand RESTful APIs and integrate them into applications",
+    "Develop backend services using Node.js and Express",
+    "Manage databases with MongoDB",
+    "Implement authentication and authorization in web applications",
+    "Deploy applications on cloud platforms",
+    "Use modern tools like Docker and CI/CD pipelines"
+  ],
+  "schedule": [
+    {
+      "week": 1,
+      "topic": "Introduction to Web Development",
+      "scheduleDetails": "Overview of web development technologies, history of the web, and setting up a development environment."
+    },
+    {
+      "week": 2,
+      "topic": "HTML & CSS Basics",
+      "scheduleDetails": "Building static web pages with HTML and CSS. Understanding the box model, CSS selectors, and responsive design."
+    },
+    {
+      "week": 3,
+      "topic": "JavaScript Fundamentals",
+      "scheduleDetails": "Introduction to JavaScript: variables, data types, functions, loops, and DOM manipulation."
+    },
+    {
+      "week": 4,
+      "topic": "Advanced JavaScript",
+      "scheduleDetails": "Understanding closures, promises, async/await, and advanced DOM manipulation techniques."
+    },
+    {
+      "week": 5,
+      "topic": "React Basics",
+      "scheduleDetails": "Introduction to React: components, state, props, and JSX. Building simple applications with React."
+    },
+    {
+      "week": 6,
+      "topic": "React Advanced",
+      "scheduleDetails": "Handling forms, state management with Redux, and React hooks. Building larger-scale applications."
+    },
+    {
+      "week": 7,
+      "topic": "Node.js & Express",
+      "scheduleDetails": "Building server-side applications using Node.js and Express. Understanding middleware and routing."
+    },
+    {
+      "week": 8,
+      "topic": "RESTful API Development",
+      "scheduleDetails": "Creating and consuming RESTful APIs. Working with Postman to test APIs and handling API errors."
+    },
+    {
+      "week": 9,
+      "topic": "MongoDB Basics",
+      "scheduleDetails": "Introduction to NoSQL databases, working with MongoDB to store and retrieve data. Understanding CRUD operations."
+    },
+    {
+      "week": 10,
+      "topic": "User Authentication",
+      "scheduleDetails": "Implementing user authentication and authorization using JWT and Passport.js. Protecting routes and sessions."
+    },
+    {
+      "week": 11,
+      "topic": "Application Deployment",
+      "scheduleDetails": "Deploying web applications on cloud platforms such as Heroku, AWS, or Google Cloud. Using Docker for containerization."
+    },
+    {
+      "week": 12,
+      "topic": "Final Project Presentation",
+      "scheduleDetails": "Students present their final projects which incorporate all concepts learned throughout the course."
+    }
+  ],
+  "assessments": [
+    "Weekly quizzes to reinforce learning",
+    "Mid-course project to demonstrate skills",
+    "Final project showcasing a complete web application",
+    "Peer code reviews and feedback sessions"
+  ],
+  "targetAudience": [
+    "Aspiring web developers",
+    "Software engineers looking to transition to full-stack development",
+    "Anyone interested in building modern web applications",
+    "Entrepreneurs looking to build their own tech products"
+  ],
+  "certification": "Certificate of Completion",
+  "support": {
+    "officeHours": "Weekly on Wednesdays from 3 PM to 5 PM",
+    "discussionForum": "Access to a dedicated forum for questions and discussions",
+    "emailSupport": "24/7 email support for all enrolled students",
+    "careerGuidance": "Career assistance with job search, resume building, and mock interviews"
   },
+  "applicants": [
+    {
+      "applicantName": "Alice Smith",
+      "applicantEmail": "alice.smith@example.com",
+      "applicantImage": "https://example.com/images/alice.jpg",
+      "applicantDescription": "A passionate web developer with a keen interest in learning full stack development.",
+      "registrationDate": "2024-09-15",
+      "batch": "Batch A"
+    },
+    {
+      "applicantName": "Bob Johnson",
+      "applicantEmail": "bob.johnson@example.com",
+      "applicantImage": "https://example.com/images/bob.jpg",
+      "applicantDescription": "An aspiring developer seeking to enhance his skills in modern web technologies.",
+      "registrationDate": "2024-09-20",
+      "batch": "Batch A"
+    },
+    {
+      "applicantName": "Charlie Brown",
+      "applicantEmail": "charlie.brown@example.com",
+      "applicantImage": "https://example.com/images/charlie.jpg",
+      "applicantDescription": "A tech enthusiast eager to learn and build dynamic web applications.",
+      "registrationDate": "2024-09-25",
+      "batch": "Batch A"
+    },
+    {
+      "applicantName": "Diana Prince",
+      "applicantEmail": "diana.prince@example.com",
+      "applicantImage": "https://example.com/images/diana.jpg",
+      "applicantDescription": "A software engineer transitioning to full-stack development to expand her career.",
+      "registrationDate": "2024-09-30",
+      "batch": "Batch A"
+    }
+  ]
+},

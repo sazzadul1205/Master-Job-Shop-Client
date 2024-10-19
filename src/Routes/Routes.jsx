@@ -41,6 +41,7 @@ import ManageJobApplicant from "../DashboardPages/User/ManageJobApplicant/Manage
 import ManageGigApplicant from "../DashboardPages/User/ManageGigApplicant/ManageGigApplicant";
 import ManageCompanyInfo from "../DashboardPages/User/MangeCompanyInfo/MangeCompanyInfo";
 import ManageMyEvent from "../DashboardPages/User/ManageMyEvent/ManageMyEvent";
+import ManageMyCourse from "../DashboardPages/User/ManageMyCourse/ManageMyCourse";
 
 export const router = createBrowserRouter([
   {
@@ -224,6 +225,10 @@ export const router = createBrowserRouter([
         path: "ManageMyevent",
         element: <ManageMyEvent></ManageMyEvent>,
       },
+      {
+        path: "ManageMyCourse",
+        element: <ManageMyCourse></ManageMyCourse>
+      }
     ],
   },
 ]);

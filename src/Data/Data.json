@@ -1,38 +1,42 @@
 {
-  "_id": "670fbdff50f489c2d08e4a34",
-  "mentorName": "Sarah Johnson",
-  "mentorImage": "https://i.ibb.co.com/c398p1M/Mentor-Img-4.jpg",
-  "expertise": "Career Development",
-  "duration": "6 weeks",
-  "description": "Gain insights on career paths and enhance your job search strategies.",
-  "mentorBio": "Sarah Johnson has over 10 years of experience helping individuals achieve their career goals. She specializes in resume building, interview preparation, and job search techniques.",
-  "contactEmail": "sarah.johnson@example.com",
+  "companyName": "HealthTech",
+  "companyLogo": "https://i.ibb.co/XYZ101/HealthTech-Logo.jpg",
   "postedBy": "Admin",
-  "rating": 4.8,
-  "reviews": [
+  "position": "Product Management Intern",
+  "duration": "10 weeks",
+  "description": "Work alongside product managers to develop and enhance health tech products.",
+  "location": "Hybrid",
+  "stipend": "$1,500/month",
+  "skillsRequired": [
+    "Agile Methodologies",
+    "Data Analysis",
+    "Project Management",
+    "Communication"
+  ],
+  "applicationDeadline": "2024-12-05",
+  "responsibilities": [
+    "Assist in product strategy and roadmap development",
+    "Conduct market research and user feedback analysis",
+    "Collaborate with design and engineering teams",
+    "Create documentation for product features"
+  ],
+  "qualifications": [
+    "Currently enrolled in a Business or related degree program",
+    "Strong analytical and problem-solving skills"
+  ],
+  "contact": {
+    "email": "hr@healthtech.com",
+    "facebook": "https://facebook.com/healthtech",
+    "website": "https://www.healthtech.com"
+  },
+  "applicants": [
     {
-      "reviewerName": "Sazzadul Islma Molla",
-      "reviewerEmail": "psazzadul@gmail.com",
-      "reviewerImage": "https://lh3.googleusercontent.com/a/ACg8ocIG2yfIW_t-fG6hWjLqlfbC_iZx84FykTtoWJA-nh7swoi3iCs=s96-c",
-      "reviewText": "Review Now",
-      "rating": 4,
-      "appliedDate": "10/19/2024, 7:11 PM"
+      "applicantName": "Liam Johnson",
+      "applicantEmail": "liam.johnson@example.com",
+      "applicantImage": "https://i.ibb.co/XYZ123/Liam-Johnson.jpg",
+      "aboutApplicant": "A business student with a keen interest in product management.",
+      "portfolioLink": "https://github.com/liamjohnson",
+      "resumeLink": "https://example.com/resume/liamjohnson"
     }
-  ],
-  "applicant": [
-    {
-      "applicantName": "gamer",
-      "applicantEmail": "psazzadul@gmail.com",
-      "appliedDate": "10/11/2024, 6:09 PM",
-      "applicantImage": "https://i.ibb.co/applicant1.jpg",
-      "applicantDetails": "utjntrjntn",
-      "resumeLink": "https://i.ibb.co/applicant1.jpg"
-    }
-  ],
-  "price": "$500",
-  "languages": [
-    "English",
-    "Spanish"
-  ],
-  "sessionFormat": "Online"
-},
+  ]
+}

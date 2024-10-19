@@ -1,51 +1,38 @@
 {
-  "_id": "671318901ea103a857f494f4",
-  "courseTitle": "Test data",
-  "instructor": "Json masook",
-  "duration": "gaesgesg",
-  "level": "Expert",
-  "postedBy": "psazzadul@gmail.com",
-  "description": "fwwsefearsgvdsargba",
-  "format": "Finest",
-  "batches": [
+  "_id": "670fbdff50f489c2d08e4a34",
+  "mentorName": "Sarah Johnson",
+  "mentorImage": "https://i.ibb.co.com/c398p1M/Mentor-Img-4.jpg",
+  "expertise": "Career Development",
+  "duration": "6 weeks",
+  "description": "Gain insights on career paths and enhance your job search strategies.",
+  "mentorBio": "Sarah Johnson has over 10 years of experience helping individuals achieve their career goals. She specializes in resume building, interview preparation, and job search techniques.",
+  "contactEmail": "sarah.johnson@example.com",
+  "postedBy": "Admin",
+  "rating": 4.8,
+  "reviews": [
     {
-      "batchName": "Tirone 707",
-      "batchDate": "2024-12-26",
-      "batchDetails": "wfewsafwegsgsag"
-    },
-    {
-      "batchName": "dgsdfgdfg",
-      "batchDate": "2024-12-25",
-      "batchDetails": "fsafasefsefa"
+      "reviewerName": "Sazzadul Islma Molla",
+      "reviewerEmail": "psazzadul@gmail.com",
+      "reviewerImage": "https://lh3.googleusercontent.com/a/ACg8ocIG2yfIW_t-fG6hWjLqlfbC_iZx84FykTtoWJA-nh7swoi3iCs=s96-c",
+      "reviewText": "Review Now",
+      "rating": 4,
+      "appliedDate": "10/19/2024, 7:11 PM"
     }
   ],
-  "prerequisites": ["dsfgbdsfb", "wfsaef"],
-  "learningOutcomes": ["hgesdhgbedh", "sfasfdsafsd"],
-  "schedule": [
+  "applicant": [
     {
-      "week": "1",
-      "topic": "hsdfhn",
-      "scheduleDetails": "afsefsdd"
-    },
-    {
-      "week": "2",
-      "topic": "gbdagadsrfg",
-      "scheduleDetails": "gadsgdsgf"
-    },
-    {
-      "week": "3",
-      "topic": "fagfsgfewsa",
-      "scheduleDetails": "agsfasgaesg"
+      "applicantName": "gamer",
+      "applicantEmail": "psazzadul@gmail.com",
+      "appliedDate": "10/11/2024, 6:09 PM",
+      "applicantImage": "https://i.ibb.co/applicant1.jpg",
+      "applicantDetails": "utjntrjntn",
+      "resumeLink": "https://i.ibb.co/applicant1.jpg"
     }
   ],
-  "assessments": ["gsagadsgdsfgdas", "gfseagasgdsg"],
-  "targetAudience": ["shsdfhdfsh", "hdshsdfhdsfhsd"],
-  "certification": "shgdfhdsfhgsdf",
-  "support": {
-    "officeHours": "hsdfhdfh",
-    "discussionForum": "hdhdfhfds",
-    "emailSupport": "gwregwg",
-    "careerGuidance": "ergwwerger"
-  },
-  "applicants": []
-}
+  "price": "$500",
+  "languages": [
+    "English",
+    "Spanish"
+  ],
+  "sessionFormat": "Online"
+},

@@ -1,35 +1,36 @@
+import { useQuery } from "@tanstack/react-query";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import Loader from "../../../Pages/Shared/Loader/Loader";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
-import Loader from "../../../Pages/Shared/Loader/Loader";
-import CourseData from "./CourseData/CourseData";
+import MentorshipData from "./MentorshipData/MentorshipData";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import { useContext, useState } from "react";
-import ModalNewCourse from "./ModalNewCourse/ModalNewCourse";
-import ModalEditCourse from "./ModalEditCourse/ModalEditCourse";
-import Swal from "sweetalert2";
+import ModalNewMentorship from "./ModalNewMentorship/ModalNewMentorship";
+import ModalEditMentorship from "./ModalEditMentorship/ModalEditMentorship";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 
-const ManageMyCourse = () => {
+const ManageMyMentorship = () => {
   const axiosPublic = useAxiosPublic();
   const { user } = useContext(AuthContext);
-  const [editCourseData, setEditCourseData] = useState(null);
-  const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [editMentorshipData, setEditMentorshipData] = useState(null);
+  const [selectedMentorshipId, setSelectedMentorshipId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  
+
   const { register, handleSubmit, reset } = useForm();
-  // Fetch Courses data
+
+  // Fetch Mentorship data
   const {
-    data: MyCourse,
+    data: MyMentorship = [],
     isLoading,
     error,
     refetch,
   } = useQuery({
-    queryKey: ["MyCourse"],
+    queryKey: ["MyMentorship"],
     queryFn: () =>
       axiosPublic
-        .get(`/Courses?postedBy=${user.email}`)
+        .get(`/Mentorship?postedBy=${user.email}`)
         .then((res) => res.data),
   });
 
@@ -53,15 +54,48 @@ const ManageMyCourse = () => {
     );
   }
 
-  // Handle Edit Course
-  const handleEditCourse = (course) => {
-    setEditCourseData(course);
-    document.getElementById("Edit_Course_Modal").showModal();
+  // Check if there are no mentorship profiles available
+  if (MyMentorship.length === 0) {
+    return (
+      <div className="relative min-h-screen bg-gray-100">
+        <div className="absolute inset-0 bg-white opacity-70 z-10"></div>
+        <div className="absolute inset-0 flex justify-center items-center z-20">
+          <div className="bg-white p-8 shadow-lg rounded-lg">
+            <p className="text-center text-gray-800 font-bold text-2xl mb-4">
+              No Mentorship Posted Yet
+            </p>
+            <p className="text-center text-gray-600 mb-4">
+              Please create a Mentorship profile to manage your Mentorship
+              information.
+            </p>
+            <button
+              className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
+              onClick={() =>
+                document.getElementById("Create_New_Mentorship").showModal()
+              }
+            >
+              Create Mentorship
+            </button>
+          </div>
+        </div>
+
+        {/* Modal Create New Mentorship */}
+        <dialog id="Create_New_Mentorship" className="modal rounded-none">
+          <ModalNewMentorship refetch={refetch} />
+        </dialog>
+      </div>
+    );
+  }
+
+  // Handle Edit Mentorship
+  const handleEditMentorship = (mentor) => {
+    setEditMentorshipData(mentor);
+    document.getElementById("Edit_Mentorship_Modal").showModal();
   };
 
-  // Handle Delete Course
-  const handleDeleteCourse = (courseId) => {
-    setSelectedCourseId(courseId);
+  // Handle Delete Mentorship
+  const handleDeleteMentorship = (mentorId) => {
+    setSelectedMentorshipId(mentorId);
     setShowDeleteModal(true);
   };
 
@@ -78,120 +112,92 @@ const ManageMyCourse = () => {
 
   // Form submission for deletion reason
   const onSubmit = async (data) => {
-    const courseToDelete = MyCourse.find(
-      (course) => course._id === selectedCourseId
+    const mentorshipToDelete = MyMentorship.find(
+      (mentor) => mentor._id === selectedMentorshipId
     );
-    if (!courseToDelete) return;
+
+    if (!mentorshipToDelete) return;
 
     const deleteEventLogData = {
       DeletedBy: user.email,
-      PostedBy: courseToDelete.postedBy,
+      PostedBy: mentorshipToDelete.postedBy,
       DeletedDate: formattedDateTime,
-      Type: "Course",
-      deletedContent: courseToDelete.eventTitle,
+      Type: "Mentorship",
+      deletedContent: mentorshipToDelete.mentorName,
       reason: data.deleteReason,
     };
 
     try {
       // Post log data to the Delete-Log server
       await axiosPublic.post(`/Delete-Log`, [deleteEventLogData]);
-      // Delete event by ID
-      await axiosPublic.delete(`/Courses/${selectedCourseId}`);
+      // Delete mentorship by ID
+      await axiosPublic.delete(`/Mentorship/${selectedMentorshipId}`);
 
       Swal.fire({
         icon: "success",
         title: "Success!",
-        text: "Course successfully deleted.",
+        text: "Mentorship successfully deleted.",
         confirmButtonText: "Okay",
       });
 
       reset();
       setShowDeleteModal(false);
-      setSelectedCourseId(null);
+      setSelectedMentorshipId(null);
       refetch();
     } catch (error) {
-      console.error("Error deleting event:", error);
+      console.error("Error deleting mentorship:", error);
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Failed to delete course. Please try again.",
+        text: "Failed to delete mentorship. Please try again.",
         confirmButtonText: "Okay",
       });
     }
   };
 
-  const course = MyCourse[0];
-
-  // Check if there are no course profiles available
-  if (MyCourse.length === 0) {
-    return (
-      <div className="relative min-h-screen bg-gray-100">
-        <div className="absolute inset-0 bg-white opacity-70 z-10"></div>
-        <div className="absolute inset-0 flex justify-center items-center z-20">
-          <div className="bg-white p-8 shadow-lg rounded-lg">
-            <p className="text-center text-gray-800 font-bold text-2xl mb-4">
-              No Courses Posted yet
-            </p>
-            <p className="text-center text-gray-600 mb-4">
-              Please create a Course profile to manage your Course information.
-            </p>
-            <button
-              className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-              onClick={() =>
-                document.getElementById("Create_New_Course").showModal()
-              }
-            >
-              Create Course
-            </button>
-          </div>
-        </div>
-
-        {/* Modal Create a new Course */}
-        <dialog id="Create_New_Course" className="modal rounded-none">
-          <ModalNewCourse refetch={refetch} />
-        </dialog>
-      </div>
-    );
-  }
+  const mentorData = MyMentorship[0];
 
   return (
     <div className="bg-white min-h-screen border border-black text-black">
       {/* Top Section */}
       <p className="text-2xl font-bold text-white pl-10 py-4 bg-blue-400">
-        Manage Course
+        Manage My Mentorship
       </p>
 
       {/* Edit and Delete Buttons */}
       <div className="flex justify-between items-center px-5 pt-2">
         <button
           className="bg-yellow-500 hover:bg-yellow-400 text-white text-xl font-bold flex items-center justify-center w-36 py-1"
-          onClick={() => handleEditCourse(course)}
+          onClick={() => handleEditMentorship(mentorData)}
         >
           <FaEdit className="mr-2" />
           Edit
         </button>
         <button
           className="bg-red-500 hover:bg-red-400 text-white text-xl font-bold flex items-center justify-center w-36 py-1"
-          onClick={() => handleDeleteCourse(course._id)}
+          onClick={() => handleDeleteMentorship(mentorData._id)}
         >
           <MdDelete className="mr-2" />
           Delete
         </button>
       </div>
 
-      <CourseData courseData={course} />
+      <MentorshipData mentorshipData={mentorData} refetch={refetch} />
 
-      {/* Edit Course Modal */}
-      <dialog id="Edit_Course_Modal" className="modal">
-        <ModalEditCourse CourseData={editCourseData} refetch={refetch} />
+      {/* Edit Mentorship Modal */}
+      <dialog id="Edit_Mentorship_Modal" className="modal">
+        <ModalEditMentorship
+          MentorshipData={editMentorshipData}
+          refetch={refetch}
+        />
       </dialog>
 
-      {/* Delete Course Modal */}
+      {/* Delete Mentorship Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg w-[1000px] shadow-lg">
-            <h2 className="text-xl font-bold mb-4">Delete Course</h2>
-            <p>Are you sure you want to delete this course?</p>
+          <div className="bg-white p-8 rounded-lg w-[500px] shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Delete Mentorship</h2>
+            <p>Are you sure you want to delete this mentor?</p>
             <form onSubmit={handleSubmit(onSubmit)}>
               <textarea
                 className="textarea textarea-bordered w-full bg-white border-black h-40"
@@ -219,4 +225,4 @@ const ManageMyCourse = () => {
   );
 };
 
-export default ManageMyCourse;
+export default ManageMyMentorship;

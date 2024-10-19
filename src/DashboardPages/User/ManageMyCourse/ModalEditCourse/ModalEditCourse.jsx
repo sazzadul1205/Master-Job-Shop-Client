@@ -1,20 +1,18 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import { AuthContext } from "../../../../Provider/AuthProvider";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 
-const ModalNewCourse = ({ refetch }) => {
+const ModalEditCourse = ({ CourseData, refetch }) => {
   const axiosPublic = useAxiosPublic();
-
-  const { user } = useContext(AuthContext);
 
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -83,98 +81,67 @@ const ModalNewCourse = ({ refetch }) => {
   });
 
   useEffect(() => {
-    if (fieldsBatches.length === 0) {
-      appendBatches({ batchName: "", batchDate: "", batchDetails: "" });
+    if (CourseData) {
+      reset({
+        courseTitle: CourseData?.courseTitle,
+        instructor: CourseData?.instructor,
+        duration: CourseData?.duration,
+        level: CourseData?.level,
+        postedBy: CourseData?.postedBy,
+        description: CourseData?.description,
+        format: CourseData?.format,
+        batches: CourseData?.batches || [],
+        prerequisites: CourseData?.prerequisites || [],
+        learningOutcomes: CourseData?.learningOutcomes || [],
+        schedule: CourseData?.schedule || [],
+        assessments: CourseData?.assessments || [],
+        targetAudience: CourseData?.targetAudience || [],
+        certification: CourseData?.certification,
+        officeHours: CourseData?.support?.officeHours,
+        discussionForum: CourseData?.support?.discussionForum,
+        emailSupport: CourseData?.support?.emailSupport,
+        careerGuidance: CourseData?.support?.careerGuidance,
+        applicants: CourseData?.applicants || [],
+      });
     }
-    if (fieldsPrerequisites.length === 0) {
-      appendPrerequisites("");
-    }
-    if (fieldsLearningOutcomes.length === 0) {
-      appendLearningOutcomes("");
-    }
-    if (fieldsSchedule.length === 0) {
-      appendSchedule({ week: "", topic: "", scheduleDetails: "" });
-    }
-    if (fieldsAssessments.length === 0) {
-      appendAssessments("");
-    }
-    if (fieldsTargetAudience.length === 0) {
-      appendTargetAudience("");
-    }
-  }, [
-    fieldsBatches,
-    appendBatches,
-    fieldsPrerequisites,
-    appendPrerequisites,
-    fieldsLearningOutcomes,
-    appendLearningOutcomes,
-    fieldsSchedule,
-    appendSchedule,
-    fieldsAssessments,
-    appendAssessments,
-    fieldsTargetAudience,
-    appendTargetAudience,
-  ]);
+  }, [CourseData, reset]);
 
   const onSubmit = async (data) => {
-    const structuredData = {
-      courseTitle: data.courseTitle,
-      instructor: data.instructor,
-      duration: data.duration,
-      level: data.level,
-      postedBy: user.email,
-      description: data.description,
-      format: data.format,
-      batches: data.batches, // Assuming it's an array of objects
-      prerequisites: data.prerequisites, // Assuming it's an array
-      learningOutcomes: data.learningOutcomes, // Assuming it's an array
-      schedule: data.schedule, // Assuming it's an array of objects
-      assessments: data.assessments, // Assuming it's an array
-      targetAudience: data.targetAudience, // Assuming it's an array
-      certification: data.certification,
-      support: {
-        officeHours: data.officeHours,
-        discussionForum: data.discussionForum,
-        emailSupport: data.emailSupport,
-        careerGuidance: data.careerGuidance,
-      },
-      applicants: [], // Empty array for now
-    };
-
     try {
-      // Sending POST request
-      const response = await axiosPublic.post("/Courses", structuredData);
+      // Make the PUT request to update the course by ID
+      await axiosPublic.put(`/Courses/${CourseData._id}`, data);
 
-      if (response.data.insertedId) {
-        // Show success alert
-        Swal.fire({
-          title: "Success!",
-          text: "Course has been created successfully!",
-          icon: "success",
-          button: "OK",
-        });
-      }
-      document.getElementById("Create_New_Course").close();
+      // Show a success alert
+      Swal.fire({
+        title: "Success!",
+        text: "Course updated successfully",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+
+      document.getElementById("Edit_Course_Modal").close();
       refetch();
+      // Optionally, handle successful response or redirect
     } catch (error) {
-      console.error("Error creating course:", error);
-
-      // Show error alert
+      // Show an error alert
       Swal.fire({
         title: "Error!",
-        text: "Failed to create the course. Please try again.",
+        text: "Failed to update course. Please try again.",
         icon: "error",
-        button: "OK",
+        confirmButtonText: "OK",
       });
+
+      console.error("Error updating course:", error);
     }
   };
 
   return (
     <div className="modal-box bg-white max-w-[800px] p-0 rounded-none">
-      <div className="flex justify-between items-center p-5 bg-blue-400 text-white">
-        <p className="text-xl">Create New Course</p>
+      {/* Top section */}
+      <div className="flex justify-between items-center p-5 bg-blue-400 text-white ">
+        <p className="text-xl">Edit My Course</p>
         <button
-          onClick={() => document.getElementById("Create_New_Course").close()}
+          onClick={() => document.getElementById("Edit_Course_Modal").close()}
         >
           <ImCross className="hover:text-gray-700" />
         </button>
@@ -453,7 +420,6 @@ const ModalNewCourse = ({ refetch }) => {
   );
 };
 
-// Reusable FormInput component
 const FormInput = ({ label, type = "text", register, errors, placeholder }) => (
   <div className="flex items-center gap-2">
     <label className="font-bold w-48 text-xl">{label}:</label>
@@ -475,16 +441,16 @@ const FormInput = ({ label, type = "text", register, errors, placeholder }) => (
   </div>
 );
 
-// Add prop types validation
 FormInput.propTypes = {
   label: PropTypes.string.isRequired,
   type: PropTypes.string,
-  register: PropTypes.func.isRequired,
+  register: PropTypes.object.isRequired,
   errors: PropTypes.object,
   placeholder: PropTypes.string,
 };
 
 // Reusable DynamicFieldList component
+
 const DynamicFieldList = ({
   label,
   fields,
@@ -527,7 +493,6 @@ const DynamicFieldList = ({
   </div>
 );
 
-// Add prop types validation
 DynamicFieldList.propTypes = {
   label: PropTypes.string.isRequired,
   fields: PropTypes.array.isRequired,
@@ -539,10 +504,38 @@ DynamicFieldList.propTypes = {
   errors: PropTypes.object,
 };
 
-export default ModalNewCourse;
+export default ModalEditCourse;
+
+ModalEditCourse.propTypes = {
+  CourseData: PropTypes.shape({
+    _id: PropTypes.string,
+    courseTitle: PropTypes.string,
+    instructor: PropTypes.string,
+    duration: PropTypes.string,
+    level: PropTypes.string,
+    postedBy: PropTypes.string,
+    description: PropTypes.string,
+    format: PropTypes.string,
+    batches: PropTypes.array,
+    prerequisites: PropTypes.array,
+    learningOutcomes: PropTypes.array,
+    schedule: PropTypes.array,
+    assessments: PropTypes.array,
+    targetAudience: PropTypes.array,
+    certification: PropTypes.string,
+    support: PropTypes.shape({
+      officeHours: PropTypes.string,
+      discussionForum: PropTypes.string,
+      emailSupport: PropTypes.string,
+      careerGuidance: PropTypes.string,
+    }),
+    applicants: PropTypes.array,
+  }),
+  reset: PropTypes.func.isRequired,
+};
 
 // PropTypes validation
-ModalNewCourse.propTypes = {
+ModalEditCourse.propTypes = {
   user: PropTypes.shape({
     email: PropTypes.string.isRequired,
     displayName: PropTypes.string.isRequired,

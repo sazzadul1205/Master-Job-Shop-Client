@@ -305,7 +305,7 @@ const ManageJobApplicant = () => {
                                       View Resume
                                     </a>
                                   </td>
-                                  <td >
+                                  <td>
                                     <button
                                       className="bg-red-500 hover:bg-red-400 p-2 text-white text-xl "
                                       onClick={() =>
@@ -356,34 +356,56 @@ const ManageJobApplicant = () => {
       {/* Delete Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg w-[1000px] shadow-lg">
+          <div className="bg-white p-8 rounded-lg w-[800px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Delete Jobs</h2>
             <p>Selected Jobs:</p>
             <ul className="mb-4">
               {selectedJobs.map((jobId) => {
                 const job = MyPostedJobs.find((job) => job._id === jobId);
-                return <li key={jobId}>{job?.jobTitle}</li>;
+                return (
+                  <li
+                    key={jobId}
+                    className="mt-2 border border-gray-200 p-2 hover:bg-gray-200 hover:text-lg"
+                  >
+                    <p className="flex">
+                      <span className="font-bold w-24">Job Name: </span>
+                      {job?.jobTitle}
+                    </p>
+                    <p className="flex">
+                      <span className="font-bold w-24">Client Name:</span>
+                      {job?.companyName}
+                    </p>
+                  </li>
+                );
               })}
             </ul>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <textarea
-                className="textarea textarea-bordered w-full"
-                placeholder="Enter the reason for deletion"
-                {...register("deleteReason", { required: true })}
-              ></textarea>
-              <button
-                type="submit"
-                className="bg-red-500 hover:bg-red-400 px-4 py-2 text-white font-bold mt-4"
-              >
-                Confirm Delete
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowDeleteModal(false)}
-                className="bg-gray-500 hover:bg-gray-400 px-4 py-2 text-white font-bold mt-4 ml-2"
-              >
-                Cancel
-              </button>
+              <div className="mb-4">
+                <label className="block mb-2 font-bold">
+                  Reason for Deletion:
+                </label>
+                <textarea
+                  {...register("deleteReason", { required: true })}
+                  className="textarea textarea-bordered w-full bg-white border-black h-40"
+                  placeholder="Enter the reason for deletion"
+                  required
+                />
+              </div>
+              <div className="flex justify-end gap-2 mt-5">
+                <button
+                  type="button"
+                  className="bg-gray-500 hover:bg-gray-400 text-white px-5 py-2"
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-red-500 hover:bg-red-400 text-white px-5 py-2"
+                >
+                  Confirm Delete
+                </button>
+              </div>
             </form>
           </div>
         </div>

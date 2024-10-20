@@ -10,6 +10,7 @@ const DashboardLayout = () => {
   // Admin/Manager Links
   const DashboardNavLink = [
     { to: "AdminOverview", label: "Admin Overview" },
+    { to: "UserOverview", label: "User Overview" },
     { to: "AdminManageUsers", label: "Manage Users" },
     { to: "ManageJobs", label: "Manage Jobs" },
     { to: "ManageGigs", label: "Manage Gigs" },
@@ -30,6 +31,8 @@ const DashboardLayout = () => {
     { to: "ManageMyCourse", label: "Manage My Course" },
     { to: "ManageMyMentorship", label: "Manage My Mentorship" },
     { to: "ManageMyInternship", label: "Manage My Internship" },
+    { to: "ManageMyTestimonials", label: "Manage My Testimonial" },
+    { to: "ManageMyBlogs", label: "Manage My Blogs" },
   ];
 
   // Generate navigation items

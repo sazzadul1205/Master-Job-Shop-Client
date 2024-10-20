@@ -185,6 +185,9 @@ const ManageGigs = () => {
         >
           Delete
         </button>
+        <p className="font-bold text-2xl">
+          Total Gigs : {postedGigData.length}
+        </p>
       </div>
 
       <div className="overflow-x-auto p-2">
@@ -197,6 +200,7 @@ const ManageGigs = () => {
               <th>Gig Type</th>
               <th>State</th>
               <th>Posted Date</th>
+              <th>State</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -225,6 +229,13 @@ const ManageGigs = () => {
                   <td>{gig?.gigType}</td>
                   <td>{gig?.state}</td>
                   <td>{new Date(gig.postedDate).toLocaleDateString()}</td>
+                  <td>
+                    {expired ? (
+                      <p className="text-red-500 font-bold">Expired</p>
+                    ) : (
+                      "Active"
+                    )}
+                  </td>{" "}
                   <td>
                     <div className="dropdown dropdown-left">
                       <button
@@ -255,7 +266,7 @@ const ManageGigs = () => {
                             <MdDelete />
                           </button>
                         </li>
-                        {gig.state === "in-progress" && !expired && (
+                        {gig.state === "In-Progress" && !expired && (
                           <li>
                             <button
                               className="bg-green-500 hover:bg-green-400 p-2 text-white text-[20px]"
@@ -296,7 +307,10 @@ const ManageGigs = () => {
               {selectedGigs.map((gigId) => {
                 const gig = postedGigData.find((gig) => gig._id === gigId);
                 return (
-                  <li key={gigId} className="mt-2 border border-gray-200 p-2 hover:bg-gray-200 hover:text-lg">
+                  <li
+                    key={gigId}
+                    className="mt-2 border border-gray-200 p-2 hover:bg-gray-200 hover:text-lg"
+                  >
                     <p className="flex">
                       <span className="font-bold w-24">Gig Name: </span>
                       {gig?.gigTitle}
@@ -322,16 +336,19 @@ const ManageGigs = () => {
                   placeholder="Enter reason for deletion"
                 ></textarea>
               </div>
-              <div className="modal-action">
-                <button type="submit" className="bg-green-500 hover:bg-green-600 text-white font-bold text-lg py-2 w-28">
-                  Confirm
-                </button>
+              <div className="flex justify-end gap-2 mt-5">
                 <button
                   type="button"
-                  className="bg-red-500 hover:bg-red-600 text-white font-bold text-lg py-2 w-28"
+                  className="bg-gray-500 hover:bg-gray-400 text-white px-5 py-2"
                   onClick={() => setShowDeleteModal(false)}
                 >
                   Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-red-500 hover:bg-red-400 text-white px-5 py-2"
+                >
+                  Confirm Delete
                 </button>
               </div>
             </form>

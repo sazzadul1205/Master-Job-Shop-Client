@@ -7,22 +7,21 @@ import Loader from "../../../Pages/Shared/Loader/Loader";
 import { CiViewBoard } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import ModalViewCourse from "./ModalViewCourse/ModalViewCourse";
-import ModalAddCourses from "./ModalAddCourses/ModalAddCourses";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 
 const ManageCourses = () => {
   const axiosPublic = useAxiosPublic();
   const { user } = useContext(AuthContext);
-  const [viewCourseData, setViewCourseData] = useState(null); // state to hold course details for modal
-  const [searchTerm, setSearchTerm] = useState(""); // state for search input
+  const [viewCourseData, setViewCourseData] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const { register, handleSubmit, reset } = useForm();
 
   // Fetching Courses Data
   const {
-    data: CoursesData = [], // Default to empty array
+    data: CoursesData = [],
     isLoading: CoursesDataIsLoading,
     error: CoursesDataError,
     refetch,
@@ -55,8 +54,8 @@ const ManageCourses = () => {
 
   // Handle viewing course details
   const handleViewCourse = (course) => {
-    setViewCourseData(course); // Set the selected course details
-    document.getElementById("Modal_Course_View").showModal(); // Show the modal
+    setViewCourseData(course);
+    // Consider using a more accessible modal implementation
   };
 
   // Handle search
@@ -66,8 +65,8 @@ const ManageCourses = () => {
 
   // Handle single course deletion
   const handleSingleDelete = (courseID) => {
-    setSelectedCourseId(courseID); // Set the selected course ID for deletion
-    setShowDeleteModal(true); // Open delete confirmation modal
+    setSelectedCourseId(courseID);
+    setShowDeleteModal(true);
   };
 
   // Current date for deletion log
@@ -97,9 +96,7 @@ const ManageCourses = () => {
     };
 
     try {
-      // Post log data to the Delete-Log server, wrapping it in an array
-      await axiosPublic.post(`/Delete-Log`, [deleteCourseLogData]); // Send as an array
-      // Delete course by ID
+      await axiosPublic.post(`/Delete-Log`, [deleteCourseLogData]);
       await axiosPublic.delete(`/Courses/${selectedCourseId}`);
 
       // Show success message
@@ -110,10 +107,10 @@ const ManageCourses = () => {
         confirmButtonText: "Okay",
       });
 
-      reset(); // Reset form
-      setShowDeleteModal(false); // Close modal
-      setSelectedCourseId(null); // Clear selected course ID
-      refetch(); // Refetch courses after deletion
+      reset();
+      setShowDeleteModal(false);
+      setSelectedCourseId(null);
+      refetch();
     } catch (error) {
       console.error("Error deleting course:", error);
       // Show error message
@@ -147,18 +144,6 @@ const ManageCourses = () => {
             <FaSearch />
           </label>
         </div>
-      </div>
-
-      {/* Add new course button */}
-      <div className="flex justify-between mx-5 my-2">
-        <button
-          className="bg-green-500 hover:bg-green-300 px-10 py-2 text-white font-bold"
-          onClick={() =>
-            document.getElementById("Create_New_Courses").showModal()
-          }
-        >
-          + Add New Course
-        </button>
       </div>
 
       {/* Courses Table */}
@@ -214,23 +199,42 @@ const ManageCourses = () => {
       </div>
 
       {/* View course modal */}
-      <dialog id="Modal_Course_View" className="modal">
-        {viewCourseData && <ModalViewCourse courseData={viewCourseData} />}
-      </dialog>
-
-      <dialog id="Create_New_Courses" className="modal">
-        <ModalAddCourses refetch={refetch} />
-      </dialog>
+      {viewCourseData && (
+        <ModalViewCourse
+          courseData={viewCourseData}
+          onClose={() => setViewCourseData(null)}
+        />
+      )}
 
       {/* Delete modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg w-[500px] shadow-lg">
+          <div className="bg-white p-8 rounded-lg w-[800px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Delete Course</h2>
             {selectedCourseId && (
-              <p className="font-bold">
-                Are you sure you want to delete this course?
-              </p>
+              <div className="w-[400px]">
+                <p className="font-bold">
+                  Are you sure you want to delete this course?
+                </p>
+                <div className="mt-2 border border-gray-200 p-2 hover:bg-gray-200 hover:text-lg">
+                  <p className="flex">
+                    <span className="font-bold w-44">Course Name: </span>
+                    {
+                      filteredCourses.find(
+                        (course) => course._id === selectedCourseId
+                      )?.courseTitle
+                    }
+                  </p>
+                  <p className="flex">
+                    <span className="font-bold w-44">Course Organizer: </span>
+                    {
+                      filteredCourses.find(
+                        (course) => course._id === selectedCourseId
+                      )?.postedBy
+                    }
+                  </p>
+                </div>
+              </div>
             )}
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
@@ -244,7 +248,7 @@ const ManageCourses = () => {
                   required
                 />
               </div>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 mt-5">
                 <button
                   type="button"
                   className="bg-gray-500 hover:bg-gray-400 text-white px-5 py-2"

@@ -78,16 +78,13 @@ const ManageBlogs = () => {
     try {
       const deleteLogData = {
         DeletedBy: user.email,
-        PostedBy: viewBlogData?.postedBy, // Ensure this data is from the blog being deleted
+        PostedBy: viewBlogData?.postedBy,
         DeletedDate: formattedDateTime,
         Type: "Blog",
         deletedContent: viewBlogData?.title,
         reason: data.deleteReason,
       };
 
-      console.log(deleteLogData);
-
-      // Post delete log data and delete the blog
       await axiosPublic.post(`/Delete-Log`, [deleteLogData]);
       await axiosPublic.delete(`/Blogs/${selectedBlogId}`);
 
@@ -202,11 +199,12 @@ const ManageBlogs = () => {
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg w-[500px] shadow-lg">
+          <div className="bg-white p-8 rounded-lg w-[800px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Delete Blog</h2>
-            <p className="font-bold mb-4">
-              Are you sure you want to delete this blog?
-            </p>
+            <div className="w-[400px]">
+              <p className="font-bold mb-2">Author: {viewBlogData?.author}</p>
+              <p className="font-bold mb-4">Title: {viewBlogData?.title}</p>
+            </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
                 <label className="block mb-2 font-bold">
@@ -238,7 +236,6 @@ const ManageBlogs = () => {
           </div>
         </div>
       )}
-      
     </div>
   );
 };

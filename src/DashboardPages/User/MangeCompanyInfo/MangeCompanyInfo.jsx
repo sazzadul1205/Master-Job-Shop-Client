@@ -194,7 +194,7 @@ const MangeCompanyInfo = () => {
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg w-[1000px] shadow-lg">
+          <div className="bg-white p-8 rounded-lg w-[800px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Delete Company Profiles</h2>
             <p>Selected Company Profiles:</p>
             <ul className="mb-4">

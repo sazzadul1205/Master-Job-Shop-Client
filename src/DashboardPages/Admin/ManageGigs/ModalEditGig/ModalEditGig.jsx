@@ -33,6 +33,7 @@ const ModalEditGig = ({ editGigData, refetch }) => {
       setValue("projectExpectations", editGigData.projectExpectations || "N/A");
       setValue("communication", editGigData.communication || "N/A");
       setValue("additionalBenefits", editGigData.additionalBenefits || "N/A");
+      setValue("expirationDate", editGigData.expirationDate || "N/A");
     }
   }, [editGigData, setValue]);
 
@@ -85,193 +86,139 @@ const ModalEditGig = ({ editGigData, refetch }) => {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="p-5">
-        {/* Gig Title */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">Gig Title:</label>
-          <input
-            type="text"
-            {...register("gigTitle", { required: "Gig Title is required" })}
-            className={`border p-2 w-full mt-2 bg-white ${
-              errors.gigTitle ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.gigTitle && (
-            <span className="text-red-500">{errors.gigTitle.message}</span>
-          )}
-        </div>
-
-        {/* Client Name */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">Client Name:</label>
-          <input
-            type="text"
-            {...register("clientName", { required: "Client Name is required" })}
-            className={`border p-2 w-full mt-2 bg-white ${
-              errors.clientName ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.clientName && (
-            <span className="text-red-500">{errors.clientName.message}</span>
-          )}
-        </div>
-
-        {/* Client Type */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">Client Type:</label>
-          <input
-            type="text"
-            {...register("clientType")}
-            className="border p-2 w-full mt-2 bg-white"
-          />
-        </div>
-
-        {/* Gig Type */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">Gig Type:</label>
-          <input
-            type="text"
-            {...register("gigType", { required: "Gig Type is required" })}
-            className={`border p-2 w-full mt-2 bg-white ${
-              errors.gigType ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.gigType && (
-            <span className="text-red-500">{errors.gigType.message}</span>
-          )}
-        </div>
-
-        {/* Location */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">Location:</label>
-          <input
-            type="text"
-            {...register("location", { required: "Location is required" })}
-            className={`border p-2 w-full mt-2 bg-white ${
-              errors.location ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.location && (
-            <span className="text-red-500">{errors.location.message}</span>
-          )}
-        </div>
-
-        {/* Payment Rate */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">Payment Rate:</label>
-          <input
-            type="text"
-            {...register("paymentRate", {
-              required: "Payment Rate is required",
-            })}
-            className={`border p-2 w-full mt-2 bg-white ${
-              errors.paymentRate ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.paymentRate && (
-            <span className="text-red-500">{errors.paymentRate.message}</span>
-          )}
-        </div>
-
-        {/* Duration */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">Duration:</label>
-          <input
-            type="text"
-            {...register("duration", { required: "Duration is required" })}
-            className={`border p-2 w-full mt-2 bg-white ${
-              errors.duration ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.duration && (
-            <span className="text-red-500">{errors.duration.message}</span>
-          )}
-        </div>
-
-        {/* Responsibilities */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">
-            Responsibilities:
-          </label>
-          <textarea
-            {...register("responsibilities", {
-              required: "Responsibilities are required",
-            })}
-            className={`border p-2 w-full mt-2 bg-white ${
-              errors.responsibilities ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.responsibilities && (
-            <span className="text-red-500">
-              {errors.responsibilities.message}
-            </span>
-          )}
-        </div>
-
-        {/* Required Skills */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">Required Skills:</label>
-          <textarea
-            {...register("requiredSkills", {
-              required: "Required Skills are required",
-            })}
-            className={`border p-2 w-full mt-2 bg-white ${
-              errors.requiredSkills ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.requiredSkills && (
-            <span className="text-red-500">
-              {errors.requiredSkills.message}
-            </span>
-          )}
-        </div>
-
-        {/* Working Hours */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">Working Hours:</label>
-          <input
-            type="text"
-            {...register("workingHours")}
-            className="border p-2 w-full mt-2 bg-white"
-          />
-        </div>
-
-        {/* Project Expectations */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">
-            Project Expectations:
-          </label>
-          <textarea
-            {...register("projectExpectations")}
-            className="border p-2 w-full mt-2 bg-white"
-          />
-        </div>
-
-        {/* Communication */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">Communication:</label>
-          <textarea
-            {...register("communication")}
-            className="border p-2 w-full mt-2 bg-white"
-          />
-        </div>
-
-        {/* Additional Benefits */}
-        <div className="mb-4">
-          <label className="block text-black font-bold">
-            Additional Benefits:
-          </label>
-          <textarea
-            {...register("additionalBenefits")}
-            className="border p-2 w-full mt-2 bg-white"
-          />
-        </div>
-
-        <div className="flex justify-end">
+        {[
+          {
+            label: "Gig Title",
+            name: "gigTitle",
+            type: "text",
+            required: true,
+            placeholder: "Enter the gig title (e.g., Web Developer)",
+          },
+          {
+            label: "Client Name",
+            name: "clientName",
+            type: "text",
+            required: true,
+            placeholder: "Enter client's name (e.g., John Doe)",
+          },
+          {
+            label: "Client Type",
+            name: "clientType",
+            type: "text",
+            placeholder: "Enter the type of client (e.g., Individual, Company)",
+          },
+          {
+            label: "Gig Type",
+            name: "gigType",
+            type: "text",
+            required: true,
+            placeholder: "Enter the gig type (e.g., Full-time, Freelance)",
+          },
+          {
+            label: "Location",
+            name: "location",
+            type: "text",
+            required: true,
+            placeholder: "Enter location (e.g., Remote, New York)",
+          },
+          {
+            label: "Payment Rate",
+            name: "paymentRate",
+            type: "text",
+            required: true,
+            placeholder: "Enter payment rate (e.g., $50/hr)",
+          },
+          {
+            label: "Duration",
+            name: "duration",
+            type: "text",
+            required: true,
+            placeholder: "Enter the duration (e.g., 3 months)",
+          },
+          {
+            label: "Responsibilities",
+            name: "responsibilities",
+            type: "textarea",
+            required: true,
+            placeholder:
+              "List the responsibilities (e.g., Develop web apps, ...) ",
+          },
+          {
+            label: "Required Skills",
+            name: "requiredSkills",
+            type: "textarea",
+            required: true,
+            placeholder:
+              "List required skills (e.g., JavaScript, React, Node.js)",
+          },
+          {
+            label: "Working Hours",
+            name: "workingHours",
+            type: "text",
+            placeholder: "Enter working hours (e.g., 9 AM - 5 PM)",
+          },
+          {
+            label: "Project Expectations",
+            name: "projectExpectations",
+            type: "textarea",
+            placeholder: "Enter any project expectations or deliverables",
+          },
+          {
+            label: "Communication",
+            name: "communication",
+            type: "textarea",
+            placeholder: "Preferred communication (e.g., Slack, Email)",
+          },
+          {
+            label: "Additional Benefits",
+            name: "additionalBenefits",
+            type: "textarea",
+            placeholder:
+              "List any additional benefits (e.g., Health Insurance)",
+          },
+          {
+            label: "Expiration Date",
+            name: "expirationDate",
+            type: "date",
+          },
+        ].map(({ label, name, type, required, placeholder }) => (
+          <div key={name} className="flex items-center gap-2">
+            <label className="font-bold w-56 text-xl">{label}:</label>
+            {type === "textarea" ? (
+              <textarea
+                {...register(
+                  name,
+                  required ? { required: `${label} is required` } : {}
+                )}
+                placeholder={placeholder}
+                className={`border p-2 w-full mt-2 bg-white ${
+                  errors[name] ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+            ) : (
+              <input
+                type={type}
+                {...register(
+                  name,
+                  required ? { required: `${label} is required` } : {}
+                )}
+                placeholder={placeholder}
+                className={`border p-2 w-full mt-2 bg-white ${
+                  errors[name] ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+            )}
+            {errors[name] && (
+              <span className="text-red-500">{errors[name]?.message}</span>
+            )}
+          </div>
+        ))}
+        <div className="flex justify-end mt-5">
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-14"
           >
-            Update Gig
+            Post Gig
           </button>
         </div>
       </form>

@@ -161,7 +161,7 @@ const ManageJobs = () => {
 
       <div className="flex justify-between mx-5 my-2 items-center">
         <button
-          className="bg-red-500 hover:bg-red-300 w-48 py-1 text-lg text-white font-bold"
+          className="bg-red-500 hover:bg-red-300 px-10 py-2 text-white font-bold"
           onClick={handleDeleteSelectedJobs}
         >
           Delete
@@ -213,7 +213,13 @@ const ManageJobs = () => {
                   <td>{job?.companyName}</td>
                   <td>{job?.state}</td>
                   <td>{new Date(job.postedDate).toLocaleDateString()}</td>
-                  <td>{isExpired ? "Expired" : "Active"}</td>{" "}
+                  <td>
+                    {isExpired ? (
+                      <p className="text-red-500 font-bold">Expired</p>
+                    ) : (
+                      "Active"
+                    )}
+                  </td>{" "}
                   {/* Display status */}
                   <td>
                     <div className="dropdown dropdown-left">
@@ -309,19 +315,19 @@ const ManageJobs = () => {
                   placeholder="Enter reason for deletion"
                 ></textarea>
               </div>
-              <div className="modal-action">
-                <button
-                  type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold text-lg py-2 w-28"
-                >
-                  Confirm
-                </button>
+              <div className="flex justify-end gap-2 mt-5">
                 <button
                   type="button"
-                  className="bg-red-500 hover:bg-red-600 text-white font-bold text-lg py-2 w-28"
+                  className="bg-gray-500 hover:bg-gray-400 text-white px-5 py-2"
                   onClick={() => setShowDeleteModal(false)}
                 >
                   Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-red-500 hover:bg-red-400 text-white px-5 py-2"
+                >
+                  Confirm Delete
                 </button>
               </div>
             </form>

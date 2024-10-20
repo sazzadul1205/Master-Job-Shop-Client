@@ -14,7 +14,7 @@ const ManageMentorship = () => {
   const axiosPublic = useAxiosPublic();
   const { user } = useContext(AuthContext);
   const [viewMentorshipData, setViewMentorshipData] = useState(null);
-  const [selectedMentorId, setSelectedMentorId] = useState(null);
+  const [selectedMentor, setSelectedMentor] = useState(null); // Store entire mentor instead of ID
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { register, handleSubmit, reset } = useForm();
 
@@ -56,8 +56,8 @@ const ManageMentorship = () => {
   };
 
   // Show delete confirmation modal
-  const handleSingleDelete = (mentorID) => {
-    setSelectedMentorId(mentorID);
+  const handleSingleDelete = (mentor) => {
+    setSelectedMentor(mentor); // Store the entire mentor object
     setShowDeleteModal(true);
   };
 
@@ -75,21 +75,18 @@ const ManageMentorship = () => {
   // Handle form submission for deletion
   const onSubmit = async (data) => {
     try {
-      const mentor = mentorshipData.find(
-        (mentor) => mentor._id === selectedMentorId
-      );
       const deleteLogData = {
-        DeletedBy: user.email, // Replace with dynamic user email
-        PostedBy: mentor?.postedBy,
+        DeletedBy: user.email, // Dynamic user email
+        PostedBy: selectedMentor?.postedBy,
         DeletedDate: formattedDateTime,
         Type: "Mentorship",
-        deletedContent: mentor?.mentorName,
+        deletedContent: selectedMentor?.mentorName,
         reason: data.deleteReason,
       };
 
       // Log deletion and delete the mentor
       await axiosPublic.post(`/Delete-Log`, [deleteLogData]);
-      await axiosPublic.delete(`/Mentorship/${selectedMentorId}`);
+      await axiosPublic.delete(`/Mentorship/${selectedMentor._id}`);
 
       Swal.fire({
         icon: "success",
@@ -101,8 +98,7 @@ const ManageMentorship = () => {
       reset();
       refetch();
       setShowDeleteModal(false);
-      setSelectedMentorId(null);
-      // Refetch mentorship data (optional)
+      setSelectedMentor(null);
     } catch (error) {
       console.error("Error deleting mentor:", error);
       Swal.fire({
@@ -161,7 +157,7 @@ const ManageMentorship = () => {
                       </button>
                       <button
                         className="bg-red-500 hover:bg-red-400 p-2 text-white text-2xl"
-                        onClick={() => handleSingleDelete(mentor._id)}
+                        onClick={() => handleSingleDelete(mentor)}
                       >
                         <MdDelete />
                       </button>
@@ -188,13 +184,25 @@ const ManageMentorship = () => {
       </dialog>
 
       {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
+      {showDeleteModal && selectedMentor && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg w-[500px] shadow-lg">
+          <div className="bg-white p-8 rounded-lg w-[800px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Delete Mentor</h2>
-            <p className="font-bold mb-4">
-              Are you sure you want to delete this mentor?
-            </p>
+            <div className="w-[400px]">
+              <p className="font-bold">
+                Are you sure you want to delete this mentor?
+              </p>
+              <div className="mt-2 border border-gray-200 p-2 hover:bg-gray-200 hover:text-lg">
+                <p className="flex">
+                  <span className="font-bold w-44">Mentor Name: </span>
+                  {selectedMentor?.mentorName}
+                </p>
+                <p className="flex">
+                  <span className="font-bold w-44">Expertise: </span>
+                  {selectedMentor?.expertise}
+                </p>
+              </div>
+            </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
                 <label className="block mb-2 font-bold">
@@ -207,7 +215,7 @@ const ManageMentorship = () => {
                   required
                 />
               </div>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 mt-5">
                 <button
                   type="button"
                   className="bg-gray-500 hover:bg-gray-400 text-white px-5 py-2"
@@ -231,4 +239,3 @@ const ManageMentorship = () => {
 };
 
 export default ManageMentorship;
-

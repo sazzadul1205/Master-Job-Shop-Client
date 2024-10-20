@@ -195,7 +195,7 @@ const ManageMyMentorship = () => {
       {/* Delete Mentorship Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg w-[500px] shadow-lg">
+          <div className="bg-white p-8 rounded-lg w-[800px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Delete Mentorship</h2>
             <p>Are you sure you want to delete this mentor?</p>
             <form onSubmit={handleSubmit(onSubmit)}>

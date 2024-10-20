@@ -7,22 +7,21 @@ import { MdDelete } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../../Provider/AuthProvider";
-import ModalAddEvents from "./ModalAddEvents/ModalAddEvents";
 import ModalViewEvents from "./ModalViewEvents/ModalViewEvents";
 import { CiViewBoard } from "react-icons/ci";
 
 const ManageEvents = () => {
   const axiosPublic = useAxiosPublic();
   const { user } = useContext(AuthContext);
-  const [viewEventsData, setViewEventsData] = useState(null); // state to hold event details for modal
+  const [viewEventsData, setViewEventsData] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedEventId, setSelectedEventId] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const { register, handleSubmit, reset } = useForm();
 
   // Fetching Event Data
   const {
-    data: UpcomingEventsData = [], // Default to empty array
+    data: UpcomingEventsData = [],
     isLoading: UpcomingEventsDataIsLoading,
     error: UpcomingEventsDataError,
     refetch,
@@ -55,13 +54,13 @@ const ManageEvents = () => {
 
   // Handle viewing event details
   const handleViewInsights = (event) => {
-    setViewEventsData(event); // Set the selected event details
-    document.getElementById("Modal_Upcoming_Event_View").showModal(); // Show the modal
+    setViewEventsData(event);
+    document.getElementById("Modal_Upcoming_Event_View").showModal();
   };
 
   // Handle single event deletion
-  const handleSingleDelete = (eventID) => {
-    setSelectedEventId(eventID); // Set the selected event ID for deletion
+  const handleSingleDelete = (event) => {
+    setSelectedEvent(event); // Set the selected event for deletion
     setShowDeleteModal(true); // Open delete confirmation modal
   };
 
@@ -78,26 +77,19 @@ const ManageEvents = () => {
 
   // Input submission for deletion reason
   const onSubmit = async (data) => {
-    const event = UpcomingEventsData.find(
-      (event) => event._id === selectedEventId
-    );
-
     const deleteEventLogData = {
       DeletedBy: user.email,
-      PostedBy: event?.postedBy,
+      PostedBy: selectedEvent?.postedBy,
       DeletedDate: formattedDateTime,
       Type: "Event",
-      deletedContent: event?.eventTitle,
+      deletedContent: selectedEvent?.eventTitle,
       reason: data.deleteReason,
     };
 
     try {
-      // Post log data to the Delete-Log server, wrapping it in an array
-      await axiosPublic.post(`/Delete-Log`, [deleteEventLogData]); // Send as an array
-      // Delete event by ID
-      await axiosPublic.delete(`/Upcoming-Events/${selectedEventId}`);
+      await axiosPublic.post(`/Delete-Log`, [deleteEventLogData]);
+      await axiosPublic.delete(`/Upcoming-Events/${selectedEvent._id}`);
 
-      // Show success message
       Swal.fire({
         icon: "success",
         title: "Success!",
@@ -105,13 +97,12 @@ const ManageEvents = () => {
         confirmButtonText: "Okay",
       });
 
-      reset(); // Reset form
-      setShowDeleteModal(false); // Close modal
-      setSelectedEventId(null); // Clear selected event ID
-      refetch(); // Refetch events after deletion
+      reset();
+      setShowDeleteModal(false);
+      setSelectedEvent(null);
+      refetch();
     } catch (error) {
       console.error("Error deleting event:", error);
-      // Show error message
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -138,18 +129,6 @@ const ManageEvents = () => {
         </div>
       </div>
 
-      {/* Add and Delete selected insights button */}
-      <div className="flex justify-between mx-5 my-2">
-        <button
-          className="bg-green-500 hover:bg-green-300 px-10 py-2 text-white font-bold"
-          onClick={() =>
-            document.getElementById("Create_New_Events").showModal()
-          }
-        >
-          + Add New Event
-        </button>
-      </div>
-
       {/* Event Table */}
       <div className="overflow-x-auto p-2">
         <table className="table border border-black">
@@ -158,39 +137,44 @@ const ManageEvents = () => {
             <tr className="bg-gray-500 text-white">
               <th>No</th>
               <th>Event Title</th>
-              <th>Organizer</th>
-              <th>Event Type</th>
+              <th>Location</th>
               <th>Posted Date</th>
+              <th>Posted By</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
             {/* Mapping through fetched events */}
-            {UpcomingEventsData.map((event, index) => (
-              <tr key={event._id}>
-                <td>{index + 1}</td>
-                <td>{event?.eventTitle}</td>
-                <td>{event?.organizer}</td>
-                <td>{event?.eventType}</td>
-                <td>{new Date(event.postedDate).toLocaleDateString()}</td>
-                <td>
-                  <div className="flex gap-2">
-                    <button
-                      className="bg-yellow-500 hover:bg-yellow-400 p-2 text-white text-2xl"
-                      onClick={() => handleViewInsights(event)} // Pass event data on view
-                    >
-                      <CiViewBoard />
-                    </button>
-                    <button
-                      className="bg-red-500 hover:bg-red-400 p-2 text-white text-2xl"
-                      onClick={() => handleSingleDelete(event._id)}
-                    >
-                      <MdDelete />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {UpcomingEventsData.map((event, index) => {
+              const eventDate = new Date(event.date);
+              const isExpired = eventDate < currentDate;
+
+              return (
+                <tr key={event._id} className={isExpired ? "bg-gray-300" : ""}>
+                  <td>{index + 1}</td>
+                  <td>{event?.eventTitle}</td>
+                  <td>{event?.location}</td>
+                  <td>{event?.date}</td>
+                  <td>{event?.postedBy}</td>
+                  <td>
+                    <div className="flex gap-2">
+                      <button
+                        className="bg-yellow-500 hover:bg-yellow-400 p-2 text-white text-2xl"
+                        onClick={() => handleViewInsights(event)}
+                      >
+                        <CiViewBoard />
+                      </button>
+                      <button
+                        className="bg-red-500 hover:bg-red-400 p-2 text-white text-2xl"
+                        onClick={() => handleSingleDelete(event)}
+                      >
+                        <MdDelete />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -200,19 +184,27 @@ const ManageEvents = () => {
         <ModalViewEvents eventsData={viewEventsData} />
       </dialog>
 
-      <dialog id="Create_New_Events" className="modal">
-        <ModalAddEvents refetch={refetch} />
-      </dialog>
-
       {/* Delete modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg w-[500px] shadow-lg">
+          <div className="bg-white p-8 rounded-lg w-[800px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Delete Event</h2>
-            {selectedEventId && (
-              <p className="font-bold">
-                Are you sure you want to delete this event?
-              </p>
+            {selectedEvent && (
+              <div className="w-[400px]">
+                <p className="font-bold">
+                  Are you sure you want to delete this event?
+                </p>
+                <div className="mt-2 border border-gray-200 p-2 hover:bg-gray-200 hover:text-lg">
+                  <p className="flex">
+                    <span className="font-bold w-44">Event Name: </span>
+                    {selectedEvent.eventTitle}
+                  </p>
+                  <p className="flex">
+                    <span className="font-bold w-44">Event Organizer: </span>
+                    {selectedEvent.postedBy}
+                  </p>
+                </div>
+              </div>
             )}
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
@@ -226,7 +218,7 @@ const ManageEvents = () => {
                   required
                 />
               </div>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 mt-5">
                 <button
                   type="button"
                   className="bg-gray-500 hover:bg-gray-400 text-white px-5 py-2"

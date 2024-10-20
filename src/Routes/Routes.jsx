@@ -44,6 +44,9 @@ import ManageMyEvent from "../DashboardPages/User/ManageMyEvent/ManageMyEvent";
 import ManageMyCourse from "../DashboardPages/User/ManageMyCourse/ManageMyCourse";
 import ManageMyMentorship from "../DashboardPages/User/ManageMyMentorship/ManageMyMentorship";
 import ManageMyInternship from "../DashboardPages/User/ManageMyInternship/ManageMyInternship";
+import ManageMyTestimonial from "../DashboardPages/User/ManageMyTestimonial/ManageMyTestimonial";
+import ManageMyBlog from "../DashboardPages/User/ManageMyBlog/ManageMyBlog";
+import UserOverview from "../DashboardPages/User/UserOverview/UserOverview";
 
 export const router = createBrowserRouter([
   {
@@ -160,6 +163,10 @@ export const router = createBrowserRouter([
         element: <AdminOverview></AdminOverview>,
       },
       {
+        path: "userOverview",
+        element: <UserOverview></UserOverview>,
+      },
+      {
         path: "AdminManageUsers",
         element: <AdminManageUsers></AdminManageUsers>,
       },
@@ -237,8 +244,16 @@ export const router = createBrowserRouter([
       },
       {
         path: "ManageMyInternship",
-        element: <ManageMyInternship></ManageMyInternship>
-      }
+        element: <ManageMyInternship></ManageMyInternship>,
+      },
+      {
+        path: "ManageMyTestimonials",
+        element: <ManageMyTestimonial></ManageMyTestimonial>,
+      },
+      {
+        path: "ManageMyBlogs",
+        element: <ManageMyBlog></ManageMyBlog>,
+      },
     ],
   },
 ]);

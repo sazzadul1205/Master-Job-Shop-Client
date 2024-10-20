@@ -14,7 +14,7 @@ const ManageInternship = () => {
   const axiosPublic = useAxiosPublic();
   const { user } = useContext(AuthContext);
   const [viewInternshipData, setViewInternshipData] = useState(null);
-  const [selectedInternshipId, setSelectedInternshipId] = useState(null);
+  const [selectedInternship, setSelectedInternship] = useState(null); // Changed from just ID to entire internship object
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { register, handleSubmit, reset } = useForm();
 
@@ -56,8 +56,8 @@ const ManageInternship = () => {
   };
 
   // Show delete confirmation modal
-  const handleSingleDelete = (internshipID) => {
-    setSelectedInternshipId(internshipID);
+  const handleSingleDelete = (internship) => {
+    setSelectedInternship(internship);
     setShowDeleteModal(true);
   };
 
@@ -75,21 +75,18 @@ const ManageInternship = () => {
   // Handle form submission for deletion
   const onSubmit = async (data) => {
     try {
-      const internship = InternshipData.find(
-        (intern) => intern._id === selectedInternshipId
-      );
       const deleteLogData = {
-        DeletedBy: user.email, // Replace with dynamic user email
-        PostedBy: internship?.postedBy,
+        DeletedBy: user.email,
+        PostedBy: selectedInternship?.postedBy,
         DeletedDate: formattedDateTime,
         Type: "Internship",
-        deletedContent: internship?.companyName,
+        deletedContent: selectedInternship?.companyName,
         reason: data.deleteReason,
       };
 
       // Log deletion and delete the internship
       await axiosPublic.post(`/Delete-Log`, [deleteLogData]);
-      await axiosPublic.delete(`/Internship/${selectedInternshipId}`);
+      await axiosPublic.delete(`/Internship/${selectedInternship._id}`);
 
       Swal.fire({
         icon: "success",
@@ -101,7 +98,7 @@ const ManageInternship = () => {
       refetch();
       reset();
       setShowDeleteModal(false);
-      setSelectedInternshipId(null);
+      setSelectedInternship(null);
     } catch (error) {
       console.error("Error deleting internship:", error);
       Swal.fire({
@@ -160,7 +157,7 @@ const ManageInternship = () => {
                       </button>
                       <button
                         className="bg-red-500 hover:bg-red-400 p-2 text-white text-2xl"
-                        onClick={() => handleSingleDelete(intern._id)}
+                        onClick={() => handleSingleDelete(intern)}
                       >
                         <MdDelete />
                       </button>
@@ -189,11 +186,25 @@ const ManageInternship = () => {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg w-[500px] shadow-lg">
+          <div className="bg-white p-8 rounded-lg w-[800px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Delete Internship</h2>
             <p className="font-bold mb-4">
               Are you sure you want to delete this internship?
             </p>
+            {selectedInternship && (
+              <div className="w-[400px] mb-4">
+                <div className="border border-gray-200 p-2 hover:bg-gray-200 hover:text-lg">
+                  <p className="flex">
+                    <span className="font-bold w-44">Company Name: </span>
+                    {selectedInternship.companyName}
+                  </p>
+                  <p className="flex">
+                    <span className="font-bold w-44">Position: </span>
+                    {selectedInternship.position}
+                  </p>
+                </div>
+              </div>
+            )}
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
                 <label className="block mb-2 font-bold">
@@ -206,7 +217,7 @@ const ManageInternship = () => {
                   required
                 />
               </div>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 mt-5">
                 <button
                   type="button"
                   className="bg-gray-500 hover:bg-gray-400 text-white px-5 py-2"
@@ -230,3 +241,4 @@ const ManageInternship = () => {
 };
 
 export default ManageInternship;
+

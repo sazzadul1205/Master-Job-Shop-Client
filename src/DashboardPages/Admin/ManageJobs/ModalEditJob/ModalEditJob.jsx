@@ -1,8 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useForm, useFieldArray } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import Swal from "sweetalert2";
-import PropTypes from "prop-types";
 import { useEffect } from "react";
 
 const ModalEditJob = ({ editJobData, refetch }) => {
@@ -86,44 +86,6 @@ const ModalEditJob = ({ editJobData, refetch }) => {
     document.getElementById("Edit_Job").close();
   };
 
-  const renderFieldArray = (
-    fields,
-    registerFn,
-    removeFn,
-    addFn,
-    label,
-    name
-  ) => (
-    <div>
-      <label>{label}</label>
-      {fields.map((item, index) => (
-        <div key={item.id} className="flex space-x-2 mb-1">
-          <input
-            className="input input-bordered w-full bg-white border-black rounded-none"
-            {...registerFn(`${name}.${index}`)}
-            defaultValue={item}
-            placeholder={`Enter ${label.toLowerCase().slice(0, -1)}`}
-          />
-          <button
-            type="button"
-            className="bg-red-500 hover:bg-red-400 px-5 text-white py-2"
-            onClick={() => removeFn(index)}
-          >
-            Remove
-          </button>
-        </div>
-      ))}
-      {fields.length === 0 && addFn("")}
-      <button
-        type="button"
-        className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-5"
-        onClick={() => addFn("")}
-      >
-        Add {label.slice(0, -1)}
-      </button>
-    </div>
-  );
-
   return (
     <div className="modal-box bg-white max-w-[800px] p-0">
       <div className="flex justify-between items-center p-5 bg-gray-400 text-white border-b-2 border-black">
@@ -135,8 +97,8 @@ const ModalEditJob = ({ editJobData, refetch }) => {
 
       <form onSubmit={handleSubmit(onSubmit)} className="p-5 space-y-4">
         {/* Job Title */}
-        <div className="space-y-2">
-          <label>Job Title:</label>
+        <div className="flex items-center gap-2">
+          <label className="font-bold w-48 text-xl">Job Title:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
             type="text"
@@ -146,8 +108,8 @@ const ModalEditJob = ({ editJobData, refetch }) => {
         </div>
 
         {/* Job Description (Textarea) */}
-        <div className="space-y-2">
-          <label>Job Description:</label>
+        <div className="flex items-center gap-2">
+          <label className="font-bold w-48 text-xl">Job Description:</label>
           <textarea
             className="textarea textarea-bordered w-full bg-white border-black rounded-none h-36"
             {...register("jobDescription", { required: true })}
@@ -156,8 +118,8 @@ const ModalEditJob = ({ editJobData, refetch }) => {
         </div>
 
         {/* Company Name */}
-        <div className="space-y-2">
-          <label>Company Name:</label>
+        <div className="flex items-center gap-2">
+          <label className="font-bold w-48 text-xl">Company Name:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
             type="text"
@@ -167,8 +129,8 @@ const ModalEditJob = ({ editJobData, refetch }) => {
         </div>
 
         {/* Company Code (grayed-out) */}
-        <div className="space-y-2">
-          <label>Company Code:</label>
+        <div className="flex items-center gap-2">
+          <label className="font-bold w-48 text-xl">Company Code:</label>
           <input
             className="input input-bordered w-full bg-gray-300 border-black rounded-none"
             type="text"
@@ -184,8 +146,8 @@ const ModalEditJob = ({ editJobData, refetch }) => {
           { label: "Location", name: "location", type: "text" },
           { label: "Job Type", name: "jobType", type: "text" },
         ].map(({ label, name, type }) => (
-          <div className="space-y-2" key={name}>
-            <label>{label}:</label>
+          <div className="flex items-center gap-2" key={name}>
+            <label className="font-bold w-48 text-xl">{label}:</label>
             <input
               className="input input-bordered w-full bg-white border-black rounded-none"
               type={type}
@@ -222,8 +184,8 @@ const ModalEditJob = ({ editJobData, refetch }) => {
         )}
 
         {/* Available Until */}
-        <div className="space-y-2">
-          <label>Available Until:</label>
+        <div className="flex items-center gap-2">
+          <label className="font-bold w-48 text-xl">Available Until:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
             type="date"
@@ -244,26 +206,35 @@ const ModalEditJob = ({ editJobData, refetch }) => {
   );
 };
 
-// PropTypes validation
-ModalEditJob.propTypes = {
-  editJobData: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    jobTitle: PropTypes.string.isRequired,
-    jobDescription: PropTypes.string.isRequired,
-    companyName: PropTypes.string.isRequired,
-    companyCode: PropTypes.string.isRequired,
-    companyLogo: PropTypes.string,
-    companyRating: PropTypes.number,
-    companyLink: PropTypes.string,
-    location: PropTypes.string,
-    jobType: PropTypes.string,
-    salary: PropTypes.string,
-    availableUntil: PropTypes.string,
-    responsibilities: PropTypes.arrayOf(PropTypes.string),
-    qualifications: PropTypes.arrayOf(PropTypes.string),
-    toolsAndTechnologies: PropTypes.arrayOf(PropTypes.string),
-  }).isRequired,
-  refetch: PropTypes.func.isRequired, // Add refetch to prop types
-};
+const renderFieldArray = (fields, registerFn, removeFn, addFn, label, name) => (
+  <div className="border border-gray-300 p-3">
+    <label className="font-bold w-48 text-xl">{label}</label>
+    {fields.map((item, index) => (
+      <div key={item.id} className="flex mb-1">
+        <input
+          className="input input-bordered w-full bg-white border-black rounded-none"
+          {...registerFn(`${name}.${index}`)}
+          defaultValue={item}
+          placeholder={`Enter ${label.toLowerCase().slice(0, -1)}`}
+        />
+        <button
+          type="button"
+          className="bg-red-500 hover:bg-red-400 px-5 text-white py-2"
+          onClick={() => removeFn(index)}
+        >
+          Remove
+        </button>
+      </div>
+    ))}
+    {fields.length === 0 && addFn("")}
+    <button
+      type="button"
+      className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-5"
+      onClick={() => addFn("")}
+    >
+      Add {label.slice(0, -1)}
+    </button>
+  </div>
+);
 
 export default ModalEditJob;

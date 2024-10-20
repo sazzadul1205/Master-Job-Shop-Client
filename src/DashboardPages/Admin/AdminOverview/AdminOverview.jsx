@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable react/prop-types */
 import Loader from "../../../Pages/Shared/Loader/Loader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";

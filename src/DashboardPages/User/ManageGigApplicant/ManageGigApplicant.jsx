@@ -214,6 +214,7 @@ const ManageGigApplicant = () => {
               <th>Client Name</th>
               <th>Gig Type</th>
               <th>Posted Date</th>
+              <th>State</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -227,6 +228,7 @@ const ManageGigApplicant = () => {
                   <td>{gig?.clientName}</td>
                   <td>{gig?.gigType}</td>
                   <td>{new Date(gig.postedDate).toLocaleDateString()}</td>
+                  <td>{gig?.state}</td>
                   <td>
                     <div className="flex gap-2 justify-end">
                       {/* Edit Gig Button */}
@@ -364,22 +366,24 @@ const ManageGigApplicant = () => {
       {/* Delete modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg w-[1000px] shadow-lg">
+          <div className="bg-white p-8 rounded-lg w-[800px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Delete Gigs</h2>
             <p className="font-bold">Selected Gigs:</p>
-            <ul className="mb-4">
+            <ul className="mb-4 w-[400px]">
               {selectedGigs.map((gigId) => {
                 const gig = MyPostedGigs.find((gig) => gig._id === gigId);
                 return (
-                  <li key={gigId} className="w-[500px] mt-5">
-                    <p className="grid grid-cols-2">
-                      <span className="font-bold">Title :</span> {gig.gigTitle}
+                  <li
+                    key={gigId}
+                    className="mt-2 border border-gray-200 p-2 hover:bg-gray-200 hover:text-lg"
+                  >
+                    <p className="flex">
+                      <span className="font-bold w-24">Gig Name: </span>
+                      {gig?.gigTitle}
                     </p>
-                    <p className="grid grid-cols-2">
-                      <span className="font-bold">Name :</span> {gig.clientName}
-                    </p>
-                    <p className="grid grid-cols-2">
-                      <span className="font-bold">Type :</span> {gig.clientType}
+                    <p className="flex">
+                      <span className="font-bold w-24">Client Name:</span>
+                      {gig?.clientName}
                     </p>
                   </li>
                 );

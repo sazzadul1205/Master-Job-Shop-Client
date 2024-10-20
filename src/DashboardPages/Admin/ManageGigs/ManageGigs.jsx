@@ -1,73 +1,40 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loader from "../../../Pages/Shared/Loader/Loader";
-import { FaEdit, FaSearch } from "react-icons/fa";
-import { useContext, useEffect, useState } from "react";
-import { CiViewBoard } from "react-icons/ci";
+import { FaSearch } from "react-icons/fa";
+import { useContext, useState } from "react";
+import { CiMenuKebab, CiViewBoard } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import ModalViewGigs from "./ModalViewGigs/ModalViewGigs";
-import ModalAddGig from "./ModalAddGig/ModalAddGig";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../../Provider/AuthProvider";
-import ModalEditGig from "./ModalEditGig/ModalEditGig";
+import ModalGigApprove from "./ModalGigApprove/ModalGigApprove";
 
 const ManageGigs = () => {
   const axiosPublic = useAxiosPublic();
-  const { user, loading } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [selectedGigs, setSelectedGigs] = useState([]);
   const [viewGigData, setViewGigData] = useState(null);
-  const [editGigData, setEditGigData] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
   const { register, handleSubmit, reset } = useForm();
-  const [loadingDelay, setLoadingDelay] = useState(true); // New state for loading delay
-
-  // Fetch user data to check the role
-  const {
-    data: usersData = [],
-    isLoading: usersDataIsLoading,
-    error: usersDataError,
-  } = useQuery({
-    queryKey: ["MyUsersData"],
-    queryFn: () =>
-      axiosPublic.get(`/Users?email=${user?.email}`).then((res) => res.data),
-    enabled: !!user?.email, // Only run this query if user.email is defined
-  });
-
-  // Fetch job data based on user role
-  const jobQueryKey =
-    usersData?.role === "Admin" || usersData?.role === "Manager"
-      ? "/Posted-Gig"
-      : `/Posted-Gig?postedBy=${user?.email}`;
 
   const {
     data: postedGigData = [],
-    isLoading: postedGigDataIsLoading,
-    error: postedGigDataError,
+    isLoading,
+    error,
     refetch,
   } = useQuery({
-    queryKey: ["PostedGigData", jobQueryKey],
-    queryFn: () => axiosPublic.get(jobQueryKey).then((res) => res.data),
-    enabled: !!user?.email, // Only run this query if user.email is defined
+    queryKey: ["PostedGigData"],
+    queryFn: () => axiosPublic.get(`/Posted-Gig`).then((res) => res.data),
   });
 
-  // Use effect to simulate loading delay
-  useEffect(() => {
-    if (!usersDataIsLoading && !postedGigDataIsLoading) {
-      const timer = setTimeout(() => {
-        setLoadingDelay(false); // Set loadingDelay to false after 1 second
-      }, 1000); // Adjust the time as needed
-
-      return () => clearTimeout(timer); // Clear timeout on component unmount
-    }
-  }, [usersDataIsLoading, postedGigDataIsLoading]);
-
-  if (loading || loadingDelay) {
-    return <Loader />; // Show loader while loading
+  if (isLoading) {
+    return <Loader />;
   }
 
-  // Handle errors gracefully
-  if (postedGigDataError || usersDataError) {
+  if (error) {
     return (
       <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
         <p className="text-center text-red-500 font-bold text-3xl mb-8">
@@ -83,24 +50,6 @@ const ManageGigs = () => {
     );
   }
 
-  // If user is not logged in, display a message
-  if (!user) {
-    return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
-        <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          You must be logged in to manage jobs.
-        </p>
-        <button
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
-      </div>
-    );
-  }
-
-  // Handle checkbox click
   const handleCheckboxClick = (id) => {
     setSelectedGigs((prevSelectedGigs) =>
       prevSelectedGigs.includes(id)
@@ -109,13 +58,11 @@ const ManageGigs = () => {
     );
   };
 
-  // Handle single gig deletion (opens the same modal)
   const handleSingleDelete = (gigID) => {
-    setSelectedGigs([gigID]); // Set the single gig as the only selected gig
-    setShowDeleteModal(true); // Open delete confirmation modal
+    setSelectedGigs([gigID]);
+    setShowDeleteModal(true);
   };
 
-  // Current date for deletion log
   const formattedDateTime = new Date().toLocaleString("en-US", {
     year: "numeric",
     month: "numeric",
@@ -128,9 +75,8 @@ const ManageGigs = () => {
   const onSubmit = async (data) => {
     const deleteGigLogData = selectedGigs.map((gigId) => {
       const gig = postedGigData.find((gig) => gig._id === gigId);
-
       return {
-        DeletedBy: user.email, // Assuming user is defined elsewhere
+        DeletedBy: user.email,
         PostedBy: gig?.postedBy,
         DeletedDate: formattedDateTime,
         Type: "Posted-Gig",
@@ -140,15 +86,11 @@ const ManageGigs = () => {
     });
 
     try {
-      // Post log data to the Delete-Log server
       await axiosPublic.post(`/Delete-Log`, deleteGigLogData);
-
-      // Delete gigs by ID
       await axiosPublic.delete(`/Posted-Gig/delete`, {
         data: { gigsToDelete: selectedGigs },
       });
 
-      // Show success message
       Swal.fire({
         icon: "success",
         title: "Success!",
@@ -162,7 +104,6 @@ const ManageGigs = () => {
       refetch();
     } catch (error) {
       console.error("Error deleting gigs:", error);
-      // Show error message
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -173,23 +114,50 @@ const ManageGigs = () => {
   };
 
   const handleViewGig = (gig) => {
-    setViewGigData(gig); // Set the selected gig details
-    document.getElementById("Modal_Gig_View").showModal(); // Show the modal
+    setViewGigData(gig);
+    document.getElementById("Modal_Gig_View").showModal();
   };
 
-  const handleEditGig = (gig) => {
-    setEditGigData(gig); // Set the job data for editing
-    document.getElementById("Edit_Gig").showModal(); // Show the modal
+  const isExpired = (expirationDate) => {
+    const currentDate = new Date();
+    const expDate = new Date(expirationDate);
+    return currentDate > expDate;
+  };
+
+  const handleOpenApprovalModal = (gig) => {
+    setViewGigData(gig);
+    setShowApprovalModal(true);
+  };
+
+  const handleApproveGig = (gigID, rating) => {
+    // Logic to update the gig's state to 'approved' and set its rating
+    // Use axiosPublic to send a request to your API to approve the gig
+    axiosPublic
+      .patch(`/Posted-Gig/${gigID}`, { state: "Approved", rating })
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Approved!",
+          text: "Gig successfully approved.",
+        });
+        refetch(); // Refetch the gigs data to reflect changes
+      })
+      .catch((error) => {
+        console.error("Error approving gig:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Failed to approve gig. Please try again.",
+        });
+      });
   };
 
   return (
     <div className="bg-white min-h-screen border border-black text-black">
-      {/* Title */}
       <p className="text-2xl font-bold text-white pl-10 py-4 bg-blue-400">
         Manage Gigs
       </p>
 
-      {/* Search */}
       <div className="py-5 flex justify-between items-center px-5">
         <div>
           <label className="input input-bordered flex items-center gap-2 bg-white border-gray-400 w-[500px]">
@@ -199,14 +167,7 @@ const ManageGigs = () => {
         </div>
       </div>
 
-      {/* Add and Delete selected Gigs button */}
       <div className="flex justify-between mx-5 my-2">
-        <button
-          className="bg-green-500 hover:bg-green-300 px-10 py-2 text-white font-bold"
-          onClick={() => document.getElementById("Create_New_Gig").showModal()}
-        >
-          + Add New Gigs
-        </button>
         <button
           className="bg-red-500 hover:bg-red-300 px-10 py-2 text-white font-bold"
           onClick={() => {
@@ -226,136 +187,151 @@ const ManageGigs = () => {
         </button>
       </div>
 
-      {/* Gig Table */}
       <div className="overflow-x-auto p-2">
         <table className="table border border-black">
-          {/* Table Header */}
           <thead className="text-black">
             <tr className="bg-gray-500 text-white">
               <th>No</th>
               <th>Check</th>
               <th>Gig Title</th>
-              <th>Client Name</th>
               <th>Gig Type</th>
+              <th>State</th>
               <th>Posted Date</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {/* Mapping through fetched gigs */}
-            {postedGigData.map((gig, index) => (
-              <tr
-                key={gig._id}
-                className={selectedGigs.includes(gig._id) ? "bg-red-50" : ""}
-              >
-                <td>{index + 1}</td>
-                <th>
-                  <label>
-                    <input
-                      type="checkbox"
-                      className="checkbox border border-black w-5 h-5"
-                      checked={selectedGigs.includes(gig._id)}
-                      onChange={() => handleCheckboxClick(gig._id)}
-                    />
-                  </label>
-                </th>
-                <td>{gig?.gigTitle}</td>
-                <td>{gig?.clientName}</td>
-                <td>{gig?.gigType}</td>
-                <td>{new Date(gig.postedDate).toLocaleDateString()}</td>
-                <td>
-                  <div className="flex gap-2">
-                    {usersData?.role === "Admin" ||
-                    usersData?.role === "Manager" ? null : (
+            {postedGigData.map((gig, index) => {
+              const expired = isExpired(gig.expirationDate);
+              return (
+                <tr
+                  key={gig._id}
+                  className={`${
+                    selectedGigs.includes(gig._id) ? "bg-red-50" : ""
+                  } ${expired ? "bg-gray-300" : ""}`}
+                >
+                  <td>{index + 1}</td>
+                  <th>
+                    <label>
+                      <input
+                        type="checkbox"
+                        className="checkbox border border-black w-5 h-5"
+                        checked={selectedGigs.includes(gig._id)}
+                        onChange={() => handleCheckboxClick(gig._id)}
+                      />
+                    </label>
+                  </th>
+                  <td>{gig?.gigTitle}</td>
+                  <td>{gig?.gigType}</td>
+                  <td>{gig?.state}</td>
+                  <td>{new Date(gig.postedDate).toLocaleDateString()}</td>
+                  <td>
+                    <div className="dropdown dropdown-left">
                       <button
-                        className="bg-green-500 hover:bg-green-400 p-2 text-white text-2xl"
-                        onClick={() => handleEditGig(gig)}
+                        className="text-xl p-2 border-2 border-black hover:bg-gray-200"
+                        tabIndex={0}
+                        role="button"
                       >
-                        <FaEdit />
+                        <CiMenuKebab />
                       </button>
-                    )}
-                    <button
-                      className="bg-yellow-500 hover:bg-yellow-400 p-2 text-white text-2xl"
-                      onClick={() => handleViewGig(gig)}
-                    >
-                      <CiViewBoard />
-                    </button>
-                    <button
-                      className="bg-red-500 hover:bg-red-400 p-2 text-white text-2xl"
-                      onClick={() => handleSingleDelete(gig._id)}
-                    >
-                      <MdDelete />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                      <ul
+                        tabIndex={0}
+                        className="dropdown-content bg-white border border-black z-50 p-1 shadow-xl flex gap-2"
+                      >
+                        <li>
+                          <button
+                            className="bg-yellow-500 hover:bg-yellow-400 p-2 text-white text-2xl"
+                            onClick={() => handleViewGig(gig)}
+                            hidden={expired}
+                          >
+                            <CiViewBoard />
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            className="bg-red-500 hover:bg-red-400 p-2 text-white text-2xl"
+                            onClick={() => handleSingleDelete(gig._id)}
+                          >
+                            <MdDelete />
+                          </button>
+                        </li>
+                        {gig.state === "in-progress" && !expired && (
+                          <li>
+                            <button
+                              className="bg-green-500 hover:bg-green-400 p-2 text-white text-[20px]"
+                              onClick={() => handleOpenApprovalModal(gig)}
+                            >
+                              Approve
+                            </button>
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
-      {/* View gig modal */}
       <dialog id="Modal_Gig_View" className="modal">
         <ModalViewGigs GigData={viewGigData} />
       </dialog>
 
-      <dialog id="Create_New_Gig" className="modal">
-        <ModalAddGig refetch={refetch}></ModalAddGig>
-      </dialog>
+      {showApprovalModal && (
+        <ModalGigApprove
+          gigData={viewGigData}
+          onApprove={handleApproveGig}
+          onClose={() => setShowApprovalModal(false)}
+        />
+      )}
 
-      <dialog id="Edit_Gig" className="modal">
-        <ModalEditGig editGigData={editGigData} refetch={refetch} />
-      </dialog>
-
-      {/* Delete modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg w-[1000px] shadow-lg">
+          <div className="bg-white p-8 rounded-lg w-[800px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Delete Gigs</h2>
             <p className="font-bold">Selected Gigs:</p>
-            <ul className="mb-4">
+            <ul className="mb-4 w-[400px]">
               {selectedGigs.map((gigId) => {
                 const gig = postedGigData.find((gig) => gig._id === gigId);
                 return (
-                  <li key={gigId} className="w-[500px] mt-5">
-                    <p className="grid grid-cols-2">
-                      <span className="font-bold">Title :</span> {gig.gigTitle}
+                  <li key={gigId} className="mt-2 border border-gray-200 p-2 hover:bg-gray-200 hover:text-lg">
+                    <p className="flex">
+                      <span className="font-bold w-24">Gig Name: </span>
+                      {gig?.gigTitle}
                     </p>
-                    <p className="grid grid-cols-2">
-                      <span className="font-bold">Name :</span> {gig.clientName}
-                    </p>
-                    <p className="grid grid-cols-2">
-                      <span className="font-bold">Type :</span> {gig.clientType}
+                    <p className="flex">
+                      <span className="font-bold w-24">Client Name:</span>
+                      {gig?.clientName}
                     </p>
                   </li>
                 );
               })}
             </ul>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="mb-4">
-                <label className="block mb-2 font-bold">
-                  Reason for Deletion:
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-black font-bold text-xl">
+                    Reason for Deletion:
+                  </span>
                 </label>
                 <textarea
+                  className="textarea textarea-bordered bg-white border-black rounded-none h-28"
                   {...register("deleteReason", { required: true })}
-                  className="textarea textarea-bordered w-full bg-white border-black h-40"
-                  placeholder="Enter the reason for deletion"
-                  required
-                />
+                  placeholder="Enter reason for deletion"
+                ></textarea>
               </div>
-              <div className="flex justify-end gap-2">
+              <div className="modal-action">
+                <button type="submit" className="bg-green-500 hover:bg-green-600 text-white font-bold text-lg py-2 w-28">
+                  Confirm
+                </button>
                 <button
                   type="button"
-                  className="bg-gray-500 hover:bg-gray-400 text-white px-5 py-2"
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold text-lg py-2 w-28"
                   onClick={() => setShowDeleteModal(false)}
                 >
                   Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-red-500 hover:bg-red-400 text-white px-5 py-2"
-                >
-                  Confirm Delete
                 </button>
               </div>
             </form>

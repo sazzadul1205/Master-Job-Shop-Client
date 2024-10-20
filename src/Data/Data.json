@@ -1,42 +1,67 @@
-{
-  "companyName": "HealthTech",
-  "companyLogo": "https://i.ibb.co/XYZ101/HealthTech-Logo.jpg",
-  "postedBy": "Admin",
-  "position": "Product Management Intern",
-  "duration": "10 weeks",
-  "description": "Work alongside product managers to develop and enhance health tech products.",
-  "location": "Hybrid",
-  "stipend": "$1,500/month",
-  "skillsRequired": [
-    "Agile Methodologies",
-    "Data Analysis",
-    "Project Management",
-    "Communication"
-  ],
-  "applicationDeadline": "2024-12-05",
-  "responsibilities": [
-    "Assist in product strategy and roadmap development",
-    "Conduct market research and user feedback analysis",
-    "Collaborate with design and engineering teams",
-    "Create documentation for product features"
-  ],
-  "qualifications": [
-    "Currently enrolled in a Business or related degree program",
-    "Strong analytical and problem-solving skills"
-  ],
-  "contact": {
-    "email": "hr@healthtech.com",
-    "facebook": "https://facebook.com/healthtech",
-    "website": "https://www.healthtech.com"
+[
+
+
+  {
+    "gigTitle": "Web Developer",
+    "clientName": "Tech Innovations",
+    "clientType": "Startup",
+    "gigType": "Web Development",
+    "location": "Remote",
+    "paymentRate": "$40/hour",
+    "duration": "3 months",
+    "rating": "4.5",
+    "responsibilities": "Develop and maintain web applications, collaborate with designers and backend developers, optimize applications for maximum speed.",
+    "requiredSkills": "Proficiency in HTML, CSS, JavaScript, and React. Experience with version control (Git) and RESTful APIs.",
+    "workingHours": "Flexible hours, with a commitment of 20-30 hours per week.",
+    "projectExpectations": "Deliver high-quality code and documentation, participate in code reviews, and adhere to project timelines.",
+    "communication": "Daily stand-ups via Slack, bi-weekly video meetings.",
+    "additionalBenefits": "Gain experience working with a diverse team, opportunities for full-time employment based on performance.",
+    "postedDate": "2024-10-01T09:00:00",
+    "postedBy": "Admin",
+    "peopleBided": [],
+    "state": "in-progress",
+    "expirationDate": "01/01/2025"
   },
-  "applicants": [
-    {
-      "applicantName": "Liam Johnson",
-      "applicantEmail": "liam.johnson@example.com",
-      "applicantImage": "https://i.ibb.co/XYZ123/Liam-Johnson.jpg",
-      "aboutApplicant": "A business student with a keen interest in product management.",
-      "portfolioLink": "https://github.com/liamjohnson",
-      "resumeLink": "https://example.com/resume/liamjohnson"
-    }
-  ]
-}
+  {
+    "gigTitle": "The new tablet",
+    "clientName": "ijtgb mitdsm jvdinjbh bn",
+    "clientType": "ny",
+    "gigType": "vyg8",
+    "location": "vyf",
+    "paymentRate": "vyb",
+    "duration": "vt",
+    "rating": "0",
+    "responsibilities": "vyt",
+    "requiredSkills": "vyt",
+    "workingHours": "vhhbvy",
+    "projectExpectations": "ghb'iyl.,yiul.,iuy",
+    "communication": "for i do not have any communication skills",
+    "additionalBenefits": "sgdsgrdsfgdgdgdrgrdsgfdsfdfdgdrfgredgbredbredredbredb",
+    "postedDate": "2024-10-17T06:18:34.474Z",
+    "postedBy": "demo@gmail.com",
+    "peopleBided": [],
+    "state": "in-progress",
+    "expirationDate": "17/10/2025"
+  },
+  {
+    "gigTitle": "The new Big Gig",
+    "clientName": "ijtgb mitdsm jvdinjbh bn",
+    "clientType": "ny",
+    "gigType": "vyg8",
+    "location": "eqwafearfesafesafse",
+    "paymentRate": "vyb",
+    "duration": "vt",
+    "rating": "0",
+    "responsibilities": "stedyesdhtfdshfdsthsrthsv;gmvrc5myhkl;ecjkhtecmjrsuichjmretk,hbenjkfdjknejtecgbssfbstrjnyfjyruj",
+    "requiredSkills": "stedyesdhtfdshfdsthsrthsv;gmvrc5myhkl;ecjkhtecmjrsuichjmretk,hbenjkfdjknejtecgbssfbstrjnyfjyruj",
+    "workingHours": "vgretgrdsgdrsfgrdsgrd",
+    "projectExpectations": "stedyesdhtfdshfdsthsrthsv;gmvrc5myhkl;ecjkhtecmjrsuichjmretk,hbenjkfdjknejtecgbssfbstrjnyfjyruj",
+    "communication": "stedyesdhtfdshfdsthsrthsv;gmvrc5myhkl;ecjkhtecmjrsuichjmretk,hbenjkfdjknejtecgbssfbstrjnyfjyruj",
+    "additionalBenefits": "stedyesdhtfdshfdsthsrthsv;gmvrc5myhkl;ecjkhtecmjrsuichjmretk,hbenjkfdjknejtecgbssfbstrjnyfjyruj",
+    "postedDate": "2024-10-17T06:18:48.968Z",
+    "postedBy": "demo@gmail.com",
+    "peopleBided": [],
+    "state": "in-progress",
+    "expirationDate": "17/10/2025"
+  }
+]

@@ -41,7 +41,7 @@ const AboutUs = () => {
 
   return (
     <div className="bg-gradient-to-b from-blue-300 to-blue-50 text-black">
-      <div className="max-w-[1200px] mx-auto pt-20">
+      <div className="max-w-[1200px] mx-auto pt-20 px-4">
         <h1 className="text-4xl font-bold text-center mb-6">About Us</h1>
 
         {/* Mission Section */}

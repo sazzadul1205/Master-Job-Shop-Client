@@ -103,15 +103,15 @@ const CompanyProfiles = () => {
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
       <div className="pt-20">
         {/* Title */}
-        <div className="text-black pt-4 mx-auto max-w-[1200px]">
-          <p className="text-2xl font-bold">Our Companies</p>
+        <div className="text-black mx-auto max-w-[1200px] text-center lg:text-left ">
+          <h1 className="text-2xl font-bold m-0 pt-5">Our Companies</h1>
           <p>Find the company you want to work for and its info</p>
         </div>
 
         {/* Search Box and Filters */}
-        <div className="flex space-x-1 gap-5 mx-auto max-w-[1200px] py-3 text-black">
+        <div className="flex flex-col lg:flex-row max-w-[1200px] text-black mt-2 mx-auto space-y-2 lg:space-y-0">
           {/* Search Bar */}
-          <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
+          <label className="input input-bordered flex items-center w-[300px] md:w-[500px] bg-white mx-auto">
             <input
               type="text"
               className="grow py-2 px-3 focus:outline-none"
@@ -122,47 +122,55 @@ const CompanyProfiles = () => {
             <FaSearch className="h-5 w-5 opacity-70 text-black" />
           </label>
 
-          {/* Industry Filter */}
-          <select
-            value={selectedIndustry}
-            onChange={(e) => setSelectedIndustry(e.target.value)}
-            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
-          >
-            <option value="">All Industries</option>
-            {uniqueIndustries.map((industry, index) => (
-              <option key={index} value={industry}>
-                {industry}
-              </option>
-            ))}
-          </select>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  mx-auto">
+            {/* Industry Filter */}
+            <div>
+              <select
+                value={selectedIndustry}
+                onChange={(e) => setSelectedIndustry(e.target.value)}
+                className="border border-gray-300 p-2 bg-white text-black w-[300px] lg:w-[220px]  h-12"
+              >
+                <option value="">All Industries</option>
+                {uniqueIndustries.map((industry, index) => (
+                  <option key={index} value={industry}>
+                    {industry}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* Location Filter */}
-          <select
-            value={selectedLocation}
-            onChange={(e) => setSelectedLocation(e.target.value)}
-            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
-          >
-            <option value="">All Locations</option>
-            {uniqueLocations.map((location, index) => (
-              <option key={index} value={location}>
-                {location}
-              </option>
-            ))}
-          </select>
+            {/* Location Filter */}
+            <div>
+              <select
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
+                className="border border-gray-300 p-2 bg-white text-black w-[300px] lg:w-[220px]  h-12"
+              >
+                <option value="">All Locations</option>
+                {uniqueLocations.map((location, index) => (
+                  <option key={index} value={location}>
+                    {location}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* Service Filter */}
-          <select
-            value={selectedService}
-            onChange={(e) => setSelectedService(e.target.value)}
-            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
-          >
-            <option value="">All Services</option>
-            {uniqueServices.map((service, index) => (
-              <option key={index} value={service}>
-                {service}
-              </option>
-            ))}
-          </select>
+            {/* Service Filter */}
+            <div>
+              <select
+                value={selectedService}
+                onChange={(e) => setSelectedService(e.target.value)}
+                className="border border-gray-300 p-2 bg-white text-black w-[300px] lg:w-[220px]  h-12"
+              >
+                <option value="">All Services</option>
+                {uniqueServices.map((service, index) => (
+                  <option key={index} value={service}>
+                    {service}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
 
         {/* Company Cards Section with Infinite Scroll */}
@@ -181,7 +189,7 @@ const CompanyProfiles = () => {
             </p>
           }
         >
-          <div className="grid grid-cols-3 gap-5 py-10 mx-auto max-w-[1200px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 py-10 px-3 mx-auto max-w-[1200px]">
             {currentCompanies.map((company, index) => {
               const {
                 companyName,
@@ -194,7 +202,7 @@ const CompanyProfiles = () => {
               return (
                 <div
                   key={index}
-                  className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-green-50 hover:shadow-2xl"
+                  className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-red-50 hover:shadow-2xl"
                 >
                   <div className="card-body">
                     {/* Company Logo */}
@@ -236,17 +244,17 @@ const CompanyProfiles = () => {
                     <p className="text-gray-700">{description}</p>
 
                     {/* Card Actions */}
-                    <div className="card-actions justify-end mt-5">
+                    <div className="flex justify-end gap-1 lg:gap-3 mt-5">
                       <Link to={`/CompanyProfiles/${company._id}`}>
-                        <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
-                          View Jobs
+                        <button className="bg-green-500 hover:bg-green-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white">
+                          View Profile
                         </button>
                       </Link>
                       <button
-                        className="bg-yellow-500 hover:bg-yellow-600 px-5 py-2 text-lg font-semibold text-white"
+                        className="bg-yellow-500 hover:bg-yellow-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white"
                         onClick={() => openModal(company)}
                       >
-                        More Info
+                        Learn More
                       </button>
                     </div>
                   </div>
@@ -255,15 +263,15 @@ const CompanyProfiles = () => {
             })}
           </div>
         </InfiniteScroll>
-
-        {/* Modal */}
-        {selectedCompany && (
-          <ModalCompanyProfilesDetails
-            closeModal={closeModal}
-            company={selectedCompany}
-          />
-        )}
       </div>
+
+      {/* Modal for showing company details */}
+      {selectedCompany && (
+        <ModalCompanyProfilesDetails
+          company={selectedCompany}
+          closeModal={closeModal}
+        />
+      )}
     </div>
   );
 };

@@ -1,17 +1,17 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../Shared/Loader/Loader";
-import { FaArrowLeft, FaStar } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import Rating from "react-rating";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import { useContext, useEffect, useState } from "react";
 import GiaModalCard from "./GiaModalCard/GiaModalCard";
+import BackButton from "../../Shared/BackButton/BackButton";
 
 const PostedGigDetail = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
   const [hasApplied, setHasApplied] = useState(false);
   const axiosPublic = useAxiosPublic();
 
@@ -55,61 +55,76 @@ const PostedGigDetail = () => {
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50 min-h-screen">
       <div className="max-w-[1200px] mx-auto text-black pt-24">
-        <button
-          className="flex text-2xl items-center hover:text-red-500"
-          onClick={() => navigate(-1)}
-        >
-          <FaArrowLeft className="mr-5" /> Back
-        </button>
-        <div className="py-5 w-1/2">
+        {/* Back button */}
+        <BackButton></BackButton>
+        {/* Content */}
+        <div className="py-5 md:w-1/2 px-2">
+          {/* Gig Title */}
           <p className="font-bold text-3xl py-2">{gigDetails.gigTitle}</p>
+          {/* Client Name */}
           <p className="text-xl grid grid-cols-2 py-1">
             <span className="font-bold mr-5">Client Name:</span>
             {gigDetails.clientName}
           </p>
+          {/* gigType */}
           <p className="text-xl grid grid-cols-2 py-1">
             <span className="font-bold mr-5">Gig Type:</span>
             {gigDetails.gigType}
           </p>
+          {/* location */}
           <p className="text-xl grid grid-cols-2 py-1">
             <span className="font-bold mr-5">Location:</span>
             {gigDetails.location}
           </p>
+          {/* paymentRate */}
           <p className="text-xl grid grid-cols-2 py-1">
             <span className="font-bold mr-5">Payment Rate:</span>
             {gigDetails.paymentRate}
           </p>
+          {/* duration */}
           <p className="text-xl grid grid-cols-2 py-1">
             <span className="font-bold mr-5">Duration:</span>
             {gigDetails.duration}
           </p>
         </div>
-        <div className="text-xl mt-8">
+
+        {/* responsibilities */}
+        <div className="text-xl mt-8 px-2">
           <h4 className="font-semibold">Responsibilities:</h4>
           <p>{gigDetails.responsibilities}</p>
         </div>
-        <div className="text-xl mt-8">
+
+        {/* requiredSkills */}
+        <div className="text-xl mt-8 px-2">
           <h4 className="font-semibold">Required Skills :</h4>
           <p>{gigDetails.requiredSkills}</p>
         </div>
-        <div className="text-xl mt-8">
+
+        {/* workingHours */}
+        <div className="text-xl mt-8 px-2">
           <h4 className="font-semibold">Working Hours :</h4>
           <p>{gigDetails.workingHours}</p>
         </div>
-        <div className="text-xl mt-8">
+
+        {/* projectExpectations */}
+        <div className="text-xl mt-8 px-2">
           <h4 className="font-semibold">Project Expectations :</h4>
           <p>{gigDetails.projectExpectations}</p>
         </div>
-        <div className="text-xl mt-8">
+
+        {/* Communication */}
+        <div className="text-xl mt-8 px-2">
           <h4 className="font-semibold">Communication :</h4>
           <p>{gigDetails.Communication}</p>
         </div>
-        <div className="text-xl mt-8">
+
+        {/* additionalBenefits */}
+        <div className="text-xl mt-8 px-2">
           <h4 className="font-semibold">Additional Benefits :</h4>
           <p>{gigDetails.additionalBenefits}</p>
         </div>
-        <div className="flex justify-between items-center mt-5">
-          <p>
+        <div className="flex flex-col md:flex-row justify-between items-center mt-5">
+          <p className="text-xl">
             <span className="font-bold">Posted:</span>
             {new Date(gigDetails.postedDate).toLocaleDateString()}
           </p>
@@ -123,7 +138,7 @@ const PostedGigDetail = () => {
             />
           </div>
         </div>
-        <div className="text-xl bg-sky-100 py-3 px-5 flex justify-between items-center mt-5">
+        <div className="text-xl flex flex-col md:flex-row bg-sky-100 py-3 px-5 justify-between items-center mt-5">
           <p>People Applied: {gigDetails?.peopleBided?.length || 0}</p>
           <div>
             {user ? (

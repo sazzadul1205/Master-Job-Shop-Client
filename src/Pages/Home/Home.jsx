@@ -13,6 +13,7 @@ import FeaturedCourses from "./FeaturedCourses/FeaturedCourses";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../Shared/Loader/Loader";
+import {Helmet} from "react-helmet";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -174,6 +175,10 @@ const Home = () => {
 
   return (
     <div>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Home</title>
+      </Helmet>
       {/* Render components after loading and error are handled */}
       <HomeBanners HomeBannerData={HomeBannerData} />
       <FeaturedJobs PostedJobsData={PostedJobsData} />

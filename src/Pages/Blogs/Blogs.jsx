@@ -182,7 +182,7 @@ const Blogs = () => {
         </div>
 
         {/* Blogs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-3">
           {currentBlogs.map((blog) => {
             const blogVotes = votes.find((vote) => vote.id === blog._id) || {
               upVotes: 0,
@@ -194,7 +194,7 @@ const Blogs = () => {
             return (
               <div
                 key={blog._id}
-                className="border rounded shadow-lg bg-white pb-5 transition-transform duration-300 hover:scale-105"
+                className="border rounded shadow-lg bg-white pb-5 transition-transform duration-300 hover:scale-105 "
               >
                 <div className="flex justify-between py-3 bg-blue-50 px-5">
                   <div

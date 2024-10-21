@@ -1,17 +1,17 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Rating from "react-rating";
-import { FaArrowLeft, FaStar } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loader from "../../Shared/Loader/Loader";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import { useContext, useEffect, useState } from "react";
 import JobModalCard from "./JobModalCard/JobModalCard";
+import BackButton from "../../Shared/BackButton/BackButton";
 
 const PostedJobDetail = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
   const [hasApplied, setHasApplied] = useState(false);
   const axiosPublic = useAxiosPublic();
 
@@ -34,8 +34,6 @@ const PostedJobDetail = () => {
     }
   }, [user, jobDetails]);
 
-  console.log(jobDetails);
-  
   if (isLoading) return <Loader />;
 
   if (error)
@@ -55,96 +53,110 @@ const PostedJobDetail = () => {
 
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50">
-      <div className="max-w-[1200px] mx-auto text-black pt-28">
-        <button
-          className="flex text-2xl items-center hover:text-red-500"
-          onClick={() => navigate(-1)}
-        >
-          <FaArrowLeft className="mr-5" /> Back
-        </button>
+      <div className="max-w-[1200px] mx-auto text-black pt-28 bg-slate-50 opacity-80 px-5 py-5">
+        {/* Back Button */}
+        <BackButton />
+
+        {/* Content */}
         <div className="py-5">
-          <div className="flex items-center justify-between">
+          {/* Top part */}
+          <div className="flex flex-col-reverse md:flex-row justify-between gap-5">
+            {/* Content */}
             <div>
-              <p className="font-bold text-3xl py-2">{jobDetails.jobTitle}</p>
-              <p className="text-2xl grid grid-cols-2 py-1">
-                <span className="font-semibold mr-10">Company Name:</span>
-                {jobDetails.companyName}
+              {/* Company Name */}
+              <p className="text-2xl font-bold ">{jobDetails.companyName}</p>
+
+              {/* Job Title */}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28">Position:</span>
+                <span className="ml-5">{jobDetails.jobTitle}</span>
               </p>
-              <p className="text-xl grid grid-cols-2 py-1">
-                <span className="font-bold text-xl mr-5">Location:</span>
-                {jobDetails.location}
+
+              {/* Location */}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28">Location:</span>
+                <span className="ml-5">{jobDetails.location}</span>
               </p>
-              <p className="text-xl grid grid-cols-2 py-1">
-                <span className="font-bold text-xl mr-5">Job Type:</span>
-                {jobDetails.jobType}
+
+              {/* ob Type */}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28">Job Type:</span>
+                <span className="ml-5">{jobDetails.jobType}</span>
               </p>
-              <p className="text-xl grid grid-cols-2 py-1">
-                <span className="font-bold text-xl mr-5">Salary:</span>
-                {jobDetails.salary}
+
+              {/* Salary */}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28">Salary:</span>
+                <span className="ml-5">{jobDetails.salary}</span>
               </p>
-              <p className="text-xl grid grid-cols-2 py-1">
-                <span className="font-bold text-xl mr-5">Posted Date:</span>
-                {new Date(jobDetails.postedDate).toLocaleDateString()}
+
+              {/* Posted Date */}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28">Posted Date:</span>
+                <span className="ml-5">{jobDetails.postedDate}</span>
               </p>
-              <p className="text-xl grid grid-cols-2 py-1">
-                <span className="font-bold text-xl mr-5">Available Until:</span>
-                {new Date(jobDetails.availableUntil).toLocaleDateString()}
-              </p>
-              <p className="text-xl grid grid-cols-2 py-1">
-                <span className="font-bold text-xl mr-5">Company Link:</span>
-                <a
-                  href={jobDetails.companyLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {jobDetails.companyLink}
-                </a>
+
+              {/* Available Until */}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28">Available Until:</span>
+                <span className="ml-5">{jobDetails.availableUntil}</span>
               </p>
             </div>
-            {jobDetails.companyLogo && (
-              <img
-                src={jobDetails.companyLogo}
-                alt={jobDetails.companyName}
-                className="border-2 border-black"
-              />
-            )}
+
+            {/* Company Logo */}
+            <div className="mb-8 lg:mb-0  ">
+              {jobDetails.companyLogo && (
+                <img
+                  src={jobDetails.companyLogo}
+                  alt={jobDetails.companyName}
+                  className="border border-gray-200 "
+                />
+              )}
+            </div>
           </div>
 
-          <div className="text-xl mt-8">
-            <h4 className="font-semibold">Description:</h4>
-            <p>{jobDetails.jobDescription}</p>
-          </div>
+          {/* Description */}
+          <p className="py-4 text-lg">{jobDetails.jobDescription}</p>
 
-          <div className="text-xl mt-8">
-            <h4 className="font-semibold">Responsibilities:</h4>
+          {/* Responsibilities */}
+          <div>
+            <h4 className="font-semibold mb-2 ">Responsibilities:</h4>
             <ul className="list-disc pl-5 mb-4">
-              {jobDetails.responsibilities?.map((resp, idx) => (
-                <li key={idx}>{resp}</li>
+              {jobDetails.responsibilities.map((responsibility, index) => (
+                <li className="my-2" key={index}>
+                  {responsibility}
+                </li>
               ))}
             </ul>
           </div>
 
-          <div className="text-xl mt-8">
-            <h4 className="font-semibold">Qualifications:</h4>
+          {/* Qualifications */}
+          <div>
+            <h4 className="font-semibold mb-2 ">Qualifications:</h4>
             <ul className="list-disc pl-5 mb-4">
-              {jobDetails.qualifications?.map((qual, idx) => (
-                <li key={idx}>{qual}</li>
+              {jobDetails.qualifications.map((qualification, index) => (
+                <li className="my-2" key={index}>
+                  {qualification}
+                </li>
               ))}
             </ul>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="text-xl mt-8">
+          {/* Tools */}
+          <div className="flex flex-col md:flex-row   justify-between mx-5">
+            <div>
               <h4 className="font-semibold">Tools and Technologies:</h4>
-              <ul className="list-disc gap-3 mb-4 flex mt-2">
-                {jobDetails.toolsAndTechnologies?.map((tool, idx) => (
-                  <p key={idx} className="py-1 px-6 bg-gray-300 rounded-full">
+              <ul className="list-disc gap-3 mb-4 flex flex-col md:flex-row mt-2">
+                {jobDetails.toolsAndTechnologies.map((tool, index) => (
+                  <p
+                    key={index}
+                    className="py-1 px-6 bg-gray-300 rounded-full text-center"
+                  >
                     {tool}
                   </p>
                 ))}
               </ul>
             </div>
-
             <div>
               <h4 className="font-semibold mb-2">Company Rating:</h4>
               <Rating
@@ -156,7 +168,7 @@ const PostedJobDetail = () => {
             </div>
           </div>
         </div>
-        <div className="text-xl bg-sky-100 py-3 px-5 flex justify-between items-center">
+        <div className="text-xl bg-sky-100 py-3 px-5 flex flex-col md:flex-row justify-between items-center">
           <p>People Applied: {jobDetails?.PeopleApplied?.length || 0}</p>{" "}
           {/* Displaying the total count */}
           <div>

@@ -8,85 +8,108 @@ const ModalJobDetails = ({ selectedJob, closeModal }) => {
   return (
     <div className="modal-box bg-white text-black max-w-[700px] bg-gradient-to-br from-blue-100 to-blue-50">
       {/* Top part */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col-reverse md:flex-row justify-between gap-5">
         {/* Content */}
         <div>
-          <p className="text-2xl font-bold">{selectedJob.companyName}</p>
-          <p className="text-lg">
-            <span className="font-bold mr-2">Position:</span>
-            {selectedJob.jobTitle}
+          {/* Company Name */}
+          <p className="text-2xl font-bold ">{selectedJob.companyName}</p>
+
+          {/* Job Title */}
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-28">Position:</span>
+            <span className="ml-5">{selectedJob.jobTitle}</span>
           </p>
-          <p className="text-lg">
-            <span className="font-bold mr-5">Location:</span>
-            {selectedJob.location}
+
+          {/* Location */}
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-28">Location:</span>
+            <span className="ml-5">{selectedJob.location}</span>
           </p>
-          <p className="text-lg">
-            <span className="font-bold mr-5">Job Type:</span>
-            {selectedJob.jobType}
+
+          {/* ob Type */}
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-28">Job Type:</span>
+            <span className="ml-5">{selectedJob.jobType}</span>
           </p>
-          <p className="text-lg">
-            <span className="font-bold mr-5">Salary:</span>
-            {selectedJob.salary}
+
+          {/* Salary */}
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-28">Salary:</span>
+            <span className="ml-5">{selectedJob.salary}</span>
           </p>
-          <p className="text-lg">
-            <span className="font-bold mr-5">Posted Date:</span>
-            {new Date(selectedJob.postedDate).toLocaleDateString()}
+
+          {/* Posted Date */}
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-28">Posted Date:</span>
+            <span className="ml-5">{selectedJob.postedDate}</span>
           </p>
-          <p className="text-lg">
-            <span className="font-bold mr-5">Available Until:</span>
-            {new Date(selectedJob.availableUntil).toLocaleDateString()}
-          </p>
-          <p className="text-sm">
-            <span className="font-bold mr-5">Company Link:</span>
-            <a
-              href={selectedJob.companyLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {selectedJob.companyLink}
-            </a>
+
+          {/* Available Until */}
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-28">Available Until:</span>
+            <span className="ml-5">{selectedJob.availableUntil}</span>
           </p>
         </div>
-        {/* Image */}
-        {selectedJob.companyLogo && (
-          <img
-            src={selectedJob.companyLogo || NoLogo}
-            alt={selectedJob.companyName}
-            className="border border-gray-200"
-          />
-        )}
+
+        {/* Company Logo */}
+        <div className="mb-8 lg:mb-0  ">
+          {selectedJob.companyLogo && (
+            <img
+              src={selectedJob.companyLogo || NoLogo}
+              alt={selectedJob.companyName}
+              className="border border-gray-200 "
+            />
+          )}
+        </div>
       </div>
 
+      {/* Company Link */}
+      <p className=" flex flex-col md:flex-row">
+        <span className="font-bold mr-5 text-xl">Company Link:</span>
+        <a
+          href={selectedJob.companyLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="md:text-xl"
+        >
+          {selectedJob.companyLink}
+        </a>
+      </p>
+
       {/* Description */}
-      <p className="py-4">{selectedJob.jobDescription}</p>
+      <p className="py-4 text-lg">{selectedJob.jobDescription}</p>
 
       {/* Responsibilities */}
       <div>
-        <h4 className="font-semibold">Responsibilities:</h4>
+        <h4 className="font-semibold mb-2 ">Responsibilities:</h4>
         <ul className="list-disc pl-5 mb-4">
           {selectedJob.responsibilities.map((responsibility, index) => (
-            <li key={index}>{responsibility}</li>
+            <li className="my-2" key={index}>
+              {responsibility}
+            </li>
           ))}
         </ul>
       </div>
 
       {/* Qualifications */}
       <div>
-        <h4 className="font-semibold">Qualifications:</h4>
+        <h4 className="font-semibold mb-2 ">Qualifications:</h4>
         <ul className="list-disc pl-5 mb-4">
           {selectedJob.qualifications.map((qualification, index) => (
-            <li key={index}>{qualification}</li>
+            <li className="my-2" key={index}>
+              {qualification}
+            </li>
           ))}
         </ul>
       </div>
 
       {/* Tools */}
-      <div className="flex items-center justify-between mx-5">
+      <div className="flex flex-col md:flex-row   justify-between mx-5">
         <div>
           <h4 className="font-semibold">Tools and Technologies:</h4>
-          <ul className="list-disc gap-3 mb-4 flex mt-2">
+          <ul className="list-disc gap-3 mb-4 flex flex-col md:flex-row mt-2">
             {selectedJob.toolsAndTechnologies.map((tool, index) => (
-              <p key={index} className="py-1 px-6 bg-gray-300 rounded-full">
+              <p key={index} className="py-1 px-6 bg-gray-300 rounded-full text-center">
                 {tool}
               </p>
             ))}

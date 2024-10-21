@@ -6,15 +6,16 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import ModalJobDetails from "../Shared/ModalJobDetails/ModalJobDetails";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Helmet } from "react-helmet";
 
 const Jobs = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTitle, setSelectedTitle] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedJobType, setSelectedJobType] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState(""); // New state for location
+  const [selectedTitle, setSelectedTitle] = useState("");
   const [selectedJob, setSelectedJob] = useState(null);
-  const axiosPublic = useAxiosPublic();
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const axiosPublic = useAxiosPublic();
   const jobsPerPage = 9;
 
   const {
@@ -23,8 +24,7 @@ const Jobs = () => {
     error,
   } = useQuery({
     queryKey: ["PostedJobsData"],
-    queryFn: () =>
-      axiosPublic.get(`/Posted-Job`).then((res) => res.data),
+    queryFn: () => axiosPublic.get(`/Posted-Job`).then((res) => res.data),
   });
 
   if (isLoading) return <Loader />;
@@ -44,14 +44,13 @@ const Jobs = () => {
     );
   }
 
-  // Extract unique job titles, types, and locations
   const uniqueJobTitles = [
     ...new Set(PostedJobsData.map((job) => job.jobTitle)),
   ];
   const uniqueJobTypes = [...new Set(PostedJobsData.map((job) => job.jobType))];
   const uniqueLocations = [
     ...new Set(PostedJobsData.map((job) => job.location)),
-  ]; // Extract unique locations
+  ];
 
   const filteredJobs = PostedJobsData.filter((job) => {
     const matchesSearch = job.jobTitle
@@ -61,8 +60,8 @@ const Jobs = () => {
     const matchesJobType =
       selectedJobType === "" || job.jobType === selectedJobType;
     const matchesLocation =
-      selectedLocation === "" || job.location === selectedLocation; // Match location
-    return matchesSearch && matchesTitle && matchesJobType && matchesLocation; // Include location in the filter
+      selectedLocation === "" || job.location === selectedLocation;
+    return matchesSearch && matchesTitle && matchesJobType && matchesLocation;
   });
 
   const hasMore = currentPage * jobsPerPage < filteredJobs.length;
@@ -90,19 +89,23 @@ const Jobs = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className=" pt-20">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Jobs</title>
+      </Helmet>
+      <div className="pt-20 ">
         {/* Title */}
-        <div className="text-black pt-5 mx-auto max-w-[1200px]">
+        <div className="text-black text-center lg:text-left pt-5 mx-auto max-w-[1200px]">
           <h1 className="text-2xl font-bold m-0">Our Posted Jobs</h1>
           <p>Find Your Preferred Job</p>
         </div>
 
-        <div className="flex justify-between items-center py-3 mx-auto max-w-[1200px] text-black">
+        <div className="flex flex-col lg:flex-row justify-between items-center py-3 mx-auto max-w-[1200px] text-black  gap-3">
           {/* Search */}
-          <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
+          <label className="input input-bordered flex items-center w-[300px] md:w-[500px] lg:w-[300px] bg-white mx-auto">
             <input
               type="text"
-              className="grow py-2 px-3 focus:outline-none"
+              className="grow py-2 px-3 focus:outline-none rounded-none"
               placeholder="Search"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -110,45 +113,49 @@ const Jobs = () => {
             <FaSearch className="h-5 w-5 opacity-70 text-black" />
           </label>
 
-          {/* Job title */}
-          <select
-            className="border border-gray-300 p-2 w-[230px] py-3 bg-white text-black"
-            value={selectedTitle}
-            onChange={(e) => setSelectedTitle(e.target.value)}
-          >
-            <option value="">All Job Titles</option>
-            {uniqueJobTitles.map((title, index) => (
-              <option key={index} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
-          {/* Job Type */}
-          <select
-            className="border border-gray-300 p-2 w-[230px] py-3 bg-white text-black"
-            value={selectedJobType}
-            onChange={(e) => setSelectedJobType(e.target.value)}
-          >
-            <option value="">All Job Types</option>
-            {uniqueJobTypes.map((jobType, index) => (
-              <option key={index} value={jobType}>
-                {jobType}
-              </option>
-            ))}
-          </select>
-          {/* Location Selector */}
-          <select
-            className="border border-gray-300 p-2 w-[230px] py-3 bg-white text-black"
-            value={selectedLocation}
-            onChange={(e) => setSelectedLocation(e.target.value)}
-          >
-            <option value="">All Locations</option>
-            {uniqueLocations.map((location, index) => (
-              <option key={index} value={location}>
-                {location}
-              </option>
-            ))}
-          </select>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mx-auto">
+            {/* Job Title */}
+            <select
+              className="border border-gray-300 p-2 w-[300px] lg:w-[230px] bg-white text-black"
+              value={selectedTitle}
+              onChange={(e) => setSelectedTitle(e.target.value)}
+            >
+              <option value="">All Job Titles</option>
+              {uniqueJobTitles.map((title, index) => (
+                <option key={index} value={title}>
+                  {title}
+                </option>
+              ))}
+            </select>
+
+            {/* Job Type */}
+            <select
+              className="border border-gray-300 p-2 w-[300px] lg:w-[230px] bg-white text-black"
+              value={selectedJobType}
+              onChange={(e) => setSelectedJobType(e.target.value)}
+            >
+              <option value="">All Job Types</option>
+              {uniqueJobTypes.map((jobType, index) => (
+                <option key={index} value={jobType}>
+                  {jobType}
+                </option>
+              ))}
+            </select>
+
+            {/* Location Selector */}
+            <select
+              className="border border-gray-300 p-2 w-[300px] lg:w-[230px] bg-white text-black"
+              value={selectedLocation}
+              onChange={(e) => setSelectedLocation(e.target.value)}
+            >
+              <option value="">All Locations</option>
+              {uniqueLocations.map((location, index) => (
+                <option key={index} value={location}>
+                  {location}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Infinite Scroll */}
@@ -162,17 +169,16 @@ const Jobs = () => {
             </h4>
           }
           endMessage={
-            <p className="text-2xl text-center font-bold py-5 text-red-500">
-              No more jobs to load
-            </p>
+            <p className="text-2xl text-center font-bold py-5 text-red-500"></p>
           }
         >
-          <div className="grid grid-cols-3 gap-5 py-10 mx-auto max-w-[1200px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 py-10 mx-auto max-w-[1200px] px-5">
             {filteredJobs.slice(0, currentPage * jobsPerPage).map((job) => (
               <div
                 key={job._id}
-                className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-blue-50 hover:shadow-2xl"
+                className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-blue-50 hover:shadow-2xl"
               >
+                {/* Card */}
                 <div className="card-body">
                   <p className="font-bold text-2xl text-black">
                     {job.jobTitle}
@@ -192,15 +198,15 @@ const Jobs = () => {
                       Posted: {calculateDaysAgo(job.postedDate)}
                     </p>
                   )}
-                  <div className="card-actions justify-end mt-5">
+                  <div className="flex justify-end gap-1 lg:gap-3 mt-5">
                     <Link to={`/PostedJobsDetails/${job._id}`}>
-                      <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
+                      <button className="bg-green-500 hover:bg-green-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white">
                         Apply Now
                       </button>
                     </Link>
                     <button
-                      className="bg-yellow-500 hover:bg-yellow-600 px-5 py-2 text-lg font-semibold text-white"
-                      onClick={() => openModal(job)}
+                      className="bg-yellow-500 hover:bg-yellow-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white"
+                      onClick={() => openModal(job)} // Open modal on button click
                     >
                       View More
                     </button>

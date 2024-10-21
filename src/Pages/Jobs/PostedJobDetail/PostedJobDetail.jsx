@@ -8,6 +8,7 @@ import { AuthContext } from "../../../Provider/AuthProvider";
 import { useContext, useEffect, useState } from "react";
 import JobModalCard from "./JobModalCard/JobModalCard";
 import BackButton from "../../Shared/BackButton/BackButton";
+import { Helmet } from "react-helmet";
 
 const PostedJobDetail = () => {
   const { id } = useParams();
@@ -53,6 +54,10 @@ const PostedJobDetail = () => {
 
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Job Details</title>
+      </Helmet>
       <div className="max-w-[1200px] mx-auto text-black pt-28 bg-slate-50 opacity-80 px-5 py-5">
         {/* Back Button */}
         <BackButton />

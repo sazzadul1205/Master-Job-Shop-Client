@@ -6,6 +6,7 @@ import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import ModalGigDetails from "../Shared/ModalGigDetails/ModalGigDetails";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Helmet } from "react-helmet";
 
 const Gigs = () => {
   const axiosPublic = useAxiosPublic();
@@ -115,6 +116,10 @@ const Gigs = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen ">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Gig</title>
+      </Helmet>
       <div className=" pt-20">
         {/* Title */}
         <div className="text-black mx-auto max-w-[1200px] text-center lg:text-left ">

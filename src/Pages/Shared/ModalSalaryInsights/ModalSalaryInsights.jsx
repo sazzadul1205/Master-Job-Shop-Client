@@ -24,29 +24,32 @@ const ModalSalaryInsights = ({ selectedJob, closeModal }) => {
           <p className="font-bold py-1">Global Salary Range:</p>
           <ul className="list-disc list-inside">
             {Object.keys(selectedJob.globalSalaryRange).map((region, idx) => (
-              <li className="text-lg" key={idx}>
-                {region}: {selectedJob.globalSalaryRange[region]}
+              <li className="text-lg flex flex-col md:flex-row" key={idx}>
+                <span className="font-bold w-16">{region} :</span>
+                <span className="ml-4">
+                  {selectedJob.globalSalaryRange[region]}
+                </span>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* experienceLevel */}
-        <div className="flex items-center text-lg">
-          <p className="font-bold">Average Experience Level:</p>
-          <p className="ml-5">{selectedJob.experienceLevel}</p>
-        </div>
-
         {/* jobType */}
-        <div className="flex items-center text-lg">
+        <div className="flex flex-col md:flex-row text-lg">
           <p className="font-bold">Job Type:</p>
           <p className="ml-5">{selectedJob.jobType}</p>
         </div>
 
         {/* education */}
-        <div className="flex items-center text-lg">
+        <div className="flex flex-col md:flex-row text-lg">
           <p className="font-bold">Education:</p>
           <p className="ml-5">{selectedJob.education}</p>
+        </div>
+
+        {/* experienceLevel */}
+        <div className="flex flex-col md:flex-row text-lg">
+          <p className="font-bold">Average Experience Level:</p>
+          <p className="ml-5">{selectedJob.experienceLevel}</p>
         </div>
 
         {/* responsibilities */}
@@ -73,7 +76,7 @@ const ModalSalaryInsights = ({ selectedJob, closeModal }) => {
           </ul>
         </div>
 
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-1 md:grid-cols-2">
           {/* careerPath */}
           <div className="py-2">
             <p className="font-bold text-lg py-1">Career Path:</p>
@@ -99,7 +102,7 @@ const ModalSalaryInsights = ({ selectedJob, closeModal }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-1 md:grid-cols-2">
           {/* potentialIndustries */}
           <div className="py-2">
             <p className="font-bold text-lg py-1">Potential Industries:</p>

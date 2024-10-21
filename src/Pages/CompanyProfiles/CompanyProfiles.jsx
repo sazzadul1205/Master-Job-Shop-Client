@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import ModalCompanyProfilesDetails from "../Shared/ModalCompanyProfilesDetails/ModalCompanyProfilesDetails";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Helmet } from "react-helmet";
 
 const CompanyProfiles = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -88,6 +89,8 @@ const CompanyProfiles = () => {
   );
 
   const openModal = (company) => {
+    console.log(company);
+
     setSelectedCompany(company);
     const modal = document.getElementById("Company_Profiles_view");
     modal.showModal();
@@ -101,6 +104,10 @@ const CompanyProfiles = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Company Profiles</title>
+      </Helmet>
       <div className="pt-20">
         {/* Title */}
         <div className="text-black mx-auto max-w-[1200px] text-center lg:text-left ">
@@ -247,7 +254,7 @@ const CompanyProfiles = () => {
                     <div className="flex justify-end gap-1 lg:gap-3 mt-5">
                       <Link to={`/CompanyProfiles/${company._id}`}>
                         <button className="bg-green-500 hover:bg-green-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white">
-                          View Profile
+                          View rofile
                         </button>
                       </Link>
                       <button
@@ -263,15 +270,17 @@ const CompanyProfiles = () => {
             })}
           </div>
         </InfiniteScroll>
-      </div>
 
-      {/* Modal for showing company details */}
-      {selectedCompany && (
-        <ModalCompanyProfilesDetails
-          company={selectedCompany}
-          closeModal={closeModal}
-        />
-      )}
+        {/* Modal */}
+        <dialog id="Company_Profiles_view" className="modal">
+          {selectedCompany && (
+            <ModalCompanyProfilesDetails
+              closeModal={closeModal}
+              company={selectedCompany}
+            />
+          )}
+        </dialog>
+      </div>
     </div>
   );
 };

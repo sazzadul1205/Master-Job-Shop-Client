@@ -5,6 +5,7 @@ import Loader from "../Shared/Loader/Loader";
 import { FaSearch } from "react-icons/fa";
 import ModalSalaryInsights from "../Shared/ModalSalaryInsights/ModalSalaryInsights";
 import InfiniteScroll from "react-infinite-scroll-component"; // Importing InfiniteScroll
+import { Helmet } from "react-helmet";
 
 const SalaryInsights = () => {
   const axiosPublic = useAxiosPublic();
@@ -105,16 +106,21 @@ const SalaryInsights = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className=" pt-20">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Salary Insights</title>
+      </Helmet>
+      <div className="pt-20">
         {/* Title */}
-        <div className="text-black pt-3 mx-auto max-w-[1200px]">
-          <p className="text-2xl font-bold">Salary Insights</p>
+        <div className="text-black mx-auto max-w-[1200px] text-center lg:text-left ">
+          <p className="text-2xl font-bold pt-5">Salary Insights</p>
           <p>Know about the salary insights of different industries.</p>
         </div>
+
         {/* Search Box and Filters */}
-        <div className="flex  mx-auto max-w-[1200px] gap-5 py-3 ">
+        <div className="flex flex-col lg:flex-row max-w-[1200px] text-black mt-2 mx-auto space-y-2 lg:space-y-0">
           {/* Search bar */}
-          <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
+          <label className="input input-bordered flex items-center w-[300px] md:w-[500px] bg-white mx-auto">
             <input
               type="text"
               className="grow py-2 px-3 focus:outline-none"
@@ -125,47 +131,55 @@ const SalaryInsights = () => {
             <FaSearch className="h-4 w-4 opacity-70 text-black" />
           </label>
 
-          {/* Career Path Selector */}
-          <select
-            value={selectedCareerPath}
-            onChange={(e) => setSelectedCareerPath(e.target.value)}
-            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
-          >
-            <option value="">All Career Paths</option>
-            {careerPaths.map((path, index) => (
-              <option key={index} value={path}>
-                {path}
-              </option>
-            ))}
-          </select>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  mx-auto">
+            {/* Career Path Selector */}
+            <div>
+              <select
+                value={selectedCareerPath}
+                onChange={(e) => setSelectedCareerPath(e.target.value)}
+                className="border border-gray-300 p-2 bg-white text-black w-[300px] lg:w-[220px]  h-12"
+              >
+                <option value="">All Career Paths</option>
+                {careerPaths.map((path, index) => (
+                  <option key={index} value={path}>
+                    {path}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* Industry Selector */}
-          <select
-            value={selectedIndustry}
-            onChange={(e) => setSelectedIndustry(e.target.value)}
-            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
-          >
-            <option value="">All Industries</option>
-            {potentialIndustries.map((industry, index) => (
-              <option key={index} value={industry}>
-                {industry}
-              </option>
-            ))}
-          </select>
+            {/* Industry Selector */}
+            <div>
+              <select
+                value={selectedIndustry}
+                onChange={(e) => setSelectedIndustry(e.target.value)}
+                className="border border-gray-300 p-2 bg-white text-black w-[300px] lg:w-[220px]  h-12"
+              >
+                <option value="">All Industries</option>
+                {potentialIndustries.map((industry, index) => (
+                  <option key={index} value={industry}>
+                    {industry}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* Skills Selector */}
-          <select
-            value={selectedSkill}
-            onChange={(e) => setSelectedSkill(e.target.value)}
-            className="select select-bordered bg-white px-4 py-2 w-[250px] text-black"
-          >
-            <option value="">All Skills</option>
-            {skills.map((skill, index) => (
-              <option key={index} value={skill}>
-                {skill}
-              </option>
-            ))}
-          </select>
+            {/* Skills Selector */}
+            <div>
+              <select
+                value={selectedSkill}
+                onChange={(e) => setSelectedSkill(e.target.value)}
+                className="border border-gray-300 p-2 bg-white text-black w-[300px] lg:w-[220px]  h-12"
+              >
+                <option value="">All Skills</option>
+                {skills.map((skill, index) => (
+                  <option key={index} value={skill}>
+                    {skill}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
 
         {/* Infinite Scroll */}
@@ -178,18 +192,14 @@ const SalaryInsights = () => {
               Loading...
             </h4>
           }
-          endMessage={
-            <p className="text-2xl text-center font-bold py-5 text-red-500">
-              No more jobs to load
-            </p>
-          }
+          endMessage={<p></p>}
         >
           {/* Salary Cards Section */}
-          <div className="grid grid-cols-3 gap-4 py-10 mx-auto max-w-[1200px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 py-10 px-3 mx-auto max-w-[1200px]">
             {currentJobs.map((salaryInsight, index) => (
               <div
                 key={index}
-                className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-orange-50 hover:shadow-2xl"
+                className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-orange-50 hover:shadow-2xl"
               >
                 <div className="card-body">
                   <p className="font-bold text-2xl">{salaryInsight.jobTitle}</p>

@@ -1,14 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { FaArrowLeft, FaStar } from "react-icons/fa";
+import { Link, useParams } from "react-router-dom";
+import { FaStar } from "react-icons/fa";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loader from "../../Shared/Loader/Loader";
 import Rating from "react-rating";
 import { useState } from "react";
+import BackButton from "../../Shared/BackButton/BackButton";
+import { Helmet } from "react-helmet";
 
 const CompanyProfileDetails = () => {
   const { id } = useParams(); // Get the company profile ID from the URL
-  const navigate = useNavigate(); // Initialize useNavigate for back navigation
   const axiosPublic = useAxiosPublic();
   const [selectedJob, setSelectedJob] = useState(null); // State for the selected job for the modal
 
@@ -88,72 +89,104 @@ const CompanyProfileDetails = () => {
   // Render company profile details
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50 min-h-screen">
-      <div className="max-w-[1200px] mx-auto text-black pt-24">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Company Profile Details</title>
+      </Helmet>
+      <div className="max-w-[1200px] mx-auto text-black pt-28 bg-slate-50 opacity-80 px-5 py-5">
         {/* Back button with navigation */}
-        <button
-          className="flex text-2xl items-center hover:text-red-500"
-          onClick={() => navigate(-1)} // Navigate back to the previous page
-        >
-          <FaArrowLeft className="mr-5" />
-          Back
-        </button>
+        <BackButton></BackButton>
 
         {/* Company Profile Details */}
-        <div className="px-1">
+        <div className="pt-3">
           {/* Top section */}
-          <div className="flex justify-between">
-            <div className="py-2">
-              <h1 className="text-3xl font-bold mb-2">
-                {companyProfile.companyName}
-              </h1>
-              <p className="text-lg mb-2">
-                <strong>Industry:</strong> {companyProfile.industry}
+          <div className="flex flex-col-reverse md:flex-row justify-between gap-5">
+            {/* Content */}
+            <div>
+              {/* companyName */}
+              <p className="font-bold text-2xl">{companyProfile.companyName}</p>
+
+              {/* Location */}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28">Location:</span>
+                <span className="ml-5"> {companyProfile.location}</span>
               </p>
-              <p className="text-lg mb-2">
-                <strong>Location:</strong> {companyProfile.location}
+
+              {/* Industry */}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28">Industry:</span>
+                <span className="ml-5"> {companyProfile.industry}</span>
               </p>
-              <p className="text-lg mb-2">
-                <strong>Website:</strong>{" "}
+
+              {/* Website */}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold mr-5">Website:</span>
                 <a
                   href={companyProfile.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 underline"
+                  className="underline ml-5"
                 >
                   {companyProfile.website}
                 </a>
               </p>
-              <p className=" mb-4">
-                <strong>Description:</strong> {companyProfile.description}
+
+              {/* Description */}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28">Description:</span>
+                <span className="ml-5">{companyProfile.description}</span>
               </p>
             </div>
-            <img
-              src={companyProfile.logo}
-              alt={`${companyProfile.companyName} Logo`}
-              className="w-80 h-52 mb-4 "
-            />
+            {/* Company Logo */}
+            <div>
+              {companyProfile.logo && (
+                <img
+                  src={companyProfile.logo}
+                  alt={`${companyProfile.companyName} Logo`}
+                  className="w-full md:w-52 h-full md:h-w-52 object-cover mb-4"
+                />
+              )}
+            </div>
           </div>
 
           {/* Company Details */}
-          <div className="py-2">
-            <h2 className="text-2xl font-semibold mb-2">Company Details</h2>
-            <p className="text-lg grid grid-cols-2 w-1/3 mb-2 ">
-              <strong>Founding Year:</strong>{" "}
-              {companyProfile.companyDetails.foundingYear}
+          <div className=" mt-4">
+            <h4 className="font-bold text-lg text-blue-500">
+              Company Details:
+            </h4>
+
+            {/* foundingYear */}
+            <p className="text-lg flex ">
+              <span className="font-bold w-28">Founding Year:</span>
+              <span className="ml-5">
+                {companyProfile.companyDetails.foundingYear}
+              </span>
             </p>
-            <p className="text-lg grid grid-cols-2 w-1/3 mb-2">
-              <strong>Employees:</strong>{" "}
-              {companyProfile.companyDetails.employees}
+
+            {/* employees */}
+            <p className="text-lg flex ">
+              <span className="font-bold w-28">Employees:</span>
+              <span className="ml-5">
+                {companyProfile.companyDetails.employees}
+              </span>
             </p>
-            <p className="text-lg grid grid-cols-2 w-1/3 mb-2">
-              <strong>Revenue:</strong> {companyProfile.companyDetails.revenue}
+
+            {/* revenue */}
+            <p className="text-lg flex ">
+              <span className="font-bold w-28">Revenue:</span>
+              <span className="ml-5">
+                {companyProfile.companyDetails.revenue}
+              </span>
             </p>
-            <p className="text-lg grid grid-cols-2 w-1/3 mb-2">
-              <strong>CEO:</strong> {companyProfile.companyDetails.ceo}
+
+            {/* ceo */}
+            <p className="text-lg flex ">
+              <span className="font-bold w-28">CEO:</span>
+              <span className="ml-5"> {companyProfile.companyDetails.ceo}</span>
             </p>
           </div>
 
-          <div className="grid grid-cols-2">
+          <div className="grid grid-cols-1 md:grid-cols-2">
             {/* Services Offered */}
             <div className="py-2">
               <h3 className="text-2xl font-semibold py-2 mt-4">
@@ -248,7 +281,7 @@ const CompanyProfileDetails = () => {
             <ul className="list-disc list-inside">
               {Object.entries(companyProfile.companyDetails.socialMedia).map(
                 ([platform, link], index) => (
-                  <li key={index} className="text-lg">
+                  <li key={index} className="text-sm md:text-lg ">
                     <strong>{platform}:</strong>{" "}
                     <a
                       href={link}
@@ -276,11 +309,11 @@ const CompanyProfileDetails = () => {
             </div>
 
             {/* Job Cards Section */}
-            <div className="grid grid-cols-3 gap-4 py-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-10">
               {PostedJobsData.slice(0, 6).map((job) => (
                 <div
                   key={job._id}
-                  className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-blue-50 hover:shadow-2xl"
+                  className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-blue-50 hover:shadow-2xl"
                 >
                   {/* Card */}
                   <div className="card-body">
@@ -302,14 +335,14 @@ const CompanyProfileDetails = () => {
                         Posted: {calculateDaysAgo(job.postedDate)}
                       </p>
                     )}
-                    <div className="card-actions justify-end mt-5">
+                    <div className="flex justify-end gap-1 lg:gap-3 mt-5">
                       <Link to={`/PostedJobsDetails/${job._id}`}>
-                        <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
+                        <button className="bg-green-500 hover:bg-green-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white">
                           Apply Now
                         </button>
                       </Link>
                       <button
-                        className="bg-yellow-500 hover:bg-yellow-600 px-5 py-2 text-lg font-semibold text-white"
+                        className="bg-yellow-500 hover:bg-yellow-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white"
                         onClick={() => openModal(job)} // Open modal on button click
                       >
                         View More

@@ -102,7 +102,7 @@ const Jobs = () => {
 
         <div className="flex flex-col lg:flex-row justify-between items-center py-3 mx-auto max-w-[1200px] text-black  gap-3">
           {/* Search */}
-          <label className="input input-bordered flex items-center w-[300px] md:w-[500px] lg:w-[300px] bg-white mx-auto">
+          <label className="input input-bordered flex items-center w-[300px] md:w-[500px] bg-white mx-auto">
             <input
               type="text"
               className="grow py-2 px-3 focus:outline-none rounded-none"
@@ -115,18 +115,20 @@ const Jobs = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mx-auto">
             {/* Job Title */}
-            <select
-              className="border border-gray-300 p-2 w-[300px] lg:w-[230px] bg-white text-black"
-              value={selectedTitle}
-              onChange={(e) => setSelectedTitle(e.target.value)}
-            >
-              <option value="">All Job Titles</option>
-              {uniqueJobTitles.map((title, index) => (
-                <option key={index} value={title}>
-                  {title}
-                </option>
-              ))}
-            </select>
+            <div>
+              <select
+                className="border border-gray-300 p-2 bg-white text-black w-[300px] lg:w-[220px]  h-12"
+                value={selectedTitle}
+                onChange={(e) => setSelectedTitle(e.target.value)}
+              >
+                <option value="">All Job Titles</option>
+                {uniqueJobTitles.map((title, index) => (
+                  <option key={index} value={title}>
+                    {title}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             {/* Job Type */}
             <select
@@ -172,7 +174,7 @@ const Jobs = () => {
             <p className="text-2xl text-center font-bold py-5 text-red-500"></p>
           }
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 py-10 mx-auto max-w-[1200px] px-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 py-10 mx-auto max-w-[1200px] px-5">
             {filteredJobs.slice(0, currentPage * jobsPerPage).map((job) => (
               <div
                 key={job._id}

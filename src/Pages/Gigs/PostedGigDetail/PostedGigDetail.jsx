@@ -8,6 +8,7 @@ import { AuthContext } from "../../../Provider/AuthProvider";
 import { useContext, useEffect, useState } from "react";
 import GiaModalCard from "./GiaModalCard/GiaModalCard";
 import BackButton from "../../Shared/BackButton/BackButton";
+import { Helmet } from "react-helmet";
 
 const PostedGigDetail = () => {
   const { id } = useParams();
@@ -54,7 +55,11 @@ const PostedGigDetail = () => {
 
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50 min-h-screen">
-      <div className="max-w-[1200px] mx-auto text-black pt-24">
+        <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Gig Details</title>
+      </Helmet>
+      <div className="max-w-[1200px] mx-auto text-black pt-28 bg-slate-50 opacity-80 px-5 py-5">
         {/* Back button */}
         <BackButton></BackButton>
         {/* Content */}

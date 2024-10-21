@@ -1,16 +1,66 @@
-import { useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
 import Logo from "../assets/Logo.png";
+import { AuthContext } from "../Provider/AuthProvider";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../Pages/Shared/Loader/Loader";
 
 const DashboardLayout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const axiosPublic = useAxiosPublic();
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const {
+    data: MyUsers = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["MyUsers"],
+    queryFn: () =>
+      axiosPublic.get(`/Users?email=${user.email}`).then((res) => res.data),
+  });
+
+  // Determine the role of the user
+  const userRole = MyUsers.role;
+
+  useEffect(() => {
+    // Redirect based on user role
+    if (userRole === "Admin" || userRole === "Manager") {
+      navigate("/Dashboard/AdminOverview"); // Redirect to AdminOverview
+    } else if (userRole === "User") {
+      navigate("/Dashboard/UserOverview"); // Redirect to UserOverview
+    } else {
+      // Handle cases for other roles if necessary
+    }
+  }, [userRole, navigate]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return (
+      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
+        <p className="text-center text-red-500 font-bold text-3xl mb-8">
+          Something went wrong. Please reload the page.
+        </p>
+        <button
+          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
+          onClick={() => window.location.reload()}
+        >
+          Reload
+        </button>
+      </div>
+    );
+  }
 
   // Admin/Manager Links
-  const DashboardNavLink = [
+  const adminNavLinks = [
     { to: "AdminOverview", label: "Admin Overview" },
-    { to: "UserOverview", label: "User Overview" },
     { to: "AdminManageUsers", label: "Manage Users" },
     { to: "ManageJobs", label: "Manage Jobs" },
     { to: "ManageGigs", label: "Manage Gigs" },
@@ -24,6 +74,11 @@ const DashboardLayout = () => {
     { to: "ManageTestimonials", label: "Manage Testimonials" },
     { to: "ManageBlogs", label: "Manage Blogs" },
     { to: "DetailedLog", label: "Detailed Log" },
+  ];
+
+  // User Links (for non-admins/managers)
+  const userNavLinks = [
+    { to: "UserOverview", label: "User Overview" },
     { to: "ManageJobApplicants", label: "Manage Job Applicants" },
     { to: "ManageGigApplicant", label: "Manage Gig Applicants" },
     { to: "ManageCompanyInfo", label: "Manage Company Info" },
@@ -36,7 +91,24 @@ const DashboardLayout = () => {
   ];
 
   // Generate navigation items
-  const adminNav = DashboardNavLink.map((link) => {
+  const adminNav = adminNavLinks.map((link) => {
+    return (
+      <li key={link.to} className="mb-2">
+        <NavLink
+          to={link.to}
+          className={({ isActive }) =>
+            `text-lg font-semibold relative group py-2 px-4 transition-colors duration-300 rounded-none hover:text-white
+              ${isActive ? "bg-blue-500 text-white" : "text-black"}`
+          }
+        >
+          <span className="absolute inset-0 w-full h-full bg-blue-500 transition-transform duration-500 ease-out scale-x-0 origin-left group-hover:scale-x-100 z-[-1]"></span>
+          <span className="relative z-10">{link.label}</span>
+        </NavLink>
+      </li>
+    );
+  });
+
+  const userNav = userNavLinks.map((link) => {
     return (
       <li key={link.to} className="mb-2">
         <NavLink
@@ -68,12 +140,17 @@ const DashboardLayout = () => {
 
           {/* Icons */}
           <div className="flex items-center justify-center pt-5">
-            <img src={Logo} alt="Logo.png" className="w-16" />
+            <img src={Logo} alt="Logo" className="w-16" />
             <p className="text-xl font-bold text-black">Master Job Shop</p>
           </div>
 
-          <ul className="menu  pb-5">
-            <ul className="menu menu-vertical px-1">{adminNav}</ul>
+          {/* Render admin or user links based on role */}
+          <ul className="menu pb-5">
+            {userRole === "Admin" || userRole === "Manager" ? (
+              <ul className="menu menu-vertical px-1">{adminNav}</ul>
+            ) : (
+              <ul className="menu menu-vertical px-1">{userNav}</ul>
+            )}
           </ul>
         </div>
 
@@ -89,12 +166,17 @@ const DashboardLayout = () => {
 
             {/* Icons */}
             <div className="flex items-center justify-center py-5">
-              <img src={Logo} alt="Logo.png" className="w-16" />
+              <img src={Logo} alt="Logo" className="w-16" />
               <p className="text-xl font-bold text-black">Master Job Shop</p>
             </div>
 
+            {/* Render admin or user links based on role */}
             <ul className="menu p-4 pb-5">
-              <ul className="menu menu-vertical px-1">{adminNav}</ul>
+              {userRole === "Admin" || userRole === "Manager" ? (
+                <ul className="menu menu-vertical px-1">{adminNav}</ul>
+              ) : (
+                <ul className="menu menu-vertical px-1">{userNav}</ul>
+              )}
             </ul>
           </div>
         )}
@@ -102,7 +184,7 @@ const DashboardLayout = () => {
         {/* Dashboard Content */}
         <div className="flex-1 lg:ml-[320px] overflow-y-auto min-h-screen relative">
           <IoMenu
-            className="text-5xl text-black bg-green-500 fixed top-20 opacity-70 cursor-pointer z-50 flex lg:hidden"
+            className="text-5xl text-black bg-green-500 fixed top-20 opacity-70 cursor-pointer z-50 lg:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
           />
           <Outlet />

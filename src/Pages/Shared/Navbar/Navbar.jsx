@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
 import Swal from "sweetalert2";
@@ -9,6 +9,7 @@ const Navbar = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, logOut } = useContext(AuthContext);
+  const dropdownRef = useRef(null); // Create ref for dropdown
 
   // Handle scroll position change
   useEffect(() => {
@@ -22,6 +23,20 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Handle click outside dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   // Handle logout with Swal alert
   const handleSignOut = () => {
@@ -51,7 +66,6 @@ const Navbar = () => {
     setIsDropdownOpen(false); // Close dropdown after link click
   };
 
-  // Extended nav items with more sections and submenus
   const navItems = [
     { label: "HOME", link: "/", subMenu: [] },
     { label: "JOBS", link: "/Jobs", subMenu: [] },
@@ -73,34 +87,12 @@ const Navbar = () => {
     },
   ];
 
-  const renderNav = () =>
+  const renderNav = (isMobile) =>
     navItems.map(({ label, link, subMenu }) => (
       <li key={label} className="relative">
-        <div className="dropdown dropdown-hover">
-          {subMenu.length > 0 ? (
-            <>
-              <p className="hover:text-blue-800 cursor-pointer">{label}</p>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu bg-white font-semibold z-[1] w-52 p-2 shadow"
-              >
-                {subMenu.map((item) => (
-                  <li key={item.link} onClick={closeDropdown}>
-                    <NavLink
-                      to={item.link}
-                      className={({ isActive }) =>
-                        isActive
-                          ? "text-blue-800 hover:bg-white bg-white text-base"
-                          : "hover:text-blue-800 hover:bg-white text-base"
-                      }
-                    >
-                      {item.label}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : (
+        {subMenu.length > 0 && isMobile ? (
+          // On mobile, display submenu items as part of the main list
+          <>
             <NavLink
               to={link}
               onClick={closeDropdown}
@@ -110,8 +102,58 @@ const Navbar = () => {
             >
               {label}
             </NavLink>
-          )}
-        </div>
+            {subMenu.map((item) => (
+              <li key={item.link} onClick={closeDropdown}>
+                <NavLink
+                  to={item.link}
+                  className={({ isActive }) =>
+                    isActive ? "text-blue-800 " : "hover:text-blue-800"
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
+          </>
+        ) : (
+          // On larger screens, display as dropdown
+          <div className="dropdown dropdown-hover">
+            {subMenu.length > 0 ? (
+              <>
+                <p className="hover:text-blue-800 cursor-pointer">{label}</p>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content menu bg-white font-semibold z-[1] w-52 p-2 shadow"
+                >
+                  {subMenu.map((item) => (
+                    <li key={item.link} onClick={closeDropdown}>
+                      <NavLink
+                        to={item.link}
+                        className={({ isActive }) =>
+                          isActive
+                            ? "text-blue-800 hover:bg-white bg-white text-base"
+                            : "hover:text-blue-800 hover:bg-white text-base"
+                        }
+                      >
+                        {item.label}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <NavLink
+                to={link}
+                onClick={closeDropdown}
+                className={({ isActive }) =>
+                  isActive ? "text-blue-800" : "hover:text-blue-800"
+                }
+              >
+                {label}
+              </NavLink>
+            )}
+          </div>
+        )}
       </li>
     ));
 
@@ -126,7 +168,7 @@ const Navbar = () => {
         <div className="navbar mx-auto max-w-[1200px] items-center h-16">
           {/* Navbar Start */}
           <div className="navbar-start">
-            <div className="dropdown">
+            <div className="dropdown" ref={dropdownRef}>
               <button
                 tabIndex={0}
                 className="btn btn-ghost lg:hidden"
@@ -134,14 +176,15 @@ const Navbar = () => {
               >
                 <IoMenu className="text-3xl mt-2" />
               </button>
+
               {isDropdownOpen && (
-                <ul className="menu menu-sm bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow text-xl">
-                  {renderNav()}
+                <ul className="absolute top-7 left-4 menu menu-sm bg-white rounded-box z-[1] mt-3 w-52 p-2 shadow text-xl">
+                  {renderNav(true)} {/* Pass 'true' for mobile view */}
                 </ul>
               )}
             </div>
             <Link to={"/"}>
-              <div className="flex items-center">
+              <div className="hidden md:flex items-center ">
                 <img src={Logo} alt="Logo.png" className="w-16" />
                 <p className="text-xl font-bold">Master Job Shop</p>
               </div>
@@ -151,24 +194,26 @@ const Navbar = () => {
           {/* Navbar Center */}
           <div className="navbar-center hidden lg:flex">
             <ul className="flex gap-1 px-1 space-x-5 font-semibold text-black">
-              {renderNav()}
+              {renderNav(false)} {/* Pass 'false' for desktop view */}
             </ul>
           </div>
 
           {/* Navbar End */}
-          <div className="navbar-end flex gap-5 items-center">
+          <div className="navbar-end flex gap-5">
             {user ? (
-              <div className="dropdown dropdown-end">
+              <div className="dropdown">
                 <div
                   className="flex items-center lg:pr-5 bg-blue-300 hover:bg-blue-200 cursor-pointer"
                   tabIndex={0}
+                  role="button"
                 >
                   <img src={user.photoURL} alt="User" className="w-12 h-12 " />
-                  <h2 className="font-semibold lg:pl-2 text-lg hidden lg:flex w-[200px]">
+                  <h2 className="font-semibold pl-2 text-lg hidden lg:flex w-[200px]">
                     {user.displayName}
                   </h2>
                 </div>
-                <ul className="dropdown-content menu m-0 bg-white z-[1] w-full shadow right-0">
+                {/* Dropdown menu */}
+                <ul className="dropdown-content menu bg-white z-[1] w-52 p-2 shadow right-0">
                   <li className="lg:hidden">
                     <p>{user.displayName}</p>
                   </li>

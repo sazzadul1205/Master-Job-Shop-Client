@@ -35,14 +35,14 @@ const FeaturedJobs = ({ PostedJobsData }) => {
     <div className="bg-gradient-to-b from-blue-400 to-blue-50">
       <div className="max-w-[1200px] mx-auto text-black py-20">
         {/* Top section */}
-        <div className="flex items-center pt-20 px-5">
-          <div className="">
-            <p className="text-5xl font-bold italic text-blue-700">
+        <div className="flex flex-col md:flex-row items-center pt-20 px-5">
+          <div className="text-center md:text-left mb-4 md:mb-0">
+            <p className="text-4xl md:text-5xl font-bold italic text-blue-700">
               Featured Jobs
             </p>
-            <p className="text-xl">Find your dream job and help yourself</p>
+            <p className="lg:text-xl">Find your dream job and help yourself</p>
           </div>
-          <button className="ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
+          <button className="mt-4 md:mt-0 md:ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
             <Link to={"/Jobs"} className="flex items-center">
               Show More <FaArrowRight className="ml-2" />
             </Link>
@@ -50,11 +50,11 @@ const FeaturedJobs = ({ PostedJobsData }) => {
         </div>
 
         {/* Job Cards Section */}
-        <div className="grid grid-cols-3 gap-4 py-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-10 px-5 lg:px-0">
           {PostedJobsData.slice(0, 6).map((job) => (
             <div
               key={job._id}
-              className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-blue-50 hover:shadow-2xl"
+              className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-blue-50 hover:shadow-2xl"
             >
               {/* Card */}
               <div className="card-body">
@@ -74,14 +74,14 @@ const FeaturedJobs = ({ PostedJobsData }) => {
                     Posted: {calculateDaysAgo(job.postedDate)}
                   </p>
                 )}
-                <div className="card-actions justify-end mt-5">
+                <div className="flex justify-end gap-1 lg:gap-3 mt-5">
                   <Link to={`/PostedJobsDetails/${job._id}`}>
-                    <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
+                    <button className="bg-green-500 hover:bg-green-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white">
                       Apply Now
                     </button>
                   </Link>
                   <button
-                    className="bg-yellow-500 hover:bg-yellow-600 px-5 py-2 text-lg font-semibold text-white"
+                    className="bg-yellow-500 hover:bg-yellow-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white"
                     onClick={() => openModal(job)} // Open modal on button click
                   >
                     View More

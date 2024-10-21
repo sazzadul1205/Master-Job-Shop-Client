@@ -23,7 +23,8 @@ const Jobs = () => {
     error,
   } = useQuery({
     queryKey: ["PostedJobsData"],
-    queryFn: () => axiosPublic.get(`/Posted-Job`).then((res) => res.data),
+    queryFn: () =>
+      axiosPublic.get(`/Posted-Job`).then((res) => res.data),
   });
 
   if (isLoading) return <Loader />;

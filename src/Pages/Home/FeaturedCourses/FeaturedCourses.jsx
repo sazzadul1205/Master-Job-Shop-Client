@@ -6,16 +6,16 @@ const FeaturedCourses = ({ CoursesData }) => {
     <div className="bg-gradient-to-b from-blue-50 to-blue-400">
       <div className="max-w-[1200px] mx-auto text-black py-10">
         {/* Top section */}
-        <div className="flex items-center pt-20 px-5">
-          <div className="">
-            <p className="text-5xl font-bold italic text-blue-700">
+        <div className="flex flex-col md:flex-row items-center pt-20 px-5">
+          <div className="text-center md:text-left mb-4 md:mb-0">
+            <p className="text-4xl md:text-5xl font-bold italic text-blue-700">
               Available Courses
             </p>
-            <p className="text-xl">
+            <p className="lg:text-xl">
               Enhance your skills and advance your career!
             </p>
           </div>
-          <button className="ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
+          <button className="mt-4 md:mt-0 md:ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
             <Link to={"/Courses"} className="flex items-center">
               Show More <FaArrowRight className="ml-2" />
             </Link>
@@ -23,11 +23,11 @@ const FeaturedCourses = ({ CoursesData }) => {
         </div>
 
         {/* Course Cards Section */}
-        <div className="grid grid-cols-3 gap-4 py-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-10 px-5 lg:px-0">
           {CoursesData.slice(0, 6).map((course, index) => (
             <div
               key={index}
-              className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-blue-50 hover:shadow-2xl"
+              className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-green-50 hover:shadow-2xl"
             >
               <div className="card-body">
                 {/* Course Title */}

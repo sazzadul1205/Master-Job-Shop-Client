@@ -1,6 +1,7 @@
 import { FaAngleLeft, FaAngleRight, FaStar } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import Rating from "react-rating";
+import PropTypes from "prop-types";
 
 const Testimonials = ({ testimonialsData }) => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -34,45 +35,45 @@ const Testimonials = ({ testimonialsData }) => {
       <div className="max-w-[1200px] mx-auto text-black">
         {/* Top Section */}
         <div className="text-xl py-10 text-center">
-          <p className="text-5xl font-bold italic text-blue-700">
-            What People think about us
+          <p className="text-3xl md:text-5xl font-bold italic text-blue-700">
+            What People Think About Us
           </p>
-          <p className="text-xl">
+          <p className="text-lg md:text-xl">
             See what people think about us and know more
           </p>
         </div>
 
         {/* Testimonial Slider */}
-        <div className="bg-white flex items-center justify-between h-[320px] relative">
+        <div className="bg-white flex items-center justify-between md:h-[320px] h-[420px] relative">
           {/* Left Arrow */}
           <div
-            className="absolute left-0 flex items-center justify-center w-12 h-full cursor-pointer hover:bg-gray-300"
+            className="absolute left-0 flex items-center justify-center w-8 md:w-12 h-full cursor-pointer hover:bg-gray-300"
             onClick={handlePrev}
           >
-            <FaAngleLeft className="text-4xl text-blue-500" />
+            <FaAngleLeft className="text-3xl md:text-4xl text-blue-500" />
           </div>
 
           {/* Testimonial Card */}
           <div
-            className="bg-blue-50 min-h-[300px] p-5 rounded-lg shadow-md flex justify-between items-center px-10 py-10 hover:shadow-2xl w-full mx-20 transition-transform duration-700 ease-in-out"
+            className="bg-blue-50 min-h-[300px] p-5 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-center px-5 md:px-10 py-10 hover:shadow-2xl w-full mx-5 md:mx-20 transition-transform duration-700 ease-in-out"
             key={testimonial._id}
           >
             {/* Left Section */}
-            <div className="flex items-center gap-5">
+            <div className="flex flex-col md:flex-row items-center gap-5 w-full md:w-auto">
               <img
                 src={testimonial.image}
                 alt={testimonial.name}
-                className="w-24 h-24 rounded-full mx-auto"
+                className="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto"
               />
-              <div>
+              <div className="text-center md:text-left">
                 <h3 className="text-lg font-semibold">{testimonial.name}</h3>
                 <p className="text-gray-600">{testimonial.title}</p>
               </div>
             </div>
 
             {/* Right Section */}
-            <div className="w-1/2">
-              <h1 className="text-black text-2xl mb-2">
+            <div className="w-full md:w-1/2 mt-5 md:mt-0 text-center md:text-left">
+              <h1 className="text-black text-xl md:text-2xl mb-2">
                 {testimonial.mainMessage}
               </h1>
               <p className="text-gray-600">{testimonial.content}</p>
@@ -92,20 +93,16 @@ const Testimonials = ({ testimonialsData }) => {
 
           {/* Right Arrow */}
           <div
-            className="absolute right-0 flex items-center justify-center w-12 h-full cursor-pointer hover:bg-gray-300"
+            className="absolute right-0 flex items-center justify-center w-8 md:w-12 h-full cursor-pointer hover:bg-gray-300"
             onClick={handleNext}
           >
-            <FaAngleRight className="text-4xl text-blue-500" />
+            <FaAngleRight className="text-3xl md:text-4xl text-blue-500" />
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-import PropTypes from "prop-types";
-
-// ... (rest of your code)
 
 Testimonials.propTypes = {
   testimonialsData: PropTypes.array.isRequired,

@@ -68,7 +68,7 @@ const NewsLetter = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-5 px-5">
           {/* Name Input */}
           <div className="mb-4 items-center">
             <label className="block mb-2 w-[120px] font-semibold mr-2">

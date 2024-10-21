@@ -12,7 +12,7 @@ const iconMap = {
 const WhyChooseUs = ({ WhyChooseUsData }) => {
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 ">
-      <div className="max-w-[1200px] mx-auto text-black py-10">
+      <div className="max-w-[1200px] mx-auto text-black py-10 px-5">
         {/* Top Section */}
         <div className="text-xl py-20 text-center">
           <p className="text-5xl font-bold italic text-blue-700">

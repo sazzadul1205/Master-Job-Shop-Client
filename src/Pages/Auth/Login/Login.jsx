@@ -38,9 +38,22 @@ const Login = () => {
       .then((res) => {
         const user = res.user;
         console.log(user);
+        // Fetch user role from the database
+        axiosPublic
+          .get(`/Users?email=${user.email}`)
+          .then((response) => {
+            const userData = response.data;
+            if (userData.role === "Admin" || userData.role === "Manager") {
+              navigate("/dashboard", { replace: true });
+            } else {
+              navigate(from, { replace: true });
+            }
+            window.location.reload(); // Reload the page after navigation
+          })
+          .catch((error) => {
+            console.error("Error fetching user role:", error);
+          });
         showSuccessLogInAlert();
-        navigate(from, { replace: true });
-        window.location.reload(); // Reload the page after navigation
       })
       .catch((error) => {
         console.log(error);
@@ -59,7 +72,7 @@ const Login = () => {
         const userData = {
           displayName: user.displayName,
           email: user.email,
-          role: "member",
+          role: "Member",
           createdDate: formattedDateTime,
           photoURL: user.photoURL,
         };
@@ -69,18 +82,30 @@ const Login = () => {
           .get("/Users?email=" + user.email) // Check for existing user
           .then((response) => {
             if (response.data) {
-              // User exists, just log them in
-              showSuccessLogInAlert();
-              navigate(from, { replace: true });
+              // If user exists, check their role
+              if (
+                response.data.role === "Admin" ||
+                response.data.role === "Manager"
+              ) {
+                navigate("/dashboard", { replace: true });
+              } else {
+                navigate(from, { replace: true });
+              }
               window.location.reload(); // Reload the page after navigation
             } else {
-              // User does not exist, insert user data
+              // If user does not exist, insert user data and check role
               axiosPublic
                 .post("/Users", userData) // Replace with your actual server endpoint
                 .then((response) => {
                   console.log("User data pushed to the server:", response.data);
-                  showSuccessLogInAlert();
-                  navigate(from, { replace: true });
+                  if (
+                    userData.role === "Admin" ||
+                    userData.role === "Manager"
+                  ) {
+                    navigate("/dashboard", { replace: true });
+                  } else {
+                    navigate(from, { replace: true });
+                  }
                   window.location.reload(); // Reload the page after navigation
                 })
                 .catch((error) => {

@@ -1,17 +1,17 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../Shared/Loader/Loader";
-import { FaArrowLeft } from "react-icons/fa";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import { useContext, useEffect, useState } from "react";
 import AddApplicant from "./AddApplicant/AddApplicant";
+import { Helmet } from "react-helmet";
+import BackButton from "../../Shared/BackButton/BackButton";
 
 const CoursesDetails = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
   const [hasApplied, setHasApplied] = useState(false);
-  const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
 
   const {
@@ -64,33 +64,37 @@ const CoursesDetails = () => {
 
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50 min-h-screen">
-      <div className="max-w-[1200px] mx-auto text-black pt-24 pb-5">
-        <button
-          className="flex text-2xl items-center hover:text-red-500"
-          onClick={() => navigate(-1)}
-        >
-          <FaArrowLeft className="mr-5" /> Back
-        </button>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Courses Details</title>
+      </Helmet>
 
-        <div className="px-5 py-5">
+      <div className="max-w-[1200px] mx-auto text-black pt-28 bg-slate-50 opacity-80 px-5 py-5">
+        <BackButton></BackButton>
+
+        {/* Content */}
+        <div className="py-5 md:w-full px-2">
           {/* Course Title and Description */}
           <h1 className="text-3xl font-bold mb-4">{course?.courseTitle}</h1>
-          <div className="text-xl flex ">
+          <div className="text-xl flex flex-col md:flex-row ">
             <span className="font-semibold w-32">Instructor:</span>{" "}
-            {course?.instructor}
+            <span className="ml-5 md:ml-0">{course?.instructor}</span>
           </div>
-          <div className="text-xl flex ">
+          <div className="text-xl flex flex-col md:flex-row ">
             <span className="font-semibold w-32">Duration:</span>{" "}
-            {course?.duration}
+            <span className="ml-5 md:ml-0">{course?.duration}</span>
           </div>
-          <div className="text-xl flex ">
-            <span className="font-semibold w-32">Level:</span> {course?.level}
+          <div className="text-xl flex flex-col md:flex-row ">
+            <span className="font-semibold w-32">Level:</span>{" "}
+            <span className="ml-5 md:ml-0">{course?.level}</span>
           </div>
-          <div className="text-xl flex ">
-            <span className="font-semibold w-32">Format:</span> {course?.format}
+          <div className="text-xl flex flex-col md:flex-row ">
+            <span className="font-semibold w-32">Format:</span>{" "}
+            <span className="ml-5 md:ml-0">{course?.format}</span>
           </div>
-          <div className="text-xl mt-4">
-            <strong className="mr-5">Description:</strong> {course?.description}
+          <div className="text-xl flex flex-col md:flex-row mt-4">
+            <strong className="mr-5">Description:</strong>{" "}
+            <span className="ml-5 md:ml-0">{course?.description}</span>
           </div>
 
           {/* Prerequisites */}
@@ -201,7 +205,7 @@ const CoursesDetails = () => {
           </div>
         </div>
 
-        <div className="text-xl bg-sky-100 py-3 px-5 flex justify-between items-center mt-10">
+        <div className="text-xl flex flex-col md:flex-row bg-sky-100 py-3 px-5 justify-between items-center mt-5">
           <p>People Applied: {course?.applicants?.length || 0}</p>
           <div>
             {user ? (

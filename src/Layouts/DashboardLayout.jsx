@@ -31,7 +31,7 @@ const DashboardLayout = () => {
     // Redirect based on user role
     if (userRole === "Admin" || userRole === "Manager") {
       navigate("/Dashboard/AdminOverview"); // Redirect to AdminOverview
-    } else if (userRole === "User") {
+    } else if (userRole === "Member") {
       navigate("/Dashboard/UserOverview"); // Redirect to UserOverview
     } else {
       // Handle cases for other roles if necessary
@@ -90,7 +90,6 @@ const DashboardLayout = () => {
     { to: "ManageMyBlogs", label: "Manage My Blogs" },
   ];
 
-  // Generate navigation items
   const adminNav = adminNavLinks.map((link) => {
     return (
       <li key={link.to} className="mb-2">
@@ -100,6 +99,7 @@ const DashboardLayout = () => {
             `text-lg font-semibold relative group py-2 px-4 transition-colors duration-300 rounded-none hover:text-white
               ${isActive ? "bg-blue-500 text-white" : "text-black"}`
           }
+          onClick={() => setMenuOpen(false)} // Close the drawer when a link is clicked
         >
           <span className="absolute inset-0 w-full h-full bg-blue-500 transition-transform duration-500 ease-out scale-x-0 origin-left group-hover:scale-x-100 z-[-1]"></span>
           <span className="relative z-10">{link.label}</span>
@@ -117,6 +117,7 @@ const DashboardLayout = () => {
             `text-lg font-semibold relative group py-2 px-4 transition-colors duration-300 rounded-none hover:text-white
               ${isActive ? "bg-blue-500 text-white" : "text-black"}`
           }
+          onClick={() => setMenuOpen(false)} // Close the drawer when a link is clicked
         >
           <span className="absolute inset-0 w-full h-full bg-blue-500 transition-transform duration-500 ease-out scale-x-0 origin-left group-hover:scale-x-100 z-[-1]"></span>
           <span className="relative z-10">{link.label}</span>
@@ -158,7 +159,7 @@ const DashboardLayout = () => {
           <div className="w-80 h-screen pb-10 fixed bg-white overflow-y-auto z-50 top-0 right-0 lg:block">
             {/* To Home */}
             <NavLink to="/" className="block w-full">
-              <p className="text-green-700 font-bold text-2xl pl-5 bg-green-400 flex items-center hover:text-green-900 transition-colors duration-300">
+              <p className="text-blue-700 font-bold text-3xl pl-5 py-2 bg-blue-400 flex items-center hover:text-green-900 transition-colors duration-300">
                 <FaArrowLeft className="mr-3" />
                 <span>Home</span>
               </p>
@@ -184,7 +185,7 @@ const DashboardLayout = () => {
         {/* Dashboard Content */}
         <div className="flex-1 lg:ml-[320px] overflow-y-auto min-h-screen relative">
           <IoMenu
-            className="text-5xl text-black bg-green-500 fixed top-20 opacity-70 cursor-pointer z-50 lg:hidden"
+            className="text-5xl text-black bg-blue-500 fixed top-20 opacity-70 cursor-pointer z-50 lg:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
           />
           <Outlet />

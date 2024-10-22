@@ -55,13 +55,14 @@ const PostedGigDetail = () => {
 
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50 min-h-screen">
-        <Helmet>
+      <Helmet>
         <meta charSet="utf-8" />
         <title>Master Job Shop || Gig Details</title>
       </Helmet>
       <div className="max-w-[1200px] mx-auto text-black pt-28 bg-slate-50 opacity-80 px-5 py-5">
         {/* Back button */}
         <BackButton></BackButton>
+
         {/* Content */}
         <div className="py-5 md:w-1/2 px-2">
           {/* Gig Title */}
@@ -143,6 +144,7 @@ const PostedGigDetail = () => {
             />
           </div>
         </div>
+
         <div className="text-xl flex flex-col md:flex-row bg-sky-100 py-3 px-5 justify-between items-center mt-5">
           <p>People Applied: {gigDetails?.peopleBided?.length || 0}</p>
           <div>
@@ -182,3 +184,5 @@ const PostedGigDetail = () => {
 };
 
 export default PostedGigDetail;
+
+

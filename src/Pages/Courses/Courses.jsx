@@ -5,6 +5,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from "../Shared/Loader/Loader";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const Courses = () => {
   const axiosPublic = useAxiosPublic();
@@ -97,70 +98,76 @@ const Courses = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Courses</title>
+      </Helmet>
+
       <div className="pt-20">
         {/* Title */}
-        <div className="text-black mx-auto max-w-[1200px]">
+        <div className="text-black mx-auto max-w-[1200px] text-center lg:text-left ">
           <h1 className="text-2xl font-bold m-0 pt-5">Our Courses</h1>
           <p>Join our Courses to get more experience</p>
         </div>
 
         {/* Top Section */}
-        <div className="flex  items-center mx-auto max-w-[1200px] gap-5 pt-5 text-black">
+        <div className="flex flex-col lg:flex-row max-w-[1200px] text-black mt-2 mx-auto space-y-2 lg:space-y-0">
           {/* Search */}
-          <div>
-            <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
-              <input
-                type="text"
-                className="grow py-2 px-3 focus:outline-none"
-                placeholder="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <FaSearch className="h-4 w-4 opacity-70 text-black" />
-            </label>
+
+          <label className="input input-bordered flex items-center w-[300px] md:w-[500px] bg-white mx-auto">
+            <input
+              type="text"
+              className="grow py-2 px-3 focus:outline-none"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <FaSearch className="h-4 w-4 opacity-70 text-black" />
+          </label>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  mx-auto">
+            {/* Dropdown for Level Title Filter */}
+            <select
+              className="border border-gray-300 p-3 w-[300px] bg-white text-black"
+              value={selectedLevel}
+              onChange={(e) => setSelectedLevel(e.target.value)}
+            >
+              <option value="">All Level Titles</option>
+              {levels.map((title, index) => (
+                <option key={index} value={title}>
+                  {title}
+                </option>
+              ))}
+            </select>
+
+            {/* Dropdown for Duration Filter */}
+            <select
+              className="border border-gray-300 p-3 w-[300px] bg-white text-black"
+              value={selectedDuration}
+              onChange={(e) => setSelectedDuration(e.target.value)}
+            >
+              <option value="">Course Duration</option>
+              {durations.map((title, index) => (
+                <option key={index} value={title}>
+                  {title}
+                </option>
+              ))}
+            </select>
+
+            {/* Dropdown for Certification Filter */}
+            <select
+              className="border border-gray-300 p-3 w-[300px] bg-white text-black"
+              value={selectedCertification}
+              onChange={(e) => setSelectedCertification(e.target.value)}
+            >
+              <option value="">Certifications</option>
+              {certifications.map((title, index) => (
+                <option key={index} value={title}>
+                  {title}
+                </option>
+              ))}
+            </select>
           </div>
-
-          {/* Dropdown for Level Title Filter */}
-          <select
-            className="border border-gray-300 p-3 w-[300px] bg-white text-black"
-            value={selectedLevel}
-            onChange={(e) => setSelectedLevel(e.target.value)}
-          >
-            <option value="">All Level Titles</option>
-            {levels.map((title, index) => (
-              <option key={index} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
-
-          {/* Dropdown for Duration Filter */}
-          <select
-            className="border border-gray-300 p-3 w-[300px] bg-white text-black"
-            value={selectedDuration}
-            onChange={(e) => setSelectedDuration(e.target.value)}
-          >
-            <option value="">Course Duration</option>
-            {durations.map((title, index) => (
-              <option key={index} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
-
-          {/* Dropdown for Certification Filter */}
-          <select
-            className="border border-gray-300 p-3 w-[300px] bg-white text-black"
-            value={selectedCertification}
-            onChange={(e) => setSelectedCertification(e.target.value)}
-          >
-            <option value="">Certifications</option>
-            {certifications.map((title, index) => (
-              <option key={index} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
         </div>
 
         {/* Infinite Scroll */}
@@ -173,18 +180,14 @@ const Courses = () => {
               Loading...
             </h4>
           }
-          endMessage={
-            <p className="text-2xl text-center font-bold py-5 text-red-500">
-              No more courses to load
-            </p>
-          }
+          endMessage={<p></p>}
         >
           {/* Course Cards Section */}
-          <div className="grid grid-cols-3 gap-4 py-5 mx-auto max-w-[1200px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 py-10 px-3 mx-auto max-w-[1200px]">
             {filteredCourses.map((course, index) => (
               <div
                 key={index}
-                className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-blue-50 hover:shadow-2xl"
+                className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-red-50 hover:shadow-2xl"
               >
                 <div className="card-body">
                   {/* Course Title */}

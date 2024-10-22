@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import ModalMentorShip from "../Shared/ModalMentorShip/ModalMentorShip";
 import InfiniteScroll from "react-infinite-scroll-component"; // Import InfiniteScroll
+import { Helmet } from "react-helmet";
 
 const Mentorship = () => {
   const axiosPublic = useAxiosPublic();
@@ -108,73 +109,85 @@ const Mentorship = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
-      <div className=" pt-20">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Mentorship</title>
+      </Helmet>
+
+      <div className="pt-20">
         {/* Title */}
-        <div className="text-black mx-auto max-w-[1200px]">
+        <div className="text-black mx-auto max-w-[1200px] text-center lg:text-left ">
           <h1 className="text-2xl font-bold m-0 pt-5">Our Mentorship</h1>
           <p>Join our Mentorship to gain more experience</p>
         </div>
 
         {/* Top Section */}
-        <div className="flex space-x-2 items-center pt-5 mx-auto max-w-[1200px] text-black">
+        <div className="flex flex-col lg:flex-row max-w-[1200px] text-black mt-2 mx-auto space-y-2 lg:space-y-0">
           {/* Search */}
-          <div>
-            <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
-              <input
-                type="text"
-                className="grow py-2 px-3 focus:outline-none"
-                placeholder="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <FaSearch className="h-4 w-4 opacity-70 text-black" />
-            </label>
+
+          <label className="input input-bordered flex items-center w-[300px] md:w-[500px] bg-white mx-auto">
+            <input
+              type="text"
+              className="grow py-2 px-3 focus:outline-none"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <FaSearch className="h-4 w-4 opacity-70 text-black" />
+          </label>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  mx-auto">
+            {/* Session Format Dropdown */}
+            <div>
+              <select
+                name="sessionFormat"
+                className="border border-gray-300 p-2 bg-white text-black w-[300px] lg:w-[220px]  h-12"
+                onChange={handleFilterChange}
+                value={selectedSessionFormat}
+              >
+                <option value="">Select Session Format</option>
+                {uniqueSessionFormats.map((format, index) => (
+                  <option key={index} value={format}>
+                    {format}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Expertise Dropdown */}
+            <div>
+              <select
+                name="expertise"
+                className="border border-gray-300 p-2 bg-white text-black w-[300px] lg:w-[220px]  h-12"
+                onChange={handleFilterChange}
+                value={selectedExpertise}
+              >
+                <option value="">Select Expertise</option>
+                {uniqueExpertiseAreas.map((expertise, index) => (
+                  <option key={index} value={expertise}>
+                    {expertise}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Duration Dropdown */}
+            <div>
+              <select
+                name="duration"
+                className="border border-gray-300 p-2 bg-white text-black w-[300px] lg:w-[220px]  h-12"
+                onChange={handleFilterChange}
+                value={selectedDuration}
+              >
+                <option value="">Select Duration</option>
+                {uniqueDurations.map((duration, index) => (
+                  <option key={index} value={duration}>
+                    {duration}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-
-          {/* Session Format Dropdown */}
-          <select
-            name="sessionFormat"
-            className="border border-gray-300 rounded w-[400px] p-2 py-3 bg-white"
-            onChange={handleFilterChange}
-            value={selectedSessionFormat}
-          >
-            <option value="">Select Session Format</option>
-            {uniqueSessionFormats.map((format, index) => (
-              <option key={index} value={format}>
-                {format}
-              </option>
-            ))}
-          </select>
-
-          {/* Expertise Dropdown */}
-          <select
-            name="expertise"
-            className="border border-gray-300 rounded w-[400px] p-2 py-3 bg-white"
-            onChange={handleFilterChange}
-            value={selectedExpertise}
-          >
-            <option value="">Select Expertise</option>
-            {uniqueExpertiseAreas.map((expertise, index) => (
-              <option key={index} value={expertise}>
-                {expertise}
-              </option>
-            ))}
-          </select>
-
-          {/* Duration Dropdown */}
-          <select
-            name="duration"
-            className="border border-gray-300 rounded w-[400px] p-2 py-3 bg-white"
-            onChange={handleFilterChange}
-            value={selectedDuration}
-          >
-            <option value="">Select Duration</option>
-            {uniqueDurations.map((duration, index) => (
-              <option key={index} value={duration}>
-                {duration}
-              </option>
-            ))}
-          </select>
         </div>
 
         {/* Mentorship Cards Section with Infinite Scroll */}
@@ -187,19 +200,15 @@ const Mentorship = () => {
               Loading...
             </h4>
           }
-          endMessage={
-            <p className="text-2xl text-center font-bold py-5 text-red-500">
-              No more mentorships
-            </p>
-          }
+          endMessage={<p></p>}
         >
-          <div className="grid grid-cols-3 gap-4 py-10 mx-auto max-w-[1200px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 py-10 px-3 mx-auto max-w-[1200px]">
             {filteredMentorship
               .slice(0, currentPage * jobsPerPage)
               .map((mentor, index) => (
                 <div
                   key={index}
-                  className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-emerald-50 hover:shadow-2xl"
+                  className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-red-50 hover:shadow-2xl"
                 >
                   <div className="card-body">
                     {/* Mentor Image */}
@@ -232,7 +241,7 @@ const Mentorship = () => {
                     </p>
 
                     {/* Card Actions */}
-                    <div className="card-actions justify-end mt-5">
+                    <div className="flex justify-end gap-1 lg:gap-3 mt-5">
                       <Link to={`/Mentorship/${mentor._id}`}>
                         <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
                           Join Now

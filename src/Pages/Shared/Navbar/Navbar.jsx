@@ -236,9 +236,9 @@ const Navbar = () => {
                 </ul>
               </div>
             ) : (
-              <div className="text-xl font-semibold">
+              <div className="text-xl flex font-semibold">
                 <Link to={"/SignUp"}>
-                  <button className="py-2 px-6 w-32 bg-blue-500 hover:bg-blue-100">
+                  <button className="py-2 px-6 w-32 bg-blue-500 hover:bg-blue-100 hidden md:block">
                     SignUp
                   </button>
                 </Link>

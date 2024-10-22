@@ -7,38 +7,38 @@ const ModalMentorShip = ({ selectedMentor, closeModal }) => {
   return (
     <div className="modal-box bg-emerald-50 text-black max-w-[800px]">
       {/* Top */}
-      <div className="py-1">
-        <div className="flex justify-between">
-          <div>
-            {/* Name */}
-            <p className="font-bold text-2xl">{selectedMentor.mentorName}</p>
+      <div className="flex flex-col-reverse md:flex-row justify-between gap-5">
+        {/* Content */}
+        <div>
+          {/* Name */}
+          <p className="font-bold text-2xl">{selectedMentor.mentorName}</p>
 
-            {/* Expertise */}
-            <p className="text-lg">
-              <span className="font-bold mr-5">Expertise:</span>
-              {selectedMentor.expertise}
-            </p>
+          {/* Expertise */}
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-28  mr-5">Expertise:</span>
+            <span className="ml-5">{selectedMentor.expertise}</span>
+          </p>
 
-            {/* Duration */}
-            <p className="text-lg">
-              <span className="font-bold mr-5">Duration:</span>
-              {selectedMentor.duration}
-            </p>
+          {/* Duration */}
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-28  mr-5">Duration:</span>
+            <span className="ml-5">{selectedMentor.duration}</span>
+          </p>
 
-            {/* contactEmail */}
-            <p className="text-lg">
-              <span className="font-bold mr-5">ContactEmail:</span>
-              {selectedMentor.contactEmail}
-            </p>
+          {/* price */}
+          <p className="text-lg flex flex-col md:flex-row py-2 leading-5">
+            <span className="font-bold w-28  mr-5">Price:</span>
+            <span className="ml-5">{selectedMentor.price}</span>
+          </p>
 
-            {/* price */}
-            <p className="text-lg py-2 leading-5">
-              <span className="font-bold pr-3">Price:</span>
-              {selectedMentor.price}
-            </p>
-          </div>
-
-          {/* Mentor Image */}
+          {/* contactEmail */}
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-28  mr-5">ContactEmail:</span>
+            <span className="ml-5">{selectedMentor.contactEmail}</span>
+          </p>
+        </div>
+        {/* Mentor Image */}
+        <div>
           {selectedMentor.mentorImage && (
             <img
               src={selectedMentor.mentorImage}
@@ -47,47 +47,49 @@ const ModalMentorShip = ({ selectedMentor, closeModal }) => {
             />
           )}
         </div>
+      </div>
 
-        {/* Bio */}
+      {/* Bio */}
+      <p className="text-lg flex flex-col md:flex-row py-2 leading-5">
+        <span className="font-bold pr-3">Bio:</span>
+        <span className="ml-5">{selectedMentor.mentorBio}</span>
+      </p>
+
+      {/* Description */}
+      <p className="text-lg flex flex-col md:flex-row py-2 leading-5">
+        <span className="font-bold mr-5">Description:</span>
+        <span className="ml-5">{selectedMentor.description}</span>
+      </p>
+
+      {/* sessionFormat */}
+      <p className="text-lg flex flex-col md:flex-row py-2 leading-5">
+        <span className="font-bold pr-3">Session Format:</span>
+        <span className="ml-5">{selectedMentor.sessionFormat}</span>
+      </p>
+
+      <div className="flex justify-between items-center">
+        {/* Languages */}
         <p className="text-lg py-2 leading-5">
-          <span className="font-bold pr-3">Bio:</span>
-          {selectedMentor.mentorBio}
+          <span className="font-bold pr-3">Languages:</span>
+          <ul className="list-disc list-inside p-1">
+            {selectedMentor.languages.map((language, index) => (
+              <li key={index}>{language}</li>
+            ))}
+          </ul>
         </p>
 
-        {/* Description */}
-        <p className="text-lg">
-          <span className="font-bold mr-5">Description:</span>
-          {selectedMentor.description}
-        </p>
-
-        {/* sessionFormat */}
-        <p className="text-lg py-2 leading-5">
-          <span className="font-bold pr-3">Session Format:</span>
-          {selectedMentor.sessionFormat}
-        </p>
-
-        <div className="flex justify-between items-center">
-          {/* Languages */}
-          <p className="text-lg py-2 leading-5">
-            <span className="font-bold pr-3">Languages:</span>
-            <ul className="list-disc list-inside p-1">
-              {selectedMentor.languages.map((language, index) => (
-                <li key={index}>{language}</li>
-              ))}
-            </ul>
-          </p>
-
-          <div>
-            <h4 className="font-semibold mb-2">Company Rating:</h4>
-            <Rating
-              initialRating={selectedMentor.rating}
-              emptySymbol={<FaStar className="text-gray-400 text-2xl" />}
-              fullSymbol={<FaStar className="text-yellow-500 text-2xl" />}
-              readonly
-            />
-          </div>
+        {/* Rating */}
+        <div>
+          <h4 className="font-semibold mb-2">Company Rating:</h4>
+          <Rating
+            initialRating={selectedMentor.rating}
+            emptySymbol={<FaStar className="text-gray-400 text-2xl" />}
+            fullSymbol={<FaStar className="text-yellow-500 text-2xl" />}
+            readonly
+          />
         </div>
       </div>
+
       <div className="modal-action">
         <Link to={`/Mentorship/${selectedMentor._id}`}>
           <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">

@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loader from "../Shared/Loader/Loader";
 import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component"; // Make sure you have installed this package
+import { Helmet } from "react-helmet";
 
 const UpcomingEvents = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -58,17 +59,21 @@ const UpcomingEvents = () => {
 
   return (
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Upcoming Events</title>
+      </Helmet>
       <div className=" pt-20">
-        {/* Search Box and Filters */}
-        <div className="flex justify-between gap-5 mx-auto max-w-[1200px] pt-5">
+        {/* Top part */}
+        <div className="flex flex-col md:flex-row justify-between max-w-[1200px] mx-auto pt-5 px-4 gap-4">
           {/* Title */}
-          <div className="text-black">
+          <div className="text-black mx-auto text-center md:text-left ">
             <p className="text-2xl font-bold">Our Upcoming Events</p>
             <p>Don’t miss out on these great opportunities!</p>
           </div>
 
           {/* Search bar */}
-          <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white text-black">
+          <label className="input input-bordered flex items-center w-[300px] md:w-[500px] bg-white mx-auto">
             <input
               type="text"
               className="grow py-2 px-3 focus:outline-none"
@@ -91,19 +96,17 @@ const UpcomingEvents = () => {
             </h4>
           }
           endMessage={
-            <p className="text-2xl text-center font-bold py-5 text-red-500">
-              No more events to load
-            </p>
+            <p></p>
           }
         >
-          <div className="grid grid-cols-3 gap-5 pt-5 mx-auto max-w-[1200px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 py-10 px-3 mx-auto max-w-[1200px]">
             {filteredEvents.length > 0 ? (
               filteredEvents
                 .slice(0, currentPage * eventsPerPage) // Display events based on current page
                 .map((event, index) => (
                   <div
                     key={index}
-                    className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-emerald-50 hover:shadow-2xl"
+                    className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-emerald-50 hover:shadow-2xl"
                   >
                     <div className="card-body">
                       {/* Event Title */}

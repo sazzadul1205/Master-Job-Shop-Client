@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loader from "../../Shared/Loader/Loader";
 import { FaArrowLeft, FaArrowRight, FaStar } from "react-icons/fa";
@@ -8,16 +8,37 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import AddApplicant from "./AddApplicant/AddApplicant";
 import AddReviews from "./AddReviews/AddReviews";
+import BackButton from "../../Shared/BackButton/BackButton";
+import { Helmet } from "react-helmet";
 
 const MentorshipDetails = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
   const [hasApplied, setHasApplied] = useState(false); // To track if user has applied
   const [hasReview, setHasReview] = useState(false); // To track if user has applied
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+  const [reviewsToShow, setReviewsToShow] = useState(3); // Default to 3 reviews for desktop
   const reviewsPerPage = 3;
+
+  useEffect(() => {
+    const updateReviewsToShow = () => {
+      if (window.innerWidth < 640) {
+        setReviewsToShow(1); // Mobile
+      } else if (window.innerWidth < 1024) {
+        setReviewsToShow(2); // Tablet
+      } else {
+        setReviewsToShow(3); // Desktop
+      }
+    };
+
+    updateReviewsToShow(); // Set initial value based on current window size
+    window.addEventListener("resize", updateReviewsToShow); // Add resize listener
+
+    return () => {
+      window.removeEventListener("resize", updateReviewsToShow); // Cleanup on unmount
+    };
+  }, []);
 
   // Fetching Mentorship details by ID
   const {
@@ -72,6 +93,7 @@ const MentorshipDetails = () => {
       checkIfApplied(); // Check application status when the user is available
       checkIfReview();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, user]);
 
   // Loading state
@@ -114,101 +136,78 @@ const MentorshipDetails = () => {
 
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-50 min-h-screen">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Mentorship Details  </title>
+      </Helmet>
       <div className="max-w-[1200px] mx-auto text-black pt-24 pb-5">
         {/* Back button with navigation */}
-        <button
-          className="flex text-2xl items-center hover:text-red-500"
-          onClick={() => navigate(-1)} // Navigate back to the previous page
-        >
-          <FaArrowLeft className="mr-5" />
-          Back
-        </button>
+        <BackButton></BackButton>
 
-        <div className="py-1">
-          {/* Content */}
-          <div className="flex justify-between">
-            <div className="py-2">
-              {/* Mentor Name */}
-              <p className="font-bold text-3xl">{Mentorship.mentorName}</p>
+        <div className="px-5 py-5">
+          {/* Top */}
+          <div className="flex flex-col-reverse md:flex-row justify-between gap-5">
+            {/* Content */}
+            <div>
+              {/* Name */}
+              <p className="font-bold text-2xl">{Mentorship.mentorName}</p>
 
               {/* Expertise */}
-              <p className="text-xl py-1 grid grid-cols-2">
-                <span className="font-bold mr-5">Expertise:</span>
-                {Mentorship.expertise}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28  mr-5">Expertise:</span>
+                <span className="ml-5">{Mentorship.expertise}</span>
               </p>
 
               {/* Duration */}
-              <p className="text-xl py-1 grid grid-cols-2">
-                <span className="font-bold mr-5">Duration:</span>
-                {Mentorship.duration}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28  mr-5">Duration:</span>
+                <span className="ml-5">{Mentorship.duration}</span>
               </p>
 
-              {/* Contact Email */}
-              <p className="text-xl py-1 grid grid-cols-2">
-                <span className="font-bold mr-5">Contact Email:</span>
-                {Mentorship.contactEmail}
+              {/* price */}
+              <p className="text-lg flex flex-col md:flex-row py-2 leading-5">
+                <span className="font-bold w-28  mr-5">Price:</span>
+                <span className="ml-5">{Mentorship.price}</span>
               </p>
 
-              {/* Price */}
-              <p className="text-xl py-1 grid grid-cols-2">
-                <span className="font-bold pr-3">Price:</span>
-                {Mentorship.price}
-              </p>
-
-              {/* Session Format */}
-              <p className="text-xl py-1 grid grid-cols-2">
-                <span className="font-bold pr-3">Session Format:</span>
-                {Mentorship.sessionFormat}
+              {/* contactEmail */}
+              <p className="text-lg flex flex-col md:flex-row">
+                <span className="font-bold w-28  mr-5">ContactEmail:</span>
+                <span className="ml-5">{Mentorship.contactEmail}</span>
               </p>
             </div>
-
             {/* Mentor Image */}
-            {Mentorship.mentorImage && (
-              <img
-                src={Mentorship.mentorImage}
-                alt={`${Mentorship.mentorName} Image`}
-                className="w-60 h-60 object-cover mb-4"
-              />
-            )}
+            <div>
+              {Mentorship.mentorImage && (
+                <img
+                  src={Mentorship.mentorImage}
+                  alt={`${Mentorship.mentorName} Image`}
+                  className="w-60 h-60 object-cover mb-4"
+                />
+              )}
+            </div>
           </div>
 
           {/* Bio */}
-          <p className="text-lg py-2 leading-5">
-            <span className="font-bold pr-5 text-xl">Bio:</span>
-            {Mentorship.mentorBio}
+          <p className="text-lg flex flex-col md:flex-row py-2 leading-5">
+            <span className="font-bold pr-3">Bio:</span>
+            <span className="ml-5">{Mentorship.mentorBio}</span>
           </p>
 
           {/* Description */}
-          <p className="text-lg">
-            <span className="font-bold pr-5 text-xl">Description:</span>
-            {Mentorship.description}
+          <p className="text-lg flex flex-col md:flex-row py-2 leading-5">
+            <span className="font-bold mr-5">Description:</span>
+            <span className="ml-5">{Mentorship.description}</span>
           </p>
 
-          {/* Language & Rating */}
-          <div className="flex justify-between items-center">
-            {/* Languages */}
-            <p className="text-lg py-2 leading-5">
-              <span className="font-bold pr-3">Languages:</span>
-              <ul className="list-disc list-inside p-1">
-                {Mentorship.languages.map((language, index) => (
-                  <li key={index}>{language}</li>
-                ))}
-              </ul>
-            </p>
-
-            <div>
-              <h4 className="font-semibold mb-2">Company Rating:</h4>
-              <Rating
-                initialRating={Mentorship.rating}
-                emptySymbol={<FaStar className="text-gray-400 text-2xl" />}
-                fullSymbol={<FaStar className="text-yellow-500 text-2xl" />}
-                readonly
-              />
-            </div>
-          </div>
+          {/* sessionFormat */}
+          <p className="text-lg flex flex-col md:flex-row py-2 leading-5">
+            <span className="font-bold pr-3">Session Format:</span>
+            <span className="ml-5">{Mentorship.sessionFormat}</span>
+          </p>
 
           {/* People Applied */}
-          <div className="text-xl bg-sky-100 py-5 mt-10 px-5 flex justify-between items-center">
+          <div className="text-xl flex flex-col md:flex-row bg-sky-100 py-3 px-5 justify-between items-center mt-5">
             <p>People Applied: {Mentorship?.applicant?.length || 0}</p>{" "}
             {/* Displaying the total count */}
             <div>
@@ -246,13 +245,12 @@ const MentorshipDetails = () => {
           {/* Reviews Section */}
           <div className="py-5">
             {/* Top */}
-            <div className="flex justify-between items-center py-5">
+            <div className="text-xl flex flex-col md:flex-row py-3 px-5 justify-between items-center mt-5">
               <p className="text-xl font-bold py-2">
                 Reviews: {Mentorship?.reviews?.length || 0}
               </p>
               {user ? (
                 hasReview ? (
-                  // If the user has already applied, show the "Already Applied" button
                   <button
                     className="bg-gray-500 px-10 py-3 text-white font-bold"
                     disabled
@@ -260,7 +258,6 @@ const MentorshipDetails = () => {
                     Already Applied
                   </button>
                 ) : (
-                  // If the user is logged in and hasn't applied, show the "Apply" button
                   <button
                     className="bg-green-500 hover:bg-green-600 px-10 py-2 text-white font-semibold"
                     onClick={() =>
@@ -271,7 +268,6 @@ const MentorshipDetails = () => {
                   </button>
                 )
               ) : (
-                // If the user is not logged in, show the "Login" button
                 <Link to={"/Login"}>
                   <button className="bg-blue-500 hover:bg-blue-400 px-10 py-3 text-white font-bold">
                     Login
@@ -294,18 +290,15 @@ const MentorshipDetails = () => {
 
               <div className="flex gap-4">
                 {Mentorship.reviews
-                  .slice(
-                    currentReviewIndex,
-                    currentReviewIndex + reviewsPerPage
-                  )
+                  .slice(currentReviewIndex, currentReviewIndex + reviewsToShow)
                   .map((review, index) => (
                     <div
                       key={index}
-                      className="card bg-gradient-to-br bg-sky-300 to-sky-50 w-96 shadow-lg hover:shadow-2xl mb-4"
+                      className="card bg-gradient-to-br bg-sky-300 to-sky-50 lg:w-96 shadow-lg hover:shadow-2xl mb-4"
                     >
                       <div className="card-body">
                         <h2 className="card-title">{review.reviewerName}</h2>
-                        <div className="flex gap-5">
+                        <div className="flex flex-col md:flex-row gap-3">
                           <div className="avatar">
                             <div className="w-12 rounded-full">
                               <img
@@ -337,11 +330,11 @@ const MentorshipDetails = () => {
               <button
                 onClick={nextReviews}
                 disabled={
-                  currentReviewIndex + reviewsPerPage >=
+                  currentReviewIndex + reviewsToShow >=
                   Mentorship.reviews.length
                 }
                 className={`p-2 ${
-                  currentReviewIndex + reviewsPerPage >=
+                  currentReviewIndex + reviewsToShow >=
                   Mentorship.reviews.length
                     ? "opacity-50"
                     : "hover:bg-gray-300"

@@ -105,71 +105,78 @@ const Internship = () => {
     <div className="bg-gradient-to-b from-sky-400 to-sky-50 min-h-screen">
       <div className=" pt-20">
         {/* Title */}
-        <div className="text-black pb-5 mx-auto max-w-[1200px]">
+        <div className="text-black mx-auto max-w-[1200px] text-center lg:text-left ">
           <h1 className="text-2xl font-bold m-0 pt-5">Our Internship</h1>
           <p>Join our Internship to gain more experience</p>
         </div>
 
         {/* Top Section */}
-        <div className="flex items-center space-x-2 mx-auto max-w-[1200px] text-black">
+        <div className="flex flex-col lg:flex-row max-w-[1200px] text-black mt-2 mx-auto space-y-2 lg:space-y-0">
           {/* Search */}
-          <div>
-            <label className="input input-bordered flex items-center gap-2 w-[500px] bg-white">
-              <input
-                type="text"
-                className="grow py-2 px-3 focus:outline-none"
-                placeholder="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <FaSearch className="h-4 w-4 opacity-70 text-black" />
-            </label>
+
+          <label className="input input-bordered flex items-center w-[300px] md:w-[500px] bg-white mx-auto">
+            <input
+              type="text"
+              className="grow py-2 px-3 focus:outline-none"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <FaSearch className="h-4 w-4 opacity-70 text-black" />
+          </label>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  mx-auto">
+            {/* Position Dropdown */}
+            <div>
+              <select
+                name="position"
+                className="border border-gray-300 rounded w-[300px] p-2 py-3 bg-white"
+                onChange={(e) => setSelectedPosition(e.target.value)}
+                value={selectedPosition}
+              >
+                <option value="">Select Position</option>
+                {uniquePositions.map((position, index) => (
+                  <option key={index} value={position}>
+                    {position}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Location Dropdown */}
+            <div>
+              <select
+                name="location"
+                className="border border-gray-300 rounded w-[300px] p-2 py-3 bg-white"
+                onChange={(e) => setSelectedLocation(e.target.value)}
+                value={selectedLocation}
+              >
+                <option value="">Select Location</option>
+                {uniqueLocations.map((location, index) => (
+                  <option key={index} value={location}>
+                    {location}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Skills Dropdown */}
+            <div>
+              <select
+                name="skillsRequired"
+                className="border border-gray-300 rounded w-[300px] p-2 py-3 bg-white"
+                onChange={(e) => setSelectedSkill(e.target.value)}
+                value={selectedSkill}
+              >
+                <option value="">Select Skill</option>
+                {uniqueSkills.map((skill, index) => (
+                  <option key={index} value={skill}>
+                    {skill}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-
-          {/* Position Dropdown */}
-          <select
-            name="position"
-            className="border border-gray-300 rounded w-[300px] p-2 py-3 bg-white"
-            onChange={(e) => setSelectedPosition(e.target.value)}
-            value={selectedPosition}
-          >
-            <option value="">Select Position</option>
-            {uniquePositions.map((position, index) => (
-              <option key={index} value={position}>
-                {position}
-              </option>
-            ))}
-          </select>
-
-          {/* Location Dropdown */}
-          <select
-            name="location"
-            className="border border-gray-300 rounded w-[300px] p-2 py-3 bg-white"
-            onChange={(e) => setSelectedLocation(e.target.value)}
-            value={selectedLocation}
-          >
-            <option value="">Select Location</option>
-            {uniqueLocations.map((location, index) => (
-              <option key={index} value={location}>
-                {location}
-              </option>
-            ))}
-          </select>
-
-          {/* Skills Dropdown */}
-          <select
-            name="skillsRequired"
-            className="border border-gray-300 rounded w-[300px] p-2 py-3 bg-white"
-            onChange={(e) => setSelectedSkill(e.target.value)}
-            value={selectedSkill}
-          >
-            <option value="">Select Skill</option>
-            {uniqueSkills.map((skill, index) => (
-              <option key={index} value={skill}>
-                {skill}
-              </option>
-            ))}
-          </select>
         </div>
 
         {/* Infinite Scroll */}
@@ -182,20 +189,16 @@ const Internship = () => {
               Loading...
             </h4>
           }
-          endMessage={
-            <p className="text-2xl text-center font-bold py-5 text-red-500">
-              No more jobs to load
-            </p>
-          }
+          endMessage={<p></p>}
         >
           {/* Internship Cards Section */}
-          <div className="grid grid-cols-3 gap-4 py-10 mx-auto max-w-[1200px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 py-10 px-3 mx-auto max-w-[1200px]">
             {filteredInternships
               .slice(0, currentPage * itemsPerPage)
               .map((internship, index) => (
                 <div
                   key={index}
-                  className="card bg-white w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-blue-50 hover:shadow-2xl"
+                  className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-red-50 hover:shadow-2xl"
                 >
                   <div className="card-body">
                     {/* Company Logo */}
@@ -234,14 +237,14 @@ const Internship = () => {
                     </p>
 
                     {/* Card Actions */}
-                    <div className="card-actions justify-end mt-5">
+                    <div className="flex justify-end gap-1 lg:gap-3 mt-5">
                       <Link to={`/Internship/${internship._id}`}>
-                        <button className="bg-green-500 hover:bg-green-600 px-5 py-2 text-lg font-semibold text-white">
+                        <button className="bg-green-500 hover:bg-green-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white">
                           Apply Now
                         </button>
                       </Link>
                       <button
-                        className="bg-yellow-500 hover:bg-yellow-600 px-5 py-2 text-lg font-semibold text-white"
+                        className="bg-yellow-500 hover:bg-yellow-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white"
                         onClick={() => openModal(internship)}
                       >
                         View More

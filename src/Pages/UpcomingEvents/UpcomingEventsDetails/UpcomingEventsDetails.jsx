@@ -1,17 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loader from "../../Shared/Loader/Loader";
-import { FaArrowLeft } from "react-icons/fa";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import { useContext, useEffect, useState } from "react";
 import UpcomingEventsCard from "./UpcomingEventsCard/UpcomingEventsCard";
+import { Helmet } from "react-helmet";
+import BackButton from "../../Shared/BackButton/BackButton";
 
 const UpcomingEventsDetails = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
   const [hasApplied, setHasApplied] = useState(false); // To track if user has applied
-  const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
 
   // Fetching event details by ID
@@ -60,16 +60,14 @@ const UpcomingEventsDetails = () => {
   }
 
   return (
-    <div className="bg-gradient-to-b from-blue-400 to-blue-50 min-h-screen">
-      <div className="max-w-[1200px] mx-auto text-black pt-24">
+    <div className="bg-gradient-to-b from-blue-400 to-blue-50  min-h-screen">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Master Job Shop || Upcoming Events Details</title>
+      </Helmet>
+      <div className="max-w-[1200px] mx-auto text-black pt-28 bg-slate-50 opacity-80 px-5 py-5">
         {/* Back button with navigation */}
-        <button
-          className="flex text-2xl items-center hover:text-red-500"
-          onClick={() => navigate(-1)}
-        >
-          <FaArrowLeft className="mr-5" />
-          Back
-        </button>
+        <BackButton></BackButton>
 
         {/* Event Details */}
         <div className="py-5">
@@ -77,51 +75,65 @@ const UpcomingEventsDetails = () => {
             {UpcomingEvents?.eventTitle}
           </h2>
           <div className="mt-2 ">
-            <p className="text-xl grid grid-cols-2 py-2">
-              <strong className="1/3">Date:</strong>{" "}
-              <span>{UpcomingEvents?.date}</span>
+            {/* date */}
+            <p className="text-xl flex flex-col md:flex-row py-2">
+              <strong className="w-52">Date:</strong>{" "}
+              <span className="ml-5">{UpcomingEvents?.date}</span>
             </p>
-            <p className="text-xl grid grid-cols-2 py-2">
-              <strong className="1/3">Time:</strong>{" "}
-              <span>{UpcomingEvents?.time}</span>
+            {/* time */}
+            <p className="text-xl flex flex-col md:flex-row py-2">
+              <strong className="w-52">Time:</strong>{" "}
+              <span className="ml-5">{UpcomingEvents?.time}</span>
             </p>
-            <p className="text-xl grid grid-cols-2 py-2">
-              <strong className="1/3">Location:</strong>{" "}
-              <span>{UpcomingEvents?.location}</span>
+            {/* location */}
+            <p className="text-xl flex flex-col md:flex-row py-2">
+              <strong className="w-52">Location:</strong>{" "}
+              <span className="ml-5">{UpcomingEvents?.location}</span>
             </p>
-            <p className="text-xl grid grid-cols-2 py-2">
-              <strong className="1/3">Description:</strong>{" "}
-              <span>{UpcomingEvents?.description}</span>
+            {/* description */}
+            <p className="text-xl flex flex-col md:flex-row py-2">
+              <strong className="w-52">Description:</strong>{" "}
+              <span className="ml-5">{UpcomingEvents?.description}</span>
             </p>
-            <p className="text-xl grid grid-cols-2 py-2">
-              <strong className="1/3">Organizer:</strong>{" "}
-              <span>{UpcomingEvents?.organizer}</span>
+            {/* organizer */}
+            <p className="text-xl flex flex-col md:flex-row py-2">
+              <strong className="w-52">Organizer:</strong>{" "}
+              <span className="ml-5">{UpcomingEvents?.organizer}</span>
             </p>
-            <p className="text-xl grid grid-cols-2 py-2">
-              <strong className="1/3">Participation Criteria:</strong>{" "}
-              <span>{UpcomingEvents?.participationCriteria}</span>
+            {/* participationCriteria */}
+            <p className="text-xl flex flex-col md:flex-row py-2">
+              <strong className="w-52">Participation Criteria:</strong>{" "}
+              <span className="ml-5">
+                {UpcomingEvents?.participationCriteria}
+              </span>
             </p>
-            <p className="text-xl grid grid-cols-2 py-2">
-              <strong className="1/3">Required Resources:</strong>{" "}
-              <span>{UpcomingEvents?.requiredResources?.join(", ")}</span>
+            {/* requiredResources */}
+            <p className="text-xl flex flex-col md:flex-row py-2">
+              <strong className="w-52">Required Resources:</strong>{" "}
+              <span className="ml-5">
+                {UpcomingEvents?.requiredResources?.join(", ")}
+              </span>
             </p>
-            <p className="text-xl grid grid-cols-2 py-2">
-              <strong className="1/3">Contact Email:</strong>{" "}
-              <span>{UpcomingEvents?.contactEmail}</span>
+            {/* contactEmail */}
+            <p className="text-xl flex flex-col md:flex-row py-2">
+              <strong className="w-52">Contact Email:</strong>{" "}
+              <span className="ml-5">{UpcomingEvents?.contactEmail}</span>
             </p>
-            <p className="text-xl grid grid-cols-2 py-2">
-              <strong className="1/3">Participation Fee:</strong>{" "}
-              <span>{UpcomingEvents?.participationFee}</span>
+            {/* participationFee */}
+            <p className="text-xl flex flex-col md:flex-row py-2">
+              <strong className="w-52">Participation Fee:</strong>{" "}
+              <span className="ml-5">{UpcomingEvents?.participationFee}</span>
             </p>
-            <p className="text-xl grid grid-cols-2 py-2">
-              <strong className="1/3">Participation Limit:</strong>{" "}
-              <span>{UpcomingEvents?.participationLimit}</span>
+            {/* participationLimit */}
+            <p className="text-xl flex flex-col md:flex-row py-2">
+              <strong className="w-52">Participation Limit:</strong>{" "}
+              <span className="ml-5">{UpcomingEvents?.participationLimit}</span>
             </p>
           </div>
         </div>
 
         {/* Application Section */}
-        <div className="text-xl bg-sky-100 py-3 px-5 flex justify-between items-center">
+        <div className="text-xl flex flex-col md:flex-row bg-sky-100 py-3 px-5 justify-between items-center mt-5">
           <p>
             People Applied:{" "}
             {UpcomingEvents?.ParticipantApplications?.length || 0}

@@ -83,6 +83,7 @@ const ManageJobApplicant = () => {
       setExpandedJobId(jobId); // Expand if not already expanded
     }
   };
+
   // Date and Time
   const formattedDateTime = new Date().toLocaleString("en-US", {
     year: "numeric",
@@ -92,7 +93,7 @@ const ManageJobApplicant = () => {
     minute: "numeric",
     hour12: true,
   });
-
+  
   // Delete On Submit part
   const onSubmit = async (data) => {
     const deleteJobLogData = selectedJobs.map((jobId) => {

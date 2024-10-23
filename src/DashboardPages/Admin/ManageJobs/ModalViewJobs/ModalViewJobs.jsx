@@ -7,7 +7,7 @@ const ModalViewJobs = ({ jobData }) => {
   return (
     <div className="modal-box bg-white max-w-[1000px] p-0 pb-10">
       {/* Top part */}
-      <div className="flex justify-between items-center p-5 bg-gray-400 text-white border-b-2 border-black">
+      <div className="flex justify-between items-center py-5 px-3 bg-gray-400 text-white border-b-2 border-black">
         <p className="font-bold text-xl">View Job Details</p>
         <button
           onClick={() => document.getElementById("Modal_Job_View").close()}
@@ -16,172 +16,173 @@ const ModalViewJobs = ({ jobData }) => {
         </button>
       </div>
 
-      {/* Content */}
-      <div className="px-5">
-        {/* Primary data */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-bold text-3xl py-2">{jobData?.jobTitle}</p>
-            <p className="text-2xl grid grid-cols-2 py-1">
-              <span className="font-semibold mr-10">Company Name:</span>
-              {jobData?.companyName}
-            </p>
-            <p className="text-xl grid grid-cols-2 py-1">
-              <span className="font-bold text-xl mr-5">Location:</span>
-              {jobData?.location}
-            </p>
-            <p className="text-xl grid grid-cols-2 py-1">
-              <span className="font-bold text-xl mr-5">Job Type:</span>
-              {jobData?.jobType}
-            </p>
-            <p className="text-xl grid grid-cols-2 py-1">
-              <span className="font-bold text-xl mr-5">Salary:</span>
-              {jobData?.salary}
-            </p>
-            <p className="text-xl grid grid-cols-2 py-1">
-              <span className="font-bold text-xl mr-5">Posted Date:</span>
-              {new Date(jobData?.postedDate).toLocaleDateString()}
-            </p>
-            {jobData?.availableUntil && (
-              <p className="text-xl grid grid-cols-2 py-1">
-                <span className="font-bold text-xl mr-5">Available Until:</span>
-                {new Date(jobData?.availableUntil).toLocaleDateString()}
-              </p>
-            )}
-            {jobData?.companyLink && (
-              <p className="text-xl grid grid-cols-2 py-1">
-                <span className="font-bold text-xl mr-5">Company Link:</span>
-                <a
-                  href={jobData?.companyLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline"
-                >
-                  {jobData?.companyLink}
-                </a>
-              </p>
-            )}
-          </div>
+      {/* Primary data */}
+      <div className="flex flex-col-reverse md:flex-row justify-between px-2 lg:px-10 py-0 lg:py-5">
+        {/* Content */}
+        <div>
+          <p className="font-bold text-3xl py-2">{jobData?.jobTitle}</p>
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-44 mr-5">Company Name:</span>
+            <span className="ml-5">{jobData?.companyName}</span>
+          </p>
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-44 mr-5">Location:</span>
+            <span className="ml-5">{jobData?.location}</span>
+          </p>
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-44 mr-5">Job Type:</span>
+            <span className="ml-5">{jobData?.jobType}</span>
+          </p>
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-44 mr-5">Salary:</span>
+            <span className="ml-5">{jobData?.salary}</span>
+          </p>
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-44 mr-5">Posted Date:</span>
+            <span className="ml-5">{jobData?.postedDate}</span>
+          </p>
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-44 mr-5">Available Until:</span>
+            <span className="ml-5">{jobData?.availableUntil}</span>
+          </p>
+
+          <p className="text-lg flex flex-col md:flex-row">
+            <span className="font-bold w-44 mr-5">Company Link:</span>
+            <a
+              href={jobData?.companyLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline ml-5"
+            >
+              {jobData?.companyLink}
+            </a>
+          </p>
+        </div>
+
+        {/* Image */}
+        <div>
           {jobData?.companyLogo && (
             <img
               src={jobData?.companyLogo}
               alt={jobData?.companyName}
-              className="border-2 border-black max-w-[500px]"
+              className="border-2 border-black w-full md:w-[300px]"
             />
           )}
         </div>
+      </div>
 
-        {/* Description */}
-        <div className="text-xl mt-8">
-          <h4 className="font-semibold">Description:</h4>
-          <p>{jobData?.jobDescription}</p>
+      {/* Description */}
+      <div className="text-xl mt-8 px-2">
+        <h4 className="font-semibold">Description:</h4>
+        <p className=" w-full break-words overflow-hidden">
+          {jobData?.jobDescription}
+        </p>
+      </div>
+
+      {/* Responsibilities */}
+      {jobData?.responsibilities && (
+        <div className="text-xl mt-8 px-2">
+          <h4 className="font-semibold">Responsibilities:</h4>
+          <ul className="list-disc pl-5 mb-4">
+            {jobData?.responsibilities.map((resp, idx) => (
+              <li key={idx}>{resp}</li>
+            ))}
+          </ul>
         </div>
+      )}
 
-        {/* Responsibilities */}
-        {jobData?.responsibilities && (
+      {/* Qualifications */}
+      {jobData?.qualifications && (
+        <div className="text-xl mt-8 px-2">
+          <h4 className="font-semibold">Qualifications:</h4>
+          <ul className="list-disc pl-5 mb-4">
+            {jobData?.qualifications.map((qual, idx) => (
+              <li key={idx}>{qual}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Tools and Rating */}
+      <div className="flex flex-row items-center justify-between px-2">
+        {jobData?.toolsAndTechnologies && (
           <div className="text-xl mt-8">
-            <h4 className="font-semibold">Responsibilities:</h4>
-            <ul className="list-disc pl-5 mb-4">
-              {jobData?.responsibilities.map((resp, idx) => (
-                <li key={idx}>{resp}</li>
+            <h4 className="font-semibold">Tools and Technologies:</h4>
+            <ul className="list-disc gap-3 mb-4 flex mt-2">
+              {jobData?.toolsAndTechnologies.map((tool, idx) => (
+                <p key={idx} className="py-1 px-6 bg-gray-300 rounded-full">
+                  {tool}
+                </p>
               ))}
             </ul>
           </div>
         )}
 
-        {/* Qualifications */}
-        {jobData?.qualifications && (
-          <div className="text-xl mt-8">
-            <h4 className="font-semibold">Qualifications:</h4>
-            <ul className="list-disc pl-5 mb-4">
-              {jobData?.qualifications.map((qual, idx) => (
-                <li key={idx}>{qual}</li>
-              ))}
-            </ul>
+        {jobData?.companyRating && (
+          <div>
+            <h4 className="font-semibold mb-2">Company Rating:</h4>
+            <Rating
+              initialRating={jobData?.companyRating}
+              emptySymbol={<FaStar className="text-gray-400 text-2xl" />}
+              fullSymbol={<FaStar className="text-yellow-500 text-2xl" />}
+              readonly
+            />
           </div>
         )}
+      </div>
 
-        {/* Tools and Rating */}
-        <div className="flex items-center justify-between">
-          {jobData?.toolsAndTechnologies && (
-            <div className="text-xl mt-8">
-              <h4 className="font-semibold">Tools and Technologies:</h4>
-              <ul className="list-disc gap-3 mb-4 flex mt-2">
-                {jobData?.toolsAndTechnologies.map((tool, idx) => (
-                  <p key={idx} className="py-1 px-6 bg-gray-300 rounded-full">
-                    {tool}
-                  </p>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {jobData?.companyRating && (
-            <div>
-              <h4 className="font-semibold mb-2">Company Rating:</h4>
-              <Rating
-                initialRating={jobData?.companyRating}
-                emptySymbol={<FaStar className="text-gray-400 text-2xl" />}
-                fullSymbol={<FaStar className="text-yellow-500 text-2xl" />}
-                readonly
-              />
-            </div>
-          )}
-        </div>
-
-        {/* People Applied Section */}
-        <div className="overflow-x-auto mt-8">
-          <h4 className="text-xl font-semibold mb-4">People Applied:</h4>
-          <table className="table-auto w-full text-left">
-            {/* Table Header */}
-            <thead>
-              <tr>
-                <th className="px-4 py-2">Image</th>
-                <th className="px-4 py-2">Name</th>
-                <th className="px-4 py-2">Email</th>
-                <th className="px-4 py-2">Applied Date</th>
-                <th className="px-4 py-2">About Me</th>
-                <th className="px-4 py-2">Resume Link</th>
-              </tr>
-            </thead>
-            {/* Table Body */}
-            <tbody>
-              {jobData?.PeopleApplied && jobData?.PeopleApplied.length > 0 ? (
-                jobData?.PeopleApplied.map((applicant, idx) => (
-                  <tr key={idx}>
-                    <td className="px-4 py-2">
-                      <img
-                        src={applicant.image}
-                        alt={applicant.name}
-                        className="w-12 h-12 rounded-full"
-                      />
-                    </td>
-                    <td className="px-4 py-2">{applicant.name}</td>
-                    <td className="px-4 py-2">{applicant.email}</td>
-                    <td className="px-4 py-2">{applicant.appliedDate}</td>
-                    <td className="px-4 py-2">{applicant.AboutMe}</td>
-                    <td className="px-4 py-2">
-                      <a
-                        href={applicant.resumeLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 underline"
-                      >
-                        Resume
-                      </a>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" className="px-4 py-2 text-center">
-                    No applicants available.
+      {/* People Applied Section */}
+      <div className="overflow-x-auto mt-8">
+        <h4 className="text-xl font-semibold mb-4">People Applied:</h4>
+        <table className="table-auto w-full text-left">
+          {/* Table Header */}
+          <thead>
+            <tr>
+              <th className="px-4 py-2">Image</th>
+              <th className="px-4 py-2">Name</th>
+              <th className="px-4 py-2">Email</th>
+              <th className="px-4 py-2">Applied Date</th>
+              <th className="px-4 py-2">About Me</th>
+              <th className="px-4 py-2">Resume Link</th>
+            </tr>
+          </thead>
+          {/* Table Body */}
+          <tbody>
+            {jobData?.PeopleApplied && jobData?.PeopleApplied.length > 0 ? (
+              jobData?.PeopleApplied.map((applicant, idx) => (
+                <tr key={idx}>
+                  <td className="px-4 py-2">
+                    <img
+                      src={applicant.image}
+                      alt={applicant.name}
+                      className="w-12 h-12 rounded-full"
+                    />
+                  </td>
+                  <td className="px-4 py-2">{applicant.name}</td>
+                  <td className="px-4 py-2">{applicant.email}</td>
+                  <td className="px-4 py-2">{applicant.appliedDate}</td>
+                  <td className="px-4 py-2">{applicant.AboutMe}</td>
+                  <td className="px-4 py-2">
+                    <a
+                      href={applicant.resumeLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
+                      Resume
+                    </a>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="px-4 py-2 text-center">
+                  No applicants available.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

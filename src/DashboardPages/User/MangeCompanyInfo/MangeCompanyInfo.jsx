@@ -14,9 +14,9 @@ import ModalNewCompanyProfile from "./ModalNewCompanyProfile/ModalNewCompanyProf
 const MangeCompanyInfo = () => {
   const axiosPublic = useAxiosPublic();
   const { user } = useContext(AuthContext);
-  const [editCompanyProfileData, setEditCompanyProfileData] = useState(null);
-  const [selectedCompanyProfile, setSelectedCompanyProfile] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedCompanyProfile, setSelectedCompanyProfile] = useState([]);
+  const [editCompanyProfileData, setEditCompanyProfileData] = useState(null);
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -132,7 +132,7 @@ const MangeCompanyInfo = () => {
             <p className="text-center text-gray-800 font-bold text-2xl mb-4">
               No Company Profile Found
             </p>
-            <p className="text-center text-gray-600 mb-4">
+            <p className="md:text-center text-gray-600 mb-4">
               Please create a company profile to manage your company
               information.
             </p>

@@ -148,6 +148,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
     if (CompanyProfilesNamesCodes) {
       generateUniqueCompanyCode();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [CompanyProfilesNamesCodes]);
 
   // On Submit
@@ -234,7 +235,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
 
   return (
     <div className="modal-box bg-white max-w-[800px] p-0 rounded-none">
-      <div className="flex justify-between items-center p-5 bg-blue-400 text-white ">
+      <div className="flex justify-between items-center p-5 bg-gray-400 text-white ">
         <p className="text-xl">Create New Company Profile</p>
         <button
           onClick={() =>
@@ -250,7 +251,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
         className="p-5 space-y-4 text-black"
       >
         {/* Company Name */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Company Name:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none "
@@ -266,7 +267,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
         </div>
 
         {/* Company Code (Read-Only) */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Company Code:</label>
           <input
             className="input input-bordered w-full bg-gray-200 border-black rounded-none "
@@ -278,7 +279,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
         </div>
 
         {/* Location */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Location:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none "
@@ -294,7 +295,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
         </div>
 
         {/* Industry */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Industry:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none "
@@ -310,7 +311,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
         </div>
 
         {/* Website */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Website:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none "
@@ -326,7 +327,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
         </div>
 
         {/* Company Logo */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Company Logo:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none "
@@ -342,7 +343,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
         </div>
 
         {/* Description */}
-        <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row gap-2">
           <label className="font-bold w-48 text-xl">Description:</label>
           <textarea
             className="textarea textarea-bordered w-full bg-white border-black rounded-none h-36 "
@@ -352,8 +353,9 @@ const ModalNewCompanyProfile = ({ refetch }) => {
         </div>
 
         <p className="text-2xl font-bold text-center">Company Details</p>
+
         {/* Company Details */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {/* Founding Year */}
           <div className="space-y-1 ">
             <label className="font-bold w-40 text-lg">Founding Year:</label>
@@ -377,11 +379,11 @@ const ModalNewCompanyProfile = ({ refetch }) => {
             <label className="font-bold w-40 text-lg">Employees:</label>
             <input
               className="input input-bordered w-full bg-white border-black rounded-none "
-              type="text"
+              type="number"
               {...register("employees", {
                 required: "Company name is required",
               })}
-              placeholder="Enter employees name"
+              placeholder="Enter employees number"
             />
             {errors.employees && (
               <span className="text-red-500">{errors.employees.message}</span>
@@ -421,71 +423,37 @@ const ModalNewCompanyProfile = ({ refetch }) => {
           </div>
         </div>
 
-        {/* Services */}
-        <div className="space-y-2">
-          <label className="font-bold w-48 text-xl">Services:</label>
-          {fieldsServices.map((item, index) => (
-            <div key={item.id} className="flex mb-1">
-              <input
-                className="input input-bordered w-full bg-white border-black rounded-none"
-                {...register(`services.${index}`)}
-                defaultValue={item}
-                placeholder="Enter service"
-              />
-              <button
-                type="button"
-                className="bg-red-500 hover:bg-red-400 px-5 text-white py-2"
-                onClick={() => removeServices(index)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-5"
-            onClick={() => appendServices("")}
-          >
-            Add Service
-          </button>
+        {/* Services*/}
+        <div>
+          {renderFieldArray(
+            fieldsServices,
+            register,
+            removeServices,
+            appendServices,
+            "Services",
+            "services"
+          )}
         </div>
 
-        {/* Clients */}
-        <div className="space-y-2">
-          <label className="font-bold w-48 text-xl">Clients:</label>
-          {fieldsClients.map((item, index) => (
-            <div key={item.id} className="flex mb-1">
-              <input
-                className="input input-bordered w-full bg-white border-black rounded-none"
-                {...register(`clients.${index}`)}
-                defaultValue={item}
-                placeholder="Enter clients"
-              />
-              <button
-                type="button"
-                className="bg-red-500 hover:bg-red-400 px-5 text-white py-2"
-                onClick={() => removeClients(index)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-5"
-            onClick={() => appendClients("")}
-          >
-            Add Service
-          </button>
+        {/* Clients*/}
+        <div>
+          {renderFieldArray(
+            fieldsClients,
+            register,
+            removeClients,
+            appendClients,
+            "Clients",
+            "clients"
+          )}
         </div>
 
         {/* Key Projects */}
-        <div className="space-y-2 ">
+        <div className="space-y-2 border border-gray-300 p-3">
           <p className="font-bold text-lg">Key Projects:</p>
           {fieldsKeyProjects.map((project, index) => (
-            <div key={project.id} className="flex gap-1">
+            <div key={project.id} className="flex flex-col md:flex-row pb-2">
               <input
-                className="input input-bordered bg-white border-black rounded-none w-[280px]"
+                className="input input-bordered bg-white border-black rounded-none md:w-[280px]"
                 type="text"
                 {...register(`keyProjects.${index}.projectName`, {
                   required: "Project name is required",
@@ -493,7 +461,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
                 placeholder="Project Name"
               />
               <input
-                className="input input-bordered bg-white border-black rounded-none w-[280px]"
+                className="input input-bordered bg-white border-black rounded-none md:w-[280px]"
                 type="text"
                 {...register(`keyProjects.${index}.description`, {
                   required: "Description is required",
@@ -501,7 +469,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
                 placeholder="Description"
               />
               <input
-                className="input input-bordered bg-white border-black rounded-none w-[150px]"
+                className="input input-bordered bg-white border-black rounded-none md:w-[150px]"
                 type="number"
                 {...register(`keyProjects.${index}.year`, {
                   required: "Year is required",
@@ -510,7 +478,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
               />
               <button
                 type="button"
-                className="bg-red-500 hover:bg-red-400 px-5 text-white"
+                className="bg-red-500 hover:bg-red-400 px-5 py-3 text-white"
                 onClick={() => removeKeyProjects(index)}
               >
                 Remove
@@ -522,19 +490,19 @@ const ModalNewCompanyProfile = ({ refetch }) => {
             onClick={() =>
               appendKeyProjects({ projectName: "", description: "", year: "" })
             }
-            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-3"
+            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-full md:w-52 mt-3"
           >
             Add Project
           </button>
         </div>
 
         {/* Awards */}
-        <div className="space-y-2 ">
+        <div className="space-y-2 border border-gray-300 p-3">
           <p className="font-bold text-lg">Awards:</p>
           {fieldsAwards.map((awards, index) => (
-            <div key={awards.id} className="flex gap-1">
+            <div key={awards.id} className="flex flex-col md:flex-row">
               <input
-                className="input input-bordered bg-white border-black rounded-none w-[280px]"
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[280px]"
                 type="text"
                 {...register(`awards.${index}.awardName`, {
                   required: "Project name is required",
@@ -542,7 +510,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
                 placeholder="Award Name"
               />
               <input
-                className="input input-bordered bg-white border-black rounded-none w-[280px]"
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[280px]"
                 type="text"
                 {...register(`awards.${index}.organization`, {
                   required: "Year is organization",
@@ -550,7 +518,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
                 placeholder="Organization"
               />
               <input
-                className="input input-bordered bg-white border-black rounded-none w-[150px]"
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[150px]"
                 type="number"
                 {...register(`awards.${index}.year`, {
                   required: "Description is required",
@@ -559,7 +527,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
               />
               <button
                 type="button"
-                className="bg-red-500 hover:bg-red-400 px-5 text-white"
+                className="bg-red-500 hover:bg-red-400 px-5 py-3 text-white"
                 onClick={() => removeAwards(index)}
               >
                 Remove
@@ -571,48 +539,31 @@ const ModalNewCompanyProfile = ({ refetch }) => {
             onClick={() =>
               appendAwards({ awardName: "", year: "", organization: "" })
             }
-            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-3"
+            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-full md:w-52 mt-3"
           >
             Add Award
           </button>
         </div>
 
         {/* Office Locations */}
-        <div className="space-y-2">
-          <label className="font-bold w-48 text-xl">Office Locations:</label>
-          {fieldsOfficeLocations.map((item, index) => (
-            <div key={item.id} className="flex mb-1">
-              <input
-                className="input input-bordered w-full bg-white border-black rounded-none"
-                {...register(`officeLocations.${index}`)}
-                defaultValue={item}
-                placeholder="Enter officeLocations"
-              />
-              <button
-                type="button"
-                className="bg-red-500 hover:bg-red-400 px-5 text-white py-2"
-                onClick={() => removeOfficeLocations(index)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-5"
-            onClick={() => appendOfficeLocations("")}
-          >
-            Add Service
-          </button>
+        <div>
+          {renderFieldArray(
+            fieldsOfficeLocations,
+            register,
+            removeOfficeLocations,
+            appendOfficeLocations,
+            "OfficeLocations",
+            "officeLocations"
+          )}
         </div>
 
         {/* Partnerships */}
-        <div className="space-y-2 ">
+        <div className="space-y-2 border border-gray-300 p-3">
           <p className="font-bold text-lg">Partnerships:</p>
           {fieldsPartnerships.map((partnerships, index) => (
-            <div key={partnerships.id} className="flex gap-1">
+            <div key={partnerships.id} className="flex flex-col md:flex-row">
               <input
-                className="input input-bordered bg-white border-black rounded-none w-[280px]"
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[280px]"
                 type="text"
                 {...register(`partnerships.${index}.partnerName`, {
                   required: "Project name is required",
@@ -620,7 +571,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
                 placeholder="Partner Name"
               />
               <input
-                className="input input-bordered bg-white border-black rounded-none w-[280px]"
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[280px]"
                 type="text"
                 {...register(`partnerships.${index}.description`, {
                   required: "Year is description",
@@ -628,7 +579,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
                 placeholder="description"
               />
               <input
-                className="input input-bordered bg-white border-black rounded-none w-[150px]"
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[150px]"
                 type="number"
                 {...register(`partnerships.${index}.since`, {
                   required: "Description is required",
@@ -637,7 +588,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
               />
               <button
                 type="button"
-                className="bg-red-500 hover:bg-red-400 px-5 text-white"
+                className="bg-red-500 hover:bg-red-400 px-5 py-3 text-white"
                 onClick={() => removePartnerships(index)}
               >
                 Remove
@@ -653,7 +604,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
                 description: "",
               })
             }
-            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-3"
+            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-full md:w-52 mt-3"
           >
             Add Partner
           </button>
@@ -661,9 +612,9 @@ const ModalNewCompanyProfile = ({ refetch }) => {
 
         {/* Social Media */}
         <div className="space-y-2">
-          <p className="text-xl font-bold">Social Media</p>
+          <p className="text-xl font-bold text-center">Social Media</p>
           {/* LinkedIn */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
             <label className="font-bold w-48 text-xl">LinkedIn:</label>
             <input
               className="input input-bordered w-full bg-white border-black rounded-none "
@@ -679,7 +630,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
           </div>
 
           {/* Twitter */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
             <label className="font-bold w-48 text-xl">Twitter:</label>
             <input
               className="input input-bordered w-full bg-white border-black rounded-none "
@@ -695,7 +646,7 @@ const ModalNewCompanyProfile = ({ refetch }) => {
           </div>
 
           {/* Facebook */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
             <label className="font-bold w-48 text-xl">Facebook:</label>
             <input
               className="input input-bordered w-full bg-white border-black rounded-none "
@@ -724,6 +675,37 @@ const ModalNewCompanyProfile = ({ refetch }) => {
     </div>
   );
 };
+
+const renderFieldArray = (fields, registerFn, removeFn, addFn, label, name) => (
+  <div className="border border-gray-300 p-3">
+    <label className="font-bold w-48 text-xl">{label}</label>
+    {fields.map((item, index) => (
+      <div key={item.id} className="flex flex-col md:flex-row mb-1">
+        <input
+          className="input input-bordered w-full bg-white border-black rounded-none"
+          {...registerFn(`${name}.${index}`)}
+          defaultValue={item}
+          placeholder={`Enter ${label.toLowerCase().slice(0, -1)}`}
+        />
+        <button
+          type="button"
+          className="bg-red-500 hover:bg-red-400 px-5 text-white py-2"
+          onClick={() => removeFn(index)}
+        >
+          Remove
+        </button>
+      </div>
+    ))}
+    {fields.length === 0 && addFn("")}
+    <button
+      type="button"
+      className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-full md:w-52 mt-5"
+      onClick={() => addFn("")}
+    >
+      Add {label.slice(0, -1)}
+    </button>
+  </div>
+);
 
 export default ModalNewCompanyProfile;
 

@@ -1,7 +1,7 @@
+/* eslint-disable react/prop-types */
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
-import PropTypes from "prop-types";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import Swal from "sweetalert2";
 
@@ -11,7 +11,6 @@ const ModalEditCompanyProfile = ({ CompanyProfileData, refetch }) => {
   const {
     register,
     handleSubmit,
-    // setValue,
     reset,
     formState: { errors },
     control,
@@ -108,120 +107,7 @@ const ModalEditCompanyProfile = ({ CompanyProfileData, refetch }) => {
     }
   }, [CompanyProfileData, reset]);
 
-  // Reusable Input Section
-  const InputSection = ({
-    label,
-    fields,
-    registerName,
-    removeFunc,
-    appendFunc,
-  }) => (
-    <div className="space-y-2">
-      <label className="font-bold w-48 text-xl">{label}:</label>
-      {fields.map((item, index) => (
-        <div key={item.id} className="flex mb-1">
-          <input
-            className="input input-bordered w-full bg-white border-black rounded-none"
-            {...register(`${registerName}.${index}`)}
-            defaultValue={item}
-            placeholder={`Enter ${label.toLowerCase()}`}
-          />
-          <button
-            type="button"
-            className="bg-red-500 hover:bg-red-400 px-5 text-white py-2"
-            onClick={() => removeFunc(index)}
-          >
-            Remove
-          </button>
-        </div>
-      ))}
-      <button
-        type="button"
-        className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-5"
-        onClick={() => appendFunc("")}
-      >
-        Add {label}
-      </button>
-    </div>
-  );
-
-  // Add prop-types validation
-  InputSection.propTypes = {
-    label: PropTypes.string.isRequired,
-    fields: PropTypes.arrayOf(PropTypes.string).isRequired, // Assuming fields is an array of strings
-    registerName: PropTypes.string.isRequired,
-    removeFunc: PropTypes.func.isRequired,
-    appendFunc: PropTypes.func.isRequired,
-  };
-
-  // Reusable Multi Section
-  const MultiSection = ({
-    title,
-    fields,
-    registerName,
-    removeFunc,
-    appendFunc,
-    placeholders,
-  }) => (
-    <div className="space-y-2">
-      <p className="font-bold text-lg">{title}:</p>
-      {fields.map((item, index) => (
-        <div key={item.id} className="flex gap-1">
-          {placeholders.map((placeholder, idx) => (
-            <input
-              key={idx}
-              className="input input-bordered bg-white border-black rounded-none"
-              type={placeholder.type}
-              {...register(`${registerName}.${index}.${placeholder.name}`, {
-                required: `${placeholder.name} is required`,
-              })}
-              placeholder={placeholder.placeholder}
-              style={{ width: placeholder.width }}
-            />
-          ))}
-          <button
-            type="button"
-            className="bg-red-500 hover:bg-red-400 px-5 text-white"
-            onClick={() => removeFunc(index)}
-          >
-            Remove
-          </button>
-        </div>
-      ))}
-      <button
-        type="button"
-        className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-52 mt-3"
-        onClick={() =>
-          appendFunc(Object.fromEntries(placeholders.map((p) => [p.name, ""])))
-        }
-      >
-        Add {title.slice(0, -1)}
-      </button>
-    </div>
-  );
-
-  // Add prop-types validation
-  MultiSection.propTypes = {
-    title: PropTypes.string.isRequired,
-    fields: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-      })
-    ).isRequired,
-    registerName: PropTypes.string.isRequired,
-    removeFunc: PropTypes.func.isRequired,
-    appendFunc: PropTypes.func.isRequired,
-    placeholders: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        placeholder: PropTypes.string.isRequired,
-        type: PropTypes.string.isRequired,
-        width: PropTypes.string.isRequired,
-      })
-    ).isRequired,
-  };
-
-  //   On Submit
+  // On Submit
   const onSubmit = async (data) => {
     try {
       // Arrange the data in the required format
@@ -374,7 +260,10 @@ const ModalEditCompanyProfile = ({ CompanyProfileData, refetch }) => {
               },
               index
             ) => (
-              <div key={index} className="flex items-center gap-2">
+              <div
+                key={index}
+                className="flex flex-col md:flex-row md:items-center gap-2"
+              >
                 <label className="font-bold w-48 text-xl">{label}:</label>
                 <input
                   className="input input-bordered w-full bg-white border-black rounded-none"
@@ -393,7 +282,7 @@ const ModalEditCompanyProfile = ({ CompanyProfileData, refetch }) => {
         </div>
 
         {/* Description */}
-        <div className="flex gap-2 mt-2">
+        <div className="flex flex-col md:flex-row mt-2">
           <label className="font-bold w-48 text-xl">Description:</label>
           <textarea
             className="textarea textarea-bordered w-full bg-white border-black rounded-none h-36"
@@ -404,7 +293,7 @@ const ModalEditCompanyProfile = ({ CompanyProfileData, refetch }) => {
 
         <p className="text-2xl font-bold text-center mt-5">Company Details</p>
         {/* Founding Year, Employees, Revenue, CEO inputs */}
-        <div className="grid grid-cols-2 gap-2 mt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
           {[
             {
               label: "Founding Year",
@@ -443,149 +332,243 @@ const ModalEditCompanyProfile = ({ CompanyProfileData, refetch }) => {
           ))}
         </div>
 
-        {/* Services Sections */}
-        <div className="mt-3">
-          <InputSection
-            label="Services"
-            fields={fieldsServices}
-            registerName="services"
-            removeFunc={removeServices}
-            appendFunc={appendServices}
-          />
+        {/* Services*/}
+        <div>
+          {renderFieldArray(
+            fieldsServices,
+            register,
+            removeServices,
+            appendServices,
+            "Services",
+            "services"
+          )}
         </div>
 
-        {/* Clients Sections */}
-        <div className="mt-3">
-          <InputSection
-            label="Clients"
-            fields={fieldsClients}
-            registerName="clients"
-            removeFunc={removeClients}
-            appendFunc={appendClients}
-          />
+        {/* Clients*/}
+        <div>
+          {renderFieldArray(
+            fieldsClients,
+            register,
+            removeClients,
+            appendClients,
+            "Clients",
+            "clients"
+          )}
         </div>
 
         {/* Key Projects */}
-        <div className="mt-3">
-          <MultiSection
-            title="Key Projects"
-            fields={fieldsKeyProjects}
-            registerName="keyProjects"
-            removeFunc={removeKeyProjects}
-            appendFunc={appendKeyProjects}
-            placeholders={[
-              {
-                name: "projectName",
-                placeholder: "Project Name",
-                type: "text",
-                width: "280px",
-              },
-              {
-                name: "description",
-                placeholder: "Description",
-                type: "text",
-                width: "280px",
-              },
-              {
-                name: "year",
-                placeholder: "Year",
-                type: "number",
-                width: "150px",
-              },
-            ]}
-          />
+        <div className="space-y-2 border border-gray-300 p-3">
+          <p className="font-bold text-lg">Key Projects:</p>
+          {fieldsKeyProjects.map((project, index) => (
+            <div key={project.id} className="flex flex-col md:flex-row pb-2">
+              <input
+                className="input input-bordered bg-white border-black rounded-none md:w-[280px]"
+                type="text"
+                {...register(`keyProjects.${index}.projectName`, {
+                  required: "Project name is required",
+                })}
+                placeholder="Project Name"
+              />
+              <input
+                className="input input-bordered bg-white border-black rounded-none md:w-[280px]"
+                type="text"
+                {...register(`keyProjects.${index}.description`, {
+                  required: "Description is required",
+                })}
+                placeholder="Description"
+              />
+              <input
+                className="input input-bordered bg-white border-black rounded-none md:w-[150px]"
+                type="number"
+                {...register(`keyProjects.${index}.year`, {
+                  required: "Year is required",
+                })}
+                placeholder="Year"
+              />
+              <button
+                type="button"
+                className="bg-red-500 hover:bg-red-400 px-5 py-3 text-white"
+                onClick={() => removeKeyProjects(index)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() =>
+              appendKeyProjects({ projectName: "", description: "", year: "" })
+            }
+            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-full md:w-52 mt-3"
+          >
+            Add Project
+          </button>
         </div>
 
         {/* Awards */}
-        <div className="mt-3">
-          <MultiSection
-            title="Awards"
-            fields={fieldsAwards}
-            registerName="awards"
-            removeFunc={removeAwards}
-            appendFunc={appendAwards}
-            placeholders={[
-              {
-                name: "awardName",
-                placeholder: "Award Name",
-                type: "text",
-                width: "280px",
-              },
-              {
-                name: "organization",
-                placeholder: "Organization",
-                type: "text",
-                width: "280px",
-              },
-              {
-                name: "year",
-                placeholder: "Year",
-                type: "number",
-                width: "150px",
-              },
-            ]}
-          />
+        <div className="space-y-2 border border-gray-300 p-3">
+          <p className="font-bold text-lg">Awards:</p>
+          {fieldsAwards.map((awards, index) => (
+            <div key={awards.id} className="flex flex-col md:flex-row">
+              <input
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[280px]"
+                type="text"
+                {...register(`awards.${index}.awardName`, {
+                  required: "Project name is required",
+                })}
+                placeholder="Award Name"
+              />
+              <input
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[280px]"
+                type="text"
+                {...register(`awards.${index}.organization`, {
+                  required: "Year is organization",
+                })}
+                placeholder="Organization"
+              />
+              <input
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[150px]"
+                type="number"
+                {...register(`awards.${index}.year`, {
+                  required: "Description is required",
+                })}
+                placeholder="Year"
+              />
+              <button
+                type="button"
+                className="bg-red-500 hover:bg-red-400 px-5 py-3 text-white"
+                onClick={() => removeAwards(index)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() =>
+              appendAwards({ awardName: "", year: "", organization: "" })
+            }
+            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-full md:w-52 mt-3"
+          >
+            Add Award
+          </button>
         </div>
 
-        {/* OfficeLocations Section */}
-        <div className="mt-3">
-          <InputSection
-            label="OfficeLocations"
-            fields={fieldsOfficeLocations}
-            registerName="officeLocations"
-            removeFunc={removeOfficeLocations}
-            appendFunc={appendOfficeLocations}
-          />
+        {/* Office Locations */}
+        <div>
+          {renderFieldArray(
+            fieldsOfficeLocations,
+            register,
+            removeOfficeLocations,
+            appendOfficeLocations,
+            "OfficeLocations",
+            "officeLocations"
+          )}
         </div>
 
         {/* Partnerships */}
-        <div className="mt-3">
-          <MultiSection
-            title="Partnerships"
-            fields={fieldsPartnerships}
-            registerName="partnerships"
-            removeFunc={removePartnerships}
-            appendFunc={appendPartnerships}
-            placeholders={[
-              {
-                name: "partnerName",
-                placeholder: "Partner Name",
-                type: "text",
-                width: "280px",
-              },
-              {
-                name: "description",
-                placeholder: "Description",
-                type: "text",
-                width: "280px",
-              },
-              {
-                name: "since",
-                placeholder: "Since",
-                type: "number",
-                width: "150px",
-              },
-            ]}
-          />
+        <div className="space-y-2 border border-gray-300 p-3">
+          <p className="font-bold text-lg">Partnerships:</p>
+          {fieldsPartnerships.map((partnerships, index) => (
+            <div key={partnerships.id} className="flex flex-col md:flex-row">
+              <input
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[280px]"
+                type="text"
+                {...register(`partnerships.${index}.partnerName`, {
+                  required: "Project name is required",
+                })}
+                placeholder="Partner Name"
+              />
+              <input
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[280px]"
+                type="text"
+                {...register(`partnerships.${index}.description`, {
+                  required: "Year is description",
+                })}
+                placeholder="description"
+              />
+              <input
+                className="input input-bordered bg-white border-black rounded-none w-full md:w-[150px]"
+                type="number"
+                {...register(`partnerships.${index}.since`, {
+                  required: "Description is required",
+                })}
+                placeholder="since"
+              />
+              <button
+                type="button"
+                className="bg-red-500 hover:bg-red-400 px-5 py-3 text-white"
+                onClick={() => removePartnerships(index)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() =>
+              appendPartnerships({
+                partnerName: "",
+                since: "",
+                description: "",
+              })
+            }
+            className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-full md:w-52 mt-3"
+          >
+            Add Partner
+          </button>
         </div>
 
         {/* Social Media */}
         <div className="space-y-2">
-          <p className="text-xl font-bold">Social Media</p>
-          {["LinkedIn", "Twitter", "Facebook"].map((platform) => (
-            <div key={platform} className="flex items-center gap-2">
-              <label className="font-bold w-48 text-xl">{platform}:</label>
-              <input
-                className="input input-bordered w-full bg-white border-black rounded-none"
-                type="text"
-                {...register(platform, { required: `${platform} is required` })}
-                placeholder={`Enter ${platform} name`}
-              />
-              {errors[platform] && (
-                <span className="text-red-500">{errors[platform].message}</span>
-              )}
-            </div>
-          ))}
+          <p className="text-xl font-bold text-center">Social Media</p>
+          {/* LinkedIn */}
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
+            <label className="font-bold w-48 text-xl">LinkedIn:</label>
+            <input
+              className="input input-bordered w-full bg-white border-black rounded-none "
+              type="text"
+              {...register("LinkedIn", {
+                required: "Company name is required",
+              })}
+              placeholder="Enter company name"
+            />
+            {errors.LinkedIn && (
+              <span className="text-red-500">{errors.LinkedIn.message}</span>
+            )}
+          </div>
+
+          {/* Twitter */}
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
+            <label className="font-bold w-48 text-xl">Twitter:</label>
+            <input
+              className="input input-bordered w-full bg-white border-black rounded-none "
+              type="text"
+              {...register("Twitter", {
+                required: "Company name is required",
+              })}
+              placeholder="Enter company name"
+            />
+            {errors.Twitter && (
+              <span className="text-red-500">{errors.Twitter.message}</span>
+            )}
+          </div>
+
+          {/* Facebook */}
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
+            <label className="font-bold w-48 text-xl">Facebook:</label>
+            <input
+              className="input input-bordered w-full bg-white border-black rounded-none "
+              type="text"
+              {...register("Facebook", {
+                required: "Company name is required",
+              })}
+              placeholder="Enter company name"
+            />
+            {errors.Facebook && (
+              <span className="text-red-500">{errors.Facebook.message}</span>
+            )}
+          </div>
         </div>
 
         {/* Submit Button */}
@@ -602,46 +585,35 @@ const ModalEditCompanyProfile = ({ CompanyProfileData, refetch }) => {
   );
 };
 
+const renderFieldArray = (fields, registerFn, removeFn, addFn, label, name) => (
+  <div className="border border-gray-300 p-3">
+    <label className="font-bold w-48 text-xl">{label}</label>
+    {fields.map((item, index) => (
+      <div key={item.id} className="flex flex-col md:flex-row mb-1">
+        <input
+          className="input input-bordered w-full bg-white border-black rounded-none"
+          {...registerFn(`${name}.${index}`)}
+          defaultValue={item}
+          placeholder={`Enter ${label.toLowerCase().slice(0, -1)}`}
+        />
+        <button
+          type="button"
+          className="bg-red-500 hover:bg-red-400 px-5 text-white py-2"
+          onClick={() => removeFn(index)}
+        >
+          Remove
+        </button>
+      </div>
+    ))}
+    {fields.length === 0 && addFn("")}
+    <button
+      type="button"
+      className="bg-green-500 hover:bg-green-600 text-white py-1 text-lg w-full md:w-52 mt-5"
+      onClick={() => addFn("")}
+    >
+      Add {label.slice(0, -1)}
+    </button>
+  </div>
+);
+
 export default ModalEditCompanyProfile;
-
-// Define prop types for CompanyProfileData
-ModalEditCompanyProfile.propTypes = {
-  CompanyProfileData: PropTypes.shape({
-    _id: PropTypes.string,
-    companyName: PropTypes.string,
-    companyCode: PropTypes.string,
-    location: PropTypes.string,
-    industry: PropTypes.string,
-    website: PropTypes.string,
-    postedBy: PropTypes.string,
-    logo: PropTypes.string,
-    description: PropTypes.string,
-    companyDetails: PropTypes.shape({
-      foundingYear: PropTypes.string,
-      employees: PropTypes.number,
-      revenue: PropTypes.string,
-      ceo: PropTypes.string,
-      services: PropTypes.arrayOf(PropTypes.string),
-      clients: PropTypes.arrayOf(PropTypes.string),
-      keyProjects: PropTypes.arrayOf(PropTypes.string),
-      awards: PropTypes.arrayOf(PropTypes.string),
-      officeLocations: PropTypes.arrayOf(PropTypes.string),
-      partnerships: PropTypes.arrayOf(PropTypes.string),
-      socialMedia: PropTypes.shape({
-        LinkedIn: PropTypes.string,
-        Twitter: PropTypes.string,
-        Facebook: PropTypes.string,
-      }),
-    }),
-  }),
-  reset: PropTypes.func.isRequired, // Ensure reset function is passed as a prop
-};
-
-// PropTypes validation
-ModalEditCompanyProfile.propTypes = {
-  user: PropTypes.shape({
-    email: PropTypes.string.isRequired,
-    displayName: PropTypes.string.isRequired,
-  }).isRequired,
-  refetch: PropTypes.func.isRequired, // Add refetch to prop types
-};

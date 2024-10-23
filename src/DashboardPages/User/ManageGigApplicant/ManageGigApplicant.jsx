@@ -89,9 +89,6 @@ const ManageGigApplicant = () => {
     year: "numeric",
     month: "numeric",
     day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
   });
 
   // Delete On Submit part
@@ -369,7 +366,7 @@ const ManageGigApplicant = () => {
           <div className="bg-white p-8 rounded-lg w-[800px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Delete Gigs</h2>
             <p className="font-bold">Selected Gigs:</p>
-            <ul className="mb-4 w-[400px]">
+            <ul className="mb-4 ">
               {selectedGigs.map((gigId) => {
                 const gig = MyPostedGigs.find((gig) => gig._id === gigId);
                 return (
@@ -401,7 +398,7 @@ const ManageGigApplicant = () => {
                   required
                 />
               </div>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 mt-5">
                 <button
                   type="button"
                   className="bg-gray-500 hover:bg-gray-400 text-white px-5 py-2"

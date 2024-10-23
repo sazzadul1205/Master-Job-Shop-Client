@@ -16,11 +16,18 @@ const ModalAddGig = ({ refetch }) => {
     formState: { errors },
   } = useForm();
 
+  // Date and Time
+  const formattedDateTime = new Date().toLocaleString("en-US", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  });
+
   const onSubmit = async (data) => {
     const formattedData = {
       gigTitle: data.gigTitle,
       clientName: data.clientName,
-      clientType: data.clientType || "N/A",
+      clientType: data.clientType,
       gigType: data.gigType,
       location: data.location,
       paymentRate: data.paymentRate,
@@ -28,11 +35,11 @@ const ModalAddGig = ({ refetch }) => {
       rating: "0",
       responsibilities: data.responsibilities,
       requiredSkills: data.requiredSkills,
-      workingHours: data.workingHours || "N/A",
-      projectExpectations: data.projectExpectations || "N/A",
-      communication: data.communication || "N/A",
-      additionalBenefits: data.additionalBenefits || "N/A",
-      postedDate: new Date().toISOString(),
+      workingHours: data.workingHours,
+      projectExpectations: data.projectExpectations,
+      communication: data.communication,
+      additionalBenefits: data.additionalBenefits,
+      postedDate: formattedDateTime,
       expirationDate: data.expirationDate,
       PostedBy: user.email,
       peopleBided: [],
@@ -160,7 +167,10 @@ const ModalAddGig = ({ refetch }) => {
             type: "date",
           },
         ].map(({ label, name, type, required, placeholder }) => (
-          <div key={name} className="flex items-center gap-2">
+          <div
+            key={name}
+            className="flex flex-col md:flex-row md:items-center gap-1 mt-3"
+          >
             <label className="font-bold w-56 text-xl">{label}:</label>
             {type === "textarea" ? (
               <textarea
@@ -169,7 +179,7 @@ const ModalAddGig = ({ refetch }) => {
                   required ? { required: `${label} is required` } : {}
                 )}
                 placeholder={placeholder}
-                className={`border p-2 w-full mt-2 bg-white ${
+                className={`border p-5 w-full bg-white  ${
                   errors[name] ? "border-red-500" : "border-gray-300"
                 }`}
               />
@@ -181,7 +191,7 @@ const ModalAddGig = ({ refetch }) => {
                   required ? { required: `${label} is required` } : {}
                 )}
                 placeholder={placeholder}
-                className={`border p-2 w-full mt-2 bg-white ${
+                className={`border p-5 w-full bg-white  ${
                   errors[name] ? "border-red-500" : "border-gray-300"
                 }`}
               />
@@ -191,6 +201,7 @@ const ModalAddGig = ({ refetch }) => {
             )}
           </div>
         ))}
+
         <div className="flex justify-end mt-5">
           <button
             type="submit"

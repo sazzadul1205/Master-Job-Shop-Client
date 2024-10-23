@@ -97,7 +97,7 @@ const ModalEditJob = ({ editJobData, refetch }) => {
 
       <form onSubmit={handleSubmit(onSubmit)} className="p-5 space-y-4">
         {/* Job Title */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Job Title:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
@@ -108,7 +108,7 @@ const ModalEditJob = ({ editJobData, refetch }) => {
         </div>
 
         {/* Job Description (Textarea) */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Job Description:</label>
           <textarea
             className="textarea textarea-bordered w-full bg-white border-black rounded-none h-36"
@@ -118,7 +118,7 @@ const ModalEditJob = ({ editJobData, refetch }) => {
         </div>
 
         {/* Company Name */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Company Name:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
@@ -129,7 +129,7 @@ const ModalEditJob = ({ editJobData, refetch }) => {
         </div>
 
         {/* Company Code (grayed-out) */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Company Code:</label>
           <input
             className="input input-bordered w-full bg-gray-300 border-black rounded-none"
@@ -146,7 +146,10 @@ const ModalEditJob = ({ editJobData, refetch }) => {
           { label: "Location", name: "location", type: "text" },
           { label: "Job Type", name: "jobType", type: "text" },
         ].map(({ label, name, type }) => (
-          <div className="flex items-center gap-2" key={name}>
+          <div
+            className="flex flex-col md:flex-row md:items-center gap-2"
+            key={name}
+          >
             <label className="font-bold w-48 text-xl">{label}:</label>
             <input
               className="input input-bordered w-full bg-white border-black rounded-none"
@@ -157,7 +160,7 @@ const ModalEditJob = ({ editJobData, refetch }) => {
           </div>
         ))}
 
-        {/* Responsibilities, Qualifications, Tools & Technologies */}
+        {/* Responsibilities*/}
         {renderFieldArray(
           responsibilityFields,
           register,
@@ -166,6 +169,8 @@ const ModalEditJob = ({ editJobData, refetch }) => {
           "Responsibilities",
           "responsibilities"
         )}
+
+        {/* Qualifications */}
         {renderFieldArray(
           qualificationFields,
           register,
@@ -174,6 +179,8 @@ const ModalEditJob = ({ editJobData, refetch }) => {
           "Qualifications",
           "qualifications"
         )}
+
+        {/* Tools & Technologies */}
         {renderFieldArray(
           toolsFields,
           register,
@@ -184,7 +191,7 @@ const ModalEditJob = ({ editJobData, refetch }) => {
         )}
 
         {/* Available Until */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Available Until:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
@@ -210,7 +217,7 @@ const renderFieldArray = (fields, registerFn, removeFn, addFn, label, name) => (
   <div className="border border-gray-300 p-3">
     <label className="font-bold w-48 text-xl">{label}</label>
     {fields.map((item, index) => (
-      <div key={item.id} className="flex mb-1">
+      <div key={item.id} className="flex flex-col md:flex-row mb-1">
         <input
           className="input input-bordered w-full bg-white border-black rounded-none"
           {...registerFn(`${name}.${index}`)}
@@ -236,5 +243,4 @@ const renderFieldArray = (fields, registerFn, removeFn, addFn, label, name) => (
     </button>
   </div>
 );
-
 export default ModalEditJob;

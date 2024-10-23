@@ -182,7 +182,10 @@ const ModalEditGig = ({ editGigData, refetch }) => {
             type: "date",
           },
         ].map(({ label, name, type, required, placeholder }) => (
-          <div key={name} className="flex items-center gap-2">
+          <div
+            key={name}
+            className="flex flex-col md:flex-row md:items-center gap-2 mt-3"
+          >
             <label className="font-bold w-56 text-xl">{label}:</label>
             {type === "textarea" ? (
               <textarea
@@ -191,7 +194,7 @@ const ModalEditGig = ({ editGigData, refetch }) => {
                   required ? { required: `${label} is required` } : {}
                 )}
                 placeholder={placeholder}
-                className={`border p-2 w-full mt-2 bg-white ${
+                className={`border p-4 w-full bg-white ${
                   errors[name] ? "border-red-500" : "border-gray-300"
                 }`}
               />
@@ -203,7 +206,7 @@ const ModalEditGig = ({ editGigData, refetch }) => {
                   required ? { required: `${label} is required` } : {}
                 )}
                 placeholder={placeholder}
-                className={`border p-2 w-full mt-2 bg-white ${
+                className={`border p-4 w-full bg-white ${
                   errors[name] ? "border-red-500" : "border-gray-300"
                 }`}
               />

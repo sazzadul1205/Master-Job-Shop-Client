@@ -17,8 +17,9 @@ const ManageMyCourse = () => {
   const [editCourseData, setEditCourseData] = useState(null);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  
+
   const { register, handleSubmit, reset } = useForm();
+
   // Fetch Courses data
   const {
     data: MyCourse,
@@ -66,8 +67,7 @@ const ManageMyCourse = () => {
   };
 
   // Current date for deletion log
-  const currentDate = new Date();
-  const formattedDateTime = currentDate.toLocaleString("en-US", {
+  const formattedDateTime = new Date().toLocaleString("en-US", {
     year: "numeric",
     month: "numeric",
     day: "numeric",
@@ -121,7 +121,7 @@ const ManageMyCourse = () => {
   };
 
   const course = MyCourse[0];
-
+  
   // Check if there are no course profiles available
   if (MyCourse.length === 0) {
     return (

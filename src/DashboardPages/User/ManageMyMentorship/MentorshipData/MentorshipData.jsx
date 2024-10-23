@@ -78,64 +78,67 @@ const MentorshipData = ({ mentorshipData, refetch }) => {
   };
 
   return (
-    <div className="py-5 px-10">
-      {/* Content */}
-      <div className="flex justify-between">
+    <div className="p-5">
+      {/* Top section */}
+      <div className="flex flex-col-reverse md:flex-row justify-between">
+        {/* Content */}
         <div className="py-2">
           {/* Mentor Name */}
           <p className="font-bold text-3xl">{mentorshipData?.mentorName}</p>
 
           {/* Expertise */}
-          <p className="text-xl py-1 grid grid-cols-2">
-            <span className="font-bold mr-5">Expertise:</span>
-            {mentorshipData?.expertise}
+          <p className="text-xl flex flex-col md:flex-row">
+            <span className="font-bold w-40">Expertise:</span>
+            <span className="ml-5">{mentorshipData?.expertise}</span>
           </p>
 
           {/* Duration */}
-          <p className="text-xl py-1 grid grid-cols-2">
-            <span className="font-bold mr-5">Duration:</span>
-            {mentorshipData?.duration}
+          <p className="text-xl flex flex-col md:flex-row">
+            <span className="font-bold w-40">Duration:</span>
+            <span className="ml-5">{mentorshipData?.duration}</span>
           </p>
 
           {/* Contact Email */}
-          <p className="text-xl py-1 grid grid-cols-2">
-            <span className="font-bold mr-5">Contact Email:</span>
-            {mentorshipData?.contactEmail}
+          <p className="text-xl flex flex-col md:flex-row">
+            <span className="font-bold w-40">Contact Email:</span>
+            <span className="ml-5">{mentorshipData?.contactEmail}</span>
           </p>
 
           {/* Price */}
-          <p className="text-xl py-1 grid grid-cols-2">
-            <span className="font-bold pr-3">Price:</span>
-            {mentorshipData?.price}
+          <p className="text-xl flex flex-col md:flex-row">
+            <span className="font-bold w-40">Price:</span>
+            <span className="ml-5">{mentorshipData?.price}</span>
           </p>
 
           {/* Session Format */}
-          <p className="text-xl py-1 grid grid-cols-2">
-            <span className="font-bold pr-3">Session Format:</span>
-            {mentorshipData?.sessionFormat}
+          <p className="text-xl flex flex-col md:flex-row">
+            <span className="font-bold w-40">Session Format:</span>
+            <span className="ml-5">{mentorshipData?.sessionFormat}</span>
           </p>
         </div>
 
         {/* Mentor Image */}
-        {mentorshipData?.mentorImage && (
-          <img
-            src={mentorshipData?.mentorImage}
-            alt={`${mentorshipData?.mentorName} Image`}
-            className="w-60 h-60 object-cover mb-4"
-          />
-        )}
+        <div>
+          {mentorshipData?.mentorImage && (
+            <img
+              src={mentorshipData?.mentorImage}
+              alt={`${mentorshipData?.mentorName} Image`}
+              className="w-60 h-60 object-cover mb-4"
+            />
+          )}
+        </div>
       </div>
 
       {/* Bio */}
-      <p className="text-lg py-2 leading-5">
-        <span className="font-bold pr-5 text-xl">Bio:</span>
-        {mentorshipData?.mentorBio}
+      <p className="text-lg flex flex-col">
+        <span className="font-bold text-xl">Bio:</span>
+        <span className="ml-5 break-words overflow-hidden w-4/5">{mentorshipData?.mentorBio}</span>
       </p>
 
       {/* Description */}
-      <p className="text-lg">
-        <span className="font-bold pr-5 text-xl">Description:</span>
-        {mentorshipData?.description}
+      <p className="text-lg flex flex-col">
+        <span className="font-bold text-xl">Description:</span>
+        <span className="ml-5 break-words overflow-hidden w-4/5">{mentorshipData?.description}</span>
       </p>
 
       {/* Language & Rating */}

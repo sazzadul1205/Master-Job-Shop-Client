@@ -209,22 +209,14 @@ const ModalEditMentorship = ({ MentorshipData, refetch }) => {
 };
 
 // Reusable FormInput component
-const FormInput = ({
-  label,
-  type = "text",
-  register,
-  errors,
-  placeholder,
-  defaultValue,
-}) => (
-  <div className="flex items-center gap-2">
+const FormInput = ({ label, type = "text", register, errors, placeholder }) => (
+  <div className="flex flex-col md:flex-row md:items-center gap-2">
     <label className="font-bold w-48 text-xl">{label}:</label>
     {type === "textarea" ? (
       <textarea
         className="textarea textarea-bordered w-full bg-white border-black rounded-none h-36 text-lg"
         {...register}
         placeholder={placeholder}
-        defaultValue={defaultValue}
       />
     ) : (
       <input
@@ -232,13 +224,11 @@ const FormInput = ({
         type={type}
         {...register}
         placeholder={placeholder}
-        defaultValue={defaultValue}
       />
     )}
     {errors && <span className="text-red-500">{errors.message}</span>}
   </div>
 );
-
 // Add prop types validation
 FormInput.propTypes = {
   label: PropTypes.string.isRequired,
@@ -260,15 +250,13 @@ const DynamicFieldList = ({
   placeholder,
   errors,
 }) => (
-  <div className="space-y-2">
-    <label className="font-bold w-48 text-xl">{label}:</label>
+  <div className="border border-gray-300 p-3">
+    <label className="font-bold w-48 text-xl">{label}</label>
     {fields.map((item, index) => (
-      <div key={item.id} className="flex mb-1">
+      <div key={item.id} className="flex flex-col md:flex-row mb-1">
         <input
           className="input input-bordered w-full bg-white border-black rounded-none"
-          {...register(`${fieldName}.${index}`, {
-            required: "Language is required",
-          })}
+          {...register(`${fieldName}.${index}`)}
           defaultValue={item}
           placeholder={placeholder}
         />
@@ -288,8 +276,8 @@ const DynamicFieldList = ({
     >
       Add {label}
     </button>
-    {errors && errors.languages && (
-      <span className="text-red-500">{errors.languages.message}</span>
+    {errors && errors[fieldName] && (
+      <span className="text-red-500">{errors[fieldName].message}</span>
     )}
   </div>
 );

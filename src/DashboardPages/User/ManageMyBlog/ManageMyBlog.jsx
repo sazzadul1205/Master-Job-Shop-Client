@@ -107,7 +107,7 @@ const ManageMyBlog = () => {
         refetch(); // Refetch to update the list of blogs
       } catch (err) {
         console.log(err);
-        
+
         Swal.fire("Error!", "There was an error deleting your blog.", "error");
       }
     }
@@ -134,16 +134,19 @@ const ManageMyBlog = () => {
             </div>
 
             {/* Blog Title */}
-            <h2 className="text-2xl font-bold text-gray-900">{blog.title}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mt-4">
+              {blog.title}
+            </h2>
 
             {/* Blog Metadata (Author, Date, Posted By) */}
-            <div className="flex justify-between items-center text-gray-700">
+            <div className="flex flex-col sm:flex-row justify-between items-center text-gray-700 mt-2 space-y-1 sm:space-y-0">
               <p>
                 Author: <span className="font-semibold">{blog.author}</span>
               </p>
               <p>
                 Date: <span className="font-semibold">{blog.date}</span>
               </p>
+
               <p>
                 Posted By:{" "}
                 <span className="font-semibold">{blog.postedBy}</span>
@@ -153,7 +156,7 @@ const ManageMyBlog = () => {
             {/* Summary */}
             <div className="mt-4">
               <h3 className="font-semibold text-lg text-gray-800">Summary</h3>
-              <p>{blog.summary}</p>
+              <p className="break-words overflow-hidden">{blog.summary}</p>
             </div>
 
             {/* Detailed Summary */}
@@ -161,7 +164,9 @@ const ManageMyBlog = () => {
               <h3 className="font-semibold text-lg text-gray-800">
                 Detailed Summary
               </h3>
-              <p>{blog.detailedSummary}</p>
+              <p className="break-words overflow-hidden">
+                {blog.detailedSummary}
+              </p>
             </div>
 
             {/* Blog Link */}
@@ -191,9 +196,9 @@ const ManageMyBlog = () => {
               </div>
             </div>
 
-            <div className="flex justify-between mt-4">
+            <div className="flex flex-col sm:flex-row justify-between mt-4">
               <button
-                className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold flex items-center justify-center px-4 py-2"
+                className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold flex items-center justify-center px-4 py-2 mb-2 sm:mb-0"
                 onClick={() => handleEditBlog(blog)}
               >
                 <FaEdit className="mr-2" />

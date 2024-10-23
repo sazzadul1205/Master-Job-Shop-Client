@@ -22,8 +22,8 @@ const ManageEvents = () => {
   // Fetching Event Data
   const {
     data: UpcomingEventsData = [],
-    isLoading: UpcomingEventsDataIsLoading,
-    error: UpcomingEventsDataError,
+    isLoading,
+    error,
     refetch,
   } = useQuery({
     queryKey: ["EventData"],
@@ -31,12 +31,12 @@ const ManageEvents = () => {
   });
 
   // Loading state
-  if (UpcomingEventsDataIsLoading) {
+  if (isLoading) {
     return <Loader />;
   }
 
   // Error state
-  if (UpcomingEventsDataError) {
+  if (error) {
     return (
       <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
         <p className="text-center text-red-500 font-bold text-3xl mb-8">

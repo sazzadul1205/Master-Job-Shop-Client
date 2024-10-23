@@ -66,7 +66,7 @@ const ModalAddMyTestimonials = ({ refetch }) => {
         className="p-5 space-y-4 text-black"
       >
         {/* Name */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Name:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
@@ -77,7 +77,7 @@ const ModalAddMyTestimonials = ({ refetch }) => {
         </div>
 
         {/* Title */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Title:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
@@ -88,7 +88,7 @@ const ModalAddMyTestimonials = ({ refetch }) => {
         </div>
 
         {/* Main Message */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Main Message:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
@@ -99,10 +99,10 @@ const ModalAddMyTestimonials = ({ refetch }) => {
         </div>
 
         {/* Content */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Content:</label>
           <textarea
-            className="input input-bordered w-full bg-white border-black rounded-none"
+            className="textarea textarea-bordered w-full bg-white border-black rounded-none h-36 text-lg"
             {...register("content", { required: true })}
             placeholder="Enter testimonial content"
           />

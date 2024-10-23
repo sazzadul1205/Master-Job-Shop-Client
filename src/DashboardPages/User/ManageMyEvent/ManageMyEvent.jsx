@@ -61,10 +61,10 @@ const ManageMyEvent = () => {
         <div className="absolute inset-0 bg-white opacity-70 z-10"></div>
         <div className="absolute inset-0 flex justify-center items-center z-20">
           <div className="bg-white p-8 shadow-lg rounded-lg">
-            <p className="text-center text-gray-800 font-bold text-2xl mb-4">
+            <p className="text-left md:text-center text-gray-800 font-bold text-2xl mb-4">
               No Event Found
             </p>
-            <p className="text-center text-gray-600 mb-4">
+            <p className="text-left md:text-center text-gray-600 mb-4">
               Please create an event profile to manage your event information.
             </p>
             <button
@@ -86,8 +86,6 @@ const ManageMyEvent = () => {
     );
   }
 
-  const event = MyUpcomingEvent[0]; // Assuming you're using the first event, you might want to loop through or manage differently
-
   // Handle Edit Event
   const handleEditEvent = (event) => {
     setEditEventData(event); // Set the event profile data for editing
@@ -101,7 +99,6 @@ const ManageMyEvent = () => {
   };
 
   // Current date for deletion log
-
   const formattedDateTime = new Date().toLocaleString("en-US", {
     year: "numeric",
     month: "numeric",
@@ -156,6 +153,8 @@ const ManageMyEvent = () => {
       });
     }
   };
+
+  const event = MyUpcomingEvent[0]; // Assuming you're using the first event, you might want to loop through or manage differently
 
   return (
     <div className="bg-white min-h-screen border border-black text-black">

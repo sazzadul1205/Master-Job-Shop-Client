@@ -72,7 +72,7 @@ const ModalEditMyBlog = ({ blogData, refetch }) => {
         className="p-5 space-y-4 text-black"
       >
         {/* Title */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Title:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
@@ -83,7 +83,7 @@ const ModalEditMyBlog = ({ blogData, refetch }) => {
         </div>
 
         {/* Author */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Author:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
@@ -94,10 +94,10 @@ const ModalEditMyBlog = ({ blogData, refetch }) => {
         </div>
 
         {/* Summary */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Summary:</label>
           <textarea
-            className="input input-bordered w-full bg-white border-black rounded-none"
+            className="textarea textarea-bordered w-full bg-white border-black rounded-none h-36 text-lg"
             {...register("summary", { required: true })}
             placeholder="Enter summary"
             rows="3"
@@ -105,10 +105,10 @@ const ModalEditMyBlog = ({ blogData, refetch }) => {
         </div>
 
         {/* Detailed Summary */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Detailed Summary:</label>
           <textarea
-            className="input input-bordered w-full bg-white border-black rounded-none"
+            className="textarea textarea-bordered w-full bg-white border-black rounded-none h-36 text-lg"
             {...register("detailedSummary", { required: true })}
             placeholder="Enter detailed summary"
             rows="5"
@@ -116,7 +116,7 @@ const ModalEditMyBlog = ({ blogData, refetch }) => {
         </div>
 
         {/* Image URL */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Image URL:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"

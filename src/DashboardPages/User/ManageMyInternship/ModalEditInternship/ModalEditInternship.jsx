@@ -241,7 +241,7 @@ const ModalEditInternship = ({ InternshipData, refetch }) => {
 
 // Reusable FormInput component
 const FormInput = ({ label, type = "text", register, errors, placeholder }) => (
-  <div className="flex items-center gap-2">
+  <div className="flex flex-col md:flex-row md:items-center gap-2">
     <label className="font-bold w-48 text-xl">{label}:</label>
     {type === "textarea" ? (
       <textarea
@@ -261,15 +261,6 @@ const FormInput = ({ label, type = "text", register, errors, placeholder }) => (
   </div>
 );
 
-// Add prop types validation
-FormInput.propTypes = {
-  label: PropTypes.string.isRequired,
-  type: PropTypes.string,
-  register: PropTypes.func.isRequired,
-  errors: PropTypes.object,
-  placeholder: PropTypes.string,
-  defaultValue: PropTypes.string,
-};
 // Reusable DynamicFieldList component
 const DynamicFieldList = ({
   label,
@@ -281,10 +272,10 @@ const DynamicFieldList = ({
   placeholder,
   errors,
 }) => (
-  <div className="space-y-2">
-    <label className="font-bold w-48 text-xl">{label}:</label>
+  <div className="border border-gray-300 p-3">
+    <label className="font-bold w-48 text-xl">{label}</label>
     {fields.map((item, index) => (
-      <div key={item.id} className="flex mb-1">
+      <div key={item.id} className="flex flex-col md:flex-row mb-1">
         <input
           className="input input-bordered w-full bg-white border-black rounded-none"
           {...register(`${fieldName}.${index}`)}
@@ -307,9 +298,21 @@ const DynamicFieldList = ({
     >
       Add {label}
     </button>
-    {errors && <span className="text-red-500">{errors.message}</span>}
+    {errors && errors[fieldName] && (
+      <span className="text-red-500">{errors[fieldName].message}</span>
+    )}
   </div>
 );
+
+// Add prop types validation
+FormInput.propTypes = {
+  label: PropTypes.string.isRequired,
+  type: PropTypes.string,
+  register: PropTypes.func.isRequired,
+  errors: PropTypes.object,
+  placeholder: PropTypes.string,
+  defaultValue: PropTypes.string,
+};
 
 // Add prop types validation
 DynamicFieldList.propTypes = {

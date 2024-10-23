@@ -1,10 +1,10 @@
+/* eslint-disable react/prop-types */
 import { ImCross } from "react-icons/im";
 import { AuthContext } from "../../../../Provider/AuthProvider";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import { useContext, useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import PropTypes from "prop-types";
 
 const ModalNewMentorship = ({ refetch }) => {
   const axiosPublic = useAxiosPublic();
@@ -218,22 +218,14 @@ const ModalNewMentorship = ({ refetch }) => {
 };
 
 // Reusable FormInput component
-const FormInput = ({
-  label,
-  type = "text",
-  register,
-  errors,
-  placeholder,
-  defaultValue,
-}) => (
-  <div className="flex items-center gap-2">
+const FormInput = ({ label, type = "text", register, errors, placeholder }) => (
+  <div className="flex flex-col md:flex-row md:items-center gap-2">
     <label className="font-bold w-48 text-xl">{label}:</label>
     {type === "textarea" ? (
       <textarea
         className="textarea textarea-bordered w-full bg-white border-black rounded-none h-36 text-lg"
         {...register}
         placeholder={placeholder}
-        defaultValue={defaultValue}
       />
     ) : (
       <input
@@ -241,22 +233,12 @@ const FormInput = ({
         type={type}
         {...register}
         placeholder={placeholder}
-        defaultValue={defaultValue}
       />
     )}
     {errors && <span className="text-red-500">{errors.message}</span>}
   </div>
 );
 
-// Add prop types validation
-FormInput.propTypes = {
-  label: PropTypes.string.isRequired,
-  type: PropTypes.string,
-  register: PropTypes.func.isRequired,
-  errors: PropTypes.object,
-  placeholder: PropTypes.string,
-  defaultValue: PropTypes.string,
-};
 // Reusable DynamicFieldList component
 const DynamicFieldList = ({
   label,
@@ -268,15 +250,13 @@ const DynamicFieldList = ({
   placeholder,
   errors,
 }) => (
-  <div className="space-y-2">
-    <label className="font-bold w-48 text-xl">{label}:</label>
+  <div className="border border-gray-300 p-3">
+    <label className="font-bold w-48 text-xl">{label}</label>
     {fields.map((item, index) => (
-      <div key={item.id} className="flex mb-1">
+      <div key={item.id} className="flex flex-col md:flex-row mb-1">
         <input
           className="input input-bordered w-full bg-white border-black rounded-none"
-          {...register(`${fieldName}.${index}`, {
-            required: "Language is required",
-          })} // Added validation
+          {...register(`${fieldName}.${index}`)}
           defaultValue={item}
           placeholder={placeholder}
         />
@@ -296,32 +276,12 @@ const DynamicFieldList = ({
     >
       Add {label}
     </button>
-    {errors && errors.languages && (
-      <span className="text-red-500">{errors.languages.message}</span>
+    {errors && errors[fieldName] && (
+      <span className="text-red-500">{errors[fieldName].message}</span>
     )}
   </div>
 );
 
-// Add prop types validation
-DynamicFieldList.propTypes = {
-  label: PropTypes.string.isRequired,
-  fields: PropTypes.array.isRequired,
-  register: PropTypes.func.isRequired,
-  remove: PropTypes.func.isRequired,
-  append: PropTypes.func.isRequired,
-  fieldName: PropTypes.string.isRequired,
-  defaultValue: PropTypes.string,
-  placeholder: PropTypes.string,
-  errors: PropTypes.object,
-};
 
 export default ModalNewMentorship;
 
-// PropTypes validation
-ModalNewMentorship.propTypes = {
-  user: PropTypes.shape({
-    email: PropTypes.string.isRequired,
-    displayName: PropTypes.string.isRequired,
-  }).isRequired,
-  refetch: PropTypes.func.isRequired, // Add refetch to prop types
-};

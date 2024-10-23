@@ -62,22 +62,35 @@ const CourseData = ({ courseData }) => {
     <div className="px-5 py-5">
       {/* Course Title and Description */}
       <h1 className="text-3xl font-bold mb-4">{courseData?.courseTitle}</h1>
-      <div className="text-xl flex ">
-        <span className="font-semibold w-32">Instructor:</span>{" "}
-        {courseData?.instructor}
+
+      {/* Instructor */}
+      <div className="text-xl flex flex-col md:flex-row ">
+        <p className="font-semibold w-32">Instructor:</p>
+        <span className="ml-5">{courseData?.instructor}</span>
       </div>
-      <div className="text-xl flex ">
-        <span className="font-semibold w-32">Duration:</span>{" "}
-        {courseData?.duration}
+
+      {/* Duration */}
+      <div className="text-xl flex flex-col md:flex-row ">
+        <p className="font-semibold w-32">Duration:</p>
+        <span className="ml-5"> {courseData?.duration}</span>
       </div>
-      <div className="text-xl flex ">
-        <span className="font-semibold w-32">Level:</span> {courseData?.level}
+
+      {/* Level */}
+      <div className="text-xl flex flex-col md:flex-row ">
+        <p className="font-semibold w-32">Level:</p>
+        <span className="ml-5">{courseData?.level}</span>
       </div>
-      <div className="text-xl flex ">
-        <span className="font-semibold w-32">Format:</span> {courseData?.format}
+
+      {/* Format */}
+      <div className="text-xl flex flex-col md:flex-row ">
+        <p className="font-semibold w-32">Format:</p>
+        <span className="ml-5">{courseData?.format}</span>
       </div>
+
+      {/* Description */}
       <div className="text-xl mt-4">
-        <strong className="mr-5">Description:</strong> {courseData?.description}
+        <p className="font-semibold w-32">Description:</p>
+        <span className="ml-5">{courseData?.description}</span>
       </div>
 
       {/* Prerequisites */}
@@ -105,85 +118,108 @@ const CourseData = ({ courseData }) => {
       </div>
 
       {/* Course Schedule */}
-      <h2 className="text-xl font-bold mt-6">Course Schedule</h2>
-      <table className="w-full text-left border-collapse mt-4">
-        <thead>
-          <tr className="bg-blue-500 text-white">
-            <th className="border-b-2 border-gray-300 p-2">Week</th>
-            <th className="border-b-2 border-gray-300 p-2">Topic</th>
-            <th className="border-b-2 border-gray-300 p-2">Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          {courseData?.schedule.map((item) => (
-            <tr key={item.week} className="odd:bg-blue-100 even:bg-blue-200">
-              <td className="border-b border-gray-300 p-2">{item.week}</td>
-              <td className="border-b border-gray-300 p-2">{item.topic}</td>
-              <td className="border-b border-gray-300 p-2">
-                {item.scheduleDetails}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="mt-6">
+        <h2 className="text-xl font-bold">Course Schedule</h2>
+        <div className="overflow-x-auto mt-4">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-blue-500 text-white">
+                <th className="border-b-2 border-gray-300 p-2">Week</th>
+                <th className="border-b-2 border-gray-300 p-2">Topic</th>
+                <th className="border-b-2 border-gray-300 p-2">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {courseData?.schedule.map((item) => (
+                <tr
+                  key={item.week}
+                  className="odd:bg-blue-100 even:bg-blue-200"
+                >
+                  <td className="border-b border-gray-300 p-2">{item.week}</td>
+                  <td className="border-b border-gray-300 p-2">{item.topic}</td>
+                  <td className="border-b border-gray-300 p-2">
+                    {item.scheduleDetails}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* Assessments */}
-      <h2 className="text-xl font-bold mt-6">Assessments</h2>
-      <ul className="list-disc ml-5">
-        {courseData?.assessments.map((item, index) => (
-          <li key={index} className="text-lg">
-            {item}
-          </li>
-        ))}
-      </ul>
+      <div>
+        <h2 className="text-xl font-bold mt-6">Assessments</h2>
+        <ul className="list-disc ml-5">
+          {courseData?.assessments.map((item, index) => (
+            <li key={index} className="text-lg">
+              {item}
+            </li>
+          ))}
+        </ul>
+        s
+      </div>
 
       {/* Target Audience */}
-      <h2 className="text-xl font-bold mt-6">Target Audience</h2>
-      <ul className="list-disc ml-5">
-        {courseData?.targetAudience.map((item, index) => (
-          <li key={index} className="text-lg">
-            {item}
-          </li>
-        ))}
-      </ul>
+      <div>
+        <h2 className="text-xl font-bold mt-6">Target Audience</h2>
+        <ul className="list-disc ml-5">
+          {courseData?.targetAudience.map((item, index) => (
+            <li key={index} className="text-lg">
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* Certification */}
-      <h2 className="text-xl font-bold mt-6">Certification</h2>
-      <p className="text-lg">{courseData?.certification}</p>
+      <div>
+        <h2 className="text-xl font-bold mt-6">Certification</h2>
+        <p className="text-lg">{courseData?.certification}</p>
+      </div>
 
       {/* Support */}
-      <h2 className="text-xl font-bold mt-6">Support</h2>
-      <p className="text-lg">
-        <strong>Office Hours:</strong> {courseData?.support?.officeHours}
-      </p>
-      <p className="text-lg">
-        <strong>Discussion Forum:</strong>{" "}
-        {courseData?.support?.discussionForum}
-      </p>
+      <div>
+        <h2 className="text-xl font-bold mt-6">Support</h2>
+        <div>
+          <p className="text-lg flex flex-col md:flex-row">
+            <strong className="w-36">Office Hours:</strong>{" "}
+            <span className="ml-5">{courseData?.support?.officeHours}</span>
+          </p>
+          <p className="text-lg flex flex-col md:flex-row">
+            <strong className="w-36">Discussion Forum:</strong>
+            <span className="ml-5">{courseData?.support?.discussionForum}</span>
+          </p>
+        </div>
+      </div>
 
       {/* Batches */}
-      <p className="text-xl font-bold py-3">Batches : </p>
-      <div className="space-y-3 mt-2">
-        {courseData?.batches.map((batch, index) => (
-          <div
-            key={index}
-            className="relative text-lg border border-dashed border-black p-5 hover:shadow-xl overflow-hidden group"
-          >
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-300 to-transparent transform -translate-x-full -translate-y-full transition-transform duration-500 ease-in-out group-hover:translate-x-0 group-hover:translate-y-0"></div>
-            <div className="flex relative z-10">
-              <p className="font-bold w-32">Batch Name</p>
-              <span>{batch.batchName}</span>
+      <div>
+        <p className="text-xl font-bold py-3">Batches : </p>
+        <div className="space-y-3 mt-2">
+          {courseData?.batches.map((batch, index) => (
+            <div
+              key={index}
+              className="relative text-lg border border-dashed border-black p-5 hover:shadow-xl overflow-hidden group"
+            >
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-300 to-transparent transform -translate-x-full -translate-y-full transition-transform duration-500 ease-in-out group-hover:translate-x-0 group-hover:translate-y-0"></div>
+              <div className="flex flex-col md:flex-row relative z-10">
+                <p className="font-bold w-32">Batch Name</p>
+                <span className="ml-5">{batch.batchName}</span>
+              </div>
+              <div className="flex flex-col md:flex-row relative z-10">
+                <p className="font-bold w-32">Start Date</p>
+                <span className="ml-5">{batch.batchDate}</span>
+              </div>
+              <div className="flex flex-col md:flex-row relative z-10">
+                <p className="font-bold w-32">Details</p>
+                <span className="ml-5 break-words overflow-hidden">
+                  {batch.batchDetails}
+                </span>
+              </div>
             </div>
-            <div className="flex relative z-10">
-              <p className="font-bold w-32">Start Date</p>
-              <span>{batch.batchDate}</span>
-            </div>
-            <div className="flex relative z-10">
-              <p className="font-bold w-32">Details</p>
-              <span>{batch.batchDetails}</span>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Applicants */}

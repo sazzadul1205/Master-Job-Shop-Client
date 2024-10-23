@@ -80,61 +80,56 @@ const ModalEditMyTestimonials = ({ testimonialData, refetch }) => {
         className="p-5 space-y-4 text-black"
       >
         {/* Name */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Name:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
             type="text"
             {...register("name", { required: true })}
             placeholder="Enter your name"
-            defaultValue={testimonialData?.name} // Use defaultValue for controlled input
           />
         </div>
 
         {/* Title */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Title:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
             type="text"
             {...register("title", { required: true })}
-            placeholder="Enter your title"
-            defaultValue={testimonialData?.title} // Use defaultValue for controlled input
+            placeholder="Enter job title"
           />
         </div>
 
         {/* Main Message */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Main Message:</label>
           <input
             className="input input-bordered w-full bg-white border-black rounded-none"
             type="text"
             {...register("mainMessage", { required: true })}
-            placeholder="Enter the main message"
-            defaultValue={testimonialData?.mainMessage} // Use defaultValue for controlled input
+            placeholder="Enter main message"
           />
         </div>
 
         {/* Content */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="font-bold w-48 text-xl">Content:</label>
           <textarea
-            className="textarea textarea-bordered w-full bg-white border-black rounded-none"
+            className="textarea textarea-bordered w-full bg-white border-black rounded-none h-36 text-lg"
             {...register("content", { required: true })}
-            placeholder="Enter additional content"
-            defaultValue={testimonialData?.content} // Use defaultValue for controlled input
+            placeholder="Enter testimonial content"
           />
         </div>
 
         {/* Rating */}
-        <div className="flex items-center gap-2">
-          <label className="font-bold w-48 text-xl">Rating:</label>
+        <div className="flex flex-col gap-2">
+          <label className="font-bold text-xl">Rating:</label>
           <Rating
-            initialRating={rating} // Use state to control the rating
-            onClick={(value) => setRating(value)} // Update state on rating change
-            emptySymbol={<FaStar className="text-gray-300" />}
-            fullSymbol={<FaStar className="text-yellow-400" />}
-            className="flex text-2xl"
+            initialRating={rating}
+            emptySymbol={<FaStar className="text-gray-400 text-2xl" />}
+            fullSymbol={<FaStar className="text-yellow-500 text-2xl" />}
+            onChange={(value) => setRating(value)} // Set the rating value in state
           />
         </div>
 

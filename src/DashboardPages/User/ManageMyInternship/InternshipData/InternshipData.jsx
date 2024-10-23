@@ -45,118 +45,126 @@ const InternshipData = ({ InternshipData, refetch }) => {
     <div>
       <div className="py-1 px-5">
         {/* Content */}
-        <div className="flex flex-wrap justify-between">
-          <div className="py-2 w-full md:w-2/3">
+        <div className="flex flex-col-reverse md:flex-row justify-between">
+          <div className="py-2 w-full">
             {/* Company Name */}
             <p className="font-bold text-3xl">{InternshipData.companyName}</p>
 
             {/* Position */}
-            <p className="text-xl py-1 grid grid-cols-2">
-              <span className="font-bold mr-5">Position:</span>
-              {InternshipData.position}
+            <p className="text-xl flex flex-col md:flex-row">
+              <span className="font-bold w-56">Position:</span>
+              <span className="ml-5">{InternshipData.position}</span>
             </p>
 
             {/* Duration */}
-            <p className="text-xl py-1 grid grid-cols-2">
-              <span className="font-bold mr-5">Duration:</span>
-              {InternshipData.duration}
+            <p className="text-xl flex flex-col md:flex-row">
+              <span className="font-bold w-56">Duration:</span>
+              <span className="ml-5">{InternshipData.duration}</span>
             </p>
 
             {/* Location */}
-            <p className="text-xl py-1 grid grid-cols-2">
-              <span className="font-bold mr-5">Location:</span>
-              {InternshipData.location}
+            <p className="text-xl flex flex-col md:flex-row">
+              <span className="font-bold w-56">Location:</span>
+              <span className="ml-5">{InternshipData.location}</span>
             </p>
 
             {/* Stipend */}
-            <p className="text-xl py-1 grid grid-cols-2">
-              <span className="font-bold pr-3">Stipend:</span>
-              {InternshipData.stipend}
+            <p className="text-xl flex flex-col md:flex-row">
+              <span className="font-bold w-56">Stipend:</span>
+              <span className="ml-5">{InternshipData.stipend}</span>
             </p>
 
             {/* Application Deadline */}
-            <p className="text-xl py-1 grid grid-cols-2">
-              <span className="font-bold pr-3">Application Deadline:</span>
-              {InternshipData.applicationDeadline}
+            <p className="text-xl flex flex-col md:flex-row">
+              <span className="font-bold w-56">Application Deadline:</span>
+              <span className="ml-5">{InternshipData.applicationDeadline}</span>
             </p>
           </div>
 
           {/* Company Logo */}
-          {InternshipData.companyLogo && (
-            <img
-              src={InternshipData.companyLogo}
-              alt={`${InternshipData.companyName} Logo`}
-              className="w-60 h-60 object-cover mb-4 md:ml-5"
-            />
-          )}
+          <div>
+            {InternshipData.companyLogo && (
+              <img
+                src={InternshipData.companyLogo}
+                alt={`${InternshipData.companyName} Logo`}
+                className="w-60 h-60 object-cover mb-4 md:ml-5"
+              />
+            )}
+          </div>
         </div>
 
-        {/* Skills Required */}
-        <section className="py-2">
-          <span className="font-bold pr-5 text-xl">Skills Required:</span>
-          <ul className="list-disc pl-10">
-            {InternshipData.skillsRequired.map((skill, index) => (
-              <li key={index} className="text-lg">
-                {skill}
-              </li>
-            ))}
-          </ul>
-        </section>
+        {/* Grid sections */}
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          {/* Skills Required */}
+          <section className="py-2">
+            <span className="font-bold pr-5 text-xl">Skills Required:</span>
+            <ul className="list-disc pl-10">
+              {InternshipData.skillsRequired.map((skill, index) => (
+                <li key={index} className="text-lg">
+                  {skill}
+                </li>
+              ))}
+            </ul>
+          </section>
 
-        {/* Responsibilities */}
-        <section className="py-2">
-          <span className="font-bold pr-5 text-xl">Responsibilities:</span>
-          <ul className="list-disc pl-10">
-            {InternshipData.responsibilities.map((responsibility, index) => (
-              <li key={index} className="text-lg">
-                {responsibility}
-              </li>
-            ))}
-          </ul>
-        </section>
+          {/* Responsibilities */}
+          <section className="py-2">
+            <span className="font-bold pr-5 text-xl">Responsibilities:</span>
+            <ul className="list-disc pl-10">
+              {InternshipData.responsibilities.map((responsibility, index) => (
+                <li key={index} className="text-lg">
+                  {responsibility}
+                </li>
+              ))}
+            </ul>
+          </section>
 
-        {/* Qualifications */}
-        <section className="py-2">
-          <span className="font-bold pr-5 text-xl">Qualifications:</span>
-          <ul className="list-disc pl-10">
-            {InternshipData.qualifications.map((qualification, index) => (
-              <li key={index} className="text-lg">
-                {qualification}
-              </li>
-            ))}
-          </ul>
-        </section>
+          {/* Qualifications */}
+          <section className="py-2">
+            <span className="font-bold pr-5 text-xl">Qualifications:</span>
+            <ul className="list-disc pl-10">
+              {InternshipData.qualifications.map((qualification, index) => (
+                <li key={index} className="text-lg">
+                  {qualification}
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
 
         {/* Contact Information */}
         {InternshipData.contact && (
           <section className="py-2">
             <span className="font-bold pr-5 text-xl">Contact:</span>
-            <p className="text-lg">Email: {InternshipData.contact.email}</p>
+            <div className="text-lg flex flex-col md:flex-row">
+              <p className="text-lg font-semibold w-40">Email:</p>
+              <span className="ml-5">{InternshipData.contact.email}</span>
+            </div>
             {InternshipData.contact.facebook && (
-              <p className="text-lg">
-                Facebook:{" "}
+              <div className="flex flex-col md:flex-row">
+                <p className="text-lg font-semibold w-40">Facebook:</p>
                 <a
                   href={InternshipData.contact.facebook}
-                  className="text-blue-500 underline"
+                  className="text-blue-500 underline ml-5"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   {InternshipData.contact.facebook}
                 </a>
-              </p>
+              </div>
             )}
             {InternshipData.contact.website && (
-              <p className="text-lg">
-                Website:{" "}
+              <div className="flex flex-col md:flex-row">
+                <p className="text-lg font-semibold w-40">Website:</p>
                 <a
                   href={InternshipData.contact.website}
-                  className="text-blue-500 underline"
+                  className="text-blue-500 underline ml-5"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   {InternshipData.contact.website}
                 </a>
-              </p>
+              </div>
             )}
           </section>
         )}
@@ -165,15 +173,19 @@ const InternshipData = ({ InternshipData, refetch }) => {
         {InternshipData.mentorBio && (
           <p className="text-lg py-2 leading-5">
             <span className="font-bold pr-5 text-xl">Mentor Bio:</span>
-            {InternshipData.mentorBio}
+            <span className="break-words overflow-hidden">
+              {InternshipData.mentorBio}
+            </span>
           </p>
         )}
 
         {/* Description */}
         {InternshipData.description && (
-          <p className="text-lg">
+          <p className="text-lg flex flex-col md:flex-row">
             <span className="font-bold pr-5 text-xl">Description:</span>
-            {InternshipData.description}
+            <span className="break-words overflow-hidden">
+              {InternshipData.description}
+            </span>
           </p>
         )}
       </div>

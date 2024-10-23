@@ -1,9 +1,9 @@
+/* eslint-disable react/prop-types */
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import Swal from "sweetalert2";
-import PropTypes from "prop-types";
 
 const ModalEditCourse = ({ CourseData, refetch }) => {
   const axiosPublic = useAxiosPublic();
@@ -204,10 +204,10 @@ const ModalEditCourse = ({ CourseData, refetch }) => {
         />
 
         {/* Batches */}
-        <div className="space-y-2">
-          <label className="font-bold w-48 text-xl">Batches:</label>
+        <div className="space-y-2 border border-gray-300 p-3">
+          <label className="font-bold text-xl">Batches:</label>
           {fieldsBatches.map((item, index) => (
-            <div key={item.id} className="flex gap-2">
+            <div key={item.id} className="flex flex-col md:flex-row">
               {/* Batch Name */}
               <input
                 className="input input-bordered w-full bg-white border-black rounded-none"
@@ -280,20 +280,20 @@ const ModalEditCourse = ({ CourseData, refetch }) => {
         />
 
         {/* Schedule */}
-        <div className="space-y-2">
-          <label className="font-bold w-48 text-xl">Schedule:</label>
+        <div className="space-y-2 border border-gray-300 p-3">
+          <label className="font-bold text-xl">Schedule:</label>
           {fieldsSchedule.map((item, index) => (
-            <div key={item.id} className="flex gap-2">
+            <div key={item.id} className="flex flex-col md:flex-row">
               {/* Week */}
               <input
-                className="input input-bordered bg-white p-2 border-black rounded-none w-[50px]"
+                className="input input-bordered bg-white p-2 border-black rounded-none md:w-[50px]"
                 {...register(`schedule.${index}.week`)}
                 type="number"
                 placeholder="Week"
               />
               {/* Topic */}
               <input
-                className="input input-bordered bg-white border-black rounded-none w-[250px]"
+                className="input input-bordered bg-white border-black rounded-none md:w-[250px]"
                 {...register(`schedule.${index}.topic`)}
                 type="text"
                 placeholder="Topic"
@@ -301,7 +301,7 @@ const ModalEditCourse = ({ CourseData, refetch }) => {
               />
               {/* Schedule Details */}
               <input
-                className="input input-bordered bg-white border-black rounded-none w-[350px]"
+                className="input input-bordered bg-white border-black rounded-none md:w-[350px]"
                 {...register(`schedule.${index}.scheduleDetails`)}
                 type="text"
                 placeholder="Schedule Details"
@@ -420,8 +420,9 @@ const ModalEditCourse = ({ CourseData, refetch }) => {
   );
 };
 
+// Reusable FormInput component
 const FormInput = ({ label, type = "text", register, errors, placeholder }) => (
-  <div className="flex items-center gap-2">
+  <div className="flex flex-col md:flex-row md:items-center gap-2">
     <label className="font-bold w-48 text-xl">{label}:</label>
     {type === "textarea" ? (
       <textarea
@@ -441,16 +442,7 @@ const FormInput = ({ label, type = "text", register, errors, placeholder }) => (
   </div>
 );
 
-FormInput.propTypes = {
-  label: PropTypes.string.isRequired,
-  type: PropTypes.string,
-  register: PropTypes.object.isRequired,
-  errors: PropTypes.object,
-  placeholder: PropTypes.string,
-};
-
 // Reusable DynamicFieldList component
-
 const DynamicFieldList = ({
   label,
   fields,
@@ -461,10 +453,10 @@ const DynamicFieldList = ({
   placeholder,
   errors,
 }) => (
-  <div className="space-y-2">
-    <label className="font-bold w-48 text-xl">{label}:</label>
+  <div className="border border-gray-300 p-3">
+    <label className="font-bold w-48 text-xl">{label}</label>
     {fields.map((item, index) => (
-      <div key={item.id} className="flex mb-1">
+      <div key={item.id} className="flex flex-col md:flex-row mb-1">
         <input
           className="input input-bordered w-full bg-white border-black rounded-none"
           {...register(`${fieldName}.${index}`)}
@@ -493,52 +485,4 @@ const DynamicFieldList = ({
   </div>
 );
 
-DynamicFieldList.propTypes = {
-  label: PropTypes.string.isRequired,
-  fields: PropTypes.array.isRequired,
-  register: PropTypes.func.isRequired,
-  remove: PropTypes.func.isRequired,
-  append: PropTypes.func.isRequired,
-  fieldName: PropTypes.string.isRequired,
-  placeholder: PropTypes.string,
-  errors: PropTypes.object,
-};
-
 export default ModalEditCourse;
-
-ModalEditCourse.propTypes = {
-  CourseData: PropTypes.shape({
-    _id: PropTypes.string,
-    courseTitle: PropTypes.string,
-    instructor: PropTypes.string,
-    duration: PropTypes.string,
-    level: PropTypes.string,
-    postedBy: PropTypes.string,
-    description: PropTypes.string,
-    format: PropTypes.string,
-    batches: PropTypes.array,
-    prerequisites: PropTypes.array,
-    learningOutcomes: PropTypes.array,
-    schedule: PropTypes.array,
-    assessments: PropTypes.array,
-    targetAudience: PropTypes.array,
-    certification: PropTypes.string,
-    support: PropTypes.shape({
-      officeHours: PropTypes.string,
-      discussionForum: PropTypes.string,
-      emailSupport: PropTypes.string,
-      careerGuidance: PropTypes.string,
-    }),
-    applicants: PropTypes.array,
-  }),
-  reset: PropTypes.func.isRequired,
-};
-
-// PropTypes validation
-ModalEditCourse.propTypes = {
-  user: PropTypes.shape({
-    email: PropTypes.string.isRequired,
-    displayName: PropTypes.string.isRequired,
-  }).isRequired,
-  refetch: PropTypes.func.isRequired, // Add refetch to prop types
-};

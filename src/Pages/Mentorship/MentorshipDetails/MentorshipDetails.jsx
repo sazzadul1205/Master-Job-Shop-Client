@@ -197,7 +197,7 @@ const MentorshipDetails = () => {
           {/* Description */}
           <p className="text-lg flex flex-col md:flex-row py-2 leading-5">
             <span className="font-bold mr-5">Description:</span>
-            <span className="ml-5">{Mentorship.description}</span>
+            <span className="ml-5 overflow-hidden break-words">{Mentorship.description}</span>
           </p>
 
           {/* sessionFormat */}

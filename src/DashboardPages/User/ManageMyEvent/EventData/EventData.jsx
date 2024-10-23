@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import PropTypes from "prop-types"; // Import PropTypes
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import Swal from "sweetalert2";
 
-const EventData = ({ event }) => {
+const EventData = ({ event, refetch }) => {
   const axiosPublic = useAxiosPublic();
   const [participants, setParticipants] = useState(
     event.ParticipantApplications || []
@@ -32,6 +33,7 @@ const EventData = ({ event }) => {
         icon: "success",
         confirmButtonText: "OK",
       });
+      refetch();
     } catch (error) {
       console.error("Error updating participant:", error);
       Swal.fire({
@@ -47,6 +49,7 @@ const EventData = ({ event }) => {
   const handleDelete = async (index) => {
     const applicantToDelete = participants[index];
 
+    // Confirm deletion using Swal
     const confirmDelete = await Swal.fire({
       title: "Are you sure?",
       text: `You are about to delete ${applicantToDelete.applicantName}.`,
@@ -57,15 +60,15 @@ const EventData = ({ event }) => {
     });
 
     if (confirmDelete.isConfirmed) {
-      // Remove the participant from the local state
-      const newParticipants = participants.filter((_, i) => i !== index);
-      setParticipants(newParticipants);
-
-      // API call to delete the participant using applicantEmail
       try {
+        // API call to delete the participant using applicantEmail
         await axiosPublic.delete(
           `/Upcoming-Events/${event._id}/participants/${applicantToDelete.applicantEmail}`
         );
+
+        // Remove the participant from local state
+        const newParticipants = participants.filter((_, i) => i !== index);
+        setParticipants(newParticipants);
 
         // Show success alert
         Swal.fire({
@@ -74,6 +77,7 @@ const EventData = ({ event }) => {
           icon: "success",
           confirmButtonText: "OK",
         });
+        refetch();
       } catch (error) {
         console.error("Error deleting participant:", error);
         Swal.fire({
@@ -92,57 +96,69 @@ const EventData = ({ event }) => {
         <h2 className="text-3xl font-bold text-black">{event?.eventTitle}</h2>
         <div className="mt-2">
           {/* Date */}
-          <div className="text-lg flex py-1">
-            <p className="font-bold w-[200px]">Date:</p>{" "}
+          <div className="text-lg flex flex-col md:flex-row py-1">
+            <p className="font-bold w-[200px]">Date:</p>
             <span>{event?.date}</span>
           </div>
           {/* Time */}
-          <div className="text-lg flex py-1">
-            <p className="font-bold w-[200px]">Time:</p>{" "}
+          <div className="text-lg flex flex-col md:flex-row py-1">
+            <p className="font-bold w-[200px]">Time:</p>
             <span>{event?.time}</span>
           </div>
           {/* Location */}
-          <div className="text-lg flex py-1">
-            <p className="font-bold w-[200px]">Location:</p>{" "}
+          <div className="text-lg flex flex-col md:flex-row py-1">
+            <p className="font-bold w-[200px]">Location:</p>
             <span>{event?.location}</span>
           </div>
           {/* Description */}
-          <div className="text-lg flex py-1">
-            <p className="font-bold w-[200px]">Description:</p>{" "}
-            <span>{event?.description}</span>
+          <div className="text-lg flex flex-col md:flex-row py-1">
+            <p className="font-bold w-[200px] flex-shrink-0">Description:</p>
+            <span className="md:flex-1 overflow-hidden break-words">
+              {event?.description}
+            </span>
           </div>
+
           {/* Organizer */}
-          <div className="text-lg flex py-1">
-            <p className="font-bold w-[200px]">Organizer:</p>{" "}
+          <div className="text-lg flex flex-col md:flex-row py-1">
+            <p className="font-bold w-[200px]">Organizer:</p>
             <span>{event?.organizer}</span>
           </div>
           {/* Contact Email */}
-          <div className="text-lg flex py-1">
-            <p className="font-bold w-[200px]">Contact Email:</p>{" "}
+          <div className="text-lg flex flex-col md:flex-row py-1">
+            <p className="font-bold w-[200px]">Contact Email:</p>
             <span>{event?.contactEmail}</span>
           </div>
           {/* Participation Fee */}
-          <div className="text-lg flex py-1">
-            <p className="font-bold w-[200px]">Participation Fee:</p>{" "}
+          <div className="text-lg flex flex-col md:flex-row py-1">
+            <p className="font-bold w-[200px]">Participation Fee:</p>
             <span>{event?.participationFee}</span>
           </div>
           {/* Participation Limit */}
-          <div className="text-lg flex py-1">
-            <p className="font-bold w-[200px]">Participation Limit:</p>{" "}
+          <div className="text-lg flex flex-col md:flex-row py-1">
+            <p className="font-bold w-[200px]">Participation Limit:</p>
             <span>{event?.participationLimit}</span>
           </div>
           {/* Participation Criteria */}
-          <div className="text-lg flex py-1">
+          <div className="text-lg flex flex-col md:flex-row py-1">
             <p className="font-bold w-[200px]">Participation Criteria:</p>
-            <span>{event?.participationCriteria}</span>
+            <span className="md:flex-1 overflow-hidden break-words">
+              {event?.participationCriteria}
+            </span>
           </div>
           {/* Required Resources */}
-          <div className="text-lg flex py-1">
-            <p className="font-bold w-[200px]">Required Resources:</p>
-            <span>{event?.requiredResources?.join(", ")}</span>
+          <div className="text-lg flex flex-col md:flex-row py-1">
+            <p className="font-bold w-[200px] flex-shrink-0">
+              Required Resources:
+            </p>
+            <ul className="md:flex-1 list-disc pl-5">
+              {event?.requiredResources?.map((resource, index) => (
+                <li key={index}>{resource}</li>
+              ))}
+            </ul>
           </div>
+
           {/* Registration Link */}
-          <div className="text-lg flex py-1">
+          <div className="text-lg flex flex-col md:flex-row py-1">
             <p className="font-bold w-[200px]">Registration Link:</p>
             <span>
               <a
@@ -164,9 +180,8 @@ const EventData = ({ event }) => {
           {/* Table Header */}
           <thead className="text-black">
             <tr className="bg-gray-500 text-white">
-              <th>No</th>
-              <th className="w-1/5">Applicant Name</th>
-              <th className="w-1/5">Email</th>
+              <th>Applicant Name</th>
+              <th>Email</th>
               <th>Description</th>
               <th>State</th>
               <th>Date</th>
@@ -174,17 +189,8 @@ const EventData = ({ event }) => {
             </tr>
           </thead>
           <tbody>
-            {participants.map((application, index) => (
+            {event.ParticipantApplications.map((application, index) => (
               <tr key={application.applicantEmail}>
-                <td>
-                  <div className="border border-black">
-                    <img
-                      src={application.applicantImage}
-                      alt="Applicant"
-                      className="w-16 h-16 "
-                    />
-                  </div>
-                </td>
                 <td>{application.applicantName}</td>
                 <td>{application.applicantEmail}</td>
                 <td>{application.applicantDescription}</td>

@@ -95,9 +95,7 @@ const UpcomingEvents = () => {
               Loading...
             </h4>
           }
-          endMessage={
-            <p></p>
-          }
+          endMessage={<p></p>}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 py-10 px-3 mx-auto max-w-[1200px]">
             {filteredEvents.length > 0 ? (
@@ -121,7 +119,12 @@ const UpcomingEvents = () => {
                       <p className="text-gray-500">{event.location}</p>
 
                       {/* Description */}
-                      <p className="text-gray-700 mt-2">{event.description}</p>
+                      <p className="text-gray-700 mt-2">
+                        {event?.description?.split(" ").slice(0, 20).join(" ") +
+                          (event?.description?.split(" ").length > 20
+                            ? "..."
+                            : "")}
+                      </p>
 
                       {/* Card Actions */}
                       <div className="card-actions justify-end mt-5">

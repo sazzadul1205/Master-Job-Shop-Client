@@ -61,7 +61,8 @@ const FeaturedUpcomingEvents = ({ UpcomingEventsData }) => {
 
                   {/* Description */}
                   <p className="text-gray-700 mt-2">
-                    {event.description || "Event Description"}
+                    {event?.description?.split(" ").slice(0, 20).join(" ") +
+                      (event?.description?.split(" ").length > 20 ? "..." : "")}
                   </p>
 
                   {/* Card Actions */}

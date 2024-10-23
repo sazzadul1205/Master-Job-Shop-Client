@@ -101,8 +101,8 @@ const ManageMyEvent = () => {
   };
 
   // Current date for deletion log
-  const currentDate = new Date();
-  const formattedDateTime = currentDate.toLocaleString("en-US", {
+
+  const formattedDateTime = new Date().toLocaleString("en-US", {
     year: "numeric",
     month: "numeric",
     day: "numeric",

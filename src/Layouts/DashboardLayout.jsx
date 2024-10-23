@@ -31,7 +31,7 @@ const DashboardLayout = () => {
     // Redirect based on user role
     if (userRole === "Admin" || userRole === "Manager") {
       navigate("/Dashboard/AdminOverview"); // Redirect to AdminOverview
-    } else if (userRole === "Member") {
+    } else if (userRole === "Member" || userRole === "member") {
       navigate("/Dashboard/UserOverview"); // Redirect to UserOverview
     } else {
       // Handle cases for other roles if necessary

@@ -66,7 +66,9 @@ export const router = createBrowserRouter([
         path: "/PostedJobsDetails/:id",
         element: <PostedJobDetail></PostedJobDetail>,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/Posted-Job/${params.id}`),
+          fetch(
+            `https://master-job-shop-server.vercel.app/Posted-Job/${params.id}`
+          ),
       },
       {
         path: "/Gigs",
@@ -76,7 +78,9 @@ export const router = createBrowserRouter([
         path: "/PostedGigsDetails/:id",
         element: <PostedGigDetail></PostedGigDetail>,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/Posted-Gig/${params.id}`),
+          fetch(
+            `https://master-job-shop-server.vercel.app/Posted-Gig/${params.id}`
+          ),
       },
       {
         path: "/CompanyProfiles",
@@ -86,7 +90,9 @@ export const router = createBrowserRouter([
         path: "/CompanyProfiles/:id",
         element: <CompanyProfileDetails></CompanyProfileDetails>,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/Company-Profiles/${params.id}`),
+          fetch(
+            `https://master-job-shop-server.vercel.app/Company-Profiles/${params.id}`
+          ),
       },
       {
         path: "/SalaryInsights",
@@ -100,7 +106,9 @@ export const router = createBrowserRouter([
         path: "/UpcomingEventsDetails/:id",
         element: <UpcomingEventsDetails></UpcomingEventsDetails>,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/Upcoming-Events/${params.id}`),
+          fetch(
+            `https://master-job-shop-server.vercel.app/Upcoming-Events/${params.id}`
+          ),
       },
       {
         path: "/Courses",
@@ -110,7 +118,9 @@ export const router = createBrowserRouter([
         path: "/Courses/:id",
         element: <CoursesDetails></CoursesDetails>,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/Courses/${params.id}`),
+          fetch(
+            `https://master-job-shop-server.vercel.app/Courses/${params.id}`
+          ),
       },
       {
         path: "/Mentorship",
@@ -120,7 +130,9 @@ export const router = createBrowserRouter([
         path: "/Mentorship/:id",
         element: <MentorshipDetails></MentorshipDetails>,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/Mentorship/${params.id}`),
+          fetch(
+            `https://master-job-shop-server.vercel.app/Mentorship/${params.id}`
+          ),
       },
       {
         path: "/Internship",
@@ -130,7 +142,9 @@ export const router = createBrowserRouter([
         path: "/Internship/:id",
         element: <InternshipDetails></InternshipDetails>,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/Internship/${params.id}`),
+          fetch(
+            `https://master-job-shop-server.vercel.app/Internship/${params.id}`
+          ),
       },
       {
         path: "/Login",
@@ -218,6 +232,7 @@ export const router = createBrowserRouter([
         path: "DetailedLog",
         element: <DetailsLogs></DetailsLogs>,
       },
+
       {
         path: "ManageJobApplicants",
         element: <ManageJobApplicant></ManageJobApplicant>,

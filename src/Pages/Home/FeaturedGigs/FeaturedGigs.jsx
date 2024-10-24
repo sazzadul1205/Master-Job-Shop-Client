@@ -41,7 +41,7 @@ const FeaturedGigs = ({ PostedGigsData }) => {
               your career and earnings.
             </p>
           </div>
-          <button className="mt-4 md:mt-0 md:ml-auto text-lg border-2 border-sky-800 md:w-48 lg:w-0 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
+          <button className="mt-4 md:mt-0 md:ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
             <Link to={"/Gigs"} className="flex items-center">
               Show More <FaArrowRight className="ml-2" />
             </Link>

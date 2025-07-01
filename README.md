@@ -1,4 +1,4 @@
-# Master Job Shop - Website ReadMe
+# Master Job Shop
 
 ## Overview
 

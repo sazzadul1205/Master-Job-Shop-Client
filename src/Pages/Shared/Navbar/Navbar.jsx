@@ -1,12 +1,38 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+
+// Icons
 import { IoMenu } from "react-icons/io5";
+
+// Packages
 import Swal from "sweetalert2";
-import Logo from "../../../assets/Logo.png";
-import { AuthContext } from "../../../Provider/AuthProvider";
+
+// Hooks
+import useAuth from "../../../Hooks/useAuth";
+
+const MenuItems = [
+  { name: "HOME", path: "/" },
+  { name: "JOBS", path: "/Jobs" },
+  { name: "GIGS", path: "/Gigs" },
+  { name: "BLOGS", path: "/Blogs" },
+  {
+    name: "MORE",
+    path: "#",
+    submenu: [
+      { name: "COURSES", path: "/Courses" },
+      { name: "MENTORSHIP", path: "/Mentorship" },
+      { name: "INTERNSHIPS", path: "/Internship" },
+      { name: "UPCOMING EVENTS", path: "/UpcomingEvents" },
+      { name: "SALARY INSIGHTS", path: "/SalaryInsights" },
+      { name: "COMPANY PROFILES", path: "/CompanyProfiles" },
+    ],
+  },
+  { name: "TESTIMONIALS", path: "/Testimonials" },
+  { name: "ABOUT US", path: "/AboutUS" },
+];
 
 const Navbar = () => {
-  const { user, logOut } = useContext(AuthContext);
+  const { user, logOut } = useAuth();
 
   // State variables
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,9 +41,6 @@ const Navbar = () => {
   // Refs
   const menuRef = useRef(null);
   const submenuTimeoutRef = useRef(null);
-
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null); // Create ref for dropdown
 
   // Scroll and click outside handler
   useEffect(() => {
@@ -63,100 +86,17 @@ const Navbar = () => {
       });
   };
 
-  const closeDropdown = () => {
-    setIsDropdownOpen(false); // Close dropdown after link click
+  // Submenu handlers
+  const handleMouseEnter = (itemName) => {
+    clearTimeout(submenuTimeoutRef.current);
+    setOpenSubmenu(itemName);
   };
 
-  const navItems = [
-    { label: "HOME", link: "/", subMenu: [] },
-    { label: "JOBS", link: "/Jobs", subMenu: [] },
-    { label: "GIGS", link: "/Gigs", subMenu: [] },
-    { label: "BLOGS", link: "/Blogs", subMenu: [] },
-    { label: "ABOUT US", link: "/AboutUS", subMenu: [] },
-    { label: "TESTIMONIALS", link: "/Testimonials", subMenu: [] },
-    {
-      label: "MORE",
-      link: "#",
-      subMenu: [
-        { label: "COMPANY PROFILES", link: "/CompanyProfiles" },
-        { label: "SALARY INSIGHTS", link: "/SalaryInsights" },
-        { label: "UPCOMING EVENTS", link: "/UpcomingEvents" },
-        { label: "COURSES", link: "/Courses" },
-        { label: "MENTORSHIP", link: "/Mentorship" },
-        { label: "INTERNSHIPS", link: "/Internship" },
-      ],
-    },
-  ];
-
-  const renderNav = (isMobile) =>
-    navItems.map(({ label, link, subMenu }) => (
-      <li key={label} className="relative">
-        {subMenu.length > 0 && isMobile ? (
-          // On mobile, display submenu items as part of the main list
-          <>
-            <NavLink
-              to={link}
-              onClick={closeDropdown}
-              className={({ isActive }) =>
-                isActive ? "text-blue-800" : "hover:text-blue-800"
-              }
-            >
-              {label}
-            </NavLink>
-            {subMenu.map((item) => (
-              <li key={item.link} onClick={closeDropdown}>
-                <NavLink
-                  to={item.link}
-                  className={({ isActive }) =>
-                    isActive ? "text-blue-800 " : "hover:text-blue-800"
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              </li>
-            ))}
-          </>
-        ) : (
-          // On larger screens, display as dropdown
-          <div className="dropdown dropdown-hover">
-            {subMenu.length > 0 ? (
-              <>
-                <p className="hover:text-blue-800 cursor-pointer">{label}</p>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content menu bg-white font-semibold z-[1] w-52 p-2 shadow"
-                >
-                  {subMenu.map((item) => (
-                    <li key={item.link} onClick={closeDropdown}>
-                      <NavLink
-                        to={item.link}
-                        className={({ isActive }) =>
-                          isActive
-                            ? "text-blue-800 hover:bg-white bg-white text-base"
-                            : "hover:text-blue-800 hover:bg-white text-base"
-                        }
-                      >
-                        {item.label}
-                      </NavLink>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            ) : (
-              <NavLink
-                to={link}
-                onClick={closeDropdown}
-                className={({ isActive }) =>
-                  isActive ? "text-blue-800" : "hover:text-blue-800"
-                }
-              >
-                {label}
-              </NavLink>
-            )}
-          </div>
-        )}
-      </li>
-    ));
+  const handleMouseLeave = () => {
+    submenuTimeoutRef.current = setTimeout(() => {
+      setOpenSubmenu(null);
+    }, 300);
+  };
 
   return (
     <div
@@ -168,34 +108,90 @@ const Navbar = () => {
     >
       <div className="navbar flex-none w-full justify-between items-center px-0 py-0 lg:px-10">
         {/* Navbar Start */}
-        <div className="navbar-start">
-          <div className="dropdown" ref={dropdownRef}>
-            <button
-              tabIndex={0}
-              className="btn btn-ghost lg:hidden"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              <IoMenu className="text-3xl mt-2" />
-            </button>
+        <div className="navbar-start flex items-center py-0">
+          {/* Mobile Menu Button */}
+          <label
+            htmlFor="my-drawer-4"
+            className="btn btn-ghost lg:hidden p-2 rounded-md hover:bg-white/10 transition-colors duration-200"
+          >
+            <IoMenu className="text-3xl text-white" />
+          </label>
 
-            {isDropdownOpen && (
-              <ul className="absolute top-7 left-4 menu menu-sm bg-white rounded-box z-[1] mt-3 w-52 p-2 shadow text-xl">
-                {renderNav(true)} {/* Pass 'true' for mobile view */}
-              </ul>
-            )}
-          </div>
-          <Link to={"/"}>
+          {/* Logo */}
+          <NavLink
+            to="/"
+            className="ml-2 rounded-md transition-all duration-200"
+          >
             <div className="hidden md:flex items-center ">
-              <img src={Logo} alt="Logo.png" className="w-16" />
-              <p className="text-xl font-bold">Master Job Shop</p>
+              <p className="text-2xl font-semibold playfair">Master Job Shop</p>
             </div>
-          </Link>
+          </NavLink>
         </div>
 
         {/* Navbar Center */}
         <div className="navbar-center hidden lg:flex">
-          <ul className="flex gap-1 px-1 space-x-5 font-semibold text-black">
-            {renderNav(false)} {/* Pass 'false' for desktop view */}
+          <ul className="flex space-x-6 px-4 text-white font-semibold text-[17px] tracking-wide font-playfair">
+            {MenuItems.map((item) => (
+              <li
+                key={item.name}
+                className="relative group"
+                onMouseEnter={() => handleMouseEnter(item.name)}
+                onMouseLeave={handleMouseLeave}
+              >
+                {item.submenu ? (
+                  <>
+                    <div className="flex items-center gap-1 text-white hover:text-[#FFC107] cursor-pointer transition-colors duration-200">
+                      {item.name}
+                      <span className="text-xs">&#9662;</span> {/* ▼ arrow */}
+                    </div>
+
+                    {/* Submenu */}
+                    <ul
+                      className={`absolute left-0 w-56 bg-linear-to-tl from-blue-300 to-blue-600 text-white z-50 p-2 shadow-2xl mt-2 rounded-md transform transition-all duration-200 ease-out ${
+                        openSubmenu === item.name
+                          ? "opacity-100 translate-y-0 visible"
+                          : "opacity-0 -translate-y-2 invisible"
+                      }`}
+                      ref={menuRef}
+                      onMouseEnter={() =>
+                        clearTimeout(submenuTimeoutRef.current)
+                      }
+                      onMouseLeave={handleMouseLeave}
+                    >
+                      {item.submenu.map((subItem) => (
+                        <li key={subItem.path}>
+                          <NavLink
+                            to={subItem.path}
+                            className={({ isActive }) =>
+                              `block px-3 py-2 rounded-md text-sm transition-colors duration-150 ${
+                                isActive
+                                  ? "text-[#FFC107] font-bold"
+                                  : "hover:text-[#FFC107]"
+                              }`
+                            }
+                          >
+                            {subItem.name}
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <NavLink
+                    to={item.path}
+                    className={({ isActive }) =>
+                      `transition-colors duration-200 ${
+                        isActive
+                          ? "text-[#FFC107] font-bold"
+                          : "hover:text-[#FFC107]"
+                      }`
+                    }
+                  >
+                    {item.name}
+                  </NavLink>
+                )}
+              </li>
+            ))}
           </ul>
         </div>
 

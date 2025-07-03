@@ -6,37 +6,38 @@ import Logo from "../../../assets/Logo.png";
 import { AuthContext } from "../../../Provider/AuthProvider";
 
 const Navbar = () => {
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, logOut } = useContext(AuthContext);
+
+  // State variables
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [openSubmenu, setOpenSubmenu] = useState(null);
+
+  // Refs
+  const menuRef = useRef(null);
+  const submenuTimeoutRef = useRef(null);
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null); // Create ref for dropdown
 
-  // Handle scroll position change
+  // Scroll and click outside handler
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollPosition(window.scrollY);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
 
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  // Handle click outside dropdown to close it
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpenSubmenu(null);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll);
+    document.addEventListener("click", handleClickOutside);
+
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("click", handleClickOutside);
+      clearTimeout(submenuTimeoutRef.current);
     };
-  }, [dropdownRef]);
+  }, []);
 
   // Handle logout with Swal alert
   const handleSignOut = () => {
@@ -158,98 +159,97 @@ const Navbar = () => {
     ));
 
   return (
-    <div>
-      {/* Navbar section */}
-      <div
-        className={`navbar transition-all duration-300 mx-auto text-black fixed w-full z-40 ${
-          scrollPosition > 50 ? "bg-white top-0" : "bg-blue-400"
-        }`}
-      >
-        <div className="navbar mx-auto max-w-[1200px] items-center h-16">
-          {/* Navbar Start */}
-          <div className="navbar-start">
-            <div className="dropdown" ref={dropdownRef}>
-              <button
-                tabIndex={0}
-                className="btn btn-ghost lg:hidden"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                <IoMenu className="text-3xl mt-2" />
-              </button>
+    <div
+      className={`navbar fixed w-full top-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-gradient-to-bl from-blue-300/90 to-blue-600/90"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="navbar flex-none w-full justify-between items-center px-0 py-0 lg:px-10">
+        {/* Navbar Start */}
+        <div className="navbar-start">
+          <div className="dropdown" ref={dropdownRef}>
+            <button
+              tabIndex={0}
+              className="btn btn-ghost lg:hidden"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <IoMenu className="text-3xl mt-2" />
+            </button>
 
-              {isDropdownOpen && (
-                <ul className="absolute top-7 left-4 menu menu-sm bg-white rounded-box z-[1] mt-3 w-52 p-2 shadow text-xl">
-                  {renderNav(true)} {/* Pass 'true' for mobile view */}
-                </ul>
-              )}
-            </div>
-            <Link to={"/"}>
-              <div className="hidden md:flex items-center ">
-                <img src={Logo} alt="Logo.png" className="w-16" />
-                <p className="text-xl font-bold">Master Job Shop</p>
-              </div>
-            </Link>
-          </div>
-
-          {/* Navbar Center */}
-          <div className="navbar-center hidden lg:flex">
-            <ul className="flex gap-1 px-1 space-x-5 font-semibold text-black">
-              {renderNav(false)} {/* Pass 'false' for desktop view */}
-            </ul>
-          </div>
-
-          {/* Navbar End */}
-          <div className="navbar-end flex gap-5">
-            {user ? (
-              <div className="dropdown">
-                <div
-                  className="flex items-center lg:pr-5 bg-blue-300 hover:bg-blue-200 cursor-pointer"
-                  tabIndex={0}
-                  role="button"
-                >
-                  <img src={user.photoURL} alt="User" className="w-12 h-12 " />
-                  <h2 className="font-semibold pl-2 text-lg hidden lg:flex w-[200px]">
-                    {user.displayName}
-                  </h2>
-                </div>
-                {/* Dropdown menu */}
-                <ul className="dropdown-content menu bg-white z-[1] w-52 p-2 shadow right-0">
-                  <li className="lg:hidden">
-                    <p>{user.displayName}</p>
-                  </li>
-                  <li>
-                    <Link
-                      to={"/Dashboard"}
-                      className="py-3 hover:bg-blue-200 rounded-none font-semibold"
-                    >
-                      Dashboard
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      className="font-bold bg-blue-500 hover:bg-blue-400 rounded-none text-white py-3"
-                      onClick={handleSignOut}
-                    >
-                      LogOut
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              <div className="text-xl flex font-semibold">
-                <Link to={"/SignUp"}>
-                  <button className="py-2 px-6 w-32 bg-blue-500 hover:bg-blue-100 hidden md:block">
-                    SignUp
-                  </button>
-                </Link>
-                <Link to={"/Login"}>
-                  <button className="py-2 px-6 w-32 bg-blue-600 hover:bg-blue-300 text-white">
-                    Login
-                  </button>
-                </Link>
-              </div>
+            {isDropdownOpen && (
+              <ul className="absolute top-7 left-4 menu menu-sm bg-white rounded-box z-[1] mt-3 w-52 p-2 shadow text-xl">
+                {renderNav(true)} {/* Pass 'true' for mobile view */}
+              </ul>
             )}
           </div>
+          <Link to={"/"}>
+            <div className="hidden md:flex items-center ">
+              <img src={Logo} alt="Logo.png" className="w-16" />
+              <p className="text-xl font-bold">Master Job Shop</p>
+            </div>
+          </Link>
+        </div>
+
+        {/* Navbar Center */}
+        <div className="navbar-center hidden lg:flex">
+          <ul className="flex gap-1 px-1 space-x-5 font-semibold text-black">
+            {renderNav(false)} {/* Pass 'false' for desktop view */}
+          </ul>
+        </div>
+
+        {/* Navbar End */}
+        <div className="navbar-end flex gap-5">
+          {user ? (
+            <div className="dropdown">
+              <div
+                className="flex items-center lg:pr-5 bg-blue-300 hover:bg-blue-200 cursor-pointer"
+                tabIndex={0}
+                role="button"
+              >
+                <img src={user.photoURL} alt="User" className="w-12 h-12 " />
+                <h2 className="font-semibold pl-2 text-lg hidden lg:flex w-[200px]">
+                  {user.displayName}
+                </h2>
+              </div>
+              {/* Dropdown menu */}
+              <ul className="dropdown-content menu bg-white z-[1] w-52 p-2 shadow right-0">
+                <li className="lg:hidden">
+                  <p>{user.displayName}</p>
+                </li>
+                <li>
+                  <Link
+                    to={"/Dashboard"}
+                    className="py-3 hover:bg-blue-200 rounded-none font-semibold"
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    className="font-bold bg-blue-500 hover:bg-blue-400 rounded-none text-white py-3"
+                    onClick={handleSignOut}
+                  >
+                    LogOut
+                  </button>
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <div className="text-xl flex font-semibold">
+              <Link to={"/SignUp"}>
+                <button className="py-2 px-6 w-32 bg-blue-500 hover:bg-blue-100 hidden md:block">
+                  SignUp
+                </button>
+              </Link>
+              <Link to={"/Login"}>
+                <button className="py-2 px-6 w-32 bg-blue-600 hover:bg-blue-300 text-white">
+                  Login
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

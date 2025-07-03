@@ -33,7 +33,7 @@ const MainLayout = () => {
   }, []);
 
   return (
-    <div>
+    <div data-theme="cupcake">
       {/* Scroll to Top Button */}
       {showToTop && (
         <div
@@ -45,7 +45,9 @@ const MainLayout = () => {
       )}
 
       <Navbar></Navbar>
-      <Outlet></Outlet>
+      <main className="bg-linear-to-l from-blue-300 to-blue-600 pt-28">
+        <Outlet></Outlet>
+      </main>
       <Footer></Footer>
     </div>
   );

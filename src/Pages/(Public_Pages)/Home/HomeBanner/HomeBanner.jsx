@@ -24,7 +24,7 @@ const HomeBanners = () => {
 
           {/* Subtitle */}
           <p className="text-xl font-semibold text-white/90 mb-6">
-            Discover jobs, gigs, internships, mentorships, events, and more —
+            Discover jobs, gigs, internships, mentorship&apos;s, events, and more —
             all in one platform tailored for your professional journey.
           </p>
 

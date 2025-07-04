@@ -15,6 +15,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 
 // Shared
 import CommonButton from "../../../Shared/CommonButton/CommonButton";
+import SocialLogins from "../../../Shared/SocialLogins/SocialLogins";
 
 const Login = () => {
   const { signIn, signInWithGoogle } = useAuth();
@@ -271,20 +272,7 @@ const Login = () => {
         </div>
 
         {/* Google Sign-In */}
-        <div className="flex justify-center">
-          <button
-            onClick={handleGoogleSignIn}
-            className={`flex items-center justify-center w-full gap-3 border-2 border-black py-3 text-xl rounded-xl text-black hover:bg-blue-400 hover:text-white ${
-              loading ? "cursor-not-allowed opacity-50" : ""
-            }`}
-            disabled={loading}
-          >
-            <FcGoogle className="mr-4 text-2xl" />{" "}
-            <span className="font-bold">
-              {loading ? "Signing In..." : "Google"}
-            </span>
-          </button>
-        </div>
+        <SocialLogins />
       </div>
     </section>
   );

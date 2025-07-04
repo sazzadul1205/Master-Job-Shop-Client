@@ -1,6 +1,13 @@
-import { createContext, useEffect, useState } from "react";
+// React core
+import { useEffect, useState, useCallback } from "react";
+
+// PropTypes for validating props
+import PropTypes from "prop-types";
+
+// Firebase Auth SDK
 import {
   GoogleAuthProvider,
+  FacebookAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -8,13 +15,16 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
+
+// Firebase configuration (custom setup)
 import auth from "../Firebase/firebase.config";
 
-// Create AuthContext
-export const AuthContext = createContext(null);
+// Context for sharing auth across app
+import { AuthContext } from "./AuthContext";
 
-// Initialize Google Provider
+// Initialize Google and Facebook Auth Providers
 const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
 
 // AuthProvider component
 const AuthProvider = ({ children }) => {

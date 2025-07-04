@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 // Packages
@@ -10,7 +10,6 @@ import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Icons
-import { FcGoogle } from "react-icons/fc";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 // Shared
@@ -18,7 +17,7 @@ import CommonButton from "../../../Shared/CommonButton/CommonButton";
 import SocialLogins from "../../../Shared/SocialLogins/SocialLogins";
 
 const Login = () => {
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const axiosPublic = useAxiosPublic();
@@ -39,128 +38,66 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const currentDate = new Date();
-  const formattedDateTime = currentDate.toLocaleString("en-US", {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  });
-
-  // Normal login
-  const onSubmit = (data) => {
-    setLoading(true); // Start loading
-    signIn(data.email, data.password)
-      .then((res) => {
-        const user = res.user;
-        console.log(user);
-        // Fetch user role from the database
-        axiosPublic
-          .get(`/Users?email=${user.email}`)
-          .then((response) => {
-            const userData = response.data;
-            if (userData.role === "Admin" || userData.role === "Manager") {
-              navigate("/dashboard", { replace: true });
-            } else {
-              navigate(from, { replace: true });
-            }
-            window.location.reload(); // Reload the page after navigation
-          })
-          .catch((error) => {
-            console.error("Error fetching user role:", error);
-          });
-        showSuccessLogInAlert();
-      })
-      .catch((error) => {
-        console.log(error);
-        showFailedLogInAlert(error.message);
-      })
-      .finally(() => {
-        setLoading(false); // Stop loading
-      });
-  };
-
-  const handleGoogleSignIn = () => {
-    setLoading(true); // Start loading
-    signInWithGoogle()
-      .then((result) => {
-        const user = result.user;
-        const userData = {
-          displayName: user.displayName,
-          email: user.email,
-          role: "Member",
-          createdDate: formattedDateTime,
-          photoURL: user.photoURL,
-        };
-
-        // Check if user already exists
-        axiosPublic
-          .get("/Users?email=" + user.email) // Check for existing user
-          .then((response) => {
-            if (response.data) {
-              // If user exists, check their role
-              if (
-                response.data.role === "Admin" ||
-                response.data.role === "Manager"
-              ) {
-                navigate("/dashboard", { replace: true });
-              } else {
-                navigate(from, { replace: true });
-              }
-              window.location.reload(); // Reload the page after navigation
-            } else {
-              // If user does not exist, insert user data and check role
-              axiosPublic
-                .post("/Users", userData) // Replace with your actual server endpoint
-                .then((response) => {
-                  console.log("User data pushed to the server:", response.data);
-                  if (
-                    userData.role === "Admin" ||
-                    userData.role === "Manager"
-                  ) {
-                    navigate("/dashboard", { replace: true });
-                  } else {
-                    navigate(from, { replace: true });
-                  }
-                  window.location.reload(); // Reload the page after navigation
-                })
-                .catch((error) => {
-                  console.error("Failed to send user data:", error);
-                  showFailedLogInAlert(error.message);
-                });
-            }
-          })
-          .catch((error) => {
-            console.error("Error checking user data:", error);
-            showFailedLogInAlert(error.message);
-          });
-      })
-      .catch((error) => {
-        console.error(error);
-        showFailedLogInAlert(error.message);
-      })
-      .finally(() => {
-        setLoading(false); // Stop loading
-      });
-  };
-
-  const showSuccessLogInAlert = () => {
+  // Function to handle login alerts
+  const showAlert = (type, message) => {
     Swal.fire({
-      icon: "success",
-      title: "Login Successful!",
-      text: "You are now logged in.",
+      icon: type,
+      title: type === "success" ? "Login Successful" : "Login Failed",
+      text: message,
+      showConfirmButton: false,
+      timer: 1500,
     });
   };
 
-  const showFailedLogInAlert = (errorMessage) => {
-    Swal.fire({
-      icon: "error",
-      title: "Login Failed",
-      text: errorMessage,
-    });
-  };
+  // Function to handle form submission (optimized with useCallback)
+  const onSubmit = useCallback(
+    async (data) => {
+      setLoading(true);
+      try {
+        // Attempt sign-in
+        const res = await signIn(data.email, data.password);
+        const user = res?.user;
+
+        if (!user) {
+          showAlert("error", "No user found with this email.");
+          return;
+        }
+
+        // Fetch user role **in parallel** to reduce load time
+        const response = axiosPublic.get(`/Users?email=${user.email}`);
+
+        // Wait for the response
+        const userData = await response;
+
+        if (!userData?.data?.role) {
+          showAlert("error", "User data not found. Please contact support.");
+          return;
+        }
+
+        // Navigate based on user role
+        if (
+          userData.data.role === "Admin" ||
+          userData.data.role === "Manager"
+        ) {
+          navigate("/Admin", { replace: true });
+        } else if (userData.data.role === "Trainer") {
+          navigate("/Trainer", { replace: true });
+        } else {
+          navigate(from, { replace: true });
+        }
+
+        showAlert("success", "You have successfully logged in!");
+      } catch (error) {
+        showAlert(
+          "error",
+          error.response?.data?.message || "Invalid email or password."
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [signIn, axiosPublic, navigate, from]
+  );
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-100">

@@ -1,14 +1,20 @@
 import "./index.css";
 
-
+// React and React Router
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-// import { RouterProvider } from "react-router-dom";
-// import { router } from "./Routes/Routes";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// TanStack Query
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// Authentication Provider
 import AuthProvider from "./Provider/AuthProvider";
+
+// Layouts
 import MainLayout from "./Layouts/MainLayout";
+
+// Pages
 import Home from "./Pages/Home/Home";
 
 const queryClient = new QueryClient();

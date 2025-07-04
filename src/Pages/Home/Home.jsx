@@ -12,70 +12,60 @@ import FeaturedUpcomingEvents from "./FeaturedUpcomingEvents/FeaturedUpcomingEve
 import FeaturedCourses from "./FeaturedCourses/FeaturedCourses";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
-import Loader from "../Shared/Loader/Loader";
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
+import Loading from "../Shared/Loading/Loading";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
 
-  // Fetching HomeBanner Data
+  // Fetching Jobs Data
   const {
-    data: HomeBannerData,
-    isLoading: HomeBannerDataIsLoading,
-    error: HomeBannerDataError,
+    data: JobsData,
+    isLoading: JobsIsLoading,
+    error: JobsError,
   } = useQuery({
-    queryKey: ["HomeBannerData"],
-    queryFn: () => axiosPublic.get(`/Home-Banner`).then((res) => res.data),
+    queryKey: ["JobsData"],
+    queryFn: () => axiosPublic.get(`/Jobs`).then((res) => res.data),
   });
 
-  // Fetching PostedJobs Data
+  // Fetching GigsData
   const {
-    data: PostedJobsData,
-    isLoading: PostedJobsDataIsLoading,
-    error: PostedJobsDataError,
-  } = useQuery({
-    queryKey: ["PostedJobsData"],
-    queryFn: () => axiosPublic.get(`/Posted-Job`).then((res) => res.data),
-  });
-
-  // Fetching PostedGigsData
-  const {
-    data: PostedGigsData,
-    isLoading: PostedGigsDataIsLoading,
-    error: PostedGigsDataError,
+    data: GigsData,
+    isLoading: GigsIsLoading,
+    error: GigsError,
   } = useQuery({
     queryKey: ["PostedGigsData"],
-    queryFn: () => axiosPublic.get(`/Posted-Gig`).then((res) => res.data),
+    queryFn: () => axiosPublic.get(`/Gigs`).then((res) => res.data),
   });
 
-  // Fetching CompanyProfilesData
+  // Fetching CompanyData
   const {
-    data: CompanyProfilesData,
-    isLoading: CompanyProfilesDataIsLoading,
-    error: CompanyProfilesDataError,
+    data: CompanyData,
+    isLoading: CompanyIsLoading,
+    error: CompanyError,
   } = useQuery({
-    queryKey: ["CompanyProfilesData"],
-    queryFn: () => axiosPublic.get(`/Company-Profiles`).then((res) => res.data),
+    queryKey: ["CompanyData"],
+    queryFn: () => axiosPublic.get(`/Company`).then((res) => res.data),
   });
 
-  // Fetching SalaryInsightData
+  // Fetching InsightsData
   const {
-    data: SalaryInsightData,
-    isLoading: SalaryInsightDataIsLoading,
-    error: SalaryInsightDataError,
+    data: InsightsData,
+    isLoading: InsightsDataIsLoading,
+    error: InsightsDataError,
   } = useQuery({
-    queryKey: ["SalaryInsightData"],
-    queryFn: () => axiosPublic.get(`/Salary-Insight`).then((res) => res.data),
+    queryKey: ["InsightsData"],
+    queryFn: () => axiosPublic.get(`/Insights`).then((res) => res.data),
   });
 
-  // Fetching UpcomingEventsData
+  // Fetching EventsData
   const {
-    data: UpcomingEventsData,
-    isLoading: UpcomingEventsDataIsLoading,
-    error: UpcomingEventsDataError,
+    data: EventsData,
+    isLoading: EventsIsLoading,
+    error: EventsError,
   } = useQuery({
-    queryKey: ["UpcomingEventsData"],
-    queryFn: () => axiosPublic.get(`/Upcoming-Events`).then((res) => res.data),
+    queryKey: ["EventsData"],
+    queryFn: () => axiosPublic.get(`/Events`).then((res) => res.data),
   });
 
   // Fetching CoursesData
@@ -130,33 +120,31 @@ const Home = () => {
 
   // Loading and error states (render below hooks)
   if (
-    HomeBannerDataIsLoading ||
+    CompanyProfilesDataIsLoading ||
+    UpcomingEventsDataIsLoading ||
+    SalaryInsightDataIsLoading ||
+    testimonialsDataIsLoading ||
     PostedJobsDataIsLoading ||
     PostedGigsDataIsLoading ||
-    CompanyProfilesDataIsLoading ||
-    SalaryInsightDataIsLoading ||
-    UpcomingEventsDataIsLoading ||
-    CoursesDataIsLoading ||
     MentorshipDataIsLoading ||
     InternshipDataIsLoading ||
-    testimonialsDataIsLoading ||
-    WhyChooseUsDataIsLoading
+    WhyChooseUsDataIsLoading ||
+    CoursesDataIsLoading
   ) {
-    return <Loader />;
+    return <Loading />;
   }
 
   if (
-    HomeBannerDataError ||
-    PostedJobsDataError ||
-    PostedGigsDataError ||
     CompanyProfilesDataError ||
-    SalaryInsightDataError ||
     UpcomingEventsDataError ||
-    CoursesDataError ||
+    SalaryInsightDataError ||
+    testimonialsDataError ||
+    WhyChooseUsDataError ||
     MentorshipDataError ||
     InternshipDataError ||
-    testimonialsDataError ||
-    WhyChooseUsDataError
+    PostedJobsDataError ||
+    PostedGigsDataError ||
+    CoursesDataError
   ) {
     return (
       <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
@@ -175,13 +163,8 @@ const Home = () => {
 
   return (
     <div>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>Master Job Shop || Home</title>
-      </Helmet>
-      {/* Render components after loading and error are handled */}
-      <HomeBanners HomeBannerData={HomeBannerData} />
-      <FeaturedJobs PostedJobsData={PostedJobsData} />
+      <HomeBanners />
+      {/* <FeaturedJobs PostedJobsData={PostedJobsData} />
       <FeaturedGigs PostedGigsData={PostedGigsData} />
       <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
       <FeaturedSalaryInsights SalaryInsightData={SalaryInsightData} />
@@ -191,7 +174,7 @@ const Home = () => {
       <InternshipPrograms InternshipData={InternshipData} />
       <NewsLetter />
       <Testimonials testimonialsData={testimonialsData} />
-      <WhyChooseUs WhyChooseUsData={WhyChooseUsData} />
+      <WhyChooseUs WhyChooseUsData={WhyChooseUsData} /> */}
     </div>
   );
 };

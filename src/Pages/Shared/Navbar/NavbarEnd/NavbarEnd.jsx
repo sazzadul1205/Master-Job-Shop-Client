@@ -2,12 +2,36 @@ import { Link } from "react-router-dom";
 
 // Hooks
 import useAuth from "../../../../Hooks/useAuth";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
-// Swal Alert
+// PAckages
+import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import CommonButton from "../../CommonButton/CommonButton";
 
 const NavbarEnd = () => {
   const { user, logOut } = useAuth();
+  const axiosPublic = useAxiosPublic();
+
+  // Fetch user data if logged in
+  const {
+    data: UsersData,
+    isLoading: UsersDataIsLoading,
+    error: UsersDataError,
+  } = useQuery({
+    queryKey: ["UsersData"],
+    queryFn: async () => {
+      if (!user) return null;
+      try {
+        const res = await axiosPublic.get(`/Users?email=${user?.email}`);
+        return res.data;
+      } catch (error) {
+        if (error.response?.status === 404) return null;
+        throw error;
+      }
+    },
+    enabled: !!user,
+  });
 
   // Handle logout with Swal alert
   const handleSignOut = () => {
@@ -33,24 +57,31 @@ const NavbarEnd = () => {
       });
   };
 
+  if (UsersDataIsLoading) return <p>Loading . . . </p>;
+  if (UsersDataError) return <p>Error</p>;
+
   return (
     <div className="navbar-end flex gap-5">
-      {user ? (
+      {UsersData ? (
         <div className="dropdown">
           <div
             className="flex items-center lg:pr-5 bg-blue-300 hover:bg-blue-200 cursor-pointer"
             tabIndex={0}
             role="button"
           >
-            <img src={user.photoURL} alt="User" className="w-12 h-12 " />
+            <img
+              src={UsersData.photoURL}
+              alt="UsersData"
+              className="w-12 h-12 "
+            />
             <h2 className="font-semibold pl-2 text-lg hidden lg:flex w-[200px]">
-              {user.displayName}
+              {UsersData.displayName}
             </h2>
           </div>
           {/* Dropdown menu */}
           <ul className="dropdown-content menu bg-white z-[1] w-52 p-2 shadow right-0">
             <li className="lg:hidden">
-              <p>{user.displayName}</p>
+              <p>{UsersData.displayName}</p>
             </li>
             <li>
               <Link
@@ -72,15 +103,16 @@ const NavbarEnd = () => {
         </div>
       ) : (
         <div className="text-xl flex font-semibold">
-          <Link to={"/SignUp"}>
-            <button className="py-2 px-6 w-32 bg-blue-500 hover:bg-blue-100 hidden md:block">
-              SignUp
-            </button>
-          </Link>
-          <Link to={"/Login"}>
-            <button className="py-2 px-6 w-32 bg-blue-600 hover:bg-blue-300 text-white">
-              Login
-            </button>
+          <Link to="/Login">
+            <CommonButton
+              text="Login"
+              bgColor="white"
+              textColor="text-black"
+              className="text-md  playfair shadow-2xl"
+              px="px-16"
+              py="py-2"
+              borderRadius="rounded-lg"
+            />
           </Link>
         </div>
       )}

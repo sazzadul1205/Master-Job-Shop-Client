@@ -1,25 +1,42 @@
-import { FcGoogle } from "react-icons/fc";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+
+// Packages
 import Swal from "sweetalert2";
+import { useForm } from "react-hook-form";
+
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import Logo from "../../../assets/Logo.png";
+
+// Icons
+import { FcGoogle } from "react-icons/fc";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+
+// Shared
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
 
 const Login = () => {
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const axiosPublic = useAxiosPublic();
-  const [loading, setLoading] = useState(false); // Add loading state
+
+  // Add loading state
+  const [loading, setLoading] = useState(false);
+
+  // Inside the component
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Determine the navigation path after login
+  const from = location.state?.from?.pathname || "/";
+
+  // Form handling with validation
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-
-  const from = location.state?.from?.pathname || "/";
 
   const currentDate = new Date();
   const formattedDateTime = currentDate.toLocaleString("en-US", {
@@ -145,52 +162,57 @@ const Login = () => {
   };
 
   return (
-    <section className="bg-gradient-to-br from-blue-500 to-blue-100"  >
-      <div className="flex flex-col items-center justify-center lg:px-6 py-8 mx-auto md:min-h-screen pt-28 md:pt-80 lg:pt-0 lg:py-0">
-        <div className=" md:w-1/2 lg:w-1/4 h-auto bg-gradient-to-br from-blue-500 to-blue-200 rounded-xl shadow-xl hover:shadow-2xl mb-0 md:mb-36 lg:mb-0 p-6 border-2 border-blue-700">
-          {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex items-center text-center mx-auto w-[250px]">
-              <img src={Logo} alt="Logo.png" className="w-16" />
-              <p className="text-2xl text-white font-bold">Master Job Shop</p>
-            </div>
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-100">
+      {/* Login card container */}
+      <div className="w-full max-w-lg rounded-2xl shadow-md px-3 py-10 md:px-10 md:py-10 bg-linear-to-bl from-blue-500/80 to-blue-100/80">
+        {/* Heading section */}
+        <div className="pb-5">
+          <h4 className="text-3xl playfair font-bold text-center text-white">
+            Welcome Back
+          </h4>
 
-            <p className=" text-2xl font-bold text-white pt-10 pb-2">
-              Please Log In
-            </p>
-            {/* Email */}
-            <div className="mb-4">
-              <label className="block mb-1 text-blue-800 text-xl font-semibold">
-                Email :
-              </label>
-              <input
-                type="email"
-                placeholder="name@mail.com"
-                className="w-full p-3 border border-gray-300 rounded-md bg-white text-black"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                    message: "Invalid email format",
-                  },
-                })}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
+          {/* Please Login */}
+          <p className="text-lg playfair text-white italic text-center font-semibold">
+            Please Login
+          </p>
+        </div>
 
-            {/* Password */}
-            <div className="mb-6">
-              <label className="block mb-1 text-blue-800 text-xl font-semibold">
-                Password :
-              </label>
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Email input field */}
+          <div>
+            <label className="block text-black playfair font-semibold text-xl pb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="Example@gmail.com"
+              className="input w-full text-black bg-white shadow-lg hover:shadow-xl"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: "Invalid email format",
+                },
+              })}
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          {/* Password input field */}
+          <div className="relative mb-4">
+            <label className="block text-black playfair font-semibold text-xl pb-2">
+              Password
+            </label>
+            <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="********"
-                className="w-full p-3 border border-gray-300 rounded-md bg-white text-black"
+                className="input w-full text-black bg-white shadow-lg hover:shadow-xl pr-10 cursor-pointer"
                 {...register("password", {
                   required: "Password is required",
                   minLength: {
@@ -199,53 +221,69 @@ const Login = () => {
                   },
                 })}
               />
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.password.message}
-                </p>
-              )}
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-black focus:outline-none"
+                tabIndex={-1}
+              >
+                {showPassword ? <FiEye size={20} /> : <FiEyeOff size={20} />}
+              </button>
             </div>
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className={`w-full bg-blue-700 hover:bg-blue-600 text-white font-bold py-3 px-4 text-lg rounded-xl ${
-                loading ? "cursor-not-allowed opacity-50" : ""
-              }`}
-              disabled={loading}
-            >
-              {loading ? "Logging In..." : "Log In"} {/* Loading text */}
-            </button>
-          </form>
+          {/* Login button */}
+          <CommonButton
+            type="submit"
+            text="Log In"
+            isLoading={loading}
+            loadingText="Logging In..."
+            bgColor="white"
+            textColor="text-blue-600"
+            borderRadius="rounded-xl"
+            width="full"
+            px="px-5"
+            py="py-3"
+            className="mt-5 playfair"
+            disabled={loading}
+          />
 
           {/* Don't have an Account */}
-          <p className="text-lg font-light text-black mt-2">
+          <p className="text-lg font-semibold text-black mt-5">
             Don`t have an account?{" "}
             <Link
               to="/SignUp"
-              className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+              className="font-semibold playfair text-blue-800 hover:text-blue-500 hover:underline  "
             >
               Sign Up
             </Link>
           </p>
+        </form>
 
-          <div className="py-[1px] w-full bg-blue-500 my-5 "></div>
+        {/* Divider for social login options */}
+        <div className="divider divider-neutral text-black font-semibold">
+          OR
+        </div>
 
-          {/* Google Sign-In */}
-          <div className="flex justify-center">
-            <button
-              onClick={handleGoogleSignIn}
-              className={`flex items-center justify-center w-full gap-3 border-2 border-black py-3 text-xl rounded-xl text-black hover:bg-blue-400 hover:text-white ${
-                loading ? "cursor-not-allowed opacity-50" : ""
-              }`}
-              disabled={loading}
-            >
-              <FcGoogle className="mr-4 text-2xl" />{" "}
-              <span className="font-bold">
-                {loading ? "Signing In..." : "Google"}
-              </span>
-            </button>
-          </div>
+        {/* Google Sign-In */}
+        <div className="flex justify-center">
+          <button
+            onClick={handleGoogleSignIn}
+            className={`flex items-center justify-center w-full gap-3 border-2 border-black py-3 text-xl rounded-xl text-black hover:bg-blue-400 hover:text-white ${
+              loading ? "cursor-not-allowed opacity-50" : ""
+            }`}
+            disabled={loading}
+          >
+            <FcGoogle className="mr-4 text-2xl" />{" "}
+            <span className="font-bold">
+              {loading ? "Signing In..." : "Google"}
+            </span>
+          </button>
         </div>
       </div>
     </section>

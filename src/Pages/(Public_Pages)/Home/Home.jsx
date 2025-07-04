@@ -1,9 +1,14 @@
-import HomeBanners from "./HomeBanner/HomeBanner";
-
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+// Packages
 import { useQuery } from "@tanstack/react-query";
 
-import Loading from "../Shared/Loading/Loading";
+// Hooks
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
+
+// Shared
+import Loading from "../../../Shared/Loading/Loading";
+
+// Components
+import HomeBanners from "./HomeBanner/HomeBanner";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();

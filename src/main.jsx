@@ -14,8 +14,9 @@ import AuthProvider from "./Provider/AuthProvider";
 // Layouts
 import MainLayout from "./Layouts/MainLayout";
 
-// Pages
-import Home from "./Pages/Home/Home";
+// Public Pages
+import Home from "./Pages/(Public_Pages)/Home/Home";
+
 
 const queryClient = new QueryClient();
 

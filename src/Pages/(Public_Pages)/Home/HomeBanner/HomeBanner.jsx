@@ -1,8 +1,13 @@
-import graduate from "../../../assets/HomePageBanner/graduate.png";
-import CommonButton from "../../Shared/CommonButton/CommonButton";
 import { Link } from "react-router-dom";
 
+// Assets
+import graduate from "../../../assets/HomePageBanner/graduate.png";
+
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
+
+// Shared
+import CommonButton from "../../../../Shared/CommonButton/CommonButton";
 
 const HomeBanners = () => {
   const { user } = useAuth();
@@ -12,13 +17,18 @@ const HomeBanners = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between w-full">
         {/* Left Text Content */}
         <div className="max-w-xl text-center md:text-left">
+          {/* title */}
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-4">
             Shape Your Career. One Opportunity at a Time.
           </h1>
+
+          {/* Subtitle */}
           <p className="text-xl font-semibold text-white/90 mb-6">
             Discover jobs, gigs, internships, mentorships, events, and more —
             all in one platform tailored for your professional journey.
           </p>
+
+          {/* Call to Action Buttons */}
           <div className="flex justify-center md:justify-start gap-4">
             <Link to={"/Jobs"}>
               <CommonButton

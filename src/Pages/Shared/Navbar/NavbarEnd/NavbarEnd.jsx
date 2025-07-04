@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
 
+// Packages
+import Swal from "sweetalert2";
+import { useQuery } from "@tanstack/react-query";
+
 // Hooks
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
-// PAckages
-import { useQuery } from "@tanstack/react-query";
-import Swal from "sweetalert2";
-import CommonButton from "../../CommonButton/CommonButton";
+// Shared
+import CommonButton from "../../../../Shared/CommonButton/CommonButton";
 
 const NavbarEnd = () => {
   const { user, logOut } = useAuth();
@@ -63,17 +65,20 @@ const NavbarEnd = () => {
   return (
     <div className="navbar-end flex gap-5">
       {UsersData ? (
+        // If user data exists, show dropdown with user info and logout option
         <div className="dropdown">
           <div
             className="flex items-center lg:pr-5 bg-blue-300 hover:bg-blue-200 cursor-pointer"
             tabIndex={0}
             role="button"
           >
+            {/* User profile picture and name */}
             <img
               src={UsersData.photoURL}
               alt="UsersData"
               className="w-12 h-12 "
             />
+
             <h2 className="font-semibold pl-2 text-lg hidden lg:flex w-[200px]">
               {UsersData.displayName}
             </h2>
@@ -109,7 +114,7 @@ const NavbarEnd = () => {
               bgColor="white"
               textColor="text-blue-700"
               className="playfair shadow hover:shadow-2xl font-semibold"
-              px="px-16"  
+              px="px-16"
               py="py-2"
               borderRadius="rounded-lg"
             />

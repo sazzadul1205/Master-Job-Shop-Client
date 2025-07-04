@@ -45,9 +45,9 @@ const MainLayout = () => {
       )}
 
       <Navbar></Navbar>
-      <main className="bg-linear-to-l from-blue-300 to-blue-600 pt-28">
-        <Outlet></Outlet>
-      </main>
+
+      <Outlet></Outlet>
+
       <Footer></Footer>
     </div>
   );

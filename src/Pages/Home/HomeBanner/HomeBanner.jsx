@@ -1,36 +1,53 @@
+import graduate from "../../../assets/HomePageBanner/graduate.png";
+import CommonButton from "../../Shared/CommonButton/CommonButton";
+import { Link } from "react-router";
+
 const HomeBanners = () => {
   return (
-    <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white min-h-[80vh] flex items-center">
+    <section className="relative bg-gradient-to-l from-blue-400 to-blue-600 text-white flex items-center min-h-screen ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between w-full">
         {/* Left Text Content */}
         <div className="max-w-xl text-center md:text-left">
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-4">
             Shape Your Career. One Opportunity at a Time.
           </h1>
-          <p className="text-lg text-white/90 mb-6">
+          <p className="text-xl font-semibold text-white/90 mb-6">
             Discover jobs, gigs, internships, mentorships, events, and more —
             all in one platform tailored for your professional journey.
           </p>
           <div className="flex justify-center md:justify-start gap-4">
-            <a
-              href="#jobs"
-              className="bg-white text-blue-700 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition"
-            >
-              Explore Jobs
-            </a>
-            <a
-              href="#get-started"
-              className="border border-white px-6 py-3 rounded-lg hover:bg-white hover:text-blue-700 transition"
-            >
-              Get Started
-            </a>
+            <Link to={"/Jobs"}>
+              <CommonButton
+                text="Explore Jobs"
+                textColor="text-blue-700"
+                bgColor="white"
+                px="px-6"
+                py="py-3"
+                borderRadius="rounded-lg"
+                className="shadow hover:bg-gray-100"
+                type="button"
+              />
+            </Link>
+
+            <Link to={"/Jobs"}>
+              <CommonButton
+                text="Get Started"
+                textColor="text-white"
+                bgColor=""
+                px="px-6"
+                py="py-3"
+                borderRadius="rounded-lg"
+                className="border border-white hover:bg-white hover:text-blue-700"
+                type="button"
+              />
+            </Link>
           </div>
         </div>
 
         {/* Optional Right Image */}
         <div className="mt-10 md:mt-0 md:ml-8 w-full max-w-md hidden md:block">
           <img
-            src="/hero-illustration.svg"
+            src={graduate}
             alt="Career Growth Illustration"
             className="w-full h-auto"
           />

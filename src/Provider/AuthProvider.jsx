@@ -22,71 +22,208 @@ import auth from "../Firebase/firebase.config";
 // Context for sharing auth across app
 import { AuthContext } from "./AuthContext";
 
+// Custom hook for Axios instance (public)
+import useAxiosPublic from "../Hooks/useAxiosPublic";
+
 // Initialize Google and Facebook Auth Providers
 const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
 
+// Fetch server-side JWT after Firebase login and store it in localStorage.
+// Token includes a 10-day expiry timestamp.
+
+const fetchServerToken = async (user, axiosPublic) => {
+  try {
+    const payload = {
+      id: user?.uid,
+      email: user?.email,
+      role: user?.role || "user", // fallback role
+    };
+
+    const response = await axiosPublic.post("/jwt", { user: payload });
+    const token = response?.data?.token;
+
+    if (!token) throw new Error("Token missing in response.");
+
+    const expiry = Date.now() + 10 * 24 * 60 * 60 * 1000; // 10 days
+    localStorage.setItem("authData", JSON.stringify({ token, expiry }));
+  } catch (error) {
+    console.error("Error fetching server JWT:", error.message);
+    throw error;
+  }
+};
+
 // AuthProvider component
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Ensure user is initialized to null
+  const axiosPublic = useAxiosPublic();
+
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Create a new user
-  const createUser = (email, password) => {
-    setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password);
-  };
+  // Clears local auth state and localStorage token
+  const resetUserState = useCallback(() => {
+    localStorage.removeItem("authData");
+    setUser(null);
+    setLoading(false);
+  }, []);
 
-  // Update User
-  const updateUser = (displayName, photoURL) => {
-    setLoading(true);
-    return updateProfile(auth.currentUser, {
-      displayName: displayName,
-      photoURL: photoURL,
-    });
-  };
+  // Register user using Firebase Email/Password
+  const createUser = useCallback(
+    async (email, password) => {
+      setLoading(true);
+      try {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        setUser(userCredential.user);
+        await fetchServerToken(userCredential.user, axiosPublic);
+        return userCredential;
+      } catch (error) {
+        console.error("Create User Error:", error.message);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [axiosPublic]
+  );
 
-  // Sign in with email and password
-  const signIn = (email, password) => {
-    setLoading(true);
-    return signInWithEmailAndPassword(auth, email, password);
-  };
+  // Update Firebase profile (name, photo)
+  const updateUser = useCallback(async (displayName, photoURL) => {
+    try {
+      if (!auth.currentUser) throw new Error("No current user found");
+      await updateProfile(auth.currentUser, { displayName, photoURL });
 
-  // Sign out user
-  const logOut = () => {
-    setLoading(true);
-    return signOut(auth);
-  };
+      // Also update state manually to reflect changes
+      setUser((prev) => ({ ...prev, displayName, photoURL }));
+    } catch (error) {
+      console.error("Update User Error:", error.message);
+      throw error;
+    }
+  }, []);
+
+  // Log in using Email/Password
+  const signIn = useCallback(
+    async (email, password) => {
+      setLoading(true);
+      try {
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        setUser(userCredential.user);
+        await fetchServerToken(userCredential.user, axiosPublic);
+        return userCredential;
+      } catch (error) {
+        console.error("Sign In Error:", error.message);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [axiosPublic]
+  );
 
   // Sign in with Google
-  const signInWithGoogle = () => {
+  const signInWithGoogle = useCallback(async () => {
     setLoading(true);
-    return signInWithPopup(auth, googleProvider);
-  };
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      setUser(result.user);
+      await fetchServerToken(result.user, axiosPublic);
+      return result;
+    } catch (error) {
+      console.error("Google Sign-In Error:", error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [axiosPublic]);
 
-  // Listen for auth state changes
+  // Sign in with Facebook
+  const signInWithFacebook = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, facebookProvider);
+      setUser(result.user);
+      await fetchServerToken(result.user, axiosPublic);
+      return result;
+    } catch (error) {
+      console.error("Facebook Sign-In Error:", error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [axiosPublic]);
+
+  // Logout user and reset auth state
+  const logOut = useCallback(async () => {
+    setLoading(true);
+    try {
+      await signOut(auth);
+      resetUserState();
+      return { success: true, message: "Logout successful" };
+    } catch (error) {
+      console.error("Logout Error:", error.message);
+      return { success: false, message: error.message };
+    } finally {
+      setLoading(false);
+    }
+  }, [resetUserState]);
+
+  // Check Firebase auth + local token on mount
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false); // Stop loading once user is set
+      const authData = JSON.parse(localStorage.getItem("authData"));
+      const now = Date.now();
+
+      if (authData && authData.expiry > now && currentUser) {
+        setUser(currentUser);
+      } else {
+        resetUserState();
+      }
+
+      setLoading(false);
     });
-    return () => unSubscribe(); // Cleanup subscription on unmount
-  }, []);
+
+    return () => unSubscribe();
+  }, [resetUserState]);
+
+  // Auto-logout when token expires (check every 1 min)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const authData = JSON.parse(localStorage.getItem("authData"));
+      if (authData && authData.expiry <= Date.now()) {
+        logOut();
+      }
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [logOut]);
 
   // Provide auth info to the rest of the app
   const authInfo = {
     user,
-    loading,
-    createUser,
     logOut,
     signIn,
-    signInWithGoogle,
+    loading,
     updateUser,
+    createUser,
+    signInWithGoogle,
+    signInWithFacebook,
   };
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );
+};
+
+// Validate prop types
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default AuthProvider;

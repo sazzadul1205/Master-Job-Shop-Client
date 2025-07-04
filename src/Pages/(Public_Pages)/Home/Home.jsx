@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 // Hooks
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Shared
 import Loading from "../../../Shared/Loading/Loading";

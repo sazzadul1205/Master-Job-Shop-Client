@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
 // Assets
-import graduate from "../../../assets/HomePageBanner/graduate.png";
+import graduate from "../../../../assets/HomePageBanner/graduate.png";
 
 // Hooks
-import useAuth from "../../../Hooks/useAuth";
+import useAuth from "../../../../Hooks/useAuth";
 
 // Shared
 import CommonButton from "../../../../Shared/CommonButton/CommonButton";

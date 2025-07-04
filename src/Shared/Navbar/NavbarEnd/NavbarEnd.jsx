@@ -5,11 +5,11 @@ import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
 
 // Hooks
-import useAuth from "../../../../Hooks/useAuth";
-import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import useAuth from "../../../Hooks/useAuth";
+import useAxiosPublic from "../../..//Hooks/useAxiosPublic";
 
 // Shared
-import CommonButton from "../../../../Shared/CommonButton/CommonButton";
+import CommonButton from "../../CommonButton/CommonButton";
 
 const NavbarEnd = () => {
   const { user, logOut } = useAuth();

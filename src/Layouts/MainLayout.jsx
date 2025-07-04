@@ -1,8 +1,12 @@
-import { Outlet } from "react-router-dom";
-import Navbar from "../Pages/Shared/Navbar/Navbar";
-import Footer from "../Pages/Shared/Footer/Footer";
 import { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
+
+// Icons
 import { GoMoveToTop } from "react-icons/go";
+
+// Shared Components
+import Navbar from "../Shared/Navbar/Navbar";
+import Footer from "../Shared/Footer/Footer";
 
 const MainLayout = () => {
   const [showToTop, setShowToTop] = useState(false);
@@ -44,11 +48,11 @@ const MainLayout = () => {
         </div>
       )}
 
-      <Navbar></Navbar>
+      <Navbar />
 
-      <Outlet></Outlet>
+      <Outlet />
 
-      <Footer></Footer>
+      <Footer />
     </div>
   );
 };

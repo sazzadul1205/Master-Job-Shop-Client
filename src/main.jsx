@@ -16,7 +16,7 @@ import MainLayout from "./Layouts/MainLayout";
 
 // Public Pages
 import Home from "./Pages/(Public_Pages)/Home/Home";
-
+import Login from "./Pages/(Auth_Pages)/Login/Login";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +30,9 @@ createRoot(document.getElementById("root")).render(
             <Route element={<MainLayout />}>
               {/* Home Pages Link */}
               <Route path="/" element={<Home />} />
+
+              {/* Auth Pages */}
+              <Route path="/Login" element={<Login />} />
             </Route>
           </Routes>
         </BrowserRouter>

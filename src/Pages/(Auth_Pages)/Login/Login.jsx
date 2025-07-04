@@ -145,7 +145,7 @@ const Login = () => {
   };
 
   return (
-    <section className="bg-gradient-to-br from-blue-500 to-blue-100">
+    <section className="bg-gradient-to-br from-blue-500 to-blue-100"  >
       <div className="flex flex-col items-center justify-center lg:px-6 py-8 mx-auto md:min-h-screen pt-28 md:pt-80 lg:pt-0 lg:py-0">
         <div className=" md:w-1/2 lg:w-1/4 h-auto bg-gradient-to-br from-blue-500 to-blue-200 rounded-xl shadow-xl hover:shadow-2xl mb-0 md:mb-36 lg:mb-0 p-6 border-2 border-blue-700">
           {/* Form */}

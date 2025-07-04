@@ -1,8 +1,7 @@
-
 const Loading = () => {
   return (
-    <div style={styles.overlay}>
-      <svg viewBox="0 0 100 100" style={styles.svg}>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-l from-blue-400 to-blue-600 pointer-events-none">
+      <svg viewBox="0 0 100 100" className="w-[150px] h-[150px]">
         <g
           fill="none"
           stroke="#fff"
@@ -75,26 +74,6 @@ const Loading = () => {
       </svg>
     </div>
   );
-};
-
-const styles = {
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#000",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 9999,
-    pointerEvents: "none", // ensures it doesn't block clicks if needed
-  },
-  svg: {
-    width: "150px",
-    height: "150px",
-  },
 };
 
 export default Loading;

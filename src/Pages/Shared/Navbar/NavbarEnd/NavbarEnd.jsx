@@ -107,9 +107,9 @@ const NavbarEnd = () => {
             <CommonButton
               text="Login"
               bgColor="white"
-              textColor="text-black"
-              className="text-md  playfair shadow-2xl"
-              px="px-16"
+              textColor="text-blue-700"
+              className="playfair shadow hover:shadow-2xl font-semibold"
+              px="px-16"  
               py="py-2"
               borderRadius="rounded-lg"
             />

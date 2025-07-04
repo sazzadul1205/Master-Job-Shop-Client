@@ -1,8 +1,12 @@
 import graduate from "../../../assets/HomePageBanner/graduate.png";
 import CommonButton from "../../Shared/CommonButton/CommonButton";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
+
+import useAuth from "../../../Hooks/useAuth";
 
 const HomeBanners = () => {
+  const { user } = useAuth();
+
   return (
     <section className="relative bg-gradient-to-l from-blue-400 to-blue-600 text-white flex items-center min-h-screen ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between w-full">
@@ -24,23 +28,42 @@ const HomeBanners = () => {
                 px="px-6"
                 py="py-3"
                 borderRadius="rounded-lg"
-                className="shadow hover:bg-gray-100"
+                className="shadow hover:shadow-2xl "
                 type="button"
               />
             </Link>
 
-            <Link to={"/Jobs"}>
-              <CommonButton
-                text="Get Started"
-                textColor="text-white"
-                bgColor=""
-                px="px-6"
-                py="py-3"
-                borderRadius="rounded-lg"
-                className="border border-white hover:bg-white hover:text-blue-700"
-                type="button"
-              />
-            </Link>
+            {!user && (
+              <Link to="/Login">
+                <CommonButton
+                  text="Get Started"
+                  textColor="text-white"
+                  bgColor=""
+                  px="px-6"
+                  py="py-3"
+                  borderRadius="rounded-lg"
+                  className="border border-white hover:bg-white hover:text-blue-700 
+               transition-all duration-200 delay-100 transform 
+               hover:scale-105 animate-fade-in-slide"
+                  type="button"
+                />
+              </Link>
+            )}
+
+            {user && (
+              <Link to="/Login">
+                <CommonButton
+                  text="Explore Gigs"
+                  textColor="text-white"
+                  bgColor=""
+                  px="px-6"
+                  py="py-3"
+                  borderRadius="rounded-lg"
+                  className="border border-white hover:bg-white hover:text-blue-700"
+                  type="button"
+                />
+              </Link>
+            )}
           </div>
         </div>
 

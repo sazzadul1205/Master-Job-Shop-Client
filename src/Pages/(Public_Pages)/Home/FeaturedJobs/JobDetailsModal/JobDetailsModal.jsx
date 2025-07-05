@@ -42,12 +42,40 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
 
   // Loading
   if (SelectedJobIsLoading) {
-    return <Loading />;
+    return (
+      <div className="min-w-5xl max-h-[90vh]">
+        {/* Close Button */}
+        <div
+          onClick={() => {
+            setSelectedJobID("");
+            document.getElementById("Job_Details_Modal")?.close();
+          }}
+          className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
+        >
+          <ImCross className="text-xl text-black hover:text-red-500" />
+        </div>
+        <Loading />
+      </div>
+    );
   }
 
   // Error
   if (SelectedJobError) {
-    return <Error />;
+    return (
+      <div className="min-w-5xl max-h-[90vh]">
+        {/* Close Button */}
+        <div
+          onClick={() => {
+            setSelectedJobID("");
+            document.getElementById("Job_Details_Modal")?.close();
+          }}
+          className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
+        >
+          <ImCross className="text-xl text-black hover:text-red-500" />
+        </div>
+        <Error />
+      </div>
+    );
   }
 
   // No Data Fetched

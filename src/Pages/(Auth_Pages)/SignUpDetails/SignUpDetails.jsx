@@ -1,7 +1,152 @@
 import CommonButton from "../../../Shared/CommonButton/CommonButton";
 import ImageCropper from "./ImageCropper/ImageCropper";
 
+// Import Packages
+import Swal from "sweetalert2";
+import PropTypes from "prop-types";
+import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+
+// import Phone
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import useAuth from "../../../Hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import { useState } from "react";
+
 const SignUpDetails = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const axiosPublic = useAxiosPublic();
+
+  // State hooks for form data and image
+  const [selectedGoals, setSelectedGoals] = useState([]);
+  const [profileImage, setProfileImage] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Query to check if the user already exists
+  const {
+    data: UserExistCheck,
+    isLoading: UserExistsCheckIsLoading,
+    error: UserExistsCheckError,
+  } = useQuery({
+    queryKey: ["UserExistsCheck"],
+    queryFn: () =>
+      axiosPublic
+        .get(`/Users/CheckEmail?email=${user?.email}`)
+        .then((res) => res.data),
+  });
+
+  // React Hook Form setup
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  // Confirm before creating the account
+  const confirmAndSubmit = async (data) => {
+    const confirmation = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to create your account with the provided details?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, create my account",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!confirmation.isConfirmed) {
+      return; // If the user cancels, stop the process
+    }
+
+    // Proceed with account creation if confirmed
+    onSubmit(data);
+  };
+
+  // Handle form submission
+  const onSubmit = async (data) => {
+    // Set loading to true when submission starts
+    setLoading(true);
+
+    let uploadedImageUrl = null;
+
+    // Image upload logic
+    if (profileImage) {
+      const formData = new FormData();
+      formData.append("image", profileImage);
+      try {
+        const res = await axiosPublic.post(Image_Hosting_API, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        uploadedImageUrl = res.data.data.display_url; // Get image URL
+      } catch (error) {
+        setLoading(false); // Stop loading on error
+        Swal.fire({
+          icon: "error",
+          title: "Image Upload Failed",
+          text: `Failed to upload the image. ${
+            error?.response?.data?.message ||
+            error.message ||
+            "Please try again."
+          }`,
+        });
+        return;
+      }
+    }
+
+    // Prepare form data for submission
+    const creationTime = new Date().toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+
+    const formDataWithImage = {
+      email: user.email,
+      phone: phoneNumber,
+      ...data,
+      profileImage: uploadedImageUrl,
+      selectedGoals,
+      creationTime,
+      role: "Member",
+      tier: "Bronze",
+      description: "No description provided.",
+      backgroundImage: "https://via.placeholder.com/1920x1080",
+      socialLinks: {},
+      badges: [],
+      attendingTrainer: [],
+      attendingClasses: [],
+      awards: [],
+      recentWorkouts: [],
+    };
+
+    // Post the data to the server
+    try {
+      await axiosPublic.post("/Users", formDataWithImage);
+      setLoading(false);
+      navigate("/", { replace: true });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error) {
+      console.error("Failed to create the account:", error);
+      setLoading(false);
+      Swal.fire({
+        icon: "error",
+        title: "Account Creation Failed",
+        text:
+          error.response?.data?.message ||
+          "Failed to create the account. Please try again.",
+      });
+    }
+  };
+
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-100">
       {/* Login card container */}
@@ -61,10 +206,6 @@ const SignUpDetails = () => {
                 type="date"
               />
               <GenderSelectField register={register} errors={errors} />
-              <FitnessGoalsSelector
-                selectedGoals={selectedGoals}
-                setSelectedGoals={setSelectedGoals}
-              />
             </div>
           </div>
 
@@ -117,3 +258,40 @@ export const InputField = ({
     )}
   </div>
 );
+
+// Add PropTypes for InputField
+InputField.propTypes = {
+  label: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
+  register: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string,
+};
+
+// Reusable Gender Select Field Component
+export const GenderSelectField = ({ register, errors }) => (
+  <div>
+    <label className="block text-black font-semibold text-xl pb-2">
+      Gender
+    </label>
+    <select
+      className="input w-full text-black bg-white rounded-lg shadow-lg hover:shadow-xl focus:shadow-xl"
+      {...register("gender", { required: "Gender is required" })}
+    >
+      <option value="">Select</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+      <option value="other">Other</option>
+    </select>
+    {errors.gender && (
+      <p className="text-red-500 text-sm mt-1">{errors.gender.message}</p>
+    )}
+  </div>
+);
+
+// Add PropTypes for GenderSelectField
+GenderSelectField.propTypes = {
+  register: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired,
+};

@@ -1,221 +1,196 @@
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+// Packages
 import { useForm } from "react-hook-form";
-import Logo from "../../../assets/Logo.png";
 import Swal from "sweetalert2";
-import { useContext, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../../Provider/AuthProvider";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Icons
+import { FiEye, FiEyeOff } from "react-icons/fi";
+
+// Shared
+import SocialLogins from "../../../Shared/SocialLogins/SocialLogins";
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
+
+// Hooks
+import useAuth from "../../../Hooks/useAuth";
 
 const SignUp = () => {
-  const { createUser, updateUser } = useContext(AuthContext);
-  const location = useLocation();
+  const { createUser } = useAuth();
   const navigate = useNavigate();
-  const axiosPublic = useAxiosPublic();
-  const [loading, setLoading] = useState(false); // New state for loading
+
+  // Loading state for form submission
+  const [loading, setLoading] = useState(false);
+
+  // Inside the component
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Form validation & state handling using react-hook-form
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+    watch,
   } = useForm();
 
-  const currentDate = new Date();
-  const formattedDateTime = currentDate.toLocaleString("en-US", {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  });
+  // Watch password input to validate confirm password
+  const password = watch("password");
 
+  // Function to handle form submission
   const onSubmit = (data) => {
-    const { email, password, displayName, photoURL } = data;
+    const { email, password } = data;
+    setLoading(true); // Start loading
 
-    const UserData = {
-      displayName: displayName,
-      email: email,
-      role: "member",
-      createdDate: formattedDateTime,
-      photoURL: photoURL,
-    };
-
-    // Validate password
-    if (password.length < 6) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Password must be at least 6 characters long",
-      });
-      return;
-    } else if (!/[A-Z]/.test(password)) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Password must contain at least one capital letter",
-      });
-      return;
-    }
-
-    setLoading(true); // Set loading to true when form is submitted
-
-    // Create User
+    // Create user account
     createUser(email, password)
-      .then((res) => {
-        const user = res.user;
-        console.log(user);
-        // Update user with additional data (displayName, photoURL)
-        updateUser(displayName, photoURL)
-          .then(() => {
-            // Post user data to backend
-            axiosPublic.post("/Users", UserData).then((res) => {
-              if (res.data.insertedId) {
-                showSuccessAlert();
-                reset();
-                navigate(location?.state ? location.state : "/");
-              }
-              setLoading(false); // Set loading to false after submission
-            });
-          })
-          .catch((error) => {
-            showErrorAlert("Failed to update user profile.");
-            setLoading(false); // Set loading to false on error
-            console.log(error);
-          });
+      .then(() => {
+        setLoading(false); // Stop loading
+        navigate("/SignUp/Details"); // Redirect to details page after successful signup
       })
       .catch((error) => {
-        showErrorAlert(error.message);
-        setLoading(false); // Set loading to false on error
+        setLoading(false); // Stop loading
+
+        // Show error alert
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: error.message,
+          confirmButtonColor: "#F72C5B",
+        });
       });
   };
 
   return (
-    <section className="bg-gradient-to-br from-blue-500 to-blue-100">
-      <div className="flex flex-col items-center justify-center md:px-6 py-8 mx-auto md:h-screen pt-28 md:pt-80 lg:pt-0 lg:py-0">
-        <div className=" md:w-1/2 lg:w-1/4 h-auto bg-gradient-to-br from-blue-500 to-blue-200 rounded-xl shadow-xl hover:shadow-2xl mb-0 md:mb-36 lg:mb-0 p-6 border-2 border-blue-700">
-          {/* Form */}
-          <div className="flex items-center text-center mx-auto w-[250px]">
-            <img src={Logo} alt="Logo.png" className="w-16" />
-            <p className="text-2xl text-white font-bold">Master Job Shop</p>
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-100">
+      {/* Login card container */}
+      <div className="w-full max-w-lg rounded-2xl shadow-md px-3 py-10 md:px-10 md:py-10 bg-linear-to-bl from-blue-500/80 to-blue-100/80">
+        {/* Heading section */}
+        <div className="pb-5">
+          <h4 className="text-3xl playfair font-bold text-center text-white">
+            Sign Up
+          </h4>
+        </div>
+
+        {/* Sign-up form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Email input field */}
+          <div>
+            <label className="block text-gray-700 font-semibold text-xl pb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="name@mail.com"
+              className="input w-full text-black bg-white shadow-lg hover:shadow-xl"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: "Invalid email format",
+                },
+              })}
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <p className="text-center text-2xl font-bold text-black pt-2 mb-6">
-              Please Sign Up
-            </p>
-
-            {/* Name */}
-            <div className="mb-6">
-              <label className="block mb-1 text-gray-700 text-xl font-semibold">
-                Your Name
-              </label>
+          {/* Password input field */}
+          <div>
+            <label className="block text-gray-700 font-semibold text-xl pb-2">
+              Password
+            </label>
+            <div className="relative">
               <input
-                type="text"
-                {...register("displayName", { required: "Name is required" })}
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                placeholder="John Doe"
-              />
-              {errors.displayName && (
-                <p className="text-red-500">{errors.displayName.message}</p>
-              )}
-            </div>
-
-            {/* Email */}
-            <div className="mb-6">
-              <label className="block mb-1 text-gray-700 text-xl font-semibold">
-                Email
-              </label>
-              <input
-                type="email"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                    message: "Invalid email format",
-                  },
-                })}
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                placeholder="name@mail.com"
-              />
-              {errors.email && (
-                <p className="text-red-500">{errors.email.message}</p>
-              )}
-            </div>
-
-            {/* Image */}
-            <div className="mb-6">
-              <label className="block mb-1 text-gray-700 text-xl font-semibold">
-                Image URL
-              </label>
-              <input
-                type="url"
-                {...register("photoURL")}
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                placeholder="https://i.ibb.co/p3HZ1Kb/ubisoft.png"
-              />
-            </div>
-
-            {/* Password */}
-            <div className="mb-6">
-              <label className="block mb-1 text-gray-700 text-xl font-semibold">
-                Password
-              </label>
-              <input
-                type="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="********"
+                className="input w-full text-black bg-white shadow-lg hover:shadow-xl pr-10 cursor-pointer"
                 {...register("password", {
                   required: "Password is required",
-                  minLength: { value: 6, message: "At least 6 characters" },
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters long",
+                  },
                 })}
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                placeholder="********"
               />
-              {errors.password && (
-                <p className="text-red-500">{errors.password.message}</p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className={`w-full ${
-                loading
-                  ? "bg-blue-300 cursor-not-allowed"
-                  : "bg-blue-500 hover:bg-blue-300"
-              } text-white font-bold py-3 px-4 rounded`}
-              disabled={loading} // Disable the button while loading
-            >
-              {loading ? "Signing Up..." : "Sign Up"} {/* Change button text */}
-            </button>
-
-            <p className="text-lg font-light text-black mt-2">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 focus:outline-none"
+                tabIndex={-1}
               >
-                Login
-              </Link>
-            </p>
-          </form>
+                {showPassword ? <FiEye size={20} /> : <FiEyeOff size={20} />}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          {/* Confirm password field */}
+          <div>
+            <label className="block text-gray-700 font-semibold text-xl pb-2">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              placeholder="********"
+              className="input w-full text-black bg-white shadow-lg hover:shadow-xl"
+              {...register("confirmPassword", {
+                required: "Confirm Password is required",
+                validate: (value) =>
+                  value === password || "Passwords do not match",
+              })}
+            />
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
+
+          {/* SignUp button */}
+          <CommonButton
+            type="submit"
+            text="Sign Up"
+            isLoading={loading}
+            loadingText="Signing Up..."
+            bgColor="white"
+            textColor="text-blue-700"
+            borderRadius="rounded-xl text-xl"
+            width="full"
+            px="px-5"
+            py="py-2"
+            className="mt-5 playfair"
+            disabled={loading}
+          />
+
+          {/* Login link for existing users */}
+          <p className="font-semibold text-black pt-2">
+            Already have an Account?{" "}
+            <Link
+              to={"/Login"}
+              className="text-[#F72C5B] font-bold hover:underline"
+            >
+              Login
+            </Link>
+          </p>
+        </form>
+
+        {/* Divider for social login options */}
+        <div className="divider divider-neutral text-black font-semibold">
+          OR
         </div>
+
+        {/* Social login component */}
+        <SocialLogins />
       </div>
     </section>
   );
 };
 
 export default SignUp;
-
-const showSuccessAlert = () => {
-  Swal.fire({
-    icon: "success",
-    title: "Sign Up Successful!",
-    text: "You are now a user. Welcome!",
-  });
-};
-
-const showErrorAlert = (errorMessage) => {
-  Swal.fire({
-    icon: "error",
-    title: "Sign Up Failed",
-    text: errorMessage,
-  });
-};

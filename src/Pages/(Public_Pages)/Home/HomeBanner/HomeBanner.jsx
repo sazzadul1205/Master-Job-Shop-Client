@@ -13,7 +13,7 @@ const HomeBanners = () => {
   const { user } = useAuth();
 
   return (
-    <section className="relative bg-gradient-to-l from-blue-400 to-blue-600 text-white flex items-center min-h-screen ">
+    <section className="relative bg-gradient-to-tl from-blue-400 to-blue-600 text-white flex items-center min-h-screen ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between w-full">
         {/* Left Text Content */}
         <div className="max-w-xl text-center md:text-left">

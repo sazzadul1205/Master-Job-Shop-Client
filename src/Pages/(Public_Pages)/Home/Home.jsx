@@ -12,6 +12,7 @@ import HomeBanners from "./HomeBanner/HomeBanner";
 
 // JSON
 import JobsData from "../../../JSON/Trainer_Data.json";
+import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();

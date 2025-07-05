@@ -16,7 +16,6 @@ import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 // Shared
 import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
-import CommonButton from "../../../../../Shared/CommonButton/CommonButton";
 
 // Format Salary Function
 const formatSalary = (min, max, currency) => {
@@ -53,37 +52,7 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
 
   // No Data Fetched
   if (!SelectedJobData) {
-    return (
-      <div className="modal-box min-w-5xl relative bg-white rounded-xl shadow-lg max-w-3xl w-full mx-auto overflow-y-auto max-h-[90vh] p-6 flex items-center justify-center">
-        <div className="text-center space-y-2">
-          {/* Title */}
-          <h2 className="text-xl font-bold text-red-600">Job Not Found</h2>
-
-          {/* Dub Title */}
-          <p className="text-gray-600 text-sm">
-            This job is no longer available or an error occurred while
-            retrieving the details.
-          </p>
-
-          {/* Refetch Button */}
-          <CommonButton
-            clickEvent={() => {
-              setSelectedJobID("");
-              document.getElementById("Jobs_Details_Modal")?.close();
-            }}
-            text="Close"
-            bgColor="white"
-            textColor="text-black"
-            px="px-6"
-            py="py-2"
-            icon={<ImCross />}
-            iconSize="text-sm"
-            borderRadius="rounded-md"
-            className="mt-4"
-          />
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (

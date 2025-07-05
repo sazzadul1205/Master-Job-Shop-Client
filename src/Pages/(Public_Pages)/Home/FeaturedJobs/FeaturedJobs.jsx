@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import JobCard from "../../../../Shared/JobCard/JobCard";
 import JobDetailsModal from "./JobDetailsModal/JobDetailsModal";
+import PropTypes from "prop-types";
 
 const FeaturedJobs = ({ JobsData }) => {
   const [selectedJobID, setSelectedJobID] = useState(null);
@@ -50,6 +51,14 @@ const FeaturedJobs = ({ JobsData }) => {
       </dialog>
     </section>
   );
+};
+
+FeaturedJobs.propTypes = {
+  JobsData: PropTypes.arrayOf(
+    PropTypes.shape({
+      slug: PropTypes.string.isRequired,
+    })
+  ),
 };
 
 export default FeaturedJobs;

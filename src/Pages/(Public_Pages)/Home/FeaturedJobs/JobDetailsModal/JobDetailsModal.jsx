@@ -2,6 +2,10 @@ import { ImCross } from "react-icons/im";
 import PropTypes from "prop-types";
 import DefaultCompanyLogo from "../../../../..//assets/DefaultCompanyLogo.jpg";
 import { Link } from "react-router-dom";
+import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../../../../../Shared/Loading/Loading";
+import Error from "../../../../../Shared/Error/Error";
 
 const formatSalary = (min, max, currency) => {
   if (!min && !max) return "Not specified";
@@ -11,9 +15,20 @@ const formatSalary = (min, max, currency) => {
 };
 
 const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
-  const job = selectedJobID; // Assuming it's the full job object
+  const axiosPublic = useAxiosPublic();
 
-  if (!job) {
+  // Fetching Selected Job Data
+  const {
+    data: SelectedJobData,
+    isLoading: SelectedJobIsLoading,
+    error: SelectedJobError,
+  } = useQuery({
+    queryKey: ["SelectedJobData"],
+    queryFn: () =>
+      axiosPublic.get(`/Jobs?id=${selectedJobID}`).then((res) => res.data),
+  });
+
+  if (!SelectedJobData) {
     return (
       <div className="modal-box min-w-5xl relative bg-white rounded-xl shadow-lg max-w-3xl w-full mx-auto overflow-y-auto max-h-[90vh] p-6 flex items-center justify-center">
         <div className="text-center space-y-2">
@@ -36,6 +51,16 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
     );
   }
 
+  // Loading
+  if (SelectedJobIsLoading) {
+    return <Loading />;
+  }
+
+  // Error
+  if (SelectedJobError) {
+    return <Error />;
+  }
+
   return (
     <div className="modal-box min-w-5xl relative bg-white rounded-xl shadow-lg max-w-3xl w-full mx-auto overflow-y-auto max-h-[90vh] p-6">
       {/* Floating Close Button */}
@@ -53,47 +78,74 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
       <div className="pt-10 space-y-6">
         {/* Header */}
         <div className="flex items-start gap-4">
+          {/* Company Icon */}
           <img
-            src={job.company.logo || DefaultCompanyLogo}
+            src={SelectedJobData?.company.logo || DefaultCompanyLogo}
             onError={(e) => (e.target.src = DefaultCompanyLogo)}
-            alt={job.company.name}
+            alt={SelectedJobData?.company.name}
             className="w-16 h-16 object-contain"
           />
+
+          {/* Company Information */}
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">{job.title}</h2>
+            {/* Title */}
+            <h2 className="text-2xl font-bold text-gray-800">
+              {SelectedJobData?.title}
+            </h2>
+
+            {/* Name & Industries */}
             <p className="text-gray-600 text-sm">
-              {job.company.name} • {job.company.industry}
+              {SelectedJobData?.company.name} •{" "}
+              {SelectedJobData?.company.industry}
             </p>
-            <p className="text-gray-600 text-sm">{job.location}</p>
+
+            {/* Location */}
+            <p className="text-gray-600 text-sm">{SelectedJobData?.location}</p>
           </div>
         </div>
 
         {/* Meta Info */}
         <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+          {/* Type */}
           <p>
-            <strong>Type:</strong> {job.type}
+            <strong>Type:</strong> {SelectedJobData?.type}
           </p>
+
+          {/* Level */}
           <p>
-            <strong>Level:</strong> {job.level}
+            <strong>Level:</strong> {SelectedJobData?.level}
           </p>
+
+          {/* Experience */}
           <p>
-            <strong>Experience:</strong> {job.experience}
+            <strong>Experience:</strong> {SelectedJobData?.experience}
           </p>
+
+          {/* Mode */}
           <p>
             <strong>Mode:</strong>{" "}
-            {job.remote ? "Remote" : job.hybrid ? "Hybrid" : "Onsite"}
+            {SelectedJobData?.remote
+              ? "Remote"
+              : SelectedJobData?.hybrid
+              ? "Hybrid"
+              : "Onsite"}
           </p>
+
+          {/* Timezone */}
           <p>
-            <strong>Timezone:</strong> {job.timezoneOverlap || "Not specified"}
+            <strong>Timezone:</strong>{" "}
+            {SelectedJobData?.timezoneOverlap || "Not specified"}
           </p>
+
+          {/* Salary */}
           <p>
             <strong>Salary:</strong>{" "}
             {formatSalary(
-              job.salaryRange.min,
-              job.salaryRange.max,
-              job.salaryRange.currency
+              SelectedJobData?.salaryRange.min,
+              SelectedJobData?.salaryRange.max,
+              SelectedJobData?.salaryRange.currency
             )}{" "}
-            {job.isNegotiable && (
+            {SelectedJobData?.isNegotiable && (
               <span className="text-green-600">(Negotiable)</span>
             )}
           </p>
@@ -104,17 +156,19 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
           <h3 className="text-lg font-semibold text-gray-800 mb-1">
             Job Description
           </h3>
-          <p className="text-sm text-gray-700">{job.description}</p>
+          <p className="text-sm text-gray-700">{SelectedJobData?.description}</p>
         </section>
 
         {/* Responsibilities */}
-        {job.responsibilities?.length > 0 && (
+        {SelectedJobData?.responsibilities?.length > 0 && (
           <section>
             <h3 className="text-lg font-semibold text-gray-800 mb-1">
               Responsibilities
             </h3>
+
+            {/* Responsibility */}
             <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
-              {job.responsibilities.map((r, i) => (
+              {SelectedJobData?.responsibilities.map((r, i) => (
                 <li key={i}>{r}</li>
               ))}
             </ul>
@@ -122,13 +176,15 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
         )}
 
         {/* Requirements */}
-        {job.requirements?.length > 0 && (
+        {SelectedJobData?.requirements?.length > 0 && (
           <section>
             <h3 className="text-lg font-semibold text-gray-800 mb-1">
               Requirements
             </h3>
+
+            {/* Requirement */}
             <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
-              {job.requirements.map((r, i) => (
+              {SelectedJobData?.requirements.map((r, i) => (
                 <li key={i}>{r}</li>
               ))}
             </ul>
@@ -136,13 +192,15 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
         )}
 
         {/* Nice to Have */}
-        {job.niceToHave?.length > 0 && (
+        {SelectedJobData?.niceToHave?.length > 0 && (
           <section>
             <h3 className="text-lg font-semibold text-gray-800 mb-1">
               Nice to Have
             </h3>
+
+            {/* Nice To Have */}
             <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
-              {job.niceToHave.map((item, i) => (
+              {SelectedJobData?.niceToHave.map((item, i) => (
                 <li key={i}>{item}</li>
               ))}
             </ul>
@@ -150,11 +208,13 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
         )}
 
         {/* Skills */}
-        {job.skills?.length > 0 && (
+        {SelectedJobData?.skills?.length > 0 && (
           <section>
             <h3 className="text-lg font-semibold text-gray-800 mb-1">Skills</h3>
+
+            {/* Required Skills */}
             <div className="flex flex-wrap gap-2">
-              {job.skills.map((skill, i) => (
+              {SelectedJobData?.skills.map((skill, i) => (
                 <span
                   key={i}
                   className="bg-blue-100 text-blue-700 px-3 py-1 text-xs rounded-full"
@@ -168,25 +228,28 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
 
         {/* Benefits and Perks */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {job.benefits?.length > 0 && (
+          {/* Benefits */}
+          {SelectedJobData?.benefits?.length > 0 && (
             <section>
               <h3 className="text-lg font-semibold text-gray-800 mb-1">
                 Benefits
               </h3>
               <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                {job.benefits.map((b, i) => (
+                {SelectedJobData?.benefits.map((b, i) => (
                   <li key={i}>{b}</li>
                 ))}
               </ul>
             </section>
           )}
-          {job.perks?.length > 0 && (
+
+          {/* Perks */}
+          {SelectedJobData?.perks?.length > 0 && (
             <section>
               <h3 className="text-lg font-semibold text-gray-800 mb-1">
                 Perks
               </h3>
               <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                {job.perks.map((p, i) => (
+                {SelectedJobData?.perks.map((p, i) => (
                   <li key={i}>{p}</li>
                 ))}
               </ul>
@@ -199,12 +262,19 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
           <h3 className="text-lg font-semibold text-gray-800 mb-1">
             About the Company
           </h3>
+          {/* Description */}
           <p className="text-sm text-gray-700 mb-1">
-            {job.company.description}
+            {SelectedJobData?.company.description}
           </p>
-          <p className="text-sm text-gray-600">Size: {job.company.size}</p>
+
+          {/* Size */}
+          <p className="text-sm text-gray-600">
+            Size: {SelectedJobData?.company.size}
+          </p>
+
+          {/* Website Links */}
           <a
-            href={job.company.website}
+            href={SelectedJobData?.company.website}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 text-sm hover:underline"
@@ -218,18 +288,22 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
           <h3 className="text-lg font-semibold text-gray-800 mb-1">
             How to Apply
           </h3>
+          {/* Application Email */}
           <p className="text-sm text-gray-700 mb-1">
             Send your application to:{" "}
             <a
-              href={`mailto:${job.application.applyEmail}`}
+              href={`mailto:${SelectedJobData?.application.applyEmail}`}
+              target="_blank"
               className="text-blue-600 hover:underline"
             >
-              {job.application.applyEmail}
+              {SelectedJobData?.application.applyEmail}
             </a>
           </p>
+
+          {/* Apply Now Button */}
           <Link
             to={`/external-apply?url=${encodeURIComponent(
-              job.application.applyUrl
+              SelectedJobData?.application.applyUrl
             )}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -237,9 +311,11 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
           >
             Apply Now
           </Link>
+
+          {/* Dead Line */}
           <p className="text-xs text-gray-500 mt-2">
             Deadline:{" "}
-            {new Date(job.application.applicationDeadline).toLocaleDateString()}
+            {new Date(SelectedJobData?.application.applicationDeadline).toLocaleDateString()}
           </p>
         </section>
       </div>
@@ -247,6 +323,7 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
   );
 };
 
+// Prop Validation
 JobDetailsModal.propTypes = {
   selectedJobID: PropTypes.object,
   setSelectedJobID: PropTypes.func.isRequired,

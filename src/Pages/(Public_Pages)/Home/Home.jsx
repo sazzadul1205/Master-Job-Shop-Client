@@ -5,21 +5,22 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Shared
+import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 
 // Components
 import HomeBanners from "./HomeBanner/HomeBanner";
 
-// JSON
-import JobsData from "../../../JSON/Trainer_Data.json";
+// Components
 import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
+
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
 
   // Fetching Jobs Data
   const {
-    // data: JobsData,
+    data: JobsData,
     isLoading: JobsIsLoading,
     error: JobsError,
   } = useQuery({
@@ -117,7 +118,7 @@ const Home = () => {
     queryFn: () => axiosPublic.get(`/Testimonials`).then((res) => res.data),
   });
 
-  // Loading and error states (render below hooks)
+  // Loading
   if (
     InsightsDataIsLoading ||
     TestimonialsIsLoading ||
@@ -133,6 +134,7 @@ const Home = () => {
     return <Loading />;
   }
 
+  // Error
   if (
     TestimonialsError ||
     InsightsDataError ||
@@ -145,19 +147,7 @@ const Home = () => {
     JobsError ||
     GigsError
   ) {
-    return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 to-white">
-        <p className="text-center text-red-500 font-bold text-3xl mb-8">
-          Something went wrong. Please reload the page.
-        </p>
-        <button
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
-      </div>
-    );
+    return <Error />;
   }
 
   console.log("TestimonialsData", TestimonialsData);
@@ -175,6 +165,7 @@ const Home = () => {
     <>
       <HomeBanners />
       <FeaturedJobs JobsData={JobsData} />
+
       {/* <FeaturedGigs PostedGigsData={PostedGigsData} />
       <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
       <FeaturedSalaryInsights SalaryInsightData={SalaryInsightData} />

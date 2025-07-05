@@ -39,16 +39,21 @@ const SignUp = () => {
   // Function to handle form submission
   const onSubmit = (data) => {
     const { email, password } = data;
-    setLoading(true); // Start loading
+    // Start loading
+    setLoading(true);
 
     // Create user account
     createUser(email, password)
       .then(() => {
-        setLoading(false); // Stop loading
-        navigate("/SignUp/Details"); // Redirect to details page after successful signup
+        // Stop loading
+        setLoading(false);
+
+        // Redirect to details page after successful signup
+        navigate("/SignUp/Details");
       })
       .catch((error) => {
-        setLoading(false); // Stop loading
+        // Stop loading
+        setLoading(false);
 
         // Show error alert
         Swal.fire({

@@ -35,6 +35,7 @@ createRoot(document.getElementById("root")).render(
               {/* Auth Pages */}
               <Route path="/Login" element={<Login />} />
               <Route path="/SignUp" element={<SignUp />} />
+              <Route path="/SignUp/Details" element={<SignUp />} />
             </Route>
           </Routes>
         </BrowserRouter>

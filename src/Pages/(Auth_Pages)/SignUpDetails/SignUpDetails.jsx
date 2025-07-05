@@ -18,6 +18,7 @@ import ErrorPage from "../../../Shared/ErrorPage/ErrorPage";
 // import Phone
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { FaGenderless, FaMars, FaVenus } from "react-icons/fa";
 
 // Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
@@ -51,6 +52,7 @@ const SignUpDetails = () => {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm();
 
   // Confirm before creating the account
@@ -183,13 +185,13 @@ const SignUpDetails = () => {
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-100">
       {/* Login card container */}
-      <div className="w-full max-w-lg rounded-2xl shadow-md px-3 py-10 md:px-10 md:py-10 bg-linear-to-bl from-blue-500/80 to-blue-100/80">
+      <div className="w-full max-w-4xl rounded-2xl shadow-md px-3 py-10 md:px-10 md:py-10 space-y-3 bg-linear-to-bl from-blue-500/80 to-blue-100/80">
         {/* Heading section */}
-        <div className="pb-5">
-          <h4 className="text-3xl playfair font-bold text-center text-white">
-            Details
-          </h4>
-        </div>
+        <h4 className="text-3xl playfair font-bold text-center text-white">
+          Details
+        </h4>
+
+        <div className="p-[2px] w-full bg-white" />
 
         {/* Forms */}
         <form onSubmit={handleSubmit(confirmAndSubmit)}>
@@ -197,19 +199,21 @@ const SignUpDetails = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-10 items-center">
             {/* Left Side Data */}
             <div className="space-y-4">
-              <div className="bg-white py-2 px-1 bg-linear-to-bl from-gray-100 to-gray-400">
-                {/* Title */}
-                <h3 className="text-black font-semibold text-xl">
-                  Trainer Profile
-                </h3>
+              {/* Title */}
+              <h3 className="text-black text-center font-semibold text-xl">
+                Trainer Profile
+              </h3>
 
-                {/* Cropper Component */}
-                <ImageCropper
-                  onImageCropped={setProfileImage}
-                  register={register}
-                  errors={errors}
-                />
-              </div>
+              {/* Cropper Component */}
+              <ImageCropper
+                onImageCropped={setProfileImage}
+                register={register}
+                errors={errors}
+              />
+            </div>
+
+            {/* Right Side Data */}
+            <div className="space-y-4">
               <InputField
                 label="Full Name"
                 placeholder="John Doe"
@@ -218,17 +222,19 @@ const SignUpDetails = () => {
                 name="fullName"
                 type="text"
               />
-            </div>
 
-            {/* Right Side Data */}
-            <div className="space-y-4">
-              <PhoneInput
-                country={"bd"}
-                value={phoneNumber}
-                onChange={setPhoneNumber}
-                inputClass="!w-full !bg-white !text-black !rounded-lg !shadow-lg "
-                inputStyle={{ width: "100%", height: "40px" }}
-              />
+              <div>
+                <label className="block text-black playfair font-semibold text-lg">
+                  Phone
+                </label>
+                <PhoneInput
+                  country={"bd"}
+                  value={phoneNumber}
+                  onChange={setPhoneNumber}
+                  inputClass="!w-full !bg-white !text-black !rounded-lg !shadow-lg "
+                  inputStyle={{ width: "100%", height: "40px" }}
+                />
+              </div>
 
               <InputField
                 label="Date of Birth"
@@ -277,7 +283,7 @@ export const InputField = ({
   type,
 }) => (
   <div>
-    <label className="block text-gray-700 font-semibold text-xl pb-2">
+    <label className="block text-black playfair font-semibold text-lg">
       {label}
     </label>
     <input
@@ -302,29 +308,64 @@ InputField.propTypes = {
   type: PropTypes.string,
 };
 
+import { useWatch } from "react-hook-form";
 // Reusable Gender Select Field Component
-export const GenderSelectField = ({ register, errors }) => (
-  <div>
-    <label className="block text-black font-semibold text-xl pb-2">
-      Gender
-    </label>
-    <select
-      className="input w-full text-black bg-white rounded-lg shadow-lg hover:shadow-xl focus:shadow-xl"
-      {...register("gender", { required: "Gender is required" })}
-    >
-      <option value="">Select</option>
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-      <option value="other">Other</option>
-    </select>
-    {errors.gender && (
-      <p className="text-red-500 text-sm mt-1">{errors.gender.message}</p>
-    )}
-  </div>
-);
+export const GenderSelectField = ({ register, errors }) => {
+  const selectedGender = useWatch({ control, name: "gender" });
+  return (
+    <div>
+      <label className="block text-black font-semibold text-xl pb-2">
+        Gender
+      </label>
+      <div className="flex flex-wrap gap-4">
+        {genderOptions.map(({ label, value, icon }) => (
+          <label
+            key={value}
+            className={`cursor-pointer border rounded-xl px-5 py-3 flex items-center gap-3 shadow-md transition-all
+              ${
+                selectedGender === value
+                  ? "bg-blue-100 border-blue-500 scale-105"
+                  : "bg-white border-gray-300 hover:bg-gray-100"
+              }`}
+          >
+            <input
+              type="radio"
+              value={value}
+              {...register("gender", { required: "Gender is required" })}
+              className="hidden"
+            />
+            <div className="text-2xl">{icon}</div>
+            <span className="text-base font-medium text-black">{label}</span>
+          </label>
+        ))}
+      </div>
+      {errors.gender && (
+        <p className="text-red-500 text-sm mt-2">{errors.gender.message}</p>
+      )}
+    </div>
+  );
+};
 
 // Add PropTypes for GenderSelectField
 GenderSelectField.propTypes = {
   register: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
 };
+
+const genderOptions = [
+  {
+    label: "Male",
+    value: "male",
+    icon: <FaMars className="text-blue-600" />,
+  },
+  {
+    label: "Female",
+    value: "female",
+    icon: <FaVenus className="text-pink-500" />,
+  },
+  {
+    label: "Other",
+    value: "other",
+    icon: <FaGenderless className="text-gray-600" />,
+  },
+];

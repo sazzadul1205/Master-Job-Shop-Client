@@ -8,12 +8,20 @@ import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 
 // import Phone
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 import useAuth from "../../../Hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useState } from "react";
+import Loading from "../../../Shared/Loading/Loading";
+import ErrorPage from "../../../Shared/ErrorPage/ErrorPage";
+
+// import Phone
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+
+// Constants for image hosting API
+const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
 
 const SignUpDetails = () => {
   const { user } = useAuth();
@@ -21,7 +29,6 @@ const SignUpDetails = () => {
   const axiosPublic = useAxiosPublic();
 
   // State hooks for form data and image
-  const [selectedGoals, setSelectedGoals] = useState([]);
   const [profileImage, setProfileImage] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
@@ -82,9 +89,13 @@ const SignUpDetails = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-        uploadedImageUrl = res.data.data.display_url; // Get image URL
+        // Get image URL
+        uploadedImageUrl = res.data.data.display_url;
       } catch (error) {
-        setLoading(false); // Stop loading on error
+        // Stop loading on error
+        setLoading(false);
+
+        // Error Message
         Swal.fire({
           icon: "error",
           title: "Image Upload Failed",
@@ -114,18 +125,9 @@ const SignUpDetails = () => {
       phone: phoneNumber,
       ...data,
       profileImage: uploadedImageUrl,
-      selectedGoals,
       creationTime,
       role: "Member",
-      tier: "Bronze",
       description: "No description provided.",
-      backgroundImage: "https://via.placeholder.com/1920x1080",
-      socialLinks: {},
-      badges: [],
-      attendingTrainer: [],
-      attendingClasses: [],
-      awards: [],
-      recentWorkouts: [],
     };
 
     // Post the data to the server
@@ -146,6 +148,37 @@ const SignUpDetails = () => {
       });
     }
   };
+
+  // Handle loading and error states
+  if (UserExistsCheckIsLoading) {
+    return <Loading />;
+  }
+
+  if (UserExistsCheckError) {
+    return <ErrorPage />;
+  }
+
+  // If user already exists
+  if (UserExistCheck?.exists) {
+    return (
+      <div className="h-screen flex flex-col justify-center items-center bg-linear-to-br from-blue-300 to-white">
+        <div className="text-center text-2xl font-bold text-red-500 mb-6">
+          You already have an account.
+        </div>
+        <div className="text-center mb-6">
+          <p className="text-lg text-gray-700">
+            To modify your information, go to your profile update page.
+          </p>
+        </div>
+        <button
+          onClick={() => navigate("/User/UserSettings?tab=Settings_Info")}
+          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
+        >
+          Go to Profile Update
+        </button>
+      </div>
+    );
+  }
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-100">

@@ -6,10 +6,9 @@ import Cropper from "react-easy-crop";
 
 // Import Icons
 import { FiCamera } from "react-icons/fi";
-import CommonButton from "../../../../Shared/CommonButton/CommonButton";
 
 // import Button
-
+import CommonButton from "../../../../Shared/CommonButton/CommonButton";
 
 // ImageCropper component
 const ImageCropper = ({ onImageCropped, defaultImageUrl }) => {

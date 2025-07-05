@@ -1,10 +1,17 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
-import { Link } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa";
-import JobCard from "../../../../Shared/JobCard/JobCard";
-import JobDetailsModal from "./JobDetailsModal/JobDetailsModal";
+// Packages
 import PropTypes from "prop-types";
+
+// Icon
+import { FaArrowRight } from "react-icons/fa";
+
+// Shared
+import JobCard from "../../../../Shared/JobCard/JobCard";
+
+// Modals
+import JobDetailsModal from "./JobDetailsModal/JobDetailsModal";
 
 const FeaturedJobs = ({ JobsData }) => {
   const [selectedJobID, setSelectedJobID] = useState(null);
@@ -34,7 +41,7 @@ const FeaturedJobs = ({ JobsData }) => {
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {JobsData?.slice(0, 6).map((job) => (
             <JobCard
-              key={job.slug}
+              key={job._id}
               job={job}
               setSelectedJobID={setSelectedJobID}
             />

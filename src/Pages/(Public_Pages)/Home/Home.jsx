@@ -13,7 +13,10 @@ import HomeBanners from "./HomeBanner/HomeBanner";
 
 // Components
 import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
+import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
 
+// Extra
+import GigsData from "../../../JSON/Gig_Data.json";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -30,7 +33,7 @@ const Home = () => {
 
   // Fetching GigsData
   const {
-    data: GigsData,
+    // data: GigsData,
     isLoading: GigsIsLoading,
     error: GigsError,
   } = useQuery({
@@ -166,13 +169,13 @@ const Home = () => {
       <HomeBanners />
       <FeaturedJobs JobsData={JobsData} />
 
-      {/* <FeaturedGigs PostedGigsData={PostedGigsData} />
-      <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
+      <FeaturedGigs GigsData={GigsData} />
+      {/* <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
       <FeaturedSalaryInsights SalaryInsightData={SalaryInsightData} />
+      <InternshipPrograms InternshipData={InternshipData} />
       <FeaturedUpcomingEvents UpcomingEventsData={UpcomingEventsData} />
       <FeaturedCourses CoursesData={CoursesData} />
       <MentorshipPrograms MentorshipData={MentorshipData} />
-      <InternshipPrograms InternshipData={InternshipData} />
       <NewsLetter />
       <Testimonials testimonialsData={testimonialsData} />
       <WhyChooseUs WhyChooseUsData={WhyChooseUsData} /> */}

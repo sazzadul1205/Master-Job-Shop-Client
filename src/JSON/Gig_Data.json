@@ -1,0 +1,378 @@
+[
+  {
+    "_id": 1,
+    "title": "Design a Modern Logo for a SaaS Startup",
+    "description": "Looking for a creative designer to craft a clean and tech-oriented logo for our SaaS startup 'DataHive'. Must reflect innovation, simplicity, and trust.",
+    "category": "Graphic Design",
+    "subCategory": "Logo Design",
+    "tags": ["Logo", "Branding", "SaaS"],
+    "deliveryDeadline": "2025-07-15T23:59:59Z",
+    "requiredSkills": ["Adobe Illustrator", "Figma", "Logo Design"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 80,
+      "max": 150,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "postedBy": {
+      "userId": "user101",
+      "name": "Emily Tran",
+      "profileImage": "",
+      "rating": 4.7,
+      "jobsPosted": 5
+    },
+    "postedAt": "2025-07-04T14:00:00Z",
+    "status": "open",
+    "numberOfBids": 0,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": false
+    },
+    "extraNotes": "Color preferences: Blue, Grey. Avoid clutter or 3D effects."
+  },
+  {
+    "_id": 2,
+    "title": "Build a Responsive Landing Page in React",
+    "description": "Need a single landing page built using React and Tailwind for a product prelaunch. Content and wireframe provided.",
+    "category": "Web Development",
+    "subCategory": "Frontend",
+    "tags": ["React", "TailwindCSS", "Landing Page"],
+    "deliveryDeadline": "2025-07-12T23:59:59Z",
+    "requiredSkills": ["React", "Tailwind", "Git"],
+    "attachments": [
+      {
+        "url": "https://example.com/wireframe.png",
+        "type": "image",
+        "label": "Wireframe"
+      }
+    ],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 120,
+      "max": 200,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "postedBy": {
+      "userId": "user102",
+      "name": "Carlos Vega",
+      "profileImage": "",
+      "rating": 4.9,
+      "jobsPosted": 12
+    },
+    "postedAt": "2025-07-03T18:00:00Z",
+    "status": "open",
+    "numberOfBids": 3,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": true
+    },
+    "extraNotes": "Mobile-first layout is essential."
+  },
+  {
+    "_id": 3,
+    "title": "Translate Business Proposal to French",
+    "description": "Looking for a fluent French speaker to translate a 10-page business proposal from English to French. Must preserve formatting.",
+    "category": "Writing & Translation",
+    "subCategory": "Translation",
+    "tags": ["Translation", "French", "Business"],
+    "deliveryDeadline": "2025-07-08T23:59:59Z",
+    "requiredSkills": ["French", "Translation", "Proofreading"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 50,
+      "max": 100,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "postedBy": {
+      "userId": "user103",
+      "name": "Liam Cohen",
+      "profileImage": "",
+      "rating": 4.5,
+      "jobsPosted": 3
+    },
+    "postedAt": "2025-07-01T10:00:00Z",
+    "status": "open",
+    "numberOfBids": 1,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": false
+    },
+    "extraNotes": "Use formal tone; target is a French investor group."
+  },
+  {
+    "_id": 4,
+    "title": "Virtual Fitness Consultation with a Certified Trainer",
+    "description": "I’m looking for a personal trainer to evaluate my posture and recommend a home workout plan based on bodyweight.",
+    "category": "Health & Fitness",
+    "subCategory": "Personal Training",
+    "tags": ["Fitness", "Consultation", "Remote"],
+    "deliveryDeadline": "2025-07-09T23:59:59Z",
+    "requiredSkills": ["Personal Training", "Bodyweight Programs"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 25,
+      "max": 50,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "postedBy": {
+      "userId": "user104",
+      "name": "Nina Wells",
+      "profileImage": "",
+      "rating": 5.0,
+      "jobsPosted": 1
+    },
+    "postedAt": "2025-07-02T11:30:00Z",
+    "status": "open",
+    "numberOfBids": 2,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Call",
+      "allowCalls": true
+    },
+    "extraNotes": "Prefer a trainer who speaks fluent English and has experience with injury recovery."
+  },
+  {
+    "_id": 5,
+    "title": "Create Eye-Catching Instagram Ad Designs",
+    "description": "We need 3 ad creatives for an upcoming campaign. Should be visually engaging and consistent with our brand colors.",
+    "category": "Graphic Design",
+    "subCategory": "Social Media",
+    "tags": ["Instagram", "Ad Design", "Photoshop"],
+    "deliveryDeadline": "2025-07-07T23:59:59Z",
+    "requiredSkills": ["Photoshop", "Canva", "Social Ads"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 30,
+      "max": 70,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "postedBy": {
+      "userId": "user105",
+      "name": "Marvin Lau",
+      "profileImage": "",
+      "rating": 4.2,
+      "jobsPosted": 8
+    },
+    "postedAt": "2025-07-03T08:45:00Z",
+    "status": "open",
+    "numberOfBids": 1,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": false
+    },
+    "extraNotes": "Samples of past similar ads will be a plus."
+  },
+  {
+    "_id": 6,
+    "title": "Edit a 10-Minute Vlog for YouTube",
+    "description": "Need someone to cut, color correct, and add background music to a 10-min vlog. Footage will be shared via Google Drive.",
+    "category": "Video & Animation",
+    "subCategory": "YouTube",
+    "tags": ["Video Editing", "Vlog", "Color Grading"],
+    "deliveryDeadline": "2025-07-11T23:59:59Z",
+    "requiredSkills": ["Adobe Premiere", "Video Editing", "YouTube"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 60,
+      "max": 120,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "postedBy": {
+      "userId": "user106",
+      "name": "Ayesha Khan",
+      "profileImage": "",
+      "rating": 4.8,
+      "jobsPosted": 4
+    },
+    "postedAt": "2025-07-05T12:15:00Z",
+    "status": "open",
+    "numberOfBids": 0,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": true
+    },
+    "extraNotes": "Will provide branding intro/outro clips."
+  },
+  {
+    "_id": 7,
+    "title": "Integrate Facebook Pixel and GA4 on Shopify Store",
+    "description": "Need expert to set up Facebook Pixel and Google Analytics 4 properly on my Shopify store for tracking purchases and cart events.",
+    "category": "Digital Marketing",
+    "subCategory": "Tracking & Analytics",
+    "tags": ["Shopify", "Facebook Pixel", "GA4"],
+    "deliveryDeadline": "2025-07-08T23:59:59Z",
+    "requiredSkills": ["Shopify", "Tracking", "Analytics"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 40,
+      "max": 80,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "postedBy": {
+      "userId": "user107",
+      "name": "Daniel Ito",
+      "profileImage": "",
+      "rating": 4.4,
+      "jobsPosted": 9
+    },
+    "postedAt": "2025-07-04T09:00:00Z",
+    "status": "open",
+    "numberOfBids": 2,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": true
+    },
+    "extraNotes": "Access to Shopify admin will be provided securely."
+  },
+  {
+    "_id": 8,
+    "title": "English Voiceover for App Demo",
+    "description": "Looking for a clear, confident male voice to narrate a 2-minute mobile app tutorial. Script is ready.",
+    "category": "Audio & Voice",
+    "subCategory": "Voice Over",
+    "tags": ["Voiceover", "Tutorial", "Narration"],
+    "deliveryDeadline": "2025-07-06T23:59:59Z",
+    "requiredSkills": ["Voice Acting", "Audio Recording"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 30,
+      "max": 60,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "postedBy": {
+      "userId": "user108",
+      "name": "Sara Jenkins",
+      "profileImage": "",
+      "rating": 4.9,
+      "jobsPosted": 11
+    },
+    "postedAt": "2025-07-03T13:30:00Z",
+    "status": "open",
+    "numberOfBids": 3,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": false
+    },
+    "extraNotes": "Accent preference: North American or Neutral English."
+  },
+  {
+    "_id": 9,
+    "title": "Rewrite and Optimize My Resume for ATS",
+    "description": "I need my resume rewritten with stronger action verbs, professional formatting, and optimized for tech ATS systems.",
+    "category": "Writing & Translation",
+    "subCategory": "Resume Writing",
+    "tags": ["Resume", "ATS", "Editing"],
+    "deliveryDeadline": "2025-07-09T23:59:59Z",
+    "requiredSkills": ["Resume Writing", "ATS", "HR"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 25,
+      "max": 60,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "postedBy": {
+      "userId": "user109",
+      "name": "Kevin Yu",
+      "profileImage": "",
+      "rating": 4.6,
+      "jobsPosted": 2
+    },
+    "postedAt": "2025-07-02T14:45:00Z",
+    "status": "open",
+    "numberOfBids": 1,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": false
+    },
+    "extraNotes": "I'm applying to frontend jobs with React/Next.js."
+  },
+  {
+    "_id": 10,
+    "title": "Mailchimp Email Automation Setup",
+    "description": "Need help setting up a welcome email sequence (3 emails) for new subscribers in Mailchimp. Templates ready.",
+    "category": "Digital Marketing",
+    "subCategory": "Email Marketing",
+    "tags": ["Mailchimp", "Email Automation", "Marketing"],
+    "deliveryDeadline": "2025-07-07T23:59:59Z",
+    "requiredSkills": ["Mailchimp", "Email Strategy", "Automation"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 40,
+      "max": 90,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "postedBy": {
+      "userId": "user110",
+      "name": "Olivia Grant",
+      "profileImage": "",
+      "rating": 4.8,
+      "jobsPosted": 6
+    },
+    "postedAt": "2025-07-03T10:20:00Z",
+    "status": "open",
+    "numberOfBids": 2,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": true
+    },
+    "extraNotes": "Sequence timing: Day 0, Day 2, Day 5."
+  }
+]

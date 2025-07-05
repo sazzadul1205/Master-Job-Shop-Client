@@ -1,0 +1,63 @@
+[
+  {
+    "title": "Senior React Developer",
+    "category": "Software Development",
+    "type": "Full-Time",
+    "level": "Senior",
+    "experience": "3+ years",
+    "description": "We are looking for a talented React developer to build...",
+    "responsibilities": [
+      "Develop high-quality front-end applications",
+      "Collaborate with cross-functional teams"
+    ],
+    "requirements": [
+      "Proficiency in React and JavaScript",
+      "Experience with REST APIs"
+    ],
+    "niceToHave": ["Next.js experience", "Familiarity with GraphQL"],
+    "location": "Dhaka, Bangladesh",
+    "remote": true,
+    "hybrid": false,
+    "onsite": false,
+    "timezoneOverlap": "GMT+6 preferred",
+    "salaryRange": {
+      "min": 80000,
+      "max": 120000,
+      "currency": "BDT"
+    },
+    "isNegotiable": true,
+    "benefits": [
+      "Paid Time Off",
+      "Health Insurance",
+      "Annual Bonus",
+      "Remote Work Stipend"
+    ],
+    "perks": ["Flexible hours", "Laptop provided", "Team retreats"],
+    "skills": ["React", "TypeScript", "Tailwind CSS"],
+    "company": {
+      "name": "CodeForge Ltd.",
+      "logo": "https://cdn.codeforge.com/logo.png",
+      "website": "https://www.codeforge.com",
+      "description": "A growing startup building dev tools",
+      "location": "Dhaka, Bangladesh",
+      "size": "51-200",
+      "industry": "Software / SaaS"
+    },
+    "application": {
+      "applyEmail": "jobs@codeforge.com",
+      "applyUrl": "https://careers.codeforge.com/jobs/123",
+      "requiresResume": true,
+      "requiresPortfolio": false,
+      "requiresCoverLetter": false,
+      "applicationDeadline": "2025-08-01T23:59:59Z"
+    },
+    "postedBy": "64fd9a3c2a7b914cfdd1dcee",
+    "postedAt": "2025-07-05T13:30:00Z",
+    "tags": ["React", "Frontend", "Remote", "JavaScript"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "senior-react-developer",
+    "notes": "Team prefers candidates familiar with agile."
+  }
+]

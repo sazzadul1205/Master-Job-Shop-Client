@@ -1,13 +1,21 @@
-import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
-import GigCard from "../../../../Shared/GigCard/GigCard";
 import { useState } from "react";
 
+// Icon
+import { FaArrowRight } from "react-icons/fa";
+
+// Packages
+import PropTypes from "prop-types";
+
+// Shared
+import GigCard from "../../../../Shared/GigCard/GigCard";
+
+// Modal
+import GigDetailsModal from "./GigDetailsModal/GigDetailsModal";
 
 const FeaturedGigs = ({ GigsData }) => {
   const [selectedGigID, setSelectedGigID] = useState(null);
-  
+
   return (
     <section className="bg-gradient-to-tl from-blue-400 to-blue-600 py-20">
       <div className="px-20">
@@ -39,6 +47,14 @@ const FeaturedGigs = ({ GigsData }) => {
           ))}
         </div>
       </div>
+
+      {/* Gig Modal */}
+      <dialog id="Gig_Details_Modal" className="modal">
+        <GigDetailsModal
+          selectedGigID={selectedGigID}
+          setSelectedGigID={setSelectedGigID}
+        />
+      </dialog>
     </section>
   );
 };

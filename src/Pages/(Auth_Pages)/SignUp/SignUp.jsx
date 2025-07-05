@@ -174,12 +174,12 @@ const SignUp = () => {
             disabled={loading}
           />
 
-          {/* Login link for existing users */}
-          <p className="font-semibold text-black pt-2">
-            Already have an Account?{" "}
+          {/* Don't have an Account */}
+          <p className="text-lg font-semibold text-black mt-5">
+            Already have an account?{" "}
             <Link
-              to={"/Login"}
-              className="text-[#F72C5B] font-bold hover:underline"
+              to="/Login"
+              className="font-semibold playfair text-blue-800 hover:text-blue-500 hover:underline  "
             >
               Login
             </Link>

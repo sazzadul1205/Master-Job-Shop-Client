@@ -37,7 +37,6 @@ const fetchServerToken = async (user, axiosPublic) => {
     const payload = {
       id: user?.uid,
       email: user?.email,
-      role: user?.role || "user", // fallback role
     };
 
     const response = await axiosPublic.post("/jwt", { user: payload });

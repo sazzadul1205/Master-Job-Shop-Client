@@ -16,8 +16,11 @@ import MainLayout from "./Layouts/MainLayout";
 
 // Public Pages
 import Home from "./Pages/(Public_Pages)/Home/Home";
+
+// Auth Pages
 import Login from "./Pages/(Auth_Pages)/Login/Login";
 import SignUp from "./Pages/(Auth_Pages)/SignUp/SignUp";
+import SignUpDetails from "./Pages/(Auth_Pages)/SignUpDetails/SignUpDetails";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +38,7 @@ createRoot(document.getElementById("root")).render(
               {/* Auth Pages */}
               <Route path="/Login" element={<Login />} />
               <Route path="/SignUp" element={<SignUp />} />
-              <Route path="/SignUp/Details" element={<SignUp />} />
+              <Route path="/SignUp/Details" element={<SignUpDetails />} />
             </Route>
           </Routes>
         </BrowserRouter>

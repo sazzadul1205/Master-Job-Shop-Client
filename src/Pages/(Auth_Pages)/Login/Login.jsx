@@ -55,7 +55,6 @@ const Login = () => {
     async (data) => {
       setLoading(true);
       try {
-        // Attempt sign-in
         const res = await signIn(data.email, data.password);
         const user = res?.user;
 
@@ -64,30 +63,18 @@ const Login = () => {
           return;
         }
 
-        // Fetch user role **in parallel** to reduce load time
-        const response = axiosPublic.get(`/Users?email=${user.email}`);
+        // Fetch user role or other data if needed
+        const userData = await axiosPublic.get(`/Users?email=${user.email}`);
 
-        // Wait for the response
-        const userData = await response;
-
-        if (!userData?.data?.role) {
+        if (!userData?.data) {
           showAlert("error", "User data not found. Please contact support.");
           return;
         }
 
-        // Navigate based on user role
-        if (
-          userData.data.role === "Admin" ||
-          userData.data.role === "Manager"
-        ) {
-          navigate("/Admin", { replace: true });
-        } else if (userData.data.role === "Trainer") {
-          navigate("/Trainer", { replace: true });
-        } else {
-          navigate(from, { replace: true });
-        }
-
         showAlert("success", "You have successfully logged in!");
+
+        // ✅ Redirect to previous page or "/"
+        navigate(from, { replace: true });
       } catch (error) {
         showAlert(
           "error",

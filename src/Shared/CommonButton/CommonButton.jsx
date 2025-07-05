@@ -49,7 +49,7 @@ const CommonButton = ({
     },
     white: {
       from: "from-white",
-      to: "to-gray-200",
+      to: "to-gray-300",
     },
   };
 

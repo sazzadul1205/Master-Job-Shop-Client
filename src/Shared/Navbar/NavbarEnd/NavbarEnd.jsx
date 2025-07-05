@@ -10,10 +10,21 @@ import useAxiosPublic from "../../..//Hooks/useAxiosPublic";
 
 // Shared
 import CommonButton from "../../CommonButton/CommonButton";
+import { useEffect, useRef, useState } from "react";
+import { FaUser } from "react-icons/fa";
+import { ImExit } from "react-icons/im";
 
 const NavbarEnd = () => {
   const { user, logOut } = useAuth();
   const axiosPublic = useAxiosPublic();
+
+  // State variables
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Refs for handling outside clicks
+  const timerRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   // Fetch user data if logged in
   const {
@@ -35,19 +46,42 @@ const NavbarEnd = () => {
     enabled: !!user,
   });
 
+  // Role-based navigation links
+  const roleBasedLinks = {
+    Member: [
+      {
+        name: UsersData?.fullName,
+        path: `/Dashboard`,
+        icon: <FaUser />,
+      },
+    ],
+  };
+
   // Handle logout with Swal alert
-  const handleSignOut = () => {
-    logOut()
-      .then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Logged Out",
-          text: "You have successfully logged out!",
-          confirmButtonColor: "#3085d6",
-          timer: 2000,
-        });
-      })
-      .catch((error) => {
+  // Logout function
+  const handleLogOut = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out of your account.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, log me out",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      setIsLoggingOut(true);
+      try {
+        const response = await logOut();
+
+        if (response.success) {
+          setIsDropdownOpen(false);
+        } else {
+          throw new Error(response.message);
+        }
+      } catch (error) {
         Swal.fire({
           icon: "error",
           title: "Logout Failed",
@@ -55,71 +89,136 @@ const NavbarEnd = () => {
           confirmButtonColor: "#d33",
           timer: 3000,
         });
-        console.error("Error signing out:", error);
-      });
+      } finally {
+        setIsLoggingOut(false);
+      }
+    }
+  };
+
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
+  // Auto-close dropdown after 5 seconds of inactivity
+  useEffect(() => {
+    if (isDropdownOpen) {
+      timerRef.current = setTimeout(() => {
+        setIsDropdownOpen(false);
+      }, 5000);
+    }
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [isDropdownOpen]);
+
+  // Clear auto-close timer on mouse enter, restart on leave
+  const handleMouseEnter = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  };
+
+  const handleMouseLeave = () => {
+    timerRef.current = setTimeout(() => {
+      setIsDropdownOpen(false);
+    }, 1000);
   };
 
   if (UsersDataIsLoading) return <p>Loading . . . </p>;
   if (UsersDataError) return <p>Error</p>;
 
   return (
-    <div className="navbar-end flex gap-5">
-      {UsersData ? (
-        // If user data exists, show dropdown with user info and logout option
-        <div className="dropdown">
-          <div
-            className="flex items-center lg:pr-5 bg-blue-300 hover:bg-blue-200 cursor-pointer"
-            tabIndex={0}
-            role="button"
-          >
-            {/* User profile picture and name */}
-            <img
-              src={UsersData.photoURL}
-              alt="UsersData"
-              className="w-12 h-12 "
-            />
+    <div className="navbar-end flex items-center">
+      {/* Show user avatar if logged in, otherwise show login button */}
+      {user ? (
+        <div
+          className="relative rounded-full border-4 border-white"
+          ref={dropdownRef}
+        >
+          {/* User profile picture */}
+          <img
+            src={
+              UsersData?.profileImage ||
+              "https://i.ibb.co.com/XtrM9rc/UsersData.jpg"
+            }
+            alt="User Avatar"
+            className="w-14 h-14 rounded-full cursor-pointer hover:scale-105"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          />
 
-            <h2 className="font-semibold pl-2 text-lg hidden lg:flex w-[200px]">
-              {UsersData.displayName}
-            </h2>
-          </div>
           {/* Dropdown menu */}
-          <ul className="dropdown-content menu bg-white z-[1] w-52 p-2 shadow right-0">
-            <li className="lg:hidden">
-              <p>{UsersData.displayName}</p>
-            </li>
-            <li>
-              <Link
-                to={"/Dashboard"}
-                className="py-3 hover:bg-blue-200 rounded-none font-semibold"
-              >
-                Dashboard
-              </Link>
-            </li>
-            <li>
-              <button
-                className="font-bold bg-blue-500 hover:bg-blue-400 rounded-none text-white py-3"
-                onClick={handleSignOut}
-              >
-                LogOut
-              </button>
-            </li>
-          </ul>
+          {isDropdownOpen && (
+            <div
+              className="absolute right-0 mt-1 min-w-[280px] bg-white text-black z-10"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <ul className="py-2">
+                {/* Render navigation links based on user role */}
+                {(roleBasedLinks[UsersData?.role] || []).map((link) => (
+                  <li
+                    key={link.name}
+                    className="flex py-2 px-5 gap-2 hover:bg-gray-100 border-b border-gray-300"
+                  >
+                    <Link
+                      to={link.path}
+                      className="flex items-center gap-2 w-full"
+                    >
+                      <span className="border-r border-black pr-2">
+                        {link.icon}
+                      </span>
+                      <span>{link.name}</span>
+                    </Link>
+                  </li>
+                ))}
+
+                {/* Logout button */}
+                <li
+                  className="p-2 py-2 px-5 text-red-500 font-semibold hover:bg-gray-100 flex items-center justify-between cursor-pointer"
+                  onClick={handleLogOut}
+                >
+                  {isLoggingOut ? (
+                    <>
+                      <ImExit className="text-2xl border-r border-black pr-2" />
+                      Logging Out...
+                    </>
+                  ) : (
+                    <>
+                      <ImExit className="text-2xl border-r border-black pr-2" />
+                      Logout
+                    </>
+                  )}
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       ) : (
-        <div className="text-xl flex font-semibold">
-          <Link to="/Login">
-            <CommonButton
-              text="Login"
-              bgColor="white"
-              textColor="text-blue-700"
-              className="playfair shadow hover:shadow-2xl font-semibold"
-              px="px-16"
-              py="py-2"
-              borderRadius="rounded-lg"
-            />
-          </Link>
-        </div>
+        <Link to="/Login">
+          <CommonButton
+            type="button"
+            text="Login"
+            bgColor="white"
+            textColor="text-blue-700"
+            className="playfair shadow hover:shadow-2xl font-semibold"
+            px="px-10 md:px-14"
+            py="py-2"
+            borderRadius="rounded-lg"
+            width="auto"
+          />
+        </Link>
       )}
     </div>
   );

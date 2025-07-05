@@ -1,6 +1,5 @@
 [
   {
-    "_id": 1,
     "title": "Senior React Developer",
     "category": "Software Development",
     "type": "Full-Time",
@@ -62,7 +61,6 @@
     "notes": "Team prefers candidates familiar with agile."
   },
   {
-    "_id": 2,
     "title": "UI/UX Designer",
     "category": "Design",
     "type": "Full-Time",
@@ -115,7 +113,6 @@
     "notes": ""
   },
   {
-    "_id": 3,
     "title": "Digital Marketing Specialist",
     "category": "Marketing",
     "type": "Part-Time",
@@ -168,7 +165,6 @@
     "notes": ""
   },
   {
-    "_id": 4,
     "title": "DevOps Engineer",
     "category": "Engineering",
     "type": "Full-Time",
@@ -221,7 +217,6 @@
     "notes": ""
   },
   {
-    "_id": 5,
     "title": "Customer Success Manager",
     "category": "Customer Service",
     "type": "Full-Time",
@@ -274,7 +269,6 @@
     "notes": ""
   },
   {
-    "_id": 6,
     "title": "Backend Developer (Node.js)",
     "category": "Software Development",
     "type": "Full-Time",
@@ -327,7 +321,6 @@
     "notes": ""
   },
   {
-    "_id": 7,
     "title": "HR Generalist",
     "category": "Human Resources",
     "type": "Full-Time",
@@ -380,7 +373,6 @@
     "notes": ""
   },
   {
-    "_id": 8,
     "title": "Content Writer (Tech Focus)",
     "category": "Content & Writing",
     "type": "Freelance",
@@ -441,7 +433,6 @@
     "notes": ""
   },
   {
-    "_id": 9,
     "title": "Mobile App Developer (Flutter)",
     "category": "Mobile Development",
     "type": "Full-Time",
@@ -502,7 +493,6 @@
     "notes": ""
   },
   {
-    "_id": 10,
     "title": "Data Analyst (Remote Contract)",
     "category": "Data & Analytics",
     "type": "Contract",

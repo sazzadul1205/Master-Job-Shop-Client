@@ -1,12 +1,24 @@
-import { ImCross } from "react-icons/im";
-import PropTypes from "prop-types";
-import DefaultCompanyLogo from "../../../../..//assets/DefaultCompanyLogo.jpg";
 import { Link } from "react-router-dom";
-import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
-import Loading from "../../../../../Shared/Loading/Loading";
-import Error from "../../../../../Shared/Error/Error";
 
+// Default Company Icon
+import DefaultCompanyLogo from "../../../../..//assets/DefaultCompanyLogo.jpg";
+
+// Icons
+import { ImCross } from "react-icons/im";
+
+// Packages
+import PropTypes from "prop-types";
+import { useQuery } from "@tanstack/react-query";
+
+// Hooks
+import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
+
+// Shared
+import Error from "../../../../../Shared/Error/Error";
+import Loading from "../../../../../Shared/Loading/Loading";
+import CommonButton from "../../../../../Shared/CommonButton/CommonButton";
+
+// Format Salary Function
 const formatSalary = (min, max, currency) => {
   if (!min && !max) return "Not specified";
   if (min && !max) return `${currency}${min}+`;
@@ -23,33 +35,11 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
     isLoading: SelectedJobIsLoading,
     error: SelectedJobError,
   } = useQuery({
-    queryKey: ["SelectedJobData"],
+    queryKey: ["SelectedJobData", selectedJobID],
     queryFn: () =>
       axiosPublic.get(`/Jobs?id=${selectedJobID}`).then((res) => res.data),
+    enabled: !!selectedJobID, // Only run when selectedJobID is truthy
   });
-
-  if (!SelectedJobData) {
-    return (
-      <div className="modal-box min-w-5xl relative bg-white rounded-xl shadow-lg max-w-3xl w-full mx-auto overflow-y-auto max-h-[90vh] p-6 flex items-center justify-center">
-        <div className="text-center space-y-2">
-          <h2 className="text-xl font-bold text-red-600">Job Not Found</h2>
-          <p className="text-gray-600 text-sm">
-            This job is no longer available or an error occurred while
-            retrieving the details.
-          </p>
-          <button
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            onClick={() => {
-              setSelectedJobID("");
-              document.getElementById("Jobs_Details_Modal")?.close();
-            }}
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   // Loading
   if (SelectedJobIsLoading) {
@@ -61,21 +51,56 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
     return <Error />;
   }
 
+  // No Data Fetched
+  if (!SelectedJobData) {
+    return (
+      <div className="modal-box min-w-5xl relative bg-white rounded-xl shadow-lg max-w-3xl w-full mx-auto overflow-y-auto max-h-[90vh] p-6 flex items-center justify-center">
+        <div className="text-center space-y-2">
+          {/* Title */}
+          <h2 className="text-xl font-bold text-red-600">Job Not Found</h2>
+
+          {/* Dub Title */}
+          <p className="text-gray-600 text-sm">
+            This job is no longer available or an error occurred while
+            retrieving the details.
+          </p>
+
+          {/* Refetch Button */}
+          <CommonButton
+            clickEvent={() => {
+              setSelectedJobID("");
+              document.getElementById("Jobs_Details_Modal")?.close();
+            }}
+            text="Close"
+            bgColor="white"
+            textColor="text-black"
+            px="px-6"
+            py="py-2"
+            icon={<ImCross />}
+            iconSize="text-sm"
+            borderRadius="rounded-md"
+            className="mt-4"
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="modal-box min-w-5xl relative bg-white rounded-xl shadow-lg max-w-3xl w-full mx-auto overflow-y-auto max-h-[90vh] p-6">
+    <div className="modal-box min-w-5xl relative bg-linear-to-bl from-white to-gray-200 rounded-xl shadow-lg w-full mx-auto overflow-y-auto max-h-[90vh] p-5">
       {/* Floating Close Button */}
-      <div className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full">
-        <ImCross
-          className="text-xl text-black hover:text-red-500 cursor-pointer"
-          onClick={() => {
-            setSelectedJobID("");
-            document.getElementById("Jobs_Details_Modal")?.close();
-          }}
-        />
+      <div
+        onClick={() => {
+          setSelectedJobID("");
+          document.getElementById("Jobs_Details_Modal")?.close();
+        }}
+        className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full"
+      >
+        <ImCross className="text-xl text-black hover:text-red-500 cursor-pointer" />
       </div>
 
       {/* Modal Content */}
-      <div className="pt-10 space-y-6">
+      <div className="pt-2 space-y-6">
         {/* Header */}
         <div className="flex items-start gap-4">
           {/* Company Icon */}
@@ -156,7 +181,9 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
           <h3 className="text-lg font-semibold text-gray-800 mb-1">
             Job Description
           </h3>
-          <p className="text-sm text-gray-700">{SelectedJobData?.description}</p>
+          <p className="text-sm text-gray-700">
+            {SelectedJobData?.description}
+          </p>
         </section>
 
         {/* Responsibilities */}
@@ -315,7 +342,9 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
           {/* Dead Line */}
           <p className="text-xs text-gray-500 mt-2">
             Deadline:{" "}
-            {new Date(SelectedJobData?.application.applicationDeadline).toLocaleDateString()}
+            {new Date(
+              SelectedJobData?.application.applicationDeadline
+            ).toLocaleDateString()}
           </p>
         </section>
       </div>

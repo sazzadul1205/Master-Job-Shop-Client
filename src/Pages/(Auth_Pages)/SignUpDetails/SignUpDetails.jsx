@@ -1,5 +1,5 @@
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
-import ImageCropper from "./ImageCropper/ImageCropper";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 // Import Packages
 import Swal from "sweetalert2";
@@ -7,13 +7,13 @@ import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 
-// import Phone
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
-import { useNavigate } from "react-router-dom";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useState } from "react";
+
+// Shared
+import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
-import ErrorPage from "../../../Shared/ErrorPage/ErrorPage";
 
 // import Phone
 import PhoneInput from "react-phone-input-2";
@@ -21,6 +21,12 @@ import "react-phone-input-2/lib/style.css";
 
 // Selection Field
 import { GenderSelectField } from "./GenderSelectField/GenderSelectField";
+
+// Common Button
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
+
+// Image Cropping Modal
+import ImageCropper from "./ImageCropper/ImageCropper";
 
 // Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
@@ -153,7 +159,7 @@ const SignUpDetails = () => {
   }
 
   if (UserExistsCheckError) {
-    return <ErrorPage />;
+    return <Error />;
   }
 
   // If user already exists

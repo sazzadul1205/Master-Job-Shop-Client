@@ -1,7 +1,7 @@
 const Loading = () => {
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-l from-blue-400 to-blue-600 pointer-events-none">
-      <svg viewBox="0 0 100 100" className="w-[150px] h-[150px]">
+    <div className="h-screen w-full flex flex-col justify-center items-center bg-gradient-to-l from-blue-400 to-blue-600">
+      <svg viewBox="0 0 100 100" className="w-[120px] h-[120px]">
         <g
           fill="none"
           stroke="#fff"

@@ -10,6 +10,7 @@ import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Icons
+
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 // Shared
@@ -119,7 +120,7 @@ const Login = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Email input field */}
           <div>
-            <label className="block text-black playfair font-semibold text-xl pb-2">
+            <label className="block text-black playfair font-semibold text-lg pb-2">
               Email
             </label>
             <input
@@ -143,7 +144,7 @@ const Login = () => {
 
           {/* Password input field */}
           <div className="relative mb-4">
-            <label className="block text-black playfair font-semibold text-xl pb-2">
+            <label className="block text-black playfair font-semibold text-lg pb-2">
               Password
             </label>
             <div className="relative">
@@ -182,11 +183,11 @@ const Login = () => {
             isLoading={loading}
             loadingText="Logging In..."
             bgColor="white"
-            textColor="text-blue-600"
-            borderRadius="rounded-xl"
+            textColor="text-blue-700"
+            borderRadius="rounded-xl text-xl"
             width="full"
             px="px-5"
-            py="py-3"
+            py="py-2"
             className="mt-5 playfair"
             disabled={loading}
           />

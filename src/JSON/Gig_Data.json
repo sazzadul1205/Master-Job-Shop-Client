@@ -1,6 +1,5 @@
 [
   {
-    "_id": 1,
     "title": "Design a Modern Logo for a SaaS Startup",
     "description": "Looking for a creative designer to craft a clean and tech-oriented logo for our SaaS startup 'DataHive'. Must reflect innovation, simplicity, and trust.",
     "category": "Graphic Design",
@@ -37,7 +36,6 @@
     "extraNotes": "Color preferences: Blue, Grey. Avoid clutter or 3D effects."
   },
   {
-    "_id": 2,
     "title": "Build a Responsive Landing Page in React",
     "description": "Need a single landing page built using React and Tailwind for a product prelaunch. Content and wireframe provided.",
     "category": "Web Development",
@@ -80,7 +78,6 @@
     "extraNotes": "Mobile-first layout is essential."
   },
   {
-    "_id": 3,
     "title": "Translate Business Proposal to French",
     "description": "Looking for a fluent French speaker to translate a 10-page business proposal from English to French. Must preserve formatting.",
     "category": "Writing & Translation",
@@ -117,7 +114,6 @@
     "extraNotes": "Use formal tone; target is a French investor group."
   },
   {
-    "_id": 4,
     "title": "Virtual Fitness Consultation with a Certified Trainer",
     "description": "I’m looking for a personal trainer to evaluate my posture and recommend a home workout plan based on bodyweight.",
     "category": "Health & Fitness",
@@ -154,7 +150,6 @@
     "extraNotes": "Prefer a trainer who speaks fluent English and has experience with injury recovery."
   },
   {
-    "_id": 5,
     "title": "Create Eye-Catching Instagram Ad Designs",
     "description": "We need 3 ad creatives for an upcoming campaign. Should be visually engaging and consistent with our brand colors.",
     "category": "Graphic Design",
@@ -191,7 +186,6 @@
     "extraNotes": "Samples of past similar ads will be a plus."
   },
   {
-    "_id": 6,
     "title": "Edit a 10-Minute Vlog for YouTube",
     "description": "Need someone to cut, color correct, and add background music to a 10-min vlog. Footage will be shared via Google Drive.",
     "category": "Video & Animation",
@@ -228,7 +222,6 @@
     "extraNotes": "Will provide branding intro/outro clips."
   },
   {
-    "_id": 7,
     "title": "Integrate Facebook Pixel and GA4 on Shopify Store",
     "description": "Need expert to set up Facebook Pixel and Google Analytics 4 properly on my Shopify store for tracking purchases and cart events.",
     "category": "Digital Marketing",
@@ -265,7 +258,6 @@
     "extraNotes": "Access to Shopify admin will be provided securely."
   },
   {
-    "_id": 8,
     "title": "English Voiceover for App Demo",
     "description": "Looking for a clear, confident male voice to narrate a 2-minute mobile app tutorial. Script is ready.",
     "category": "Audio & Voice",
@@ -302,7 +294,6 @@
     "extraNotes": "Accent preference: North American or Neutral English."
   },
   {
-    "_id": 9,
     "title": "Rewrite and Optimize My Resume for ATS",
     "description": "I need my resume rewritten with stronger action verbs, professional formatting, and optimized for tech ATS systems.",
     "category": "Writing & Translation",
@@ -339,7 +330,6 @@
     "extraNotes": "I'm applying to frontend jobs with React/Next.js."
   },
   {
-    "_id": 10,
     "title": "Mailchimp Email Automation Setup",
     "description": "Need help setting up a welcome email sequence (3 emails) for new subscribers in Mailchimp. Templates ready.",
     "category": "Digital Marketing",
@@ -374,5 +364,365 @@
       "allowCalls": true
     },
     "extraNotes": "Sequence timing: Day 0, Day 2, Day 5."
+  },
+  {
+    "title": "Build Responsive E-commerce Website",
+    "description": "Seeking an experienced web developer to create a responsive e-commerce site using React and Node.js. Must support mobile and desktop seamlessly.",
+    "category": "Web Development",
+    "subCategory": "Full Stack Development",
+    "tags": ["React", "Node.js", "E-commerce"],
+    "deliveryDeadline": "2025-07-30T23:59:59Z",
+    "requiredSkills": ["React", "Node.js", "MongoDB", "CSS"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 1000,
+      "max": 1800,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "postedBy": {
+      "userId": "user202",
+      "name": "Michael Harper",
+      "profileImage": "",
+      "rating": 4.5,
+      "jobsPosted": 12
+    },
+    "postedAt": "2025-07-05T10:00:00Z",
+    "status": "open",
+    "numberOfBids": 3,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Email",
+      "allowCalls": true
+    },
+    "extraNotes": "Focus on clean UI and fast load times."
+  },
+  {
+    "title": "Create SEO Optimized Blog Content",
+    "description": "Looking for a content writer to produce SEO-friendly blog posts on technology and innovation. Each article should be 800-1000 words.",
+    "category": "Writing & Translation",
+    "subCategory": "Content Writing",
+    "tags": ["SEO", "Blog", "Technology"],
+    "deliveryDeadline": "2025-07-20T23:59:59Z",
+    "requiredSkills": ["SEO Writing", "Research", "WordPress"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 50,
+      "max": 100,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "postedBy": {
+      "userId": "user303",
+      "name": "Sarah Collins",
+      "profileImage": "",
+      "rating": 4.9,
+      "jobsPosted": 20
+    },
+    "postedAt": "2025-07-06T09:30:00Z",
+    "status": "open",
+    "numberOfBids": 5,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": false
+    },
+    "extraNotes": "Articles must pass plagiarism checks."
+  },
+  {
+    "title": "Design a Mobile App UI/UX",
+    "description": "Need a skilled designer to create an intuitive UI/UX for a fitness tracking mobile app. Experience with Figma and prototyping required.",
+    "category": "Graphic Design",
+    "subCategory": "UI/UX Design",
+    "tags": ["UI", "UX", "Mobile App", "Figma"],
+    "deliveryDeadline": "2025-07-25T23:59:59Z",
+    "requiredSkills": ["Figma", "UI Design", "Prototyping"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 300,
+      "max": 600,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "postedBy": {
+      "userId": "user404",
+      "name": "Jason Lee",
+      "profileImage": "",
+      "rating": 4.6,
+      "jobsPosted": 8
+    },
+    "postedAt": "2025-07-07T11:15:00Z",
+    "status": "open",
+    "numberOfBids": 2,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Email",
+      "allowCalls": true
+    },
+    "extraNotes": "Keep designs simple and easy to navigate."
+  },
+  {
+    "title": "Develop Marketing Automation Workflow",
+    "description": "We want an expert to set up and customize marketing automation using HubSpot for lead nurturing and email campaigns.",
+    "category": "Marketing",
+    "subCategory": "Marketing Automation",
+    "tags": ["HubSpot", "Automation", "Email Marketing"],
+    "deliveryDeadline": "2025-07-22T23:59:59Z",
+    "requiredSkills": ["HubSpot", "Email Marketing", "CRM"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 400,
+      "max": 700,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "postedBy": {
+      "userId": "user505",
+      "name": "Olivia Bennett",
+      "profileImage": "",
+      "rating": 4.8,
+      "jobsPosted": 7
+    },
+    "postedAt": "2025-07-08T14:00:00Z",
+    "status": "open",
+    "numberOfBids": 4,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": false
+    },
+    "extraNotes": "Must integrate with existing CRM data."
+  },
+  {
+    "title": "Translate Website Content to Spanish",
+    "description": "Looking for a native Spanish speaker to translate our website content of approx 5,000 words with technical accuracy and cultural relevance.",
+    "category": "Writing & Translation",
+    "subCategory": "Translation",
+    "tags": ["Spanish", "Translation", "Website"],
+    "deliveryDeadline": "2025-07-18T23:59:59Z",
+    "requiredSkills": ["Spanish", "Translation", "Technical Writing"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 250,
+      "max": 400,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "postedBy": {
+      "userId": "user606",
+      "name": "Carlos Mendoza",
+      "profileImage": "",
+      "rating": 4.4,
+      "jobsPosted": 15
+    },
+    "postedAt": "2025-07-09T12:00:00Z",
+    "status": "open",
+    "numberOfBids": 6,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Email",
+      "allowCalls": false
+    },
+    "extraNotes": "Maintain original tone and style."
+  },
+  {
+    "title": "Setup Google Ads Campaign",
+    "description": "Need a PPC expert to set up and optimize Google Ads campaigns to increase conversions for our SaaS product launch.",
+    "category": "Marketing",
+    "subCategory": "PPC & Paid Search",
+    "tags": ["Google Ads", "PPC", "Conversion"],
+    "deliveryDeadline": "2025-07-20T23:59:59Z",
+    "requiredSkills": ["Google Ads", "PPC", "Analytics"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 300,
+      "max": 550,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "postedBy": {
+      "userId": "user707",
+      "name": "Anna Schmidt",
+      "profileImage": "",
+      "rating": 4.7,
+      "jobsPosted": 9
+    },
+    "postedAt": "2025-07-10T09:00:00Z",
+    "status": "open",
+    "numberOfBids": 7,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": true
+    },
+    "extraNotes": "Target tech-savvy audiences."
+  },
+  {
+    "title": "Write Python Script for Data Scraping",
+    "description": "Require a Python developer to write a script that scrapes product data from e-commerce sites and outputs JSON files.",
+    "category": "Programming & Tech",
+    "subCategory": "Data Science & Analytics",
+    "tags": ["Python", "Web Scraping", "JSON"],
+    "deliveryDeadline": "2025-07-28T23:59:59Z",
+    "requiredSkills": ["Python", "BeautifulSoup", "Requests"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 350,
+      "max": 600,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "postedBy": {
+      "userId": "user808",
+      "name": "Rahul Singh",
+      "profileImage": "",
+      "rating": 4.3,
+      "jobsPosted": 10
+    },
+    "postedAt": "2025-07-11T13:00:00Z",
+    "status": "open",
+    "numberOfBids": 4,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Email",
+      "allowCalls": false
+    },
+    "extraNotes": "Respect site scraping policies."
+  },
+  {
+    "title": "Create Animated Explainer Video",
+    "description": "Looking for a motion graphics artist to create a 90-second explainer video for our new product launch.",
+    "category": "Video & Animation",
+    "subCategory": "Explainer Videos",
+    "tags": ["Animation", "Explainer", "After Effects"],
+    "deliveryDeadline": "2025-07-27T23:59:59Z",
+    "requiredSkills": ["After Effects", "Illustrator", "Storyboarding"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 500,
+      "max": 900,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "postedBy": {
+      "userId": "user909",
+      "name": "Linda Park",
+      "profileImage": "",
+      "rating": 4.8,
+      "jobsPosted": 13
+    },
+    "postedAt": "2025-07-12T15:30:00Z",
+    "status": "open",
+    "numberOfBids": 5,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": false
+    },
+    "extraNotes": "Style should be clean and modern."
+  },
+  {
+    "title": "Optimize Website Performance",
+    "description": "Need a front-end specialist to optimize our website’s load speed and mobile responsiveness using modern best practices.",
+    "category": "Web Development",
+    "subCategory": "Front-end Development",
+    "tags": ["Performance", "Optimization", "JavaScript"],
+    "deliveryDeadline": "2025-07-23T23:59:59Z",
+    "requiredSkills": ["JavaScript", "CSS", "Performance Tuning"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 400,
+      "max": 750,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "postedBy": {
+      "userId": "user1010",
+      "name": "David Kim",
+      "profileImage": "",
+      "rating": 4.6,
+      "jobsPosted": 11
+    },
+    "postedAt": "2025-07-13T08:45:00Z",
+    "status": "open",
+    "numberOfBids": 6,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Email",
+      "allowCalls": true
+    },
+    "extraNotes": "Focus on Google Lighthouse improvements."
+  },
+  {
+    "title": "Design Brochure for Corporate Event",
+    "description": "Require a graphic designer to create a professional brochure for an upcoming corporate event. Must include branding elements and clean layout.",
+    "category": "Graphic Design",
+    "subCategory": "Print Design",
+    "tags": ["Brochure", "Branding", "Print"],
+    "deliveryDeadline": "2025-07-21T23:59:59Z",
+    "requiredSkills": ["Adobe InDesign", "Photoshop", "Illustrator"],
+    "attachments": [],
+    "isRemote": true,
+    "location": {},
+    "budget": {
+      "type": "fixed",
+      "min": 200,
+      "max": 350,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "postedBy": {
+      "userId": "user1111",
+      "name": "Rebecca Moore",
+      "profileImage": "",
+      "rating": 4.7,
+      "jobsPosted": 6
+    },
+    "postedAt": "2025-07-14T10:30:00Z",
+    "status": "open",
+    "numberOfBids": 3,
+    "bids": [],
+    "selectedProfessional": null,
+    "communication": {
+      "preferredMethod": "Chat",
+      "allowCalls": false
+    },
+    "extraNotes": "Use company colors: Navy Blue and White."
   }
 ]

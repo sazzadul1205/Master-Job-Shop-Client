@@ -16,7 +16,7 @@ import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
 import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
 
 // Extra
-import GigsData from "../../../JSON/Gig_Data.json";
+
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -33,7 +33,7 @@ const Home = () => {
 
   // Fetching GigsData
   const {
-    // data: GigsData,
+    data: GigsData,
     isLoading: GigsIsLoading,
     error: GigsError,
   } = useQuery({

@@ -80,7 +80,7 @@ const GigCard = ({ gig, setSelectedGigID }) => {
         {/* Details Button */}
         <button
           onClick={() => {
-            document.getElementById("Jobs_Details_Modal").showModal();
+            document.getElementById("Gig_Details_Modal").showModal();
             setSelectedGigID(gig?._id);
           }}
           className="text-sm text-blue-700 hover:underline cursor-pointer"

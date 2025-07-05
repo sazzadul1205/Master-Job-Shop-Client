@@ -38,7 +38,7 @@ const FeaturedGigs = ({ GigsData }) => {
 
         {/* Gigs Card */}
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-          {GigsData.slice(0, 6).map((gig) => (
+          {GigsData.slice(0, 8).map((gig) => (
             <GigCard
               key={gig._id}
               gig={gig}

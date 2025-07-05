@@ -59,5 +59,497 @@
     "visibility": "public",
     "slug": "senior-react-developer",
     "notes": "Team prefers candidates familiar with agile."
+  },
+  {
+    "title": "UI/UX Designer",
+    "category": "Design",
+    "type": "Full-Time",
+    "level": "Mid",
+    "experience": "2-4 years",
+    "description": "We're seeking a UI/UX Designer to craft user-centric experiences for web and mobile platforms.",
+    "responsibilities": [
+      "Design wireframes, prototypes, and user flows",
+      "Collaborate with developers and product managers"
+    ],
+    "requirements": [
+      "Experience with Figma and Adobe XD",
+      "Understanding of design systems"
+    ],
+    "niceToHave": ["Animation design", "HTML/CSS skills"],
+    "location": "Remote",
+    "remote": true,
+    "hybrid": false,
+    "onsite": false,
+    "timezoneOverlap": "GMT+3 to GMT+8 preferred",
+    "salaryRange": { "min": 60000, "max": 90000, "currency": "USD" },
+    "isNegotiable": false,
+    "benefits": ["Remote allowance", "Annual training budget"],
+    "perks": ["No meeting Fridays", "Work from anywhere"],
+    "skills": ["UI", "UX", "Figma", "Design Systems"],
+    "company": {
+      "name": "PixelWorks Studio",
+      "logo": "https://cdn.pixelworks.com/logo.svg",
+      "website": "https://www.pixelworks.com",
+      "description": "A remote-first design agency.",
+      "location": "Singapore",
+      "size": "11-50",
+      "industry": "Design / Creative"
+    },
+    "application": {
+      "applyEmail": "careers@pixelworks.com",
+      "applyUrl": "https://pixelworks.com/jobs/uiux",
+      "requiresResume": true,
+      "requiresPortfolio": true,
+      "requiresCoverLetter": true,
+      "applicationDeadline": "2025-08-15T23:59:59Z"
+    },
+    "postedBy": "64fd9a3c2a7b914cfdd1ddff",
+    "postedAt": "2025-07-05T15:10:00Z",
+    "tags": ["Figma", "UX", "Remote"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "ui-ux-designer",
+    "notes": ""
+  },
+  {
+    "title": "Digital Marketing Specialist",
+    "category": "Marketing",
+    "type": "Part-Time",
+    "level": "Mid",
+    "experience": "2+ years",
+    "description": "Drive SEO and PPC campaigns while analyzing traffic and conversion metrics.",
+    "responsibilities": [
+      "Plan and execute digital marketing strategies",
+      "Optimize conversion rates and CTR"
+    ],
+    "requirements": [
+      "Knowledge of Google Ads, Facebook Ads",
+      "Familiarity with Google Analytics"
+    ],
+    "niceToHave": ["Content writing skills", "Email marketing experience"],
+    "location": "Lahore, Pakistan",
+    "remote": false,
+    "hybrid": true,
+    "onsite": true,
+    "timezoneOverlap": "GMT+5",
+    "salaryRange": { "min": 40000, "max": 60000, "currency": "PKR" },
+    "isNegotiable": true,
+    "benefits": ["Flexible hours", "Performance bonus"],
+    "perks": ["Free lunch on-site", "Training allowance"],
+    "skills": ["SEO", "PPC", "Google Ads", "Facebook Ads"],
+    "company": {
+      "name": "Growth Loop Ltd.",
+      "logo": "https://growthloop.com/logo.png",
+      "website": "https://growthloop.com",
+      "description": "We help startups scale through performance marketing.",
+      "location": "Lahore, Pakistan",
+      "size": "11-50",
+      "industry": "Marketing / Advertising"
+    },
+    "application": {
+      "applyEmail": "jobs@growthloop.com",
+      "applyUrl": "",
+      "requiresResume": true,
+      "requiresPortfolio": false,
+      "requiresCoverLetter": true,
+      "applicationDeadline": "2025-07-30T23:59:59Z"
+    },
+    "postedBy": "64fd9a3c2a7b914cfdd1df01",
+    "postedAt": "2025-07-04T11:00:00Z",
+    "tags": ["Digital Marketing", "SEO", "Pakistan"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "digital-marketing-specialist",
+    "notes": ""
+  },
+  {
+    "title": "DevOps Engineer",
+    "category": "Engineering",
+    "type": "Full-Time",
+    "level": "Mid",
+    "experience": "3-5 years",
+    "description": "Maintain CI/CD pipelines and manage cloud infrastructure on AWS.",
+    "responsibilities": [
+      "Implement infrastructure-as-code with Terraform",
+      "Monitor and optimize cloud costs"
+    ],
+    "requirements": [
+      "Experience with AWS, Docker, Jenkins",
+      "Strong scripting skills"
+    ],
+    "niceToHave": ["Kubernetes knowledge", "Security best practices"],
+    "location": "Berlin, Germany",
+    "remote": false,
+    "hybrid": true,
+    "onsite": true,
+    "timezoneOverlap": "GMT+1 required",
+    "salaryRange": { "min": 60000, "max": 85000, "currency": "EUR" },
+    "isNegotiable": true,
+    "benefits": ["Health insurance", "Equity options", "Gym membership"],
+    "perks": ["Free breakfast", "Team building retreats"],
+    "skills": ["AWS", "Docker", "CI/CD", "Linux"],
+    "company": {
+      "name": "CloudCraft GmbH",
+      "logo": "https://cloudcraft.io/logo.svg",
+      "website": "https://cloudcraft.io",
+      "description": "We build resilient infrastructure for SaaS companies.",
+      "location": "Berlin, Germany",
+      "size": "51-200",
+      "industry": "Cloud Services"
+    },
+    "application": {
+      "applyEmail": "careers@cloudcraft.io",
+      "applyUrl": "https://cloudcraft.io/jobs/devops",
+      "requiresResume": true,
+      "requiresPortfolio": false,
+      "requiresCoverLetter": false,
+      "applicationDeadline": "2025-07-31T23:59:59Z"
+    },
+    "postedBy": "64fd9a3c2a7b914cfdd1df02",
+    "postedAt": "2025-07-03T13:00:00Z",
+    "tags": ["AWS", "DevOps", "Infrastructure"],
+    "status": "open",
+    "priority": "urgent",
+    "visibility": "public",
+    "slug": "devops-engineer",
+    "notes": ""
+  },
+  {
+    "title": "Customer Success Manager",
+    "category": "Customer Service",
+    "type": "Full-Time",
+    "level": "Senior",
+    "experience": "5+ years",
+    "description": "Own client relationships and ensure long-term satisfaction and renewals.",
+    "responsibilities": [
+      "Manage client onboarding and retention",
+      "Analyze usage data to recommend improvements"
+    ],
+    "requirements": [
+      "Excellent communication and empathy",
+      "Familiarity with CRM platforms like HubSpot"
+    ],
+    "niceToHave": ["SaaS industry experience"],
+    "location": "Toronto, Canada",
+    "remote": true,
+    "hybrid": false,
+    "onsite": false,
+    "timezoneOverlap": "GMT-5 to GMT-8",
+    "salaryRange": { "min": 70000, "max": 95000, "currency": "CAD" },
+    "isNegotiable": true,
+    "benefits": ["Health benefits", "401K equivalent", "Wellness days"],
+    "perks": ["Home office stipend", "Quarterly team meetups"],
+    "skills": ["CRM", "Communication", "Customer Engagement"],
+    "company": {
+      "name": "NimbusFlow",
+      "logo": "https://nimbusflow.com/assets/logo.svg",
+      "website": "https://nimbusflow.com",
+      "description": "A customer experience platform trusted by 500+ companies.",
+      "location": "Toronto, Canada",
+      "size": "201-500",
+      "industry": "SaaS / Customer Experience"
+    },
+    "application": {
+      "applyEmail": "jobs@nimbusflow.com",
+      "applyUrl": "",
+      "requiresResume": true,
+      "requiresPortfolio": false,
+      "requiresCoverLetter": true,
+      "applicationDeadline": "2025-08-10T23:59:59Z"
+    },
+    "postedBy": "64fd9a3c2a7b914cfdd1df03",
+    "postedAt": "2025-07-02T16:00:00Z",
+    "tags": ["SaaS", "Customer Success", "Remote"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "customer-success-manager",
+    "notes": ""
+  },
+  {
+    "title": "Backend Developer (Node.js)",
+    "category": "Software Development",
+    "type": "Full-Time",
+    "level": "Mid",
+    "experience": "3+ years",
+    "description": "Design and implement RESTful APIs and backend services using Node.js.",
+    "responsibilities": [
+      "Develop scalable backend architecture",
+      "Write unit and integration tests"
+    ],
+    "requirements": [
+      "Strong Node.js and Express skills",
+      "Experience with MongoDB or PostgreSQL"
+    ],
+    "niceToHave": ["GraphQL", "Docker experience"],
+    "location": "Bangalore, India",
+    "remote": false,
+    "hybrid": true,
+    "onsite": true,
+    "timezoneOverlap": "IST (GMT+5:30)",
+    "salaryRange": { "min": 1200000, "max": 1800000, "currency": "INR" },
+    "isNegotiable": true,
+    "benefits": ["Stock options", "Internet reimbursement"],
+    "perks": ["Free snacks", "Weekly learning hours"],
+    "skills": ["Node.js", "Express", "MongoDB", "APIs"],
+    "company": {
+      "name": "StackDrip",
+      "logo": "https://stackdrip.in/logo.png",
+      "website": "https://stackdrip.in",
+      "description": "We power backend systems for fintech companies.",
+      "location": "Bangalore, India",
+      "size": "51-200",
+      "industry": "Fintech / Engineering"
+    },
+    "application": {
+      "applyEmail": "tech@stackdrip.in",
+      "applyUrl": "",
+      "requiresResume": true,
+      "requiresPortfolio": false,
+      "requiresCoverLetter": false,
+      "applicationDeadline": "2025-07-25T23:59:59Z"
+    },
+    "postedBy": "64fd9a3c2a7b914cfdd1df04",
+    "postedAt": "2025-07-01T12:00:00Z",
+    "tags": ["Backend", "Node.js", "API"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "backend-developer-nodejs",
+    "notes": ""
+  },
+  {
+    "title": "HR Generalist",
+    "category": "Human Resources",
+    "type": "Full-Time",
+    "level": "Junior",
+    "experience": "1-2 years",
+    "description": "Support day-to-day HR functions including recruitment, onboarding, and compliance.",
+    "responsibilities": [
+      "Maintain employee records",
+      "Coordinate interviews and onboarding"
+    ],
+    "requirements": [
+      "Knowledge of HRMS systems",
+      "Strong communication and organization skills"
+    ],
+    "niceToHave": ["Familiarity with labor law", "Basic payroll knowledge"],
+    "location": "Kuala Lumpur, Malaysia",
+    "remote": false,
+    "hybrid": true,
+    "onsite": true,
+    "timezoneOverlap": "GMT+8",
+    "salaryRange": { "min": 3500, "max": 5000, "currency": "MYR" },
+    "isNegotiable": false,
+    "benefits": ["Medical coverage", "Leave encashment"],
+    "perks": ["Casual dress code", "Employee discounts"],
+    "skills": ["HRMS", "Onboarding", "Recruiting"],
+    "company": {
+      "name": "TalentSphere",
+      "logo": "https://talentsphere.com/logo.png",
+      "website": "https://talentsphere.com",
+      "description": "We provide HR solutions to growing teams.",
+      "location": "Kuala Lumpur, Malaysia",
+      "size": "201-500",
+      "industry": "Human Resources"
+    },
+    "application": {
+      "applyEmail": "apply@talentsphere.com",
+      "applyUrl": "",
+      "requiresResume": true,
+      "requiresPortfolio": false,
+      "requiresCoverLetter": false,
+      "applicationDeadline": "2025-08-01T23:59:59Z"
+    },
+    "postedBy": "64fd9a3c2a7b914cfdd1df05",
+    "postedAt": "2025-07-05T10:30:00Z",
+    "tags": ["HR", "Hiring", "Compliance"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "hr-generalist",
+    "notes": ""
+  },
+  {
+    "title": "Content Writer (Tech Focus)",
+    "category": "Content & Writing",
+    "type": "Freelance",
+    "level": "Mid",
+    "experience": "2+ years",
+    "description": "We’re looking for a freelance tech content writer to create engaging, SEO-optimized articles for our developer-focused blog.",
+    "responsibilities": [
+      "Write technical blogs, tutorials, and product explainers",
+      "Collaborate with developers and SEO team for briefs"
+    ],
+    "requirements": [
+      "Solid grasp of JavaScript or Python concepts",
+      "Proven portfolio of published content"
+    ],
+    "niceToHave": [
+      "Experience with Markdown and GitHub",
+      "Understanding of OpenAI, Firebase, or Vercel tools"
+    ],
+    "location": "Remote",
+    "remote": true,
+    "hybrid": false,
+    "onsite": false,
+    "timezoneOverlap": "Flexible",
+    "salaryRange": {
+      "min": 100,
+      "max": 300,
+      "currency": "USD",
+      "frequency": "per article"
+    },
+    "isNegotiable": false,
+    "benefits": [],
+    "perks": ["Flexible deadlines", "Ongoing work available"],
+    "skills": ["Content Writing", "Technical Writing", "Markdown", "SEO"],
+    "company": {
+      "name": "DevInk",
+      "logo": "https://devink.io/logo.svg",
+      "website": "https://devink.io",
+      "description": "We provide educational resources and product marketing for developer tools.",
+      "location": "Remote",
+      "size": "1-10",
+      "industry": "Media / Developer Education"
+    },
+    "application": {
+      "applyEmail": "freelance@devink.io",
+      "applyUrl": "https://devink.io/apply/content",
+      "requiresResume": false,
+      "requiresPortfolio": true,
+      "requiresCoverLetter": false,
+      "applicationDeadline": "2025-08-10T23:59:59Z"
+    },
+    "postedBy": "64fd9a3c2a7b914cfdd1dffa",
+    "postedAt": "2025-07-05T17:40:00Z",
+    "tags": ["Tech Writing", "Freelance", "Remote"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "content-writer-tech",
+    "notes": ""
+  },
+  {
+    "title": "Mobile App Developer (Flutter)",
+    "category": "Mobile Development",
+    "type": "Full-Time",
+    "level": "Junior",
+    "experience": "1+ years",
+    "description": "Build and maintain cross-platform mobile apps using Flutter. Join a fast-paced fintech startup with global clients.",
+    "responsibilities": [
+      "Develop features for iOS and Android apps",
+      "Work with Firebase, REST APIs, and GraphQL",
+      "Fix bugs and optimize performance"
+    ],
+    "requirements": [
+      "Basic experience with Flutter and Dart",
+      "Familiarity with Git and Firebase"
+    ],
+    "niceToHave": [
+      "Experience with BLoC or Riverpod",
+      "Play Store/App Store deployment experience"
+    ],
+    "location": "Dhaka, Bangladesh",
+    "remote": false,
+    "hybrid": true,
+    "onsite": true,
+    "timezoneOverlap": "GMT+6",
+    "salaryRange": {
+      "min": 40000,
+      "max": 60000,
+      "currency": "BDT"
+    },
+    "isNegotiable": true,
+    "benefits": ["Lunch", "Transport allowance", "Yearly bonus"],
+    "perks": ["Startup culture", "Fast promotion track"],
+    "skills": ["Flutter", "Dart", "Firebase", "Mobile UI"],
+    "company": {
+      "name": "PayNest",
+      "logo": "https://paynest.com/logo.png",
+      "website": "https://paynest.com",
+      "description": "A Bangladeshi fintech startup simplifying digital transactions.",
+      "location": "Dhaka, Bangladesh",
+      "size": "11-50",
+      "industry": "Fintech"
+    },
+    "application": {
+      "applyEmail": "devjobs@paynest.com",
+      "applyUrl": "https://paynest.com/careers/flutter-junior",
+      "requiresResume": true,
+      "requiresPortfolio": false,
+      "requiresCoverLetter": true,
+      "applicationDeadline": "2025-07-25T23:59:59Z"
+    },
+    "postedBy": "64fd9a3c2a7b914cfdd1dfbb",
+    "postedAt": "2025-07-05T16:55:00Z",
+    "tags": ["Flutter", "Mobile", "Dart", "Junior"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "flutter-mobile-dev",
+    "notes": ""
+  },
+  {
+    "title": "Data Analyst (Remote Contract)",
+    "category": "Data & Analytics",
+    "type": "Contract",
+    "level": "Mid",
+    "experience": "3+ years",
+    "description": "Analyze complex datasets for SaaS product usage, create dashboards, and advise on key performance metrics.",
+    "responsibilities": [
+      "Build and maintain dashboards using Power BI or Tableau",
+      "Analyze customer behavior data and retention trends"
+    ],
+    "requirements": [
+      "Strong SQL and Excel skills",
+      "Experience with BI tools (Power BI, Tableau, Looker)"
+    ],
+    "niceToHave": [
+      "Python or R for statistical modeling",
+      "Experience in SaaS or B2B analytics"
+    ],
+    "location": "Remote (Global)",
+    "remote": true,
+    "hybrid": false,
+    "onsite": false,
+    "timezoneOverlap": "GMT+2 to GMT+10 preferred",
+    "salaryRange": {
+      "min": 3000,
+      "max": 4000,
+      "currency": "USD",
+      "frequency": "monthly"
+    },
+    "isNegotiable": true,
+    "benefits": [],
+    "perks": ["Flexible schedule", "Monthly data budget"],
+    "skills": ["SQL", "Analytics", "Tableau", "Power BI"],
+    "company": {
+      "name": "InsightForge",
+      "logo": "https://insightforge.com/assets/logo.svg",
+      "website": "https://insightforge.com",
+      "description": "Remote-first product analytics company working with SaaS firms globally.",
+      "location": "Singapore",
+      "size": "51-100",
+      "industry": "Analytics / Data Science"
+    },
+    "application": {
+      "applyEmail": "apply@insightforge.com",
+      "applyUrl": "",
+      "requiresResume": true,
+      "requiresPortfolio": false,
+      "requiresCoverLetter": false,
+      "applicationDeadline": "2025-08-05T23:59:59Z"
+    },
+    "postedBy": "64fd9a3c2a7b914cfdd1dfcc",
+    "postedAt": "2025-07-05T18:10:00Z",
+    "tags": ["Remote", "Analytics", "SQL", "Tableau"],
+    "status": "open",
+    "priority": "high",
+    "visibility": "public",
+    "slug": "remote-data-analyst",
+    "notes": "Prioritize candidates with SaaS dashboard experience."
   }
 ]

@@ -10,12 +10,15 @@ import Loading from "../../../Shared/Loading/Loading";
 // Components
 import HomeBanners from "./HomeBanner/HomeBanner";
 
+// JSON
+import JobsData from "../../../JSON/Trainer_Data.json";
+
 const Home = () => {
   const axiosPublic = useAxiosPublic();
 
   // Fetching Jobs Data
   const {
-    data: JobsData,
+    // data: JobsData,
     isLoading: JobsIsLoading,
     error: JobsError,
   } = useQuery({
@@ -170,8 +173,8 @@ const Home = () => {
   return (
     <>
       <HomeBanners />
-      {/* <FeaturedJobs PostedJobsData={PostedJobsData} />
-      <FeaturedGigs PostedGigsData={PostedGigsData} />
+      <FeaturedJobs JobsData={JobsData} />
+      {/* <FeaturedGigs PostedGigsData={PostedGigsData} />
       <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
       <FeaturedSalaryInsights SalaryInsightData={SalaryInsightData} />
       <FeaturedUpcomingEvents UpcomingEventsData={UpcomingEventsData} />

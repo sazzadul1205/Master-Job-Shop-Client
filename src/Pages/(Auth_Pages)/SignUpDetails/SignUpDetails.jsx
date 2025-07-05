@@ -18,7 +18,9 @@ import ErrorPage from "../../../Shared/ErrorPage/ErrorPage";
 // import Phone
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { FaGenderless, FaMars, FaVenus } from "react-icons/fa";
+
+// Selection Field
+import { GenderSelectField } from "./GenderSelectField/GenderSelectField";
 
 // Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
@@ -112,29 +114,23 @@ const SignUpDetails = () => {
     }
 
     // Prepare form data for submission
-    const creationTime = new Date().toLocaleString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    });
+    const creationTime = new Date().toISOString().slice(0, 19); // "YYYY-MM-DDTHH:mm:ss"
 
-    const formDataWithImage = {
-      email: user.email,
+    // Payload
+    const Payload = {
+      email: user?.email,
       phone: phoneNumber,
       ...data,
       profileImage: uploadedImageUrl,
       creationTime,
-      role: "Member",
       description: "No description provided.",
     };
 
+    console.log(Payload);
+
     // Post the data to the server
     try {
-      await axiosPublic.post("/Users", formDataWithImage);
+      await axiosPublic.post("/Users", Payload);
       setLoading(false);
       navigate("/", { replace: true });
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -219,7 +215,7 @@ const SignUpDetails = () => {
                 placeholder="John Doe"
                 register={register}
                 errors={errors}
-                name="fullName"
+                name="name"
                 type="text"
               />
 
@@ -244,7 +240,11 @@ const SignUpDetails = () => {
                 name="dob"
                 type="date"
               />
-              <GenderSelectField register={register} errors={errors} />
+              <GenderSelectField
+                register={register}
+                errors={errors}
+                control={control}
+              />
             </div>
           </div>
 
@@ -255,13 +255,14 @@ const SignUpDetails = () => {
               text="Create Account"
               isLoading={loading}
               loadingText="Submitting..."
-              textColor="text-white"
-              bgColor="OriginalRed"
+              textColor="text-blue-600"
+              bgColor="white"
               width="[300px]"
               px="px-5"
               py="py-3"
-              borderRadius="rounded-xl"
+              className="playfair"
               cursorStyle="cursor-pointer"
+              borderRadius="rounded-xl text-xl"
               disabled={loading}
             />
           </div>
@@ -307,65 +308,3 @@ InputField.propTypes = {
   name: PropTypes.string.isRequired,
   type: PropTypes.string,
 };
-
-import { useWatch } from "react-hook-form";
-// Reusable Gender Select Field Component
-export const GenderSelectField = ({ register, errors }) => {
-  const selectedGender = useWatch({ control, name: "gender" });
-  return (
-    <div>
-      <label className="block text-black font-semibold text-xl pb-2">
-        Gender
-      </label>
-      <div className="flex flex-wrap gap-4">
-        {genderOptions.map(({ label, value, icon }) => (
-          <label
-            key={value}
-            className={`cursor-pointer border rounded-xl px-5 py-3 flex items-center gap-3 shadow-md transition-all
-              ${
-                selectedGender === value
-                  ? "bg-blue-100 border-blue-500 scale-105"
-                  : "bg-white border-gray-300 hover:bg-gray-100"
-              }`}
-          >
-            <input
-              type="radio"
-              value={value}
-              {...register("gender", { required: "Gender is required" })}
-              className="hidden"
-            />
-            <div className="text-2xl">{icon}</div>
-            <span className="text-base font-medium text-black">{label}</span>
-          </label>
-        ))}
-      </div>
-      {errors.gender && (
-        <p className="text-red-500 text-sm mt-2">{errors.gender.message}</p>
-      )}
-    </div>
-  );
-};
-
-// Add PropTypes for GenderSelectField
-GenderSelectField.propTypes = {
-  register: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
-};
-
-const genderOptions = [
-  {
-    label: "Male",
-    value: "male",
-    icon: <FaMars className="text-blue-600" />,
-  },
-  {
-    label: "Female",
-    value: "female",
-    icon: <FaVenus className="text-pink-500" />,
-  },
-  {
-    label: "Other",
-    value: "other",
-    icon: <FaGenderless className="text-gray-600" />,
-  },
-];

@@ -9,6 +9,7 @@ import CommonButton from "../CommonButton/CommonButton";
 // Default Company Logo
 import DefaultCompanyLogo from "../../assets/DefaultCompanyLogo.jpg";
 
+// Salary Format
 const formatSalary = (min, max, currency) => {
   if (!min && !max) return "Not specified";
   if (min && !max) return `${currency}${min}+`;
@@ -16,6 +17,7 @@ const formatSalary = (min, max, currency) => {
   return `${currency}${min} - ${max}`;
 };
 
+// Function to Calculate Days Ago
 const calculateDaysAgo = (isoString) => {
   const postedDate = new Date(isoString);
   const today = new Date();
@@ -26,7 +28,7 @@ const calculateDaysAgo = (isoString) => {
     : `${daysDiff} day${daysDiff > 1 ? "s" : ""} ago`;
 };
 
-const JobCard = ({ job, setSelectedJob }) => {
+const JobCard = ({ job, setSelectedJobID }) => {
   return (
     <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm p-6 bg-linear-to-bl from-white to-gray-100 hover:shadow-md transition duration-200 min-h-[300px]">
       {/* Top: Company Logo and Info */}
@@ -57,12 +59,17 @@ const JobCard = ({ job, setSelectedJob }) => {
 
         {/* Middle: Job Details */}
         <div className="text-sm text-gray-600 space-y-1 mb-4">
+          {/* Job Type & Level */}
           <p>
             <strong>Type:</strong> {job.type} • {job.level}
           </p>
+
+          {/* Job Esperance */}
           <p>
             <strong>Experience:</strong> {job.experience}
           </p>
+
+          {/* Salary */}
           <p>
             <strong>Salary:</strong>{" "}
             {formatSalary(
@@ -74,6 +81,8 @@ const JobCard = ({ job, setSelectedJob }) => {
               <span className="text-xs text-green-600">(Negotiable)</span>
             )}
           </p>
+
+          {/* Mode */}
           <p>
             <strong>Mode:</strong>{" "}
             {job.remote
@@ -84,6 +93,8 @@ const JobCard = ({ job, setSelectedJob }) => {
               ? "Onsite"
               : "N/A"}
           </p>
+
+          {/* Posted At */}
           <p>
             <strong>Posted:</strong> {calculateDaysAgo(job.postedAt)}
           </p>
@@ -97,12 +108,11 @@ const JobCard = ({ job, setSelectedJob }) => {
 
       {/* Bottom: Action Buttons */}
       <div className="flex justify-between items-center pt-2 mt-auto">
+        {/* Apply Now Button */}
         <Link
           to={`/external-apply?url=${encodeURIComponent(
             job.application.applyUrl
           )}`}
-          target="_blank"
-          rel="noopener noreferrer"
         >
           <CommonButton
             text="Apply Now"
@@ -114,8 +124,13 @@ const JobCard = ({ job, setSelectedJob }) => {
             className="text-sm font-medium"
           />
         </Link>
+
+        {/* Details Button */}
         <button
-          onClick={() => setSelectedJob(job?._id)}
+          onClick={() => {
+            document.getElementById("Jobs_Details_Modal").showModal();
+            setSelectedJobID(job?._id);
+          }}
           className="text-sm text-blue-700 hover:underline cursor-pointer"
         >
           View Details
@@ -125,6 +140,7 @@ const JobCard = ({ job, setSelectedJob }) => {
   );
 };
 
+// Prop Validation
 JobCard.propTypes = {
   job: PropTypes.shape({
     title: PropTypes.string.isRequired,
@@ -152,7 +168,7 @@ JobCard.propTypes = {
     }),
     _id: PropTypes.string.isRequired,
   }).isRequired,
-  setSelectedJob: PropTypes.func.isRequired,
+  setSelectedJobID: PropTypes.func.isRequired,
 };
 
 export default JobCard;

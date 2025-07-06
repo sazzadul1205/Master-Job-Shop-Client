@@ -14,10 +14,9 @@ import HomeBanners from "./HomeBanner/HomeBanner";
 // Components
 import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
 import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
+import InternshipPrograms from "./InternshipPrograms/InternshipPrograms";
 
 // Extra
-import InternshipData from "../../../JSON/Internship_Data.json"
-import InternshipPrograms from "./InternshipPrograms/InternshipPrograms";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -44,7 +43,7 @@ const Home = () => {
 
   // Fetching InternshipData
   const {
-    // data: InternshipData,
+    data: InternshipData,
     isLoading: InternshipIsLoading,
     error: InternshipError,
   } = useQuery({

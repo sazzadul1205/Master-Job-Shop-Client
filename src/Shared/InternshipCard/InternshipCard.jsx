@@ -24,7 +24,7 @@ const calculateDaysAgo = (isoString) => {
   return days === 0 ? "Today" : `${days} day${days > 1 ? "s" : ""} ago`;
 };
 
-const InternshipCard = ({ internship, setSelectedGigID }) => {
+const InternshipCard = ({ internship, setSelectedInternshipID }) => {
   return (
     <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm p-6 bg-gradient-to-bl from-white to-gray-100 hover:shadow-md transition duration-200 min-h-[250px]">
       {/* Poster Info */}
@@ -81,7 +81,7 @@ const InternshipCard = ({ internship, setSelectedGigID }) => {
 
       {/* Action Buttons */}
       <div className="flex justify-between items-center pt-2 mt-auto">
-        <Link to={`/gig/${internship._id}`}>
+        <Link to={`/gig/${internship?._id}`}>
           <button className="bg-blue-700 hover:bg-blue-800 text-white text-sm font-medium px-4 py-2 rounded-lg">
             View Gig
           </button>
@@ -89,12 +89,12 @@ const InternshipCard = ({ internship, setSelectedGigID }) => {
 
         <button
           onClick={() => {
-            document.getElementById("Gig_Details_Modal").showModal();
-            setSelectedGigID(internship._id);
+            document.getElementById("Internship_Details_Modal").showModal();
+            setSelectedInternshipID(internship?._id);
           }}
           className="text-sm text-blue-700 hover:underline cursor-pointer"
         >
-          Details
+          View Details
         </button>
       </div>
     </div>
@@ -103,7 +103,7 @@ const InternshipCard = ({ internship, setSelectedGigID }) => {
 
 InternshipCard.propTypes = {
   internship: PropTypes.object.isRequired,
-  setSelectedGigID: PropTypes.func.isRequired,
+  setSelectedInternshipID: PropTypes.func.isRequired,
 };
 
 export default InternshipCard;

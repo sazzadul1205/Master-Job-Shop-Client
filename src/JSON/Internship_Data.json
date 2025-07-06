@@ -1,6 +1,5 @@
 [
   {
-    "_id": 11,
     "title": "Build Responsive E-commerce Website",
     "description": "Seeking an experienced web developer to create a responsive e-commerce site using React and Node.js. Must support mobile and desktop seamlessly.",
     "category": "Web Development",
@@ -37,7 +36,6 @@
     "extraNotes": "Focus on clean UI and fast load times."
   },
   {
-    "_id": 12,
     "title": "Create SEO Optimized Blog Content",
     "description": "Looking for a content writer to produce SEO-friendly blog posts on technology and innovation. Each article should be 800-1000 words.",
     "category": "Writing & Translation",
@@ -74,7 +72,6 @@
     "extraNotes": "Articles must pass plagiarism checks."
   },
   {
-    "_id": 13,
     "title": "Design a Mobile App UI/UX",
     "description": "Need a skilled designer to create an intuitive UI/UX for a fitness tracking mobile app. Experience with Figma and prototyping required.",
     "category": "Graphic Design",
@@ -111,7 +108,6 @@
     "extraNotes": "Keep designs simple and easy to navigate."
   },
   {
-    "_id": 14,
     "title": "Develop Marketing Automation Workflow",
     "description": "We want an expert to set up and customize marketing automation using HubSpot for lead nurturing and email campaigns.",
     "category": "Marketing",
@@ -148,7 +144,6 @@
     "extraNotes": "Must integrate with existing CRM data."
   },
   {
-    "_id": 15,
     "title": "Translate Website Content to Spanish",
     "description": "Looking for a native Spanish speaker to translate our website content of approx 5,000 words with technical accuracy and cultural relevance.",
     "category": "Writing & Translation",
@@ -185,7 +180,6 @@
     "extraNotes": "Maintain original tone and style."
   },
   {
-    "_id": 16,
     "title": "Setup Google Ads Campaign",
     "description": "Need a PPC expert to set up and optimize Google Ads campaigns to increase conversions for our SaaS product launch.",
     "category": "Marketing",
@@ -222,7 +216,6 @@
     "extraNotes": "Target tech-savvy audiences."
   },
   {
-    "_id": 17,
     "title": "Write Python Script for Data Scraping",
     "description": "Require a Python developer to write a script that scrapes product data from e-commerce sites and outputs JSON files.",
     "category": "Programming & Tech",
@@ -259,7 +252,6 @@
     "extraNotes": "Respect site scraping policies."
   },
   {
-    "_id": 18,
     "title": "Create Animated Explainer Video",
     "description": "Looking for a motion graphics artist to create a 90-second explainer video for our new product launch.",
     "category": "Video & Animation",
@@ -296,7 +288,6 @@
     "extraNotes": "Style should be clean and modern."
   },
   {
-    "_id": 19,
     "title": "Optimize Website Performance",
     "description": "Need a front-end specialist to optimize our website’s load speed and mobile responsiveness using modern best practices.",
     "category": "Web Development",
@@ -333,7 +324,6 @@
     "extraNotes": "Focus on Google Lighthouse improvements."
   },
   {
-    "_id": 20,
     "title": "Design Brochure for Corporate Event",
     "description": "Require a graphic designer to create a professional brochure for an upcoming corporate event. Must include branding elements and clean layout.",
     "category": "Graphic Design",

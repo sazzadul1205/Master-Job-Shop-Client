@@ -18,7 +18,8 @@ import FeaturedInternships from "./FeaturedInternships/FeaturedInternships";
 import FeaturedMentorship from "./FeaturedMentorship/FeaturedMentorship";
 
 // Extra
-// import MentorshipData from "../../../JSON/Mentorship_Data.json";
+import CoursesData from "../../../JSON/Course_Data.json";
+import FeaturedCourses from "./FeaturedCourses/FeaturedCourses";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -65,7 +66,7 @@ const Home = () => {
 
   // Fetching CoursesData
   const {
-    data: CoursesData,
+    // data: CoursesData,
     isLoading: CoursesIsLoading,
     error: CoursesError,
   } = useQuery({
@@ -178,11 +179,11 @@ const Home = () => {
 
       <FeaturedMentorship MentorshipData={MentorshipData} />
 
+      <FeaturedCourses CoursesData={CoursesData} />
       {/* 
       <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
       <FeaturedSalaryInsights SalaryInsightData={SalaryInsightData} />
       <FeaturedUpcomingEvents UpcomingEventsData={UpcomingEventsData} />
-      <FeaturedCourses CoursesData={CoursesData} />
       <NewsLetter />
       <Testimonials testimonialsData={testimonialsData} />
       <WhyChooseUs WhyChooseUsData={WhyChooseUsData} /> */}

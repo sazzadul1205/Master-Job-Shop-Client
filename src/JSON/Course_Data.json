@@ -1,0 +1,372 @@
+[
+  {
+    "_id": "c101",
+    "title": "Mastering JavaScript from Scratch",
+    "description": "A comprehensive course covering modern JavaScript, including ES6+, DOM manipulation, and asynchronous programming.",
+    "category": "Programming",
+    "subCategory": "JavaScript",
+    "level": "Beginner to Intermediate",
+    "durationHours": 30,
+    "modules": 12,
+    "lessons": 85,
+    "language": "English",
+    "tags": ["JavaScript", "ES6", "Asynchronous", "Frontend"],
+    "instructor": {
+      "name": "John Matthews",
+      "profileImage": "",
+      "bio": "Senior JavaScript Engineer with over 10 years in the web industry.",
+      "rating": 4.8,
+      "studentsTaught": 3200
+    },
+    "schedule": {
+      "type": "Self-paced",
+      "releaseMode": "All at once",
+      "startDate": null
+    },
+    "price": {
+      "amount": 49.99,
+      "currency": "USD",
+      "discount": 0,
+      "isFree": false
+    },
+    "prerequisites": ["Basic HTML/CSS"],
+    "skillsCovered": ["ES6", "DOM", "Callbacks", "Promises", "Async/Await"],
+    "certificateAvailable": true,
+    "status": "active",
+    "publishedAt": "2025-07-01T10:00:00Z"
+  },
+  {
+    "_id": "c102",
+    "title": "UI/UX Design Bootcamp",
+    "description": "Learn design principles, wireframing, prototyping, and tools like Figma and Adobe XD to become a UI/UX professional.",
+    "category": "Design",
+    "subCategory": "UI/UX",
+    "level": "Beginner",
+    "durationHours": 40,
+    "modules": 10,
+    "lessons": 60,
+    "language": "English",
+    "tags": ["UI Design", "UX Research", "Figma", "Prototyping"],
+    "instructor": {
+      "name": "Samantha Lin",
+      "profileImage": "",
+      "bio": "Creative Director and UX Coach with experience in enterprise SaaS.",
+      "rating": 4.9,
+      "studentsTaught": 2800
+    },
+    "schedule": {
+      "type": "Scheduled",
+      "releaseMode": "Weekly",
+      "startDate": "2025-08-10T00:00:00Z"
+    },
+    "price": {
+      "amount": 79.99,
+      "currency": "USD",
+      "discount": 20,
+      "isFree": false
+    },
+    "prerequisites": [],
+    "skillsCovered": [
+      "Wireframing",
+      "Usability Testing",
+      "Figma",
+      "Design Thinking"
+    ],
+    "certificateAvailable": true,
+    "status": "active",
+    "publishedAt": "2025-07-02T11:00:00Z"
+  },
+  {
+    "_id": "c103",
+    "title": "Full Stack Web Development with MERN",
+    "description": "Build scalable web apps using MongoDB, Express, React, and Node.js in this intensive bootcamp.",
+    "category": "Development",
+    "subCategory": "Full Stack",
+    "level": "Intermediate",
+    "durationHours": 60,
+    "modules": 16,
+    "lessons": 100,
+    "language": "English",
+    "tags": ["MERN", "React", "Node", "Express", "MongoDB"],
+    "instructor": {
+      "name": "Ahmed Khan",
+      "profileImage": "",
+      "bio": "Full Stack Engineer and founder of DevTrailz Academy.",
+      "rating": 4.7,
+      "studentsTaught": 5400
+    },
+    "schedule": {
+      "type": "Self-paced",
+      "releaseMode": "Module-based",
+      "startDate": null
+    },
+    "price": {
+      "amount": 99.99,
+      "currency": "USD",
+      "discount": 10,
+      "isFree": false
+    },
+    "prerequisites": ["HTML", "CSS", "JavaScript Basics"],
+    "skillsCovered": [
+      "REST APIs",
+      "React Hooks",
+      "JWT Auth",
+      "Mongo Aggregation"
+    ],
+    "certificateAvailable": true,
+    "status": "active",
+    "publishedAt": "2025-07-03T15:00:00Z"
+  },
+  {
+    "_id": "c104",
+    "title": "Python for Data Analysis",
+    "description": "Learn how to analyze datasets using Python libraries like Pandas, NumPy, and Matplotlib.",
+    "category": "Data Science",
+    "subCategory": "Data Analysis",
+    "level": "Beginner",
+    "durationHours": 25,
+    "modules": 8,
+    "lessons": 50,
+    "language": "English",
+    "tags": ["Python", "Pandas", "Numpy", "Matplotlib"],
+    "instructor": {
+      "name": "Maria Gomez",
+      "profileImage": "",
+      "bio": "Data Analyst at Google with a passion for teaching Python to newcomers.",
+      "rating": 4.9,
+      "studentsTaught": 4200
+    },
+    "schedule": {
+      "type": "Self-paced",
+      "releaseMode": "All at once",
+      "startDate": null
+    },
+    "price": {
+      "amount": 0,
+      "currency": "USD",
+      "discount": 0,
+      "isFree": true
+    },
+    "prerequisites": ["Basic Python"],
+    "skillsCovered": ["Data Wrangling", "Visualization", "Statistical Summary"],
+    "certificateAvailable": true,
+    "status": "active",
+    "publishedAt": "2025-07-04T14:00:00Z"
+  },
+  {
+    "_id": "c105",
+    "title": "Intro to Cybersecurity",
+    "description": "Get started with ethical hacking, networking basics, and securing digital systems.",
+    "category": "IT & Security",
+    "subCategory": "Cybersecurity",
+    "level": "Beginner",
+    "durationHours": 35,
+    "modules": 10,
+    "lessons": 70,
+    "language": "English",
+    "tags": ["Cybersecurity", "Ethical Hacking", "Firewalls", "Networking"],
+    "instructor": {
+      "name": "Derrick White",
+      "profileImage": "",
+      "bio": "Certified Ethical Hacker with 12+ years in the infosec industry.",
+      "rating": 4.6,
+      "studentsTaught": 3100
+    },
+    "schedule": {
+      "type": "Scheduled",
+      "releaseMode": "Bi-weekly",
+      "startDate": "2025-09-01T00:00:00Z"
+    },
+    "price": {
+      "amount": 59.99,
+      "currency": "USD",
+      "discount": 0,
+      "isFree": false
+    },
+    "prerequisites": ["Basic computer knowledge"],
+    "skillsCovered": ["Network Security", "Social Engineering", "Linux Basics"],
+    "certificateAvailable": true,
+    "status": "active",
+    "publishedAt": "2025-07-05T10:00:00Z"
+  },
+  {
+    "_id": "c106",
+    "title": "Advanced Excel for Business",
+    "description": "Learn advanced Excel functions, dashboards, pivot tables, and automation with macros.",
+    "category": "Business",
+    "subCategory": "Productivity",
+    "level": "Intermediate",
+    "durationHours": 20,
+    "modules": 6,
+    "lessons": 40,
+    "language": "English",
+    "tags": ["Excel", "Dashboards", "Pivot Table", "Automation"],
+    "instructor": {
+      "name": "Kevin Turner",
+      "profileImage": "",
+      "bio": "Excel Trainer with Fortune 500 experience.",
+      "rating": 4.8,
+      "studentsTaught": 1800
+    },
+    "schedule": {
+      "type": "Self-paced",
+      "releaseMode": "All at once",
+      "startDate": null
+    },
+    "price": {
+      "amount": 39.99,
+      "currency": "USD",
+      "discount": 0,
+      "isFree": false
+    },
+    "prerequisites": ["Basic Excel"],
+    "skillsCovered": ["VLOOKUP", "Macros", "IF statements", "Charting"],
+    "certificateAvailable": true,
+    "status": "active",
+    "publishedAt": "2025-07-06T09:00:00Z"
+  },
+  {
+    "_id": "c107",
+    "title": "Digital Marketing Essentials",
+    "description": "Learn SEO, social media marketing, and paid ads with real-world campaigns.",
+    "category": "Marketing",
+    "subCategory": "Digital Marketing",
+    "level": "Beginner",
+    "durationHours": 28,
+    "modules": 9,
+    "lessons": 55,
+    "language": "English",
+    "tags": ["SEO", "Facebook Ads", "Google Ads", "Email Marketing"],
+    "instructor": {
+      "name": "Rachel Cooper",
+      "profileImage": "",
+      "bio": "Digital Marketing Consultant for startups and growth-stage businesses.",
+      "rating": 4.7,
+      "studentsTaught": 2400
+    },
+    "schedule": {
+      "type": "Self-paced",
+      "releaseMode": "Weekly",
+      "startDate": null
+    },
+    "price": {
+      "amount": 44.99,
+      "currency": "USD",
+      "discount": 15,
+      "isFree": false
+    },
+    "prerequisites": [],
+    "skillsCovered": ["SEO Basics", "Ad Campaign Setup", "Marketing Analytics"],
+    "certificateAvailable": true,
+    "status": "active",
+    "publishedAt": "2025-07-07T08:30:00Z"
+  },
+  {
+    "_id": "c108",
+    "title": "Intro to Machine Learning",
+    "description": "Understand ML concepts, algorithms, and practical implementation using Python and Scikit-learn.",
+    "category": "Data Science",
+    "subCategory": "Machine Learning",
+    "level": "Intermediate",
+    "durationHours": 45,
+    "modules": 14,
+    "lessons": 90,
+    "language": "English",
+    "tags": ["Machine Learning", "Python", "Scikit-learn", "Modeling"],
+    "instructor": {
+      "name": "Dr. Alvin Chowdhury",
+      "profileImage": "",
+      "bio": "AI Researcher & ML Instructor with 10+ years of field experience.",
+      "rating": 4.9,
+      "studentsTaught": 3900
+    },
+    "schedule": {
+      "type": "Scheduled",
+      "releaseMode": "Weekly",
+      "startDate": "2025-08-20T00:00:00Z"
+    },
+    "price": {
+      "amount": 89.99,
+      "currency": "USD",
+      "discount": 0,
+      "isFree": false
+    },
+    "prerequisites": ["Python basics", "High-school math"],
+    "skillsCovered": ["Regression", "Classification", "Model Evaluation"],
+    "certificateAvailable": true,
+    "status": "active",
+    "publishedAt": "2025-07-08T10:00:00Z"
+  },
+  {
+    "_id": "c109",
+    "title": "WordPress for Beginners",
+    "description": "Learn how to build websites and blogs using WordPress with no coding required.",
+    "category": "Development",
+    "subCategory": "CMS",
+    "level": "Beginner",
+    "durationHours": 15,
+    "modules": 5,
+    "lessons": 35,
+    "language": "English",
+    "tags": ["WordPress", "Website", "No-Code", "Blogging"],
+    "instructor": {
+      "name": "Emily Lawson",
+      "profileImage": "",
+      "bio": "Freelance WordPress Developer and instructor.",
+      "rating": 4.5,
+      "studentsTaught": 1200
+    },
+    "schedule": {
+      "type": "Self-paced",
+      "releaseMode": "All at once",
+      "startDate": null
+    },
+    "price": {
+      "amount": 19.99,
+      "currency": "USD",
+      "discount": 0,
+      "isFree": false
+    },
+    "prerequisites": [],
+    "skillsCovered": ["WordPress Setup", "Themes", "Plugins", "Publishing"],
+    "certificateAvailable": true,
+    "status": "active",
+    "publishedAt": "2025-07-09T09:00:00Z"
+  },
+  {
+    "_id": "c110",
+    "title": "Public Speaking & Communication Mastery",
+    "description": "Enhance your presentation, persuasion, and confidence through real exercises and coaching.",
+    "category": "Personal Development",
+    "subCategory": "Communication",
+    "level": "All Levels",
+    "durationHours": 20,
+    "modules": 7,
+    "lessons": 45,
+    "language": "English",
+    "tags": ["Public Speaking", "Communication", "Confidence", "Pitching"],
+    "instructor": {
+      "name": "Oscar Bennett",
+      "profileImage": "",
+      "bio": "TEDx Speaker & Communication Coach with 15 years of experience.",
+      "rating": 4.9,
+      "studentsTaught": 2700
+    },
+    "schedule": {
+      "type": "Scheduled",
+      "releaseMode": "Weekly",
+      "startDate": "2025-08-01T00:00:00Z"
+    },
+    "price": {
+      "amount": 29.99,
+      "currency": "USD",
+      "discount": 0,
+      "isFree": false
+    },
+    "prerequisites": [],
+    "skillsCovered": ["Presentation", "Storytelling", "Impromptu Speaking"],
+    "certificateAvailable": true,
+    "status": "active",
+    "publishedAt": "2025-07-10T12:00:00Z"
+  }
+]

@@ -14,7 +14,8 @@ import HomeBanners from "./HomeBanner/HomeBanner";
 // Components
 import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
 import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
-import InternshipPrograms from "./InternshipPrograms/InternshipPrograms";
+import FeaturedInternships from "./FeaturedInternships/FeaturedInternships";
+
 
 // Extra
 
@@ -167,11 +168,12 @@ const Home = () => {
   return (
     <>
       <HomeBanners />
+
       <FeaturedJobs JobsData={JobsData} />
 
       <FeaturedGigs GigsData={GigsData} />
 
-      <InternshipPrograms InternshipData={InternshipData} />
+      <FeaturedInternships InternshipData={InternshipData} />
 
       {/* 
       <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />

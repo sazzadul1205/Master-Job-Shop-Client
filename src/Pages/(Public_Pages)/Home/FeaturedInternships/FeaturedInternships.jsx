@@ -11,7 +11,7 @@ import InternshipCard from "../../../../Shared/InternshipCard/InternshipCard";
 import PropTypes from "prop-types";
 import InternshipDetailsModal from "./InternshipDetailsModal/InternshipDetailsModal";
 
-const InternshipPrograms = ({ InternshipData }) => {
+const FeaturedInternships = ({ InternshipData }) => {
   const [selectedInternshipID, setSelectedInternshipID] = useState(null);
 
   return (
@@ -61,7 +61,7 @@ const InternshipPrograms = ({ InternshipData }) => {
 };
 
 // Prop validation
-InternshipPrograms.propTypes = {
+FeaturedInternships.propTypes = {
   InternshipData: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -85,4 +85,4 @@ InternshipPrograms.propTypes = {
   ).isRequired,
 };
 
-export default InternshipPrograms;
+export default FeaturedInternships;

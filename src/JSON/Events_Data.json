@@ -1,0 +1,668 @@
+[
+  {
+    "_id": "evnt202507",
+    "title": "FutureTech Conference 2025",
+    "description": "An immersive 3-day conference exploring the latest innovations in AI, Web3, and Sustainable Tech. Network with industry leaders, attend hands-on workshops, and get inspired by visionary talks.",
+    "category": "Technology",
+    "subCategory": "Artificial Intelligence",
+    "tags": ["AI", "Web3", "Innovation", "Sustainability", "Startups"],
+    "type": "Conference",
+    "format": "In-person",
+    "location": {
+      "venue": "Dhaka International Convention Center",
+      "address": "123 Innovation Avenue, Dhaka 1207, Bangladesh",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": 23.8103,
+      "longitude": 90.4125
+    },
+    "startDate": "2025-11-18T09:00:00Z",
+    "endDate": "2025-11-20T18:00:00Z",
+    "timezone": "Asia/Dhaka",
+    "schedule": [
+      {
+        "day": "2025-11-18",
+        "sessions": [
+          {
+            "title": "Opening Keynote: The Future of Intelligence",
+            "speaker": "Dr. Amina Chowdhury",
+            "startTime": "09:30",
+            "endTime": "10:30",
+            "room": "Main Auditorium"
+          },
+          {
+            "title": "Panel: Blockchain & Governance",
+            "speakers": ["Rafiq Islam", "Sadia Hossain", "Chris Mendez"],
+            "startTime": "11:00",
+            "endTime": "12:30",
+            "room": "Hall B"
+          }
+        ]
+      }
+    ],
+    "audience": ["Professionals", "Startups", "Researchers", "Students"],
+    "capacity": 1500,
+    "price": {
+      "currency": "USD",
+      "standard": 199,
+      "earlyBird": 149,
+      "vip": 399,
+      "groupDiscount": true,
+      "isFree": false
+    },
+    "registration": {
+      "openDate": "2025-08-01T00:00:00Z",
+      "closeDate": "2025-11-10T23:59:59Z",
+      "maxTicketsPerPerson": 5,
+      "requiresApproval": false,
+      "registrationUrl": "https://events.futuretech2025.com/register"
+    },
+    "organizer": {
+      "name": "TechBridge Bangladesh",
+      "logo": "https://cdn.techbridge.org/logo.png",
+      "bio": "A non-profit promoting emerging technology across South Asia.",
+      "contactEmail": "events@techbridge.org",
+      "contactPhone": "+8801770000000",
+      "website": "https://techbridge.org"
+    },
+    "speakers": [
+      {
+        "name": "Dr. Amina Chowdhury",
+        "bio": "Director of AI Labs, MIT – Pioneer in ethical AI systems.",
+        "photo": "https://cdn.futuretech.com/speakers/amina.jpg",
+        "topic": "Responsible Artificial Intelligence",
+        "linkedin": "https://linkedin.com/in/aminachowdhury"
+      },
+      {
+        "name": "Chris Mendez",
+        "bio": "Web3 Evangelist & Founder of OpenLedger",
+        "photo": "",
+        "topic": "Decentralized Governance"
+      }
+    ],
+    "sponsors": [
+      {
+        "name": "TechNova",
+        "logo": "https://cdn.technova.com/logo.png",
+        "tier": "Platinum"
+      },
+      {
+        "name": "GrameenPhone Innovation Lab",
+        "logo": "https://cdn.gp.com/labs/logo.png",
+        "tier": "Gold"
+      }
+    ],
+    "media": {
+      "banner": "https://cdn.futuretech.com/banners/banner2025.jpg",
+      "gallery": [
+        "https://cdn.futuretech.com/gallery/img1.jpg",
+        "https://cdn.futuretech.com/gallery/img2.jpg"
+      ],
+      "promoVideo": "https://youtu.be/dQw4w9WgXcQ"
+    },
+    "status": "upcoming",
+    "publishedAt": "2025-07-01T10:00:00Z",
+    "lastUpdated": "2025-07-06T20:00:00Z",
+    "extraNotes": "All sessions will be recorded and available to registered attendees for 30 days after the event."
+  },
+  {
+    "_id": "evnt202508",
+    "title": "Remote Productivity Webinar 2025",
+    "description": "Learn top tools, mental frameworks, and scheduling methods to stay productive in a remote-first world.",
+    "category": "Workplace",
+    "subCategory": "Productivity",
+    "tags": ["Remote Work", "Time Management", "Asynchronous", "Tools"],
+    "type": "Webinar",
+    "format": "Online",
+    "location": {
+      "venue": "Zoom",
+      "address": "",
+      "city": "",
+      "country": "",
+      "latitude": null,
+      "longitude": null
+    },
+    "startDate": "2025-09-08T14:00:00Z",
+    "endDate": "2025-09-08T15:30:00Z",
+    "timezone": "Asia/Dhaka",
+    "schedule": [
+      {
+        "day": "2025-09-08",
+        "sessions": [
+          {
+            "title": "Maximizing Asynchronous Productivity",
+            "speaker": "Nadia Rahman",
+            "startTime": "14:00",
+            "endTime": "15:00",
+            "room": "Main Zoom Room"
+          },
+          {
+            "title": "Live Q&A with Productivity Coaches",
+            "speakers": ["Nadia Rahman", "Alex Soto"],
+            "startTime": "15:00",
+            "endTime": "15:30",
+            "room": "Main Zoom Room"
+          }
+        ]
+      }
+    ],
+    "audience": ["Remote Workers", "Managers", "Freelancers"],
+    "capacity": 500,
+    "price": {
+      "currency": "USD",
+      "isFree": true
+    },
+    "registration": {
+      "openDate": "2025-07-15T00:00:00Z",
+      "closeDate": "2025-09-06T23:59:59Z",
+      "maxTicketsPerPerson": 1,
+      "requiresApproval": false,
+      "registrationUrl": "https://remoteworklab.com/webinar2025"
+    },
+    "organizer": {
+      "name": "RemoteWork Lab",
+      "logo": "https://cdn.remoteworklab.com/logo.png",
+      "bio": "Helping global teams thrive in distributed environments.",
+      "contactEmail": "contact@remoteworklab.com",
+      "contactPhone": "+8801780000000",
+      "website": "https://remoteworklab.com"
+    },
+    "speakers": [
+      {
+        "name": "Nadia Rahman",
+        "bio": "Remote Strategy Consultant for 10+ SaaS companies.",
+        "photo": "https://cdn.rwl.com/nadia.jpg",
+        "topic": "Asynchronous Mindset"
+      }
+    ],
+    "sponsors": [],
+    "media": {
+      "banner": "https://cdn.rwl.com/banner2025.jpg",
+      "gallery": [],
+      "promoVideo": ""
+    },
+    "status": "upcoming",
+    "publishedAt": "2025-07-03T14:00:00Z",
+    "lastUpdated": "2025-07-06T20:00:00Z",
+    "extraNotes": "Participants will receive a free eBook after completion."
+  },
+  {
+    "_id": "evnt202509",
+    "title": "Green Startup Pitch Night",
+    "description": "5 GreenTech startups pitch their solutions to investors, VCs, and climate-conscious funders. Hosted in partnership with ClimateLab Asia.",
+    "category": "Entrepreneurship",
+    "subCategory": "GreenTech",
+    "tags": ["GreenTech", "Climate", "Pitch", "Startups"],
+    "type": "Meetup",
+    "format": "In-person",
+    "location": {
+      "venue": "Sylhet Innovation Hub",
+      "address": "Block 5, University Road, Sylhet",
+      "city": "Sylhet",
+      "country": "Bangladesh",
+      "latitude": 24.8917,
+      "longitude": 91.8833
+    },
+    "startDate": "2025-10-15T18:00:00Z",
+    "endDate": "2025-10-15T21:00:00Z",
+    "timezone": "Asia/Dhaka",
+    "schedule": [
+      {
+        "day": "2025-10-15",
+        "sessions": [
+          {
+            "title": "Startup Pitches Round 1",
+            "speakers": ["EcoBlock", "SolarMate", "GreenFleet"],
+            "startTime": "18:15",
+            "endTime": "19:15",
+            "room": "Auditorium"
+          },
+          {
+            "title": "Panel Feedback & Networking",
+            "speakers": ["VC Panel", "Mentors"],
+            "startTime": "19:30",
+            "endTime": "21:00",
+            "room": "Lounge"
+          }
+        ]
+      }
+    ],
+    "audience": ["Founders", "Investors", "Media"],
+    "capacity": 150,
+    "price": {
+      "isFree": true
+    },
+    "registration": {
+      "openDate": "2025-08-01T00:00:00Z",
+      "closeDate": "2025-10-10T23:59:59Z",
+      "maxTicketsPerPerson": 2,
+      "requiresApproval": true,
+      "registrationUrl": "https://climatelab.org/events/greenpitch"
+    },
+    "organizer": {
+      "name": "ClimateLab Asia",
+      "logo": "https://cdn.climatelab.org/logo.png",
+      "bio": "Accelerating climate innovation across South Asia.",
+      "contactEmail": "hello@climatelab.org",
+      "contactPhone": "+8801710000000",
+      "website": "https://climatelab.org"
+    },
+    "speakers": [],
+    "sponsors": [
+      {
+        "name": "EcoX",
+        "logo": "https://cdn.ecox.org/logo.png",
+        "tier": "Green Partner"
+      }
+    ],
+    "media": {
+      "banner": "https://cdn.climatelab.org/banner.png",
+      "gallery": [],
+      "promoVideo": "https://youtu.be/eco-pitch"
+    },
+    "status": "upcoming",
+    "publishedAt": "2025-07-04T11:30:00Z",
+    "lastUpdated": "2025-07-06T20:00:00Z",
+    "extraNotes": "Shortlisted startups get access to 3-month ClimateLab mentorship."
+  },
+  {
+    "_id": "evnt202510",
+    "title": "Frontend Bootcamp: React + TypeScript",
+    "description": "Join a weekend bootcamp focused on practical frontend architecture, React patterns, and integrating TypeScript into modern UI development.",
+    "category": "Development",
+    "subCategory": "Frontend",
+    "tags": ["React", "TypeScript", "State Management", "Hooks"],
+    "type": "Bootcamp",
+    "format": "Hybrid",
+    "location": {
+      "venue": "CodeStack Hub, Chattogram & Online",
+      "address": "3rd Floor, Tech Plaza, Agrabad",
+      "city": "Chattogram",
+      "country": "Bangladesh",
+      "latitude": 22.3569,
+      "longitude": 91.7832
+    },
+    "startDate": "2025-09-20T09:00:00Z",
+    "endDate": "2025-09-21T17:00:00Z",
+    "timezone": "Asia/Dhaka",
+    "schedule": [],
+    "audience": ["Frontend Devs", "Graduates", "UI Engineers"],
+    "capacity": 100,
+    "price": {
+      "currency": "USD",
+      "standard": 89,
+      "earlyBird": 69,
+      "isFree": false
+    },
+    "registration": {
+      "openDate": "2025-07-10T00:00:00Z",
+      "closeDate": "2025-09-15T23:59:59Z",
+      "maxTicketsPerPerson": 1,
+      "requiresApproval": false,
+      "registrationUrl": "https://codestackbd.dev/react-bootcamp"
+    },
+    "organizer": {
+      "name": "CodeStack BD",
+      "logo": "https://cdn.codestackbd.dev/logo.svg",
+      "bio": "Enabling software engineers through practical training and industry-aligned bootcamps.",
+      "contactEmail": "contact@codestackbd.dev",
+      "contactPhone": "+8801799999999",
+      "website": "https://codestackbd.dev"
+    },
+    "speakers": [],
+    "sponsors": [],
+    "media": {
+      "banner": "https://cdn.codestackbd.dev/banners/react-ts.jpg",
+      "gallery": [],
+      "promoVideo": ""
+    },
+    "status": "upcoming",
+    "publishedAt": "2025-07-06T10:00:00Z",
+    "lastUpdated": "2025-07-06T20:00:00Z",
+    "extraNotes": "Participants will receive a project certificate and GitHub repo template."
+  },
+  {
+    "_id": "evnt202511",
+    "title": "UX Design Essentials Workshop",
+    "description": "Master the fundamentals of UI/UX design in this hands-on workshop. Learn wireframing, usability, and interaction design using Figma.",
+    "category": "Design",
+    "subCategory": "UI/UX",
+    "tags": ["UX", "UI", "Figma", "Usability"],
+    "type": "Workshop",
+    "format": "In-person",
+    "location": {
+      "venue": "Digital Arts Lab",
+      "address": "12/5 Gulshan Circle 2, Dhaka",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": 23.7925,
+      "longitude": 90.4078
+    },
+    "startDate": "2025-08-25T10:00:00Z",
+    "endDate": "2025-08-25T17:00:00Z",
+    "timezone": "Asia/Dhaka",
+    "schedule": [],
+    "audience": ["Students", "Designers", "Product Owners"],
+    "capacity": 80,
+    "price": {
+      "currency": "USD",
+      "standard": 49,
+      "isFree": false
+    },
+    "registration": {
+      "openDate": "2025-07-01T00:00:00Z",
+      "closeDate": "2025-08-20T23:59:59Z",
+      "maxTicketsPerPerson": 1,
+      "requiresApproval": false,
+      "registrationUrl": "https://uxworkshop.com/register"
+    },
+    "organizer": {
+      "name": "DesignFlow",
+      "logo": "https://cdn.designflow.org/logo.svg",
+      "bio": "Teaching world-class design principles through workshops and tutorials.",
+      "contactEmail": "hello@designflow.org",
+      "contactPhone": "+8801700000000",
+      "website": "https://designflow.org"
+    },
+    "speakers": [],
+    "sponsors": [],
+    "media": {
+      "banner": "https://cdn.designflow.org/banners/uxworkshop.jpg",
+      "gallery": [],
+      "promoVideo": ""
+    },
+    "status": "upcoming",
+    "publishedAt": "2025-07-05T18:00:00Z",
+    "lastUpdated": "2025-07-06T20:00:00Z",
+    "extraNotes": "Bring your own laptop with Figma installed."
+  },
+  {
+    "_id": "evnt202512",
+    "title": "Startup Legal Basics 2025",
+    "description": "Understand the legal foundation for launching your startup, from incorporation to IP protection and investor agreements.",
+    "category": "Business",
+    "subCategory": "Legal",
+    "tags": ["Startup", "Legal", "Incorporation", "Funding", "Contracts"],
+    "type": "Seminar",
+    "format": "Hybrid",
+    "location": {
+      "venue": "Startup Hub, Baridhara",
+      "address": "House 22, Road 7, Baridhara DOHS, Dhaka",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": 23.8135,
+      "longitude": 90.4271
+    },
+    "startDate": "2025-10-02T10:00:00Z",
+    "endDate": "2025-10-02T16:00:00Z",
+    "timezone": "Asia/Dhaka",
+    "schedule": [],
+    "audience": ["Founders", "Law Students", "Investors"],
+    "capacity": 120,
+    "price": {
+      "currency": "USD",
+      "standard": 39,
+      "earlyBird": 25,
+      "isFree": false
+    },
+    "registration": {
+      "openDate": "2025-08-15T00:00:00Z",
+      "closeDate": "2025-09-30T23:59:59Z",
+      "maxTicketsPerPerson": 2,
+      "requiresApproval": false,
+      "registrationUrl": "https://startupbd.org/legal-seminar"
+    },
+    "organizer": {
+      "name": "Startup Bangladesh Legal Cell",
+      "logo": "https://cdn.startupbd.org/legal/logo.png",
+      "bio": "Empowering entrepreneurs with legal clarity.",
+      "contactEmail": "legal@startupbd.org",
+      "contactPhone": "+8801777777777",
+      "website": "https://startupbd.org"
+    },
+    "speakers": [
+      {
+        "name": "Barrister Fahim Ahmed",
+        "bio": "Corporate legal expert and partner at LawBridge LLP.",
+        "photo": "https://cdn.startupbd.org/speakers/fahim.jpg",
+        "topic": "Legal Pitfalls in Early-Stage Startups"
+      }
+    ],
+    "sponsors": [],
+    "media": {
+      "banner": "https://cdn.startupbd.org/legal/banner.jpg",
+      "gallery": [],
+      "promoVideo": ""
+    },
+    "status": "upcoming",
+    "publishedAt": "2025-07-06T21:00:00Z",
+    "lastUpdated": "2025-07-06T21:30:00Z",
+    "extraNotes": "Includes legal template packs for attendees."
+  },
+  {
+    "_id": "evnt202513",
+    "title": "E-commerce Mastery 2025",
+    "description": "A hands-on training program for building and scaling successful online businesses using Shopify, Facebook Ads, and influencer partnerships.",
+    "category": "Business",
+    "subCategory": "E-commerce",
+    "tags": ["E-commerce", "Shopify", "Marketing", "Dropshipping"],
+    "type": "Bootcamp",
+    "format": "Online",
+    "location": {
+      "venue": "Virtual",
+      "address": "",
+      "city": "",
+      "country": "",
+      "latitude": null,
+      "longitude": null
+    },
+    "startDate": "2025-09-15T12:00:00Z",
+    "endDate": "2025-09-30T15:00:00Z",
+    "timezone": "Asia/Dhaka",
+    "schedule": [],
+    "audience": ["Marketers", "Freelancers", "Retailers"],
+    "capacity": 1000,
+    "price": {
+      "currency": "USD",
+      "standard": 149,
+      "earlyBird": 99,
+      "groupDiscount": true,
+      "isFree": false
+    },
+    "registration": {
+      "openDate": "2025-07-20T00:00:00Z",
+      "closeDate": "2025-09-12T23:59:59Z",
+      "maxTicketsPerPerson": 3,
+      "requiresApproval": false,
+      "registrationUrl": "https://ecommastery.com/bootcamp2025"
+    },
+    "organizer": {
+      "name": "Bangladesh Ecom Network",
+      "logo": "https://cdn.ecombn.org/logo.png",
+      "bio": "Educating digital sellers for the global economy.",
+      "contactEmail": "support@ecombn.org",
+      "contactPhone": "+8801790000000",
+      "website": "https://ecombn.org"
+    },
+    "speakers": [],
+    "sponsors": [
+      {
+        "name": "ShopMaster",
+        "logo": "https://cdn.shopmaster.com/logo.svg",
+        "tier": "Silver"
+      }
+    ],
+    "media": {
+      "banner": "https://cdn.ecombn.org/banners/ecom2025.jpg",
+      "gallery": [],
+      "promoVideo": "https://youtu.be/ecom-success"
+    },
+    "status": "upcoming",
+    "publishedAt": "2025-07-06T21:10:00Z",
+    "lastUpdated": "2025-07-06T21:30:00Z",
+    "extraNotes": "Full replays and worksheets will be provided."
+  },
+  {
+    "_id": "evnt202514",
+    "title": "CyberSecurity Awareness Summit",
+    "description": "A nationwide summit to address digital risks, ethical hacking, and data privacy issues for corporations and civilians.",
+    "category": "Security",
+    "subCategory": "Cybersecurity",
+    "tags": ["Cybersecurity", "Ethical Hacking", "Data Privacy"],
+    "type": "Conference",
+    "format": "In-person",
+    "location": {
+      "venue": "ICT Division HQ",
+      "address": "ICT Tower, Agargaon, Dhaka",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": 23.7772,
+      "longitude": 90.3887
+    },
+    "startDate": "2025-10-22T09:00:00Z",
+    "endDate": "2025-10-23T18:00:00Z",
+    "timezone": "Asia/Dhaka",
+    "schedule": [],
+    "audience": ["Government", "IT Professionals", "Students"],
+    "capacity": 800,
+    "price": {
+      "isFree": true
+    },
+    "registration": {
+      "openDate": "2025-08-01T00:00:00Z",
+      "closeDate": "2025-10-18T23:59:59Z",
+      "maxTicketsPerPerson": 4,
+      "requiresApproval": true,
+      "registrationUrl": "https://cybersafe.gov.bd/register"
+    },
+    "organizer": {
+      "name": "ICT Division",
+      "logo": "https://cdn.ictdiv.gov.bd/logo.svg",
+      "bio": "Strengthening digital resilience across the nation.",
+      "contactEmail": "info@ict.gov.bd",
+      "contactPhone": "+8801700000001",
+      "website": "https://ict.gov.bd"
+    },
+    "speakers": [],
+    "sponsors": [],
+    "media": {
+      "banner": "https://cdn.ictdiv.gov.bd/banners/cybersummit.jpg",
+      "gallery": [],
+      "promoVideo": ""
+    },
+    "status": "upcoming",
+    "publishedAt": "2025-07-06T21:20:00Z",
+    "lastUpdated": "2025-07-06T21:30:00Z",
+    "extraNotes": "National CERT team will run a live penetration demo."
+  },
+  {
+    "_id": "evnt202515",
+    "title": "Dhaka Indie Film Festival 2025",
+    "description": "Celebrating independent cinema from Bangladesh and beyond. Includes screenings, director Q&As, and networking mixers.",
+    "category": "Entertainment",
+    "subCategory": "Film & Media",
+    "tags": ["Indie Film", "Cinema", "Festival", "Short Films"],
+    "type": "Festival",
+    "format": "In-person",
+    "location": {
+      "venue": "Shilpakala Academy",
+      "address": "Segunbagicha, Dhaka",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": 23.7321,
+      "longitude": 90.4142
+    },
+    "startDate": "2025-11-05T14:00:00Z",
+    "endDate": "2025-11-08T22:00:00Z",
+    "timezone": "Asia/Dhaka",
+    "schedule": [],
+    "audience": ["Filmmakers", "Students", "Media Professionals"],
+    "capacity": 600,
+    "price": {
+      "currency": "USD",
+      "standard": 10,
+      "isFree": false
+    },
+    "registration": {
+      "openDate": "2025-09-01T00:00:00Z",
+      "closeDate": "2025-11-01T23:59:59Z",
+      "maxTicketsPerPerson": 6,
+      "requiresApproval": false,
+      "registrationUrl": "https://dhakaindiefest.com/tickets"
+    },
+    "organizer": {
+      "name": "Dhaka Indie Collective",
+      "logo": "https://cdn.dhakaindiefest.com/logo.png",
+      "bio": "A platform for bold voices in global cinema.",
+      "contactEmail": "info@dhakaindiefest.com",
+      "contactPhone": "+8801750000000",
+      "website": "https://dhakaindiefest.com"
+    },
+    "speakers": [],
+    "sponsors": [],
+    "media": {
+      "banner": "https://cdn.dhakaindiefest.com/banners/2025.jpg",
+      "gallery": [],
+      "promoVideo": ""
+    },
+    "status": "upcoming",
+    "publishedAt": "2025-07-06T21:25:00Z",
+    "lastUpdated": "2025-07-06T21:30:00Z",
+    "extraNotes": "Awards for Best Short Film and Best Cinematography will be announced on closing day."
+  },
+  {
+    "_id": "evnt202516",
+    "title": "Bangladesh EdTech Expo",
+    "description": "Explore how technology is transforming learning at every level. Tools, policies, and interactive experiences from local and global EdTech innovators.",
+    "category": "Education",
+    "subCategory": "EdTech",
+    "tags": ["Education", "Technology", "Learning", "Innovation"],
+    "type": "Expo",
+    "format": "In-person",
+    "location": {
+      "venue": "Bangabandhu Conference Center",
+      "address": "Agargaon, Dhaka",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": 23.7746,
+      "longitude": 90.3793
+    },
+    "startDate": "2025-12-01T10:00:00Z",
+    "endDate": "2025-12-03T18:00:00Z",
+    "timezone": "Asia/Dhaka",
+    "schedule": [],
+    "audience": ["Teachers", "Students", "EdTech Startups"],
+    "capacity": 2000,
+    "price": {
+      "currency": "USD",
+      "standard": 5,
+      "isFree": false
+    },
+    "registration": {
+      "openDate": "2025-08-10T00:00:00Z",
+      "closeDate": "2025-11-28T23:59:59Z",
+      "maxTicketsPerPerson": 5,
+      "requiresApproval": false,
+      "registrationUrl": "https://edtechexpo.bd/register"
+    },
+    "organizer": {
+      "name": "Digital Learning Bangladesh",
+      "logo": "https://cdn.edtechexpo.bd/logo.png",
+      "bio": "Nationwide movement for accessible and effective education through innovation.",
+      "contactEmail": "contact@edtechexpo.bd",
+      "contactPhone": "+8801760000000",
+      "website": "https://edtechexpo.bd"
+    },
+    "speakers": [],
+    "sponsors": [],
+    "media": {
+      "banner": "https://cdn.edtechexpo.bd/banners/2025.jpg",
+      "gallery": [],
+      "promoVideo": ""
+    },
+    "status": "upcoming",
+    "publishedAt": "2025-07-06T21:29:00Z",
+    "lastUpdated": "2025-07-06T21:30:00Z",
+    "extraNotes": "Free learning toolkits will be given to the first 300 attendees each day."
+  }
+]

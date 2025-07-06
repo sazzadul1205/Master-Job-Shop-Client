@@ -17,6 +17,7 @@ import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
 import FeaturedInternships from "./FeaturedInternships/FeaturedInternships";
 import FeaturedMentorship from "./FeaturedMentorship/FeaturedMentorship";
 import FeaturedCourses from "./FeaturedCourses/FeaturedCourses";
+import FeaturedEvents from "./FeaturedEvents/FeaturedEvents";
 
 // Extra
 // import CoursesData from "../../../JSON/Course_Data.json";
@@ -76,7 +77,7 @@ const Home = () => {
 
   // Fetching EventsData
   const {
-    data: EventsData,
+    // data: EventsData,
     isLoading: EventsIsLoading,
     error: EventsError,
   } = useQuery({
@@ -180,10 +181,12 @@ const Home = () => {
       <FeaturedMentorship MentorshipData={MentorshipData} />
 
       <FeaturedCourses CoursesData={CoursesData} />
+      
+      <FeaturedEvents UpcomingEventsData={UpcomingEventsData} />
+
       {/* 
       <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
       <FeaturedSalaryInsights SalaryInsightData={SalaryInsightData} />
-      <FeaturedUpcomingEvents UpcomingEventsData={UpcomingEventsData} />
       <NewsLetter />
       <Testimonials testimonialsData={testimonialsData} />
       <WhyChooseUs WhyChooseUsData={WhyChooseUsData} /> */}

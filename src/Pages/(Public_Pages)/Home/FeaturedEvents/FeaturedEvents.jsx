@@ -2,7 +2,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const FeaturedUpcomingEvents = ({ UpcomingEventsData }) => {
+const FeaturedEvents = ({ UpcomingEventsData }) => {
   // Determine the number of events to show based on the viewport width
   const getEventsToShow = () => {
     const width = window.innerWidth;
@@ -84,7 +84,7 @@ const FeaturedUpcomingEvents = ({ UpcomingEventsData }) => {
 };
 
 // PropTypes validation
-FeaturedUpcomingEvents.propTypes = {
+FeaturedEvents.propTypes = {
   UpcomingEventsData: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
@@ -97,4 +97,4 @@ FeaturedUpcomingEvents.propTypes = {
   ).isRequired,
 };
 
-export default FeaturedUpcomingEvents;
+export default FeaturedEvents;

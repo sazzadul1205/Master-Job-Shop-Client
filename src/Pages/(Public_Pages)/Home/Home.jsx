@@ -16,7 +16,8 @@ import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
 import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
 
 // Extra
-
+import InternshipData from "../../../JSON/Internship_Data.json"
+import InternshipPrograms from "./InternshipPrograms/InternshipPrograms";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -41,6 +42,16 @@ const Home = () => {
     queryFn: () => axiosPublic.get(`/Gigs`).then((res) => res.data),
   });
 
+  // Fetching InternshipData
+  const {
+    // data: InternshipData,
+    isLoading: InternshipIsLoading,
+    error: InternshipError,
+  } = useQuery({
+    queryKey: ["InternshipData"],
+    queryFn: () => axiosPublic.get(`/Internship`).then((res) => res.data),
+  });
+
   // Fetching CoursesData
   const {
     data: CoursesData,
@@ -59,16 +70,6 @@ const Home = () => {
   } = useQuery({
     queryKey: ["MentorshipData"],
     queryFn: () => axiosPublic.get(`/Mentorship`).then((res) => res.data),
-  });
-
-  // Fetching InternshipData
-  const {
-    data: InternshipData,
-    isLoading: InternshipIsLoading,
-    error: InternshipError,
-  } = useQuery({
-    queryKey: ["InternshipData"],
-    queryFn: () => axiosPublic.get(`/Internship`).then((res) => res.data),
   });
 
   // Fetching EventsData
@@ -170,9 +171,12 @@ const Home = () => {
       <FeaturedJobs JobsData={JobsData} />
 
       <FeaturedGigs GigsData={GigsData} />
-      {/* <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
-      <FeaturedSalaryInsights SalaryInsightData={SalaryInsightData} />
+
       <InternshipPrograms InternshipData={InternshipData} />
+
+      {/* 
+      <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
+      <FeaturedSalaryInsights SalaryInsightData={SalaryInsightData} />
       <FeaturedUpcomingEvents UpcomingEventsData={UpcomingEventsData} />
       <FeaturedCourses CoursesData={CoursesData} />
       <MentorshipPrograms MentorshipData={MentorshipData} />

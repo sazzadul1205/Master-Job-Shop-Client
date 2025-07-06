@@ -1,35 +1,8 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
-import PropTypes from "prop-types";
-import ModalInternship from "../../Shared/ModalInternship/ModalInternship";
 
 const InternshipPrograms = ({ InternshipData }) => {
-  const [selectedInternship, setSelectedInternship] = useState(null); // State for selected internship
-
-  // Determine the number of events to show based on the viewport width
-  const getEventsToShow = () => {
-    const width = window.innerWidth;
-    if (width < 768) {
-      return 3; // Mobile view: show 3 events
-    } else if (width < 1024) {
-      return 4; // Tablet view: show 4 events
-    } else {
-      return 3; // PC view: show 3 events
-    }
-  };
-
-  const openModal = (internship) => {
-    setSelectedInternship(internship);
-    const modal = document.getElementById("Internship_Programs_view");
-    modal.showModal();
-  };
-
-  const closeModal = () => {
-    const modal = document.getElementById("Internship_Programs_view");
-    modal.close();
-    setSelectedInternship(null);
-  };
+  const getEventsToShow = () => Math.min(InternshipData.length, 6);
 
   return (
     <div className="bg-gradient-to-b from-blue-50 to-blue-300">
@@ -44,104 +17,64 @@ const InternshipPrograms = ({ InternshipData }) => {
               Explore internship opportunities to kickstart your career.
             </p>
           </div>
-          <button className="mt-4 md:mt-0 md:ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
-            <Link to={"/Internship"} className="flex items-center">
+          <Link to="/Internship" className="mt-4 md:mt-0 md:ml-auto">
+            <button className="text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300 flex items-center">
               Show More <FaArrowRight className="ml-2" />
-            </Link>
-          </button>
+            </button>
+          </Link>
         </div>
 
         {/* Internship Cards Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-10 px-5 lg:px-0">
-          {InternshipData.slice(0, getEventsToShow()).map((internship, index) => (
-            <div
-              key={index}
-              className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-green-50 hover:shadow-2xl"
-            >
-              <div className="card-body">
-                {/* Company Logo */}
-                {internship.companyLogo && (
-                  <img
-                    src={internship.companyLogo}
-                    alt={`${internship.companyName} logo`}
-                    className="w-full h-48 object-cover mb-4"
-                  />
-                )}
-
-                {/* Company Name */}
-                <p className="font-bold text-2xl">
-                  {internship.companyName || "Company Name"}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-10 px-5 lg:px-0">
+          {InternshipData.slice(0, getEventsToShow()).map(
+            (internship, index) => (
+              <div
+                key={index}
+                className="bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition transform hover:scale-105"
+              >
+                <h3 className="text-xl font-bold text-blue-800 mb-2">
+                  {internship.title}
+                </h3>
+                <p className="text-gray-700 font-medium mb-1">
+                  <span className="text-blue-700">Company: </span>
+                  {internship.company?.name || "Company Name"}
                 </p>
-
-                {/* Position */}
-                <p className="text-gray-500">
-                  {internship.position || "Internship Position"}
+                <p className="text-sm text-gray-600 mb-2">
+                  <span className="text-blue-700">Location: </span>
+                  {internship.company?.location?.city
+                    ? `${internship.company.location.city}, ${internship.company.location.country}`
+                    : "Remote / Flexible"}
                 </p>
-
-                {/* Duration */}
-                <p className="text-blue-500 font-semibold">
-                  Duration: {internship.duration || "8 weeks"}
+                <p className="text-sm text-gray-700 mb-1">
+                  <span className="text-blue-700">Duration: </span>
+                  <span className="font-medium">
+                    {internship.duration?.months || "N/A"} months
+                  </span>
                 </p>
-
-                {/* Description */}
-                <p className="text-black">
-                  {internship.description || "Internship Program Description"}
+                <p className="text-sm text-gray-700 mb-3">
+                  <span className="text-blue-700">Stipend: </span>
+                  <span className="font-semibold text-green-700">
+                    {internship.stipend?.isPaid
+                      ? `${internship.stipend.currency}${internship.stipend.amount} /mo`
+                      : "Unpaid"}
+                  </span>
                 </p>
-
-                {/* Card Actions */}
-                <div className="flex justify-end gap-1 lg:gap-3 mt-5">
-                  <Link to={`/Internship/${internship._id}`}>
-                    <button className="bg-green-500 hover:bg-green-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white">
-                      Apply Now
-                    </button>
-                  </Link>
-                  <button
-                    className="bg-yellow-500 hover:bg-yellow-600 px-3 lg:px-5 py-2 lg:text-lg font-semibold text-white"
-                    onClick={() => openModal(internship)}
-                  >
-                    View More
+                <Link
+                  to={internship.application?.applyLink || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <button className="w-full mt-2 py-2 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg">
+                    Apply Now
                   </button>
-                </div>
+                </Link>
               </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
       </div>
-
-      {/* Modal */}
-      <dialog id="Internship_Programs_view" className="modal">
-        {selectedInternship && (
-          <ModalInternship
-            selectedInternship={selectedInternship}
-            closeModal={closeModal}
-          />
-        )}
-      </dialog>
     </div>
   );
-};
-
-InternshipPrograms.propTypes = {
-  InternshipData: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      companyName: PropTypes.string,
-      companyLogo: PropTypes.string,
-      position: PropTypes.string,
-      duration: PropTypes.string,
-      description: PropTypes.string,
-      location: PropTypes.string,
-      stipend: PropTypes.string,
-      applicationDeadline: PropTypes.string,
-      skillsRequired: PropTypes.arrayOf(PropTypes.string),
-      responsibilities: PropTypes.arrayOf(PropTypes.string),
-      qualifications: PropTypes.arrayOf(PropTypes.string),
-      contact: PropTypes.shape({
-        email: PropTypes.string.isRequired,
-        website: PropTypes.string,
-      }),
-    })
-  ).isRequired,
 };
 
 export default InternshipPrograms;

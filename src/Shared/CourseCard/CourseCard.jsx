@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+
+// Packages
 import PropTypes from "prop-types";
 
 // Assets
@@ -7,7 +9,7 @@ import DefaultUserLogo from "../../assets/DefaultUserLogo.jpg";
 // Shared
 import CommonButton from "../CommonButton/CommonButton";
 
-// Utilities
+// Price Formatting
 const formatPrice = (price) => {
   if (!price || price.isFree) return "Free";
   return `${price.currency}${price.amount}${
@@ -15,6 +17,8 @@ const formatPrice = (price) => {
   }`;
 };
 
+
+// Calculate the Days Ago
 const calculateDaysAgo = (isoString) => {
   if (!isoString) return "Unknown";
   const postedDate = new Date(isoString);

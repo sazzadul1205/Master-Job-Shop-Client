@@ -1,6 +1,5 @@
 [
   {
-    "_id": "c101",
     "title": "Mastering JavaScript from Scratch",
     "description": "A comprehensive course covering modern JavaScript, including ES6+, DOM manipulation, and asynchronous programming.",
     "category": "Programming",
@@ -36,7 +35,6 @@
     "publishedAt": "2025-07-01T10:00:00Z"
   },
   {
-    "_id": "c102",
     "title": "UI/UX Design Bootcamp",
     "description": "Learn design principles, wireframing, prototyping, and tools like Figma and Adobe XD to become a UI/UX professional.",
     "category": "Design",
@@ -77,7 +75,6 @@
     "publishedAt": "2025-07-02T11:00:00Z"
   },
   {
-    "_id": "c103",
     "title": "Full Stack Web Development with MERN",
     "description": "Build scalable web apps using MongoDB, Express, React, and Node.js in this intensive bootcamp.",
     "category": "Development",
@@ -118,7 +115,6 @@
     "publishedAt": "2025-07-03T15:00:00Z"
   },
   {
-    "_id": "c104",
     "title": "Python for Data Analysis",
     "description": "Learn how to analyze datasets using Python libraries like Pandas, NumPy, and Matplotlib.",
     "category": "Data Science",
@@ -154,7 +150,6 @@
     "publishedAt": "2025-07-04T14:00:00Z"
   },
   {
-    "_id": "c105",
     "title": "Intro to Cybersecurity",
     "description": "Get started with ethical hacking, networking basics, and securing digital systems.",
     "category": "IT & Security",
@@ -190,7 +185,6 @@
     "publishedAt": "2025-07-05T10:00:00Z"
   },
   {
-    "_id": "c106",
     "title": "Advanced Excel for Business",
     "description": "Learn advanced Excel functions, dashboards, pivot tables, and automation with macros.",
     "category": "Business",
@@ -226,7 +220,6 @@
     "publishedAt": "2025-07-06T09:00:00Z"
   },
   {
-    "_id": "c107",
     "title": "Digital Marketing Essentials",
     "description": "Learn SEO, social media marketing, and paid ads with real-world campaigns.",
     "category": "Marketing",
@@ -262,7 +255,6 @@
     "publishedAt": "2025-07-07T08:30:00Z"
   },
   {
-    "_id": "c108",
     "title": "Intro to Machine Learning",
     "description": "Understand ML concepts, algorithms, and practical implementation using Python and Scikit-learn.",
     "category": "Data Science",
@@ -298,7 +290,6 @@
     "publishedAt": "2025-07-08T10:00:00Z"
   },
   {
-    "_id": "c109",
     "title": "WordPress for Beginners",
     "description": "Learn how to build websites and blogs using WordPress with no coding required.",
     "category": "Development",
@@ -334,7 +325,6 @@
     "publishedAt": "2025-07-09T09:00:00Z"
   },
   {
-    "_id": "c110",
     "title": "Public Speaking & Communication Mastery",
     "description": "Enhance your presentation, persuasion, and confidence through real exercises and coaching.",
     "category": "Personal Development",

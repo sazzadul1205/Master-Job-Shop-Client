@@ -16,10 +16,10 @@ import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
 import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
 import FeaturedInternships from "./FeaturedInternships/FeaturedInternships";
 import FeaturedMentorship from "./FeaturedMentorship/FeaturedMentorship";
+import FeaturedCourses from "./FeaturedCourses/FeaturedCourses";
 
 // Extra
-import CoursesData from "../../../JSON/Course_Data.json";
-import FeaturedCourses from "./FeaturedCourses/FeaturedCourses";
+// import CoursesData from "../../../JSON/Course_Data.json";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -66,7 +66,7 @@ const Home = () => {
 
   // Fetching CoursesData
   const {
-    // data: CoursesData,
+    data: CoursesData,
     isLoading: CoursesIsLoading,
     error: CoursesError,
   } = useQuery({

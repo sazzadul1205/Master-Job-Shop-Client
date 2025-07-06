@@ -1,9 +1,17 @@
-import { FaArrowRight } from "react-icons/fa";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
+// Packages
 import PropTypes from "prop-types";
+
+// Icons
+import { FaArrowRight } from "react-icons/fa";
+
+// Shared
 import CourseCard from "../../../../Shared/CourseCard/CourseCard";
-import { useState } from "react";
+
+// Modals
+import CourseDetailsModal from "./CourseDetailsModal/CourseDetailsModal";
 
 const FeaturedCourses = ({ CoursesData }) => {
   const [selectedCourseID, setSelectedCourseID] = useState(null);
@@ -39,6 +47,14 @@ const FeaturedCourses = ({ CoursesData }) => {
           ))}
         </div>
       </div>
+
+      {/* Course Modal */}
+      <dialog id="Course_Details_Modal" className="modal">
+        <CourseDetailsModal
+          selectedCourseID={selectedCourseID}
+          setSelectedCourseID={setSelectedCourseID}
+        />
+      </dialog>
     </section>
   );
 };

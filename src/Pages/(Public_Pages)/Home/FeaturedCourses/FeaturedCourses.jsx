@@ -19,11 +19,14 @@ const FeaturedCourses = ({ CoursesData }) => {
     <section className="bg-gradient-to-bl from-blue-400 to-blue-600 py-20">
       <div className="px-20">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-12">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-5">
           <div>
-            <h2 className="text-4xl font-bold text-white">Available Courses</h2>
-            <p className="lg:text-xl">
-              Enhance your skills and advance your career!
+            <h2 className="text-4xl font-bold text-white">
+              Explore Our Courses
+            </h2>
+            <p className="lg:text-xl text-gray-200">
+              Build in-demand skills and accelerate your career with expert-led
+              learning.
             </p>
           </div>
 

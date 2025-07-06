@@ -20,13 +20,14 @@ const FeaturedJobs = ({ JobsData }) => {
     <section className="bg-gradient-to-bl from-blue-400 to-blue-600 py-20">
       <div className="px-20">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-12">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-5">
           <div>
             <h2 className="text-4xl font-bold text-white">
-              Featured Opportunities
+              Featured Job Opportunities
             </h2>
-            <p className="text-gray-200 mt-2">
-              Explore hand-picked roles from top companies
+            <p className="text-gray-200 text-xl mt-2">
+              Discover exclusive openings from leading employers tailored to
+              your skills
             </p>
           </div>
           <Link

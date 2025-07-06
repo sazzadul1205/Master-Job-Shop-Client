@@ -20,12 +20,14 @@ const FeaturedGigs = ({ GigsData }) => {
     <section className="bg-gradient-to-tl from-blue-400 to-blue-600 py-20">
       <div className="px-20">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-12">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-5">
           <div>
-            <h2 className="text-4xl font-bold text-white">Featured Gigs</h2>
-            <p className="text-gray-200 mt-2">
-              Discover hand-picked commission-based opportunities tailored to
-              skilled professionals like you.
+            <h2 className="text-4xl font-bold text-white">
+              Top Commission-Based Gigs
+            </h2>
+            <p className="text-gray-200 text-xl mt-2">
+              Unlock exclusive earning opportunities tailored for
+              high-performing talent.
             </p>
           </div>
           <Link

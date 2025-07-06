@@ -20,13 +20,14 @@ const FeaturedInternships = ({ InternshipData }) => {
     <section className="bg-gradient-to-bl from-blue-400 to-blue-600 py-20">
       <div className="px-20">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-12">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-5">
           <div>
             <h2 className="text-4xl font-bold text-white">
-              Internship Programs
+              Internship Opportunities
             </h2>
-            <p className="lg:text-xl">
-              Explore internship opportunities to kickstart your career.
+            <p className="lg:text-xl text-gray-200">
+              Connect with industry leaders and build valuable experience early
+              in your journey.
             </p>
           </div>
 

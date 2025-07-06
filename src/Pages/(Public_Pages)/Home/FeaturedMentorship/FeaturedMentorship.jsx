@@ -1,47 +1,36 @@
 import { Link } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa";
-import { useState } from "react";
 import PropTypes from "prop-types";
-import ModalMentorShip from "../../Shared/ModalMentorShip/ModalMentorShip";
 
-const MentorshipPrograms = ({ MentorshipData }) => {
-  const [selectedMentor, setSelectedMentor] = useState(null); // State for selected mentor
+// Icons
+import { FaArrowRight } from "react-icons/fa";
 
-  const openModal = (mentor) => {
-    setSelectedMentor(mentor);
-    const modal = document.getElementById("Mentor_Profiles_view");
-    modal.showModal();
-  };
-
-  const closeModal = () => {
-    const modal = document.getElementById("Mentor_Profiles_view");
-    modal.close();
-    setSelectedMentor(null);
-  };
-
+const FeaturedMentorship = ({ MentorshipData }) => {
   return (
-    <div className="bg-gradient-to-b from-blue-400 to-blue-50">
-      <div className="max-w-[1200px] mx-auto text-black py-10">
-        {/* Top Section */}
-        <div className="flex flex-col md:flex-row items-center pt-20 px-5">
-          <div className="text-center md:text-left mb-4 md:mb-0">
-            <p className="text-4xl md:text-5xl font-bold italic text-blue-700">
+    <section className="bg-gradient-to-bl from-blue-400 to-blue-600 py-20">
+      <div className="px-20">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-12">
+          <div>
+            <h2 className="text-4xl font-bold text-white">
               Mentorship Programs
-            </p>
+            </h2>
             <p className="lg:text-xl">
               Join a mentorship program to advance your skills and career.
             </p>
           </div>
-          <button className="mt-4 md:mt-0 md:ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
-            <Link to={"/Mentorship"} className="flex items-center">
-              Show More <FaArrowRight className="ml-2" />
-            </Link>
-          </button>
+
+          {/* Go To Button */}
+          <Link
+            to="/Mentorship"
+            className="mt-4 md:mt-0 inline-flex items-center text-white hover:underline text-lg font-medium"
+          >
+            Show More <FaArrowRight className="ml-2" />
+          </Link>
         </div>
 
         {/* Mentorship Cards Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-10 px-5 lg:px-0">
-          {MentorshipData.slice(0, 6).map((mentor, index) => (
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {MentorshipData.slice(0, 6).map((mentorship) => (
             <div
               key={index}
               className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-green-50 hover:shadow-2xl"
@@ -95,22 +84,12 @@ const MentorshipPrograms = ({ MentorshipData }) => {
           ))}
         </div>
       </div>
-
-      {/* Modal */}
-      <dialog id="Mentor_Profiles_view" className="modal">
-        {selectedMentor && (
-          <ModalMentorShip
-            selectedMentor={selectedMentor}
-            closeModal={closeModal}
-          ></ModalMentorShip>
-        )}
-      </dialog>
-    </div>
+    </section>
   );
 };
 
 // Add this at the end of your component
-MentorshipPrograms.propTypes = {
+FeaturedMentorship.propTypes = {
   MentorshipData: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
@@ -129,4 +108,4 @@ MentorshipPrograms.propTypes = {
   ).isRequired,
 };
 
-export default MentorshipPrograms;
+export default FeaturedMentorship;

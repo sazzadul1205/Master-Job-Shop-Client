@@ -15,9 +15,10 @@ import HomeBanners from "./HomeBanner/HomeBanner";
 import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
 import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
 import FeaturedInternships from "./FeaturedInternships/FeaturedInternships";
-
+import FeaturedMentorship from "./FeaturedMentorship/FeaturedMentorship";
 
 // Extra
+import MentorshipData from "../../../JSON/Mentorship_Data.json";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -52,6 +53,16 @@ const Home = () => {
     queryFn: () => axiosPublic.get(`/Internship`).then((res) => res.data),
   });
 
+  // Fetching MentorshipData
+  const {
+    // data: MentorshipData,
+    isLoading: MentorshipIsLoading,
+    error: MentorshipError,
+  } = useQuery({
+    queryKey: ["MentorshipData"],
+    queryFn: () => axiosPublic.get(`/Mentorship`).then((res) => res.data),
+  });
+
   // Fetching CoursesData
   const {
     data: CoursesData,
@@ -60,16 +71,6 @@ const Home = () => {
   } = useQuery({
     queryKey: ["CoursesData"],
     queryFn: () => axiosPublic.get(`/Courses`).then((res) => res.data),
-  });
-
-  // Fetching MentorshipData
-  const {
-    data: MentorshipData,
-    isLoading: MentorshipIsLoading,
-    error: MentorshipError,
-  } = useQuery({
-    queryKey: ["MentorshipData"],
-    queryFn: () => axiosPublic.get(`/Mentorship`).then((res) => res.data),
   });
 
   // Fetching EventsData
@@ -175,12 +176,13 @@ const Home = () => {
 
       <FeaturedInternships InternshipData={InternshipData} />
 
+      <FeaturedMentorship MentorshipData={MentorshipData} />
+
       {/* 
       <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
       <FeaturedSalaryInsights SalaryInsightData={SalaryInsightData} />
       <FeaturedUpcomingEvents UpcomingEventsData={UpcomingEventsData} />
       <FeaturedCourses CoursesData={CoursesData} />
-      <MentorshipPrograms MentorshipData={MentorshipData} />
       <NewsLetter />
       <Testimonials testimonialsData={testimonialsData} />
       <WhyChooseUs WhyChooseUsData={WhyChooseUsData} /> */}

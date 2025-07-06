@@ -1,0 +1,389 @@
+[
+  {
+    "_id": "m101",
+    "title": "Frontend Mentorship with React Expert",
+    "description": "A 6-week mentorship for aspiring frontend developers. Learn React, state management, and project structuring with live support.",
+    "category": "Software Development",
+    "subCategory": "Frontend Development",
+    "tags": ["React", "JavaScript", "Web"],
+    "durationWeeks": 6,
+    "schedule": {
+      "sessionsPerWeek": 2,
+      "sessionLength": "1.5 hours",
+      "days": ["Tuesday", "Friday"],
+      "timeZone": "GMT+6"
+    },
+    "mentor": {
+      "name": "Ayesha Rahman",
+      "profileImage": "",
+      "bio": "Senior Frontend Engineer with 7+ years at SaaS startups.",
+      "rating": 4.9,
+      "totalMentees": 120
+    },
+    "isRemote": true,
+    "location": {},
+    "skillsCovered": ["React", "Hooks", "Git", "CSS"],
+    "prerequisites": ["Basic JavaScript"],
+    "attachments": [],
+    "fee": {
+      "type": "fixed",
+      "amount": 120,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "startDate": "2025-08-01T00:00:00Z",
+    "applicationDeadline": "2025-07-25T23:59:59Z",
+    "communication": {
+      "preferredMethod": "Zoom",
+      "groupChatEnabled": true,
+      "oneOnOneSupport": true
+    },
+    "status": "open",
+    "postedAt": "2025-07-06T09:00:00Z",
+    "extraNotes": "Includes a final React project."
+  },
+  {
+    "_id": "m102",
+    "title": "UI/UX Design Mentorship for Beginners",
+    "description": "Learn Figma, UX research, and design systems in 4 weeks through real-world design challenges.",
+    "category": "Design",
+    "subCategory": "UI/UX",
+    "tags": ["Figma", "UX", "Wireframing"],
+    "durationWeeks": 4,
+    "schedule": {
+      "sessionsPerWeek": 3,
+      "sessionLength": "1 hour",
+      "days": ["Monday", "Wednesday", "Saturday"],
+      "timeZone": "GMT+6"
+    },
+    "mentor": {
+      "name": "Tanveer Chowdhury",
+      "profileImage": "",
+      "bio": "Product designer in fintech; mentored 50+ designers.",
+      "rating": 4.8,
+      "totalMentees": 85
+    },
+    "isRemote": true,
+    "location": {},
+    "skillsCovered": ["Figma", "Wireframing", "User Testing"],
+    "prerequisites": ["Basic design interest"],
+    "attachments": [],
+    "fee": {
+      "type": "free",
+      "amount": 0,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "startDate": "2025-08-10T00:00:00Z",
+    "applicationDeadline": "2025-08-01T23:59:59Z",
+    "communication": {
+      "preferredMethod": "Google Meet",
+      "groupChatEnabled": true,
+      "oneOnOneSupport": false
+    },
+    "status": "open",
+    "postedAt": "2025-07-04T16:30:00Z",
+    "extraNotes": "Portfolio-friendly mentorship."
+  },
+  {
+    "_id": "m103",
+    "title": "Career Guidance & Resume Review",
+    "description": "Personal branding and mock interviews for landing tech jobs.",
+    "category": "Career Development",
+    "subCategory": "Professional Growth",
+    "tags": ["Resume", "Interview", "LinkedIn"],
+    "durationWeeks": 3,
+    "schedule": {
+      "sessionsPerWeek": 1,
+      "sessionLength": "2 hours",
+      "days": ["Sunday"],
+      "timeZone": "GMT+6"
+    },
+    "mentor": {
+      "name": "Zahirul Islam",
+      "profileImage": "",
+      "bio": "Career coach with HR + dev background. Helped 200+ candidates.",
+      "rating": 5.0,
+      "totalMentees": 200
+    },
+    "isRemote": true,
+    "location": {},
+    "skillsCovered": ["Resume Writing", "Mock Interviews"],
+    "prerequisites": ["Have a current CV"],
+    "attachments": [],
+    "fee": {
+      "type": "fixed",
+      "amount": 75,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "startDate": "2025-08-05T00:00:00Z",
+    "applicationDeadline": "2025-07-28T23:59:59Z",
+    "communication": {
+      "preferredMethod": "Zoom",
+      "groupChatEnabled": false,
+      "oneOnOneSupport": true
+    },
+    "status": "open",
+    "postedAt": "2025-07-05T13:00:00Z",
+    "extraNotes": "Includes LinkedIn optimization session."
+  },
+  {
+    "_id": "m104",
+    "title": "Backend Engineering with Node.js",
+    "description": "Structured mentorship focusing on Node.js, Express, MongoDB, and APIs.",
+    "category": "Software Development",
+    "subCategory": "Backend Development",
+    "tags": ["Node.js", "APIs", "Databases"],
+    "durationWeeks": 5,
+    "schedule": {
+      "sessionsPerWeek": 2,
+      "sessionLength": "2 hours",
+      "days": ["Thursday", "Saturday"],
+      "timeZone": "GMT+6"
+    },
+    "mentor": {
+      "name": "Mehedi Hasan",
+      "profileImage": "",
+      "bio": "Backend engineer at a logistics startup. Open source contributor.",
+      "rating": 4.7,
+      "totalMentees": 60
+    },
+    "isRemote": true,
+    "location": {},
+    "skillsCovered": ["Node.js", "Express", "MongoDB"],
+    "prerequisites": ["Basic JS knowledge"],
+    "attachments": [],
+    "fee": {
+      "type": "fixed",
+      "amount": 95,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "startDate": "2025-08-15T00:00:00Z",
+    "applicationDeadline": "2025-08-07T23:59:59Z",
+    "communication": {
+      "preferredMethod": "Zoom",
+      "groupChatEnabled": true,
+      "oneOnOneSupport": true
+    },
+    "status": "open",
+    "postedAt": "2025-07-07T10:00:00Z",
+    "extraNotes": "Includes a RESTful API final project."
+  },
+  {
+    "_id": "m105",
+    "title": "Digital Marketing Strategy Mentorship",
+    "description": "Master marketing funnels, email campaigns, and analytics in this structured mentorship.",
+    "category": "Marketing",
+    "subCategory": "Digital Strategy",
+    "tags": ["Email", "Funnels", "Analytics"],
+    "durationWeeks": 4,
+    "schedule": {
+      "sessionsPerWeek": 2,
+      "sessionLength": "1 hour",
+      "days": ["Monday", "Thursday"],
+      "timeZone": "GMT+6"
+    },
+    "mentor": {
+      "name": "Nusrat Jahan",
+      "profileImage": "",
+      "bio": "Digital strategist for ecommerce brands. Ex-HubSpot partner.",
+      "rating": 4.6,
+      "totalMentees": 40
+    },
+    "isRemote": true,
+    "location": {},
+    "skillsCovered": ["Funnels", "Email Marketing", "Google Analytics"],
+    "prerequisites": ["Interest in marketing"],
+    "attachments": [],
+    "fee": {
+      "type": "fixed",
+      "amount": 60,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "startDate": "2025-08-12T00:00:00Z",
+    "applicationDeadline": "2025-08-02T23:59:59Z",
+    "communication": {
+      "preferredMethod": "Zoom",
+      "groupChatEnabled": true,
+      "oneOnOneSupport": false
+    },
+    "status": "open",
+    "postedAt": "2025-07-06T12:00:00Z",
+    "extraNotes": "Workbook and templates included."
+  },
+  {
+    "_id": "m106",
+    "title": "Mobile App Dev with Flutter",
+    "description": "Build full mobile apps with Dart & Flutter in a hands-on 5-week track.",
+    "category": "Software Development",
+    "subCategory": "Mobile Development",
+    "tags": ["Flutter", "Dart", "Firebase"],
+    "durationWeeks": 5,
+    "schedule": {
+      "sessionsPerWeek": 3,
+      "sessionLength": "1.5 hours",
+      "days": ["Tuesday", "Thursday", "Saturday"],
+      "timeZone": "GMT+6"
+    },
+    "mentor": {
+      "name": "Shahriar Mahmud",
+      "profileImage": "",
+      "bio": "Flutter dev for 4+ years with cross-platform deployment experience.",
+      "rating": 4.8,
+      "totalMentees": 75
+    },
+    "isRemote": true,
+    "location": {},
+    "skillsCovered": ["Flutter", "Dart", "Firebase Auth"],
+    "prerequisites": ["OOP knowledge"],
+    "attachments": [],
+    "fee": {
+      "type": "fixed",
+      "amount": 110,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "startDate": "2025-08-18T00:00:00Z",
+    "applicationDeadline": "2025-08-10T23:59:59Z",
+    "communication": {
+      "preferredMethod": "Google Meet",
+      "groupChatEnabled": true,
+      "oneOnOneSupport": true
+    },
+    "status": "open",
+    "postedAt": "2025-07-07T15:00:00Z",
+    "extraNotes": "Final app published to Play Store."
+  },
+  {
+    "_id": "m107",
+    "title": "Machine Learning Crash Mentorship",
+    "description": "Accelerated mentorship covering core ML algorithms and model tuning with hands-on projects.",
+    "category": "Data Science",
+    "subCategory": "Machine Learning",
+    "tags": ["Python", "ML", "Sklearn"],
+    "durationWeeks": 3,
+    "schedule": {
+      "sessionsPerWeek": 3,
+      "sessionLength": "2 hours",
+      "days": ["Monday", "Wednesday", "Friday"],
+      "timeZone": "GMT+6"
+    },
+    "mentor": {
+      "name": "Tariqul Alam",
+      "profileImage": "",
+      "bio": "ML Researcher at a robotics lab. Loves simplifying complex topics.",
+      "rating": 4.9,
+      "totalMentees": 90
+    },
+    "isRemote": true,
+    "location": {},
+    "skillsCovered": ["Supervised ML", "Pandas", "Model Evaluation"],
+    "prerequisites": ["Intermediate Python"],
+    "attachments": [],
+    "fee": {
+      "type": "fixed",
+      "amount": 150,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "startDate": "2025-08-08T00:00:00Z",
+    "applicationDeadline": "2025-07-31T23:59:59Z",
+    "communication": {
+      "preferredMethod": "Zoom",
+      "groupChatEnabled": true,
+      "oneOnOneSupport": true
+    },
+    "status": "open",
+    "postedAt": "2025-07-06T18:00:00Z",
+    "extraNotes": "Certificates included."
+  },
+  {
+    "_id": "m108",
+    "title": "Personal Finance Mentorship for Tech Workers",
+    "description": "Master budgeting, saving, and investing tailored to freelancers and tech employees.",
+    "category": "Finance",
+    "subCategory": "Personal Finance",
+    "tags": ["Finance", "Investing", "Freelancer"],
+    "durationWeeks": 4,
+    "schedule": {
+      "sessionsPerWeek": 1,
+      "sessionLength": "2 hours",
+      "days": ["Saturday"],
+      "timeZone": "GMT+6"
+    },
+    "mentor": {
+      "name": "Fariha Noor",
+      "profileImage": "",
+      "bio": "Certified financial coach for remote workers.",
+      "rating": 5.0,
+      "totalMentees": 100
+    },
+    "isRemote": true,
+    "location": {},
+    "skillsCovered": ["Budgeting", "Retirement Planning"],
+    "prerequisites": [],
+    "attachments": [],
+    "fee": {
+      "type": "fixed",
+      "amount": 50,
+      "currency": "USD",
+      "isNegotiable": false
+    },
+    "startDate": "2025-08-02T00:00:00Z",
+    "applicationDeadline": "2025-07-30T23:59:59Z",
+    "communication": {
+      "preferredMethod": "Zoom",
+      "groupChatEnabled": false,
+      "oneOnOneSupport": true
+    },
+    "status": "open",
+    "postedAt": "2025-07-05T09:00:00Z",
+    "extraNotes": "Includes budgeting templates."
+  },
+  {
+    "_id": "m109",
+    "title": "DevOps Bootcamp Mentorship",
+    "description": "CI/CD, Docker, and deployment pipelines taught over 5 weeks with hands-on labs.",
+    "category": "IT & Operations",
+    "subCategory": "DevOps",
+    "tags": ["Docker", "CI/CD", "Linux"],
+    "durationWeeks": 5,
+    "schedule": {
+      "sessionsPerWeek": 2,
+      "sessionLength": "1.5 hours",
+      "days": ["Wednesday", "Saturday"],
+      "timeZone": "GMT+6"
+    },
+    "mentor": {
+      "name": "Azizul Karim",
+      "profileImage": "",
+      "bio": "DevOps engineer in cloud-native systems. Linux evangelist.",
+      "rating": 4.7,
+      "totalMentees": 65
+    },
+    "isRemote": true,
+    "location": {},
+    "skillsCovered": ["Docker", "GitHub Actions", "Nginx"],
+    "prerequisites": ["Basic Linux CLI"],
+    "attachments": [],
+    "fee": {
+      "type": "fixed",
+      "amount": 100,
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "startDate": "2025-08-03T00:00:00Z",
+    "applicationDeadline": "2025-07-28T23:59:59Z",
+    "communication": {
+      "preferredMethod": "Google Meet",
+      "groupChatEnabled": true,
+      "oneOnOneSupport": true
+    },
+    "status": "open",
+    "postedAt": "2025-07-06T14:00:00Z",
+    "extraNotes": "DevOps toolchain cheatsheet included."
+  }
+]

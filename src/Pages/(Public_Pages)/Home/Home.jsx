@@ -20,7 +20,7 @@ import FeaturedCourses from "./FeaturedCourses/FeaturedCourses";
 import FeaturedEvents from "./FeaturedEvents/FeaturedEvents";
 
 // Extra
-// import CoursesData from "../../../JSON/Course_Data.json";
+import EventsData from "../../../JSON/Events_Data.json";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -182,7 +182,7 @@ const Home = () => {
 
       <FeaturedCourses CoursesData={CoursesData} />
       
-      <FeaturedEvents UpcomingEventsData={UpcomingEventsData} />
+      <FeaturedEvents EventsData={EventsData} />
 
       {/* 
       <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />

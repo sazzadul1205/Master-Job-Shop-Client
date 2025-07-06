@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+// Packages
+import PropTypes from "prop-types";
+
 // Icons
 import { FaArrowRight } from "react-icons/fa";
 
 // Shared
 import InternshipCard from "../../../../Shared/InternshipCard/InternshipCard";
-
-// Packages
-import PropTypes from "prop-types";
 
 // Modals
 import InternshipDetailsModal from "./InternshipDetailsModal/InternshipDetailsModal";
@@ -50,7 +50,7 @@ const FeaturedInternships = ({ InternshipData }) => {
           ))}
         </div>
       </div>
-      
+
       {/* Internship Modal */}
       <dialog id="Internship_Details_Modal" className="modal">
         <InternshipDetailsModal

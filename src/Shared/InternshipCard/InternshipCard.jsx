@@ -47,7 +47,7 @@ const InternshipCard = ({ internship, setSelectedInternshipID }) => {
       </div>
 
       {/* Title */}
-      <h3 className="text-lg font-semibold text-blue-800 mb-1">
+      <h3 className="text-lg font-semibold text-black mb-1">
         {internship.title}
       </h3>
 

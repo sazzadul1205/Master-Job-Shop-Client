@@ -18,7 +18,7 @@ import FeaturedInternships from "./FeaturedInternships/FeaturedInternships";
 import FeaturedMentorship from "./FeaturedMentorship/FeaturedMentorship";
 
 // Extra
-import MentorshipData from "../../../JSON/Mentorship_Data.json";
+// import MentorshipData from "../../../JSON/Mentorship_Data.json";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -55,7 +55,7 @@ const Home = () => {
 
   // Fetching MentorshipData
   const {
-    // data: MentorshipData,
+    data: MentorshipData,
     isLoading: MentorshipIsLoading,
     error: MentorshipError,
   } = useQuery({

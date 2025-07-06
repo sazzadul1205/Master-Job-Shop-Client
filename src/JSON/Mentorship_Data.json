@@ -1,6 +1,5 @@
 [
   {
-    "_id": "m101",
     "title": "Frontend Mentorship with React Expert",
     "description": "A 6-week mentorship for aspiring frontend developers. Learn React, state management, and project structuring with live support.",
     "category": "Software Development",
@@ -43,7 +42,6 @@
     "extraNotes": "Includes a final React project."
   },
   {
-    "_id": "m102",
     "title": "UI/UX Design Mentorship for Beginners",
     "description": "Learn Figma, UX research, and design systems in 4 weeks through real-world design challenges.",
     "category": "Design",
@@ -86,7 +84,6 @@
     "extraNotes": "Portfolio-friendly mentorship."
   },
   {
-    "_id": "m103",
     "title": "Career Guidance & Resume Review",
     "description": "Personal branding and mock interviews for landing tech jobs.",
     "category": "Career Development",
@@ -129,7 +126,6 @@
     "extraNotes": "Includes LinkedIn optimization session."
   },
   {
-    "_id": "m104",
     "title": "Backend Engineering with Node.js",
     "description": "Structured mentorship focusing on Node.js, Express, MongoDB, and APIs.",
     "category": "Software Development",
@@ -172,7 +168,6 @@
     "extraNotes": "Includes a RESTful API final project."
   },
   {
-    "_id": "m105",
     "title": "Digital Marketing Strategy Mentorship",
     "description": "Master marketing funnels, email campaigns, and analytics in this structured mentorship.",
     "category": "Marketing",
@@ -215,7 +210,6 @@
     "extraNotes": "Workbook and templates included."
   },
   {
-    "_id": "m106",
     "title": "Mobile App Dev with Flutter",
     "description": "Build full mobile apps with Dart & Flutter in a hands-on 5-week track.",
     "category": "Software Development",
@@ -258,7 +252,6 @@
     "extraNotes": "Final app published to Play Store."
   },
   {
-    "_id": "m107",
     "title": "Machine Learning Crash Mentorship",
     "description": "Accelerated mentorship covering core ML algorithms and model tuning with hands-on projects.",
     "category": "Data Science",
@@ -301,7 +294,6 @@
     "extraNotes": "Certificates included."
   },
   {
-    "_id": "m108",
     "title": "Personal Finance Mentorship for Tech Workers",
     "description": "Master budgeting, saving, and investing tailored to freelancers and tech employees.",
     "category": "Finance",
@@ -344,7 +336,6 @@
     "extraNotes": "Includes budgeting templates."
   },
   {
-    "_id": "m109",
     "title": "DevOps Bootcamp Mentorship",
     "description": "CI/CD, Docker, and deployment pipelines taught over 5 weeks with hands-on labs.",
     "category": "IT & Operations",

@@ -41,13 +41,13 @@ const MentorshipCard = ({ mentorship, setSelectedMentorshipID }) => {
       </div>
 
       {/* Title */}
-      <h3 className="text-lg font-semibold text-blue-800 mb-1">
-        {mentorship.title}
+      <h3 className="text-lg font-semibold text-black mb-1">
+        {mentorship?.title}
       </h3>
 
       {/* Category */}
       <p className="text-sm text-gray-500 mb-1">
-        {mentorship.category} › {mentorship.subCategory}
+        {mentorship?.category} › {mentorship?.subCategory}
       </p>
 
       {/* Location */}
@@ -55,8 +55,8 @@ const MentorshipCard = ({ mentorship, setSelectedMentorshipID }) => {
         Location:{" "}
         <span className="text-gray-800">
           {mentorship?.location?.city
-            ? `${mentorship.location.city}, ${mentorship.location.country}`
-            : mentorship.isRemote
+            ? `${mentorship?.location?.city}, ${mentorship?.location?.country}`
+            : mentorship?.isRemote
             ? "Remote"
             : "Not specified"}
         </span>

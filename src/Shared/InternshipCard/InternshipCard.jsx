@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import DefaultUserLogo from "../../assets/DefaultUserLogo.jpg";
+import CommonButton from "../CommonButton/CommonButton";
 
 // Format budget display
 const formatBudget = (min, max, currency, negotiable) => {
@@ -81,10 +82,16 @@ const InternshipCard = ({ internship, setSelectedInternshipID }) => {
 
       {/* Action Buttons */}
       <div className="flex justify-between items-center pt-2 mt-auto">
-        <Link to={`/gig/${internship?._id}`}>
-          <button className="bg-blue-700 hover:bg-blue-800 text-white text-sm font-medium px-4 py-2 rounded-lg">
-            View Gig
-          </button>
+        <Link to={`/Internships/${internship?._id}`}>
+          <CommonButton
+            text="Apply Now"
+            textColor="text-white"
+            bgColor="blue"
+            px="px-4"
+            py="py-2"
+            width="auto"
+            className="text-sm font-medium"
+          />
         </Link>
 
         <button

@@ -1,10 +1,21 @@
+import PropTypes from "prop-types";
+
+// Packages
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+
 // Assess
 import DefaultUserLogo from "../../../../../assets/DefaultUserLogo.jpg";
 
+// Icons
 import { ImCross } from "react-icons/im";
+
+// Shared
 import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
-import { useQuery } from "@tanstack/react-query";
+import CommonButton from "../../../../../Shared/CommonButton/CommonButton";
+
+// Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 
 const InternshipDetailsModal = ({
@@ -22,7 +33,7 @@ const InternshipDetailsModal = ({
     queryKey: ["SelectedInternshipData", selectedInternshipID],
     queryFn: () =>
       axiosPublic
-        .get(`/Internships?id=${selectedInternshipID}`)
+        .get(`/Internship?id=${selectedInternshipID}`)
         .then((res) => res.data),
     enabled: !!selectedInternshipID, // Only run when selectedInternshipID is truthy
   });
@@ -79,8 +90,28 @@ const InternshipDetailsModal = ({
         <ImCross className="text-xl text-black hover:text-red-500" />
       </div>
 
+      {/* Posted By */}
+      <div className="flex items-center mb-4">
+        <img
+          src={
+            SelectedInternshipData?.postedBy?.profileImage || DefaultUserLogo
+          }
+          alt="Poster"
+          className="w-12 h-12 rounded-full mr-3 object-cover"
+        />
+        <div>
+          <p className="text-sm font-semibold text-gray-800">
+            {SelectedInternshipData?.postedBy?.name || "Client"}
+          </p>
+          <p className="text-xs text-gray-500">
+            Rating: {SelectedInternshipData?.postedBy?.rating || "N/A"} | Jobs
+            Posted: {SelectedInternshipData?.postedBy?.jobsPosted || 0}
+          </p>
+        </div>
+      </div>
+
       {/* Title */}
-      <h2 className="text-2xl font-bold text-blue-700 mb-4">
+      <h2 className="text-2xl font-bold text-black mb-4">
         {SelectedInternshipData?.title}
       </h2>
 
@@ -96,12 +127,20 @@ const InternshipDetailsModal = ({
           {SelectedInternshipData?.category} ›{" "}
           {SelectedInternshipData?.subCategory}
         </p>
-        <p className="text-sm text-gray-600">
-          <span className="font-semibold">Tags:</span>{" "}
-          {SelectedInternshipData?.tags?.length
-            ? SelectedInternshipData?.tags.join(", ")
-            : "None"}
-        </p>
+        {/* Tags */}
+        <div>
+          <h4 className="font-semibold text-gray-700 pb-1">Tags</h4>
+          <div className="flex flex-wrap gap-2">
+            {SelectedInternshipData?.tags.map((tag, i) => (
+              <span
+                key={i}
+                className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs"
+              >
+                # {tag}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Skills Required */}
@@ -170,31 +209,35 @@ const InternshipDetailsModal = ({
         </div>
       )}
 
-      {/* Posted By */}
-      <div className="flex items-center mt-6 border-t pt-4">
-        <img
-          src={
-            SelectedInternshipData?.postedBy?.profileImage || DefaultUserLogo
-          }
-          alt="Poster"
-          className="w-12 h-12 rounded-full mr-3 object-cover"
-        />
-        <div>
-          <p className="text-sm font-semibold text-gray-800">
-            {SelectedInternshipData?.postedBy?.name || "Client"}
-          </p>
-          <p className="text-xs text-gray-500">
-            Rating: {SelectedInternshipData?.postedBy?.rating || "N/A"} | Jobs
-            Posted: {SelectedInternshipData?.postedBy?.jobsPosted || 0}
-          </p>
-        </div>
-        <p className="ml-auto text-xs text-gray-400">
+      {/* Action Area */}
+      <div className="flex justify-between items-center mt-6">
+        <Link to={`/Internships/${SelectedInternshipData?._id}`}>
+          <CommonButton
+            text="Apply Now"
+            textColor="text-white"
+            bgColor="blue"
+            px="px-4"
+            py="py-2"
+            width="auto"
+            className="text-sm font-medium"
+          />
+        </Link>
+        <p className="text-xs text-gray-400">
           Posted on:{" "}
           {new Date(SelectedInternshipData?.postedAt).toLocaleDateString()}
         </p>
       </div>
     </div>
   );
+};
+
+// Prop Validation
+InternshipDetailsModal.propTypes = {
+  selectedInternshipID: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  setSelectedInternshipID: PropTypes.func.isRequired,
 };
 
 export default InternshipDetailsModal;

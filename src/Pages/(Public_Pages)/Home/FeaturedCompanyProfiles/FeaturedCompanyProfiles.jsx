@@ -9,9 +9,9 @@ const FeaturedCompanyProfiles = ({ CompanyData }) => {
 
   return (
     <section className="bg-gradient-to-tl from-blue-400 to-blue-600 py-5">
-      {/* Header */}
-      <div className="px-20 mx-auto">
-        <div className="px-6 md:px-20 mb-6">
+      <div className="p-20 mx-auto">
+        {/* Section Header */}
+        <div className="mb-6">
           <div className="flex flex-col md:flex-row justify-between items-center mb-5">
             <div>
               <h2 className="text-4xl font-bold text-white">
@@ -34,7 +34,7 @@ const FeaturedCompanyProfiles = ({ CompanyData }) => {
         </div>
 
         {/* Companies Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
           {CompanyData.slice(0, 6).map((company) => (
             <Link
               key={company._id}

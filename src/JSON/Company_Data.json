@@ -21,6 +21,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/company/nextgensoft"
     },
+    "tags": ["Hiring", "Top Rated", "Remote Friendly"],
     "verificationStatus": "verified"
   },
   {
@@ -45,6 +46,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/company/greenfieldbio"
     },
+    "tags": ["Sustainability", "Great Culture", "Top Rated"],
     "verificationStatus": "verified"
   },
   {
@@ -69,6 +71,7 @@
     "socialLinks": {
       "instagram": "https://instagram.com/urbannest"
     },
+    "tags": ["Creative", "Small Team", "Hiring"],
     "verificationStatus": "pending"
   },
   {
@@ -93,6 +96,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/company/byteforce"
     },
+    "tags": ["Top Rated", "Great Culture", "Hiring"],
     "verificationStatus": "verified"
   },
   {
@@ -117,6 +121,7 @@
     "socialLinks": {
       "facebook": "https://facebook.com/edubridgeasia"
     },
+    "tags": ["Hiring", "Education Focused", "Diversity Driven"],
     "verificationStatus": "verified"
   },
   {
@@ -141,6 +146,7 @@
     "socialLinks": {
       "twitter": "https://twitter.com/solarpeak"
     },
+    "tags": ["Green Energy", "Top Rated", "Hiring"],
     "verificationStatus": "verified"
   },
   {
@@ -165,6 +171,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/company/carehive"
     },
+    "tags": ["HealthTech", "Remote Friendly", "Great Culture"],
     "verificationStatus": "verified"
   },
   {
@@ -189,6 +196,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/company/fleetiq"
     },
+    "tags": ["Top Rated", "Hiring", "Enterprise Scale"],
     "verificationStatus": "verified"
   },
   {
@@ -200,7 +208,7 @@
     "industry": "Fintech / Blockchain",
     "headquarters": {
       "city": "Singapore",
-      "state": "-",
+      "state": null,
       "country": "Singapore",
       "address": "25 Marina View, #11-01, Singapore 018999"
     },
@@ -213,6 +221,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/company/cryptovault"
     },
+    "tags": ["Fintech", "Startup", "Remote Friendly"],
     "verificationStatus": "pending"
   },
   {
@@ -224,7 +233,7 @@
     "industry": "Robotics & Automation",
     "headquarters": {
       "city": "Seoul",
-      "state": "-",
+      "state": null,
       "country": "South Korea",
       "address": "77 Tech Valley Rd, Gangnam, Seoul 06040"
     },
@@ -237,6 +246,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/company/aetherrobotics"
     },
+    "tags": ["Innovative", "Hiring", "Great Culture"],
     "verificationStatus": "verified"
   }
 ]

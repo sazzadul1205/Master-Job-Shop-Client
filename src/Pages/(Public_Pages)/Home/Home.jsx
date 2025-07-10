@@ -22,6 +22,7 @@ import FeaturedSalaryInsights from "./FeaturedSalaryInsights/FeaturedSalaryInsig
 
 // Extra
 import FeaturedCompanyProfiles from "./FeaturedCompanyProfiles/FeaturedCompanyProfiles";
+import FeaturedTestimonials from "./FeaturedTestimonials/FeaturedTestimonials";
 import FeaturedBlogs from "./FeaturedBlogs/FeaturedBlogs";
 
 const Home = () => {
@@ -192,9 +193,11 @@ const Home = () => {
 
       <FeaturedBlogs BlogsData={BlogsData} />
 
+      <FeaturedTestimonials TestimonialsData={TestimonialsData} />
+
       {/* 
       <NewsLetter />
-      <Testimonials testimonialsData={testimonialsData} />
+      <Testimonials TestimonialsData={TestimonialsData} />
       <WhyChooseUs WhyChooseUsData={WhyChooseUsData} /> */}
     </>
   );

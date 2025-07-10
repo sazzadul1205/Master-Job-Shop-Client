@@ -1,5 +1,10 @@
-import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
+
+// Packages
+import PropTypes from "prop-types";
+
+// Icon
+import { FaArrowRight } from "react-icons/fa";
 
 // Default Logo
 import DefaultCompanyLogo from "../../../../assets/DefaultCompanyLogo.jpg";
@@ -76,6 +81,18 @@ const FeaturedCompanyProfiles = ({ CompanyData }) => {
       </div>
     </section>
   );
+};
+
+// Prop Validation
+FeaturedCompanyProfiles.propTypes = {
+  CompanyData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      logo: PropTypes.string,
+      name: PropTypes.string.isRequired,
+      tags: PropTypes.arrayOf(PropTypes.string),
+    })
+  ).isRequired,
 };
 
 export default FeaturedCompanyProfiles;

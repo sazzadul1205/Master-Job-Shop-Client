@@ -21,7 +21,8 @@ import FeaturedEvents from "./FeaturedEvents/FeaturedEvents";
 import FeaturedSalaryInsights from "./FeaturedSalaryInsights/FeaturedSalaryInsights";
 
 // Extra
-// import EventsData from "../../../JSON/Events_Data.json";
+import CompanyData from "../../../JSON/Company_Data.json";
+import FeaturedCompanyProfiles from "./FeaturedCompanyProfiles/FeaturedCompanyProfiles";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -186,8 +187,10 @@ const Home = () => {
       <FeaturedEvents EventsData={EventsData} />
 
       <FeaturedSalaryInsights InsightsData={InsightsData} />
+
+      <FeaturedCompanyProfiles CompanyData={CompanyData} />
+
       {/* 
-      <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
       <NewsLetter />
       <Testimonials testimonialsData={testimonialsData} />
       <WhyChooseUs WhyChooseUsData={WhyChooseUsData} /> */}

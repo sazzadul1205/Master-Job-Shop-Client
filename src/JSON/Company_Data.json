@@ -1,0 +1,242 @@
+[
+  {
+    "name": "NextGen Software Solutions",
+    "logo": "https://nextgensoft.com/assets/logo.png",
+    "tagline": "Empowering Businesses Through Innovative Software.",
+    "founded": 2014,
+    "size": "51-200 employees",
+    "industry": "Information Technology & Services",
+    "headquarters": {
+      "city": "San Francisco",
+      "state": "California",
+      "country": "USA",
+      "address": "500 Mission Street, San Francisco, CA 94105"
+    },
+    "contact": {
+      "email": "contact@nextgensoft.com",
+      "phone": "+1 415-800-1234"
+    },
+    "website": "https://nextgensoft.com",
+    "overview": "NextGen builds enterprise software, cloud platforms, and AI-based systems for global clients.",
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/company/nextgensoft"
+    },
+    "verificationStatus": "verified"
+  },
+  {
+    "name": "GreenField BioTech",
+    "logo": "https://greenfieldbio.com/logo.png",
+    "tagline": "Pioneering Sustainable Agriculture.",
+    "founded": 2012,
+    "size": "201-500 employees",
+    "industry": "Biotechnology",
+    "headquarters": {
+      "city": "Leipzig",
+      "state": "Saxony",
+      "country": "Germany",
+      "address": "12 Agritech Park, Leipzig 04317"
+    },
+    "contact": {
+      "email": "info@greenfieldbio.com",
+      "phone": "+49 341 9876543"
+    },
+    "website": "https://greenfieldbio.com",
+    "overview": "GreenField specializes in agri-biotech innovations to enhance crop yields and sustainability.",
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/company/greenfieldbio"
+    },
+    "verificationStatus": "verified"
+  },
+  {
+    "name": "UrbanNest Interiors",
+    "logo": "https://urbannest.com/images/logo.svg",
+    "tagline": "Designing Spaces That Feel Like Home.",
+    "founded": 2018,
+    "size": "11-50 employees",
+    "industry": "Interior Design",
+    "headquarters": {
+      "city": "Toronto",
+      "state": "Ontario",
+      "country": "Canada",
+      "address": "241 King Street W, Toronto, ON M5V 1J5"
+    },
+    "contact": {
+      "email": "hello@urbannest.com",
+      "phone": "+1 416-555-7654"
+    },
+    "website": "https://urbannest.com",
+    "overview": "UrbanNest delivers customized interior designs with a focus on modern, functional aesthetics.",
+    "socialLinks": {
+      "instagram": "https://instagram.com/urbannest"
+    },
+    "verificationStatus": "pending"
+  },
+  {
+    "name": "ByteForce Security",
+    "logo": "https://byteforce.io/static/logo.png",
+    "tagline": "Securing the Digital Future.",
+    "founded": 2010,
+    "size": "1001-5000 employees",
+    "industry": "Cybersecurity",
+    "headquarters": {
+      "city": "Austin",
+      "state": "Texas",
+      "country": "USA",
+      "address": "901 Tech Blvd, Austin, TX 73301"
+    },
+    "contact": {
+      "email": "security@byteforce.io",
+      "phone": "+1 737-400-1122"
+    },
+    "website": "https://byteforce.io",
+    "overview": "ByteForce provides enterprise-grade threat detection, firewall systems, and vulnerability scanning tools.",
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/company/byteforce"
+    },
+    "verificationStatus": "verified"
+  },
+  {
+    "name": "EduBridge Asia",
+    "logo": "https://edubridge.asia/assets/img/logo.png",
+    "tagline": "Connecting Learners to the Future.",
+    "founded": 2016,
+    "size": "501-1000 employees",
+    "industry": "Education Technology",
+    "headquarters": {
+      "city": "Dhaka",
+      "state": "Dhaka",
+      "country": "Bangladesh",
+      "address": "15A Knowledge Tower, Dhanmondi, Dhaka 1209"
+    },
+    "contact": {
+      "email": "support@edubridge.asia",
+      "phone": "+880 1700-555444"
+    },
+    "website": "https://edubridge.asia",
+    "overview": "EduBridge Asia offers career-focused digital learning, bootcamps, and job-ready certification programs.",
+    "socialLinks": {
+      "facebook": "https://facebook.com/edubridgeasia"
+    },
+    "verificationStatus": "verified"
+  },
+  {
+    "name": "SolarPeak Energy",
+    "logo": "https://solarpeak.com/images/logo.png",
+    "tagline": "Harnessing Power from the Sun.",
+    "founded": 2009,
+    "size": "201-500 employees",
+    "industry": "Renewable Energy",
+    "headquarters": {
+      "city": "Cape Town",
+      "state": "Western Cape",
+      "country": "South Africa",
+      "address": "105 Eco Park, Greenway District, Cape Town 7441"
+    },
+    "contact": {
+      "email": "connect@solarpeak.com",
+      "phone": "+27 21 000 1234"
+    },
+    "website": "https://solarpeak.com",
+    "overview": "SolarPeak develops and installs solar infrastructure for industrial, commercial, and rural electrification.",
+    "socialLinks": {
+      "twitter": "https://twitter.com/solarpeak"
+    },
+    "verificationStatus": "verified"
+  },
+  {
+    "name": "CareHive Digital Health",
+    "logo": "https://carehive.com/logo.svg",
+    "tagline": "Virtual Care, Real Results.",
+    "founded": 2015,
+    "size": "101-250 employees",
+    "industry": "HealthTech",
+    "headquarters": {
+      "city": "London",
+      "state": "England",
+      "country": "UK",
+      "address": "33 MedTech Hub, London EC1A 4HD"
+    },
+    "contact": {
+      "email": "care@carehive.com",
+      "phone": "+44 20 8000 2233"
+    },
+    "website": "https://carehive.com",
+    "overview": "CareHive is a telemedicine company offering digital consultations, remote monitoring, and AI diagnostics.",
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/company/carehive"
+    },
+    "verificationStatus": "verified"
+  },
+  {
+    "name": "FleetIQ Logistics",
+    "logo": "https://fleetiq.com/images/logo-dark.png",
+    "tagline": "Smarter Logistics, Delivered.",
+    "founded": 2011,
+    "size": "1001-5000 employees",
+    "industry": "Transportation & Logistics",
+    "headquarters": {
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "country": "India",
+      "address": "87 Sector C, BKC, Mumbai 400051"
+    },
+    "contact": {
+      "email": "inquiries@fleetiq.com",
+      "phone": "+91 22 4004 1234"
+    },
+    "website": "https://fleetiq.com",
+    "overview": "FleetIQ uses real-time tracking, route optimization, and AI to transform logistics management.",
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/company/fleetiq"
+    },
+    "verificationStatus": "verified"
+  },
+  {
+    "name": "CryptoVault Exchange",
+    "logo": "https://cryptovault.io/static/img/logo.png",
+    "tagline": "Your Gateway to the Decentralized World.",
+    "founded": 2017,
+    "size": "51-200 employees",
+    "industry": "Fintech / Blockchain",
+    "headquarters": {
+      "city": "Singapore",
+      "state": "-",
+      "country": "Singapore",
+      "address": "25 Marina View, #11-01, Singapore 018999"
+    },
+    "contact": {
+      "email": "support@cryptovault.io",
+      "phone": "+65 800 888 1234"
+    },
+    "website": "https://cryptovault.io",
+    "overview": "CryptoVault is a secure cryptocurrency exchange offering spot trading, DeFi tools, and NFT vaults.",
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/company/cryptovault"
+    },
+    "verificationStatus": "pending"
+  },
+  {
+    "name": "Aether Robotics",
+    "logo": "https://aetherrobotics.com/logo.png",
+    "tagline": "Engineering the Future of Autonomy.",
+    "founded": 2020,
+    "size": "11-50 employees",
+    "industry": "Robotics & Automation",
+    "headquarters": {
+      "city": "Seoul",
+      "state": "-",
+      "country": "South Korea",
+      "address": "77 Tech Valley Rd, Gangnam, Seoul 06040"
+    },
+    "contact": {
+      "email": "hello@aetherrobotics.com",
+      "phone": "+82 2-555-6789"
+    },
+    "website": "https://aetherrobotics.com",
+    "overview": "Aether Robotics develops autonomous delivery bots, drones, and industrial robotic arms.",
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/company/aetherrobotics"
+    },
+    "verificationStatus": "verified"
+  }
+]

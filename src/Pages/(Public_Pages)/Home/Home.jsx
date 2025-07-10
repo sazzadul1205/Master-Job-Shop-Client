@@ -5,27 +5,26 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Shared
-import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
+import Error from "../../../Shared/Error/Error";
 
 // Components
 import HomeBanners from "./HomeBanner/HomeBanner";
 
 // Components
-import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
-import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
+import FeaturedCompanyProfiles from "./FeaturedCompanyProfiles/FeaturedCompanyProfiles";
+import FeaturedSalaryInsights from "./FeaturedSalaryInsights/FeaturedSalaryInsights";
+import FeaturedTestimonials from "./FeaturedTestimonials/FeaturedTestimonials";
 import FeaturedInternships from "./FeaturedInternships/FeaturedInternships";
 import FeaturedMentorship from "./FeaturedMentorship/FeaturedMentorship";
 import FeaturedCourses from "./FeaturedCourses/FeaturedCourses";
 import FeaturedEvents from "./FeaturedEvents/FeaturedEvents";
-import FeaturedSalaryInsights from "./FeaturedSalaryInsights/FeaturedSalaryInsights";
-
-// Extra
-import FeaturedCompanyProfiles from "./FeaturedCompanyProfiles/FeaturedCompanyProfiles";
-import FeaturedTestimonials from "./FeaturedTestimonials/FeaturedTestimonials";
 import FeaturedBlogs from "./FeaturedBlogs/FeaturedBlogs";
+import FeaturedGigs from "./FeaturedGigs/FeaturedGigs";
+import FeaturedJobs from "./FeaturedJobs/FeaturedJobs";
 import WhyChooseUs from "./WhyChooseUs/WhyChooseUs";
 import NewsLetter from "./NewsLetter/NewsLetter";
+
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -162,17 +161,6 @@ const Home = () => {
     return <Error />;
   }
 
-  console.log("TestimonialsData", TestimonialsData);
-  console.log("MentorshipData", MentorshipData);
-  console.log("InternshipData", InternshipData);
-  console.log("InsightsData", InsightsData);
-  console.log("CoursesData", CoursesData);
-  console.log("CompanyData", CompanyData);
-  console.log("EventsData", EventsData);
-  console.log("BlogsData", BlogsData);
-  console.log("JobsData", JobsData);
-  console.log("GigsData", GigsData);
-
   return (
     <>
       <HomeBanners />
@@ -198,7 +186,7 @@ const Home = () => {
       <FeaturedTestimonials TestimonialsData={TestimonialsData} />
 
       <NewsLetter />
-      
+
       <WhyChooseUs />
     </>
   );

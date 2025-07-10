@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 // Packages
 import PropTypes from "prop-types";
@@ -9,8 +10,14 @@ import { FaArrowRight } from "react-icons/fa";
 // Default Logo
 import DefaultCompanyLogo from "../../../../assets/DefaultCompanyLogo.jpg";
 
+// AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 const FeaturedCompanyProfiles = ({ CompanyData }) => {
-  if (!CompanyData?.length) return null;
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
 
   return (
     <section className="bg-gradient-to-tl from-blue-400 to-blue-600 py-5">
@@ -40,10 +47,12 @@ const FeaturedCompanyProfiles = ({ CompanyData }) => {
 
         {/* Companies Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-          {CompanyData.slice(0, 6).map((company) => (
+          {CompanyData.slice(0, 6).map((company, index) => (
             <Link
               key={company._id}
               to={`/companies/${company._id}`}
+              data-aos="fade-up"
+              data-aos-delay={index * 150} // 150ms delay between cards
               className="bg-white rounded-xl shadow hover:shadow-lg transition p-4 flex flex-col items-center text-center group"
             >
               <img

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 // Packages
@@ -13,8 +13,16 @@ import InternshipCard from "../../../../Shared/InternshipCard/InternshipCard";
 // Modals
 import InternshipDetailsModal from "./InternshipDetailsModal/InternshipDetailsModal";
 
+// AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 const FeaturedInternships = ({ InternshipData }) => {
   const [selectedInternshipID, setSelectedInternshipID] = useState(null);
+
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
 
   return (
     <section className="bg-gradient-to-bl from-blue-400 to-blue-600 py-20">
@@ -42,12 +50,17 @@ const FeaturedInternships = ({ InternshipData }) => {
 
         {/* Internship Cards Section */}
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {InternshipData.slice(0, 6).map((internship) => (
-            <InternshipCard
+          {InternshipData.slice(0, 6).map((internship, index) => (
+            <div
               key={internship._id}
-              internship={internship}
-              setSelectedInternshipID={setSelectedInternshipID}
-            />
+              data-aos="fade-up"
+              data-aos-delay={index * 150} // 150ms delay between cards
+            >
+              <InternshipCard
+                internship={internship}
+                setSelectedInternshipID={setSelectedInternshipID}
+              />
+            </div>
           ))}
         </div>
       </div>

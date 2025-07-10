@@ -1,12 +1,16 @@
 /* eslint-disable react/no-unknown-property */
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+
+// AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 // Icons
 import { FaAngleLeft, FaAngleRight, FaStar, FaQuoteLeft } from "react-icons/fa";
 
 // Packages
 import Rating from "react-rating";
-import PropTypes from "prop-types";
 
 // Assets
 import DefaultUserImage from "../../../..//assets/DefaultUserLogo.jpg";
@@ -14,6 +18,11 @@ import DefaultUserImage from "../../../..//assets/DefaultUserLogo.jpg";
 const FeaturedTestimonials = ({ TestimonialsData }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fade, setFade] = useState(true);
+
+  // AOS INIT
+  useEffect(() => {
+    AOS.init({ duration: 800, once: false });
+  }, []);
 
   // Auto Slide
   useEffect(() => {
@@ -51,7 +60,7 @@ const FeaturedTestimonials = ({ TestimonialsData }) => {
 
   return (
     <section className="bg-gradient-to-tl from-blue-400 to-blue-600 py-20">
-      <div className=" px-5 md:px-10">
+      <div className="px-5 md:px-10">
         <div className="text-center mb-8">
           <h2 className="text-4xl font-bold text-white">
             What People Think About Us
@@ -62,10 +71,12 @@ const FeaturedTestimonials = ({ TestimonialsData }) => {
         </div>
 
         <div
+          data-aos="fade-up"
+          key={testimonial.name + currentIndex}
           className={`testimonial-card relative bg-white rounded-lg shadow-lg md:h-[360px] p-6 flex items-center justify-between overflow-hidden transition-opacity duration-500 ease-in-out`}
           style={{ opacity: fade ? 1 : 0 }}
         >
-          {/* Floating Icons INSIDE the card */}
+          {/* Floating Icons */}
           {[...Array(5)].map((_, i) => (
             <span
               key={i}
@@ -90,7 +101,7 @@ const FeaturedTestimonials = ({ TestimonialsData }) => {
 
           {/* Testimonial Content */}
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 w-full px-10">
-            <div className="flex flex-col items-center md:items-center md:flex-row gap-4 w-full md:w-1/3">
+            <div className="flex flex-col items-center md:flex-row gap-4 w-full md:w-1/3">
               <img
                 src={testimonial.image || DefaultUserImage}
                 onError={(e) => {
@@ -144,7 +155,7 @@ const FeaturedTestimonials = ({ TestimonialsData }) => {
         </div>
       </div>
 
-      {/* Local CSS for floating animation inside card only */}
+      {/* Local CSS */}
       <style jsx>{`
         @keyframes floatIcon {
           0%,

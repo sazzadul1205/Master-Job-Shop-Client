@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Icon
 import { FaArrowRight } from "react-icons/fa";
@@ -13,8 +13,16 @@ import GigCard from "../../../../Shared/GigCard/GigCard";
 // Modal
 import GigDetailsModal from "./GigDetailsModal/GigDetailsModal";
 
+// AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 const FeaturedGigs = ({ GigsData }) => {
   const [selectedGigID, setSelectedGigID] = useState(null);
+
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
 
   return (
     <section className="bg-gradient-to-tl from-blue-400 to-blue-600 py-20">
@@ -40,12 +48,14 @@ const FeaturedGigs = ({ GigsData }) => {
 
         {/* Gigs Card */}
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-          {GigsData.slice(0, 8).map((gig) => (
-            <GigCard
+          {GigsData.slice(0, 8).map((gig, index) => (
+            <div
               key={gig._id}
-              gig={gig}
-              setSelectedGigID={setSelectedGigID}
-            />
+              data-aos="fade-up"
+              data-aos-delay={index * 150} // 150ms delay between cards
+            >
+              <GigCard gig={gig} setSelectedGigID={setSelectedGigID} />
+            </div>
           ))}
         </div>
       </div>

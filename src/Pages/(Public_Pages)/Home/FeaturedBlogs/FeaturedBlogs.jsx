@@ -1,135 +1,28 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
+// Packages
+import PropTypes from "prop-types";
+
+// Icons
 import { FaArrowRight } from "react-icons/fa";
 
-const blogs = [
-  {
-    title: "Mastering React Hooks in 2025",
-    excerpt:
-      "Discover the latest advancements in React Hooks and how they enhance modern frontend development.",
-    content: `React Hooks revolutionized functional components. In 2025, new best practices around custom hooks, context isolation, and performance optimization with useMemo/useCallback are more refined. Explore advanced strategies and how they impact modern development workflows.`,
-    author: "Sazzadul Islam",
-    publishedAt: "2025-07-01",
-    image: "https://source.unsplash.com/400x250/?react,code",
-    tags: ["React", "Frontend", "JavaScript"],
-    category: "Frontend Development",
-    readTime: "6 min",
-  },
-  {
-    title: "Web3 vs Web2: What Developers Need to Know",
-    excerpt:
-      "Explore the key differences between Web2 and Web3 development in today’s evolving tech space.",
-    content: `Web3 introduces decentralization, ownership, and blockchain-backed applications. This article compares both paradigms, outlines transition strategies for Web2 devs, and includes tooling essentials like MetaMask, Ethers.js, and Solidity.`,
-    author: "Amina Chowdhury",
-    publishedAt: "2025-06-15",
-    image: "https://source.unsplash.com/400x250/?blockchain,web",
-    tags: ["Web3", "Blockchain", "Tech Trends"],
-    category: "Blockchain",
-    readTime: "7 min",
-  },
-  {
-    title: "Top 10 VS Code Extensions for Productivity",
-    excerpt:
-      "Boost your coding speed with these handpicked VS Code extensions for 2025.",
-    content: `Tools like GitLens, ESLint, Prettier, and REST Client remain essential. We review new rising stars in 2025’s marketplace and how they integrate with cloud workspaces and AI-enhanced workflows.`,
-    author: "Rafiq Islam",
-    publishedAt: "2025-05-22",
-    image: "https://source.unsplash.com/400x250/?code,workspace",
-    tags: ["VS Code", "Productivity", "Tools"],
-    category: "Developer Tools",
-    readTime: "5 min",
-  },
-  {
-    title: "Designing for Accessibility: A 2025 Guide",
-    excerpt:
-      "Inclusive design isn't optional. Here's how to embed accessibility in your design system.",
-    content: `From semantic HTML to ARIA roles, and WCAG 3.0 guidelines, learn how to build applications that serve all users. This post covers automated testing tools, keyboard navigation, and real-life inclusive UI examples.`,
-    author: "Chris Mendez",
-    publishedAt: "2025-06-05",
-    image: "https://source.unsplash.com/400x250/?design,accessibility",
-    tags: ["UI/UX", "Accessibility", "Best Practices"],
-    category: "User Experience",
-    readTime: "8 min",
-  },
-  {
-    title: "State Management in React: Context API vs Redux",
-    excerpt:
-      "Wondering whether to use Redux or Context API in 2025? Here’s what to consider.",
-    content: `Context API has matured, but Redux still shines for complex state graphs. This guide walks through modern Redux Toolkit patterns, best Context usage practices, and performance implications of each.`,
-    author: "Fatema Nahar",
-    publishedAt: "2025-06-25",
-    image: "https://source.unsplash.com/400x250/?react,redux",
-    tags: ["React", "Redux", "State Management"],
-    category: "Frontend Development",
-    readTime: "6 min",
-  },
-  {
-    title: "How to Build a CI/CD Pipeline with GitHub Actions",
-    excerpt:
-      "Learn to automate deployment and testing using GitHub Actions in 2025.",
-    content: `This tutorial covers how to build and deploy apps using workflows, secrets, environment matrices, and caching strategies in GitHub Actions. Plus, integration with Docker and preview environments.`,
-    author: "Mizanur Rahman",
-    publishedAt: "2025-06-10",
-    image: "https://source.unsplash.com/400x250/?devops,github",
-    tags: ["DevOps", "GitHub Actions", "CI/CD"],
-    category: "DevOps",
-    readTime: "9 min",
-  },
-  {
-    title: "Tailwind CSS: Advanced Layout Techniques",
-    excerpt:
-      "Learn how to push Tailwind beyond basic utilities with advanced grid, flex, and responsiveness.",
-    content: `This blog dives into layout recipes for dashboards, modals, and responsive grids using Tailwind CSS. Explore new plugin integrations and upcoming utilities in Tailwind 4.0.`,
-    author: "Shama Parveen",
-    publishedAt: "2025-07-03",
-    image: "https://source.unsplash.com/400x250/?tailwind,ui",
-    tags: ["Tailwind CSS", "CSS", "Frontend"],
-    category: "CSS Frameworks",
-    readTime: "6 min",
-  },
-  {
-    title: "Performance Optimization Tips for Large React Apps",
-    excerpt:
-      "Big React apps come with big performance risks — here’s how to stay fast.",
-    content: `Learn how to lazy-load components, split bundles, throttle renders, and manage expensive re-renders using memoization and selectors. Real-world examples included.`,
-    author: "Tanvir Hossain",
-    publishedAt: "2025-05-18",
-    image: "https://source.unsplash.com/400x250/?performance,code",
-    tags: ["React", "Performance", "Optimization"],
-    category: "Frontend Performance",
-    readTime: "7 min",
-  },
-  {
-    title: "Understanding TypeScript Generics with Real Examples",
-    excerpt:
-      "Struggling with generics in TypeScript? This guide makes it click.",
-    content: `TypeScript generics can be overwhelming. We simplify the topic using array utilities, API functions, and generic components. You’ll also learn how to write reusable utility types.`,
-    author: "Nazia Alam",
-    publishedAt: "2025-06-29",
-    image: "https://source.unsplash.com/400x250/?typescript,code",
-    tags: ["TypeScript", "Generics", "Advanced"],
-    category: "TypeScript",
-    readTime: "6 min",
-  },
-  {
-    title: "What’s New in ECMAScript 2025",
-    excerpt:
-      "Check out the newest JavaScript features shipping in ES2025 and how to use them.",
-    content: `From pipeline operators to pattern matching, ES2025 brings a wave of productivity-focused updates. We break down each major addition with examples and browser support notes.`,
-    author: "Jahidul Islam",
-    publishedAt: "2025-07-08",
-    image: "https://source.unsplash.com/400x250/?javascript,code",
-    tags: ["JavaScript", "ES2025", "New Features"],
-    category: "JavaScript",
-    readTime: "5 min",
-  },
-];
-
+// Assets
 import DefaultBlogImage from "../../../../assets/DefaultBlogImage.jpg";
-import { useState } from "react";
+
+// Modal
 import BlogDetailsModal from "./BlogDetailsModal/BlogDetailsModal";
 
-const FeaturedBlogs = () => {
+// AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+const FeaturedBlogs = ({ BlogsData }) => {
   const [selectedBlog, setSelectedBlog] = useState(null);
+
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
 
   return (
     <section className="bg-gradient-to-bl from-blue-400 to-blue-600 py-20">
@@ -155,13 +48,15 @@ const FeaturedBlogs = () => {
 
         {/* Blogs Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 cursor-pointer">
-          {blogs.slice(0, 3).map((blog) => (
+          {BlogsData?.slice(0, 3).map((blog, index) => (
             <div
               onClick={() => {
                 setSelectedBlog(blog);
                 document.getElementById("Blog_Details_Modal")?.showModal();
               }}
               key={blog.id}
+              data-aos="fade-up"
+              data-aos-delay={index * 150}
               className="bg-white rounded-md shadow hover:shadow-2xl transition overflow-hidden group"
             >
               <img
@@ -218,6 +113,24 @@ const FeaturedBlogs = () => {
       </dialog>
     </section>
   );
+};
+
+// Prop Validation
+FeaturedBlogs.propTypes = {
+  BlogsData: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      title: PropTypes.string.isRequired,
+      excerpt: PropTypes.string.isRequired,
+      author: PropTypes.string.isRequired,
+      publishedAt: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.instanceOf(Date),
+      ]).isRequired,
+      tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+      image: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 export default FeaturedBlogs;

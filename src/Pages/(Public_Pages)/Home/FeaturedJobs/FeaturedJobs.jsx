@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Packages
 import PropTypes from "prop-types";
@@ -13,8 +13,16 @@ import JobCard from "../../../../Shared/JobCard/JobCard";
 // Modals
 import JobDetailsModal from "./JobDetailsModal/JobDetailsModal";
 
+// AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 const FeaturedJobs = ({ JobsData }) => {
   const [selectedJobID, setSelectedJobID] = useState(null);
+
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
 
   return (
     <section className="bg-gradient-to-bl from-blue-400 to-blue-600 py-20">
@@ -38,14 +46,15 @@ const FeaturedJobs = ({ JobsData }) => {
           </Link>
         </div>
 
-        {/* Jobs Card */}
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {JobsData?.slice(0, 6).map((job) => (
-            <JobCard
+          {JobsData?.slice(0, 6).map((job, index) => (
+            <div
               key={job._id}
-              job={job}
-              setSelectedJobID={setSelectedJobID}
-            />
+              data-aos="fade-up"
+              data-aos-delay={index * 150} // 150ms delay between cards
+            >
+              <JobCard job={job} setSelectedJobID={setSelectedJobID} />
+            </div>
           ))}
         </div>
       </div>

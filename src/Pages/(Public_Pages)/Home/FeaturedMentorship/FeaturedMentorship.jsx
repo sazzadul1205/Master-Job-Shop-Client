@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 // Packages
@@ -13,8 +13,16 @@ import MentorshipCard from "../../../../Shared/MentorshipCard/MentorshipCard";
 // Modal
 import MentorshipDetailsModal from "./MentorshipDetailsModal/MentorshipDetailsModal";
 
+// AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 const FeaturedMentorship = ({ MentorshipData }) => {
   const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
+
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
 
   return (
     <section className="bg-gradient-to-tl from-blue-400 to-blue-600 py-20">
@@ -42,12 +50,18 @@ const FeaturedMentorship = ({ MentorshipData }) => {
 
         {/* Mentorship Cards Section */}
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {MentorshipData.slice(0, 6).map((mentorship) => (
-            <MentorshipCard
+          {MentorshipData.slice(0, 6).map((mentorship, index) => (
+            <div
               key={mentorship._id}
-              mentorship={mentorship}
-              setSelectedMentorshipID={setSelectedMentorshipID}
-            />
+              data-aos="fade-up"
+              data-aos-delay={index * 150} // 150ms delay between cards
+            >
+              <MentorshipCard
+                key={mentorship._id}
+                mentorship={mentorship}
+                setSelectedMentorshipID={setSelectedMentorshipID}
+              />
+            </div>
           ))}
         </div>
       </div>

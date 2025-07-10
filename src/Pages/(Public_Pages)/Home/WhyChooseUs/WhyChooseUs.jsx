@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+
+// Icons
 import {
   FaCheckCircle,
   FaClock,
@@ -5,6 +8,10 @@ import {
   FaTools,
   FaChartLine,
 } from "react-icons/fa";
+
+// AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const WhyChooseUs = () => {
   const features = [
@@ -40,12 +47,16 @@ const WhyChooseUs = () => {
     },
   ];
 
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
   return (
     <section className="bg-gradient-to-tl from-blue-400 to-blue-600 py-10">
       <div className="px-10 text-center">
         {/* Header */}
         <h2 className="text-4xl font-bold text-white">Why Choose Us</h2>
-        <p className="lg:text-xl text-gray-200">
+        <p className="lg:text-xl text-gray-200 mt-2">
           We don’t just offer services — we deliver trust, value, and results.
           Here’s what sets us apart:
         </p>
@@ -55,6 +66,8 @@ const WhyChooseUs = () => {
           {features.map((feature, index) => (
             <div
               key={index}
+              data-aos="fade-up"
+              data-aos-delay={index * 100}
               className="bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition duration-300 text-left cursor-default"
             >
               <div className="mb-4">{feature.icon}</div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 // Packages
@@ -13,8 +13,16 @@ import EventDetailsModal from "./EventDetailsModal/EventDetailsModal";
 // Shared
 import EventCard from "../../../../Shared/EventCard/EventCard";
 
+// AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 const FeaturedEvents = ({ EventsData }) => {
   const [selectedEventID, setSelectedEventID] = useState(null);
+
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
 
   return (
     <section className="bg-gradient-to-tl from-blue-400 to-blue-600 py-20">
@@ -39,12 +47,17 @@ const FeaturedEvents = ({ EventsData }) => {
 
         {/* Event Cards Section */}
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {EventsData.slice(0, 6).map((event) => (
-            <EventCard
+          {EventsData.slice(0, 6).map((event, index) => (
+            <div
               key={event._id}
-              event={event}
-              setSelectedEventID={setSelectedEventID}
-            />
+              data-aos="fade-up"
+              data-aos-delay={index * 150} // 150ms delay between cards
+            >
+              <EventCard
+                event={event}
+                setSelectedEventID={setSelectedEventID}
+              />
+            </div>
           ))}
         </div>
       </div>

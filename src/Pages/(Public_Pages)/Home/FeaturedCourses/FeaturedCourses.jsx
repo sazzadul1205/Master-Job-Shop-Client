@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 // Packages
@@ -13,8 +13,17 @@ import CourseCard from "../../../../Shared/CourseCard/CourseCard";
 // Modals
 import CourseDetailsModal from "./CourseDetailsModal/CourseDetailsModal";
 
+// AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 const FeaturedCourses = ({ CoursesData }) => {
   const [selectedCourseID, setSelectedCourseID] = useState(null);
+
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
   return (
     <section className="bg-gradient-to-bl from-blue-400 to-blue-600 py-20">
       <div className="px-20">
@@ -41,12 +50,17 @@ const FeaturedCourses = ({ CoursesData }) => {
 
         {/* Courses Cards Section */}
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {CoursesData.slice(0, 6).map((course) => (
-            <CourseCard
+          {CoursesData.slice(0, 6).map((course, index) => (
+            <div
               key={course._id}
-              course={course}
-              setSelectedCourseID={setSelectedCourseID}
-            />
+              data-aos="fade-up"
+              data-aos-delay={index * 150} // 150ms delay between cards
+            >
+              <CourseCard
+                course={course}
+                setSelectedCourseID={setSelectedCourseID}
+              />
+            </div>
           ))}
         </div>
       </div>

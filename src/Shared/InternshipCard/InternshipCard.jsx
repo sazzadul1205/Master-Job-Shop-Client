@@ -16,7 +16,7 @@ const formatBudget = (min, max, currency, negotiable) => {
   if (!min && max) return `Up to ${currency}${max}`;
   if (min === max) return `${currency}${min}`;
   return (
-    `${currency}${min} - ${currency}${max}` +
+    `${currency} ${min} - ${max}` +
     (negotiable ? " (Negotiable)" : "")
   );
 };

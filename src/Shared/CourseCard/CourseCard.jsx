@@ -12,7 +12,7 @@ import CommonButton from "../CommonButton/CommonButton";
 // Price Formatting
 const formatPrice = (price) => {
   if (!price || price.isFree) return "Free";
-  return `${price.currency}${price.amount}${
+  return `${price.currency} ${price.amount}${
     price.discount ? ` (−${price.discount}%)` : ""
   }`;
 };

@@ -12,7 +12,7 @@ import CommonButton from "../../Shared/CommonButton/CommonButton";
 // Utility: Format Budget Display
 const formatBudget = (amount, currency = "USD", isNegotiable = false) => {
   if (!amount) return "Free";
-  return `${currency}${amount}${isNegotiable ? " (Negotiable)" : ""}`;
+  return `${currency} ${amount}${isNegotiable ? " (Negotiable)" : ""}`;
 };
 
 // Utility: Posted Time

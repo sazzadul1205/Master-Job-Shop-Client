@@ -14,7 +14,7 @@ const formatSalary = (min, max, currency) => {
   if (!min && !max) return "Not specified";
   if (min && !max) return `${currency}${min}+`;
   if (!min && max) return `Up to ${currency}${max}`;
-  return `${currency}${min} - ${max}`;
+  return `${currency} ${min} - ${max}`;
 };
 
 // Function to Calculate Days Ago
@@ -70,16 +70,20 @@ const JobCard = ({ job, setSelectedJobID }) => {
           </p>
 
           {/* Salary */}
-          <p>
-            <strong>Salary:</strong>{" "}
-            {formatSalary(
-              job.salaryRange.min,
-              job.salaryRange.max,
-              job.salaryRange.currency
-            )}{" "}
-            {job.isNegotiable && (
-              <span className="text-xs text-green-600">(Negotiable)</span>
-            )}
+          <p className="text-sm text-gray-600 mb-1">
+            Salary:{" "}
+            <span className="text-green-700 font-semibold">
+              {formatSalary(
+                job.salaryRange?.min,
+                job.salaryRange?.max,
+                job.salaryRange?.currency || "USD"
+              )}
+              {job?.isNegotiable && (
+                <span className="text-xs text-green-600 ml-1">
+                  (Negotiable)
+                </span>
+              )}
+            </span>
           </p>
 
           {/* Mode */}

@@ -20,7 +20,7 @@ import FeaturedCourses from "./FeaturedCourses/FeaturedCourses";
 import FeaturedEvents from "./FeaturedEvents/FeaturedEvents";
 
 // Extra
-import EventsData from "../../../JSON/Events_Data.json";
+// import EventsData from "../../../JSON/Events_Data.json";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -77,7 +77,7 @@ const Home = () => {
 
   // Fetching EventsData
   const {
-    // data: EventsData,
+    data: EventsData,
     isLoading: EventsIsLoading,
     error: EventsError,
   } = useQuery({

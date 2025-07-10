@@ -107,6 +107,8 @@ const EventCard = ({ event, setSelectedEventID }) => {
           onClick={() => {
             document.getElementById("Event_Details_Modal").showModal();
             setSelectedEventID(event?._id);
+            console.log(event?._id);
+            
           }}
           className="text-sm text-blue-700 hover:underline cursor-pointer"
         >

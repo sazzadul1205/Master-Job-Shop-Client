@@ -13,6 +13,7 @@ import AuthProvider from "./Provider/AuthProvider";
 
 // Layouts
 import MainLayout from "./Layouts/MainLayout";
+import PublicLayout from "./Layouts/PublicLayout";
 
 // Public Pages
 import Home from "./Pages/(Public_Pages)/Home/Home";
@@ -21,7 +22,6 @@ import Home from "./Pages/(Public_Pages)/Home/Home";
 import Login from "./Pages/(Auth_Pages)/Login/Login";
 import SignUp from "./Pages/(Auth_Pages)/SignUp/SignUp";
 import SignUpDetails from "./Pages/(Auth_Pages)/SignUpDetails/SignUpDetails";
-import PublicLayout from "./Layouts/PublicLayout";
 
 const queryClient = new QueryClient();
 

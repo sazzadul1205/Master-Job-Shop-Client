@@ -1,6 +1,5 @@
 [
   {
-    "_id": "evnt202507",
     "title": "FutureTech Conference 2025",
     "description": "An immersive 3-day conference exploring the latest innovations in AI, Web3, and Sustainable Tech. Network with industry leaders, attend hands-on workshops, and get inspired by visionary talks.",
     "category": "Technology",
@@ -106,7 +105,6 @@
     "extraNotes": "All sessions will be recorded and available to registered attendees for 30 days after the event."
   },
   {
-    "_id": "evnt202508",
     "title": "Remote Productivity Webinar 2025",
     "description": "Learn top tools, mental frameworks, and scheduling methods to stay productive in a remote-first world.",
     "category": "Workplace",
@@ -187,7 +185,6 @@
     "extraNotes": "Participants will receive a free eBook after completion."
   },
   {
-    "_id": "evnt202509",
     "title": "Green Startup Pitch Night",
     "description": "5 GreenTech startups pitch their solutions to investors, VCs, and climate-conscious funders. Hosted in partnership with ClimateLab Asia.",
     "category": "Entrepreneurship",
@@ -266,7 +263,6 @@
     "extraNotes": "Shortlisted startups get access to 3-month ClimateLab mentorship."
   },
   {
-    "_id": "evnt202510",
     "title": "Frontend Bootcamp: React + TypeScript",
     "description": "Join a weekend bootcamp focused on practical frontend architecture, React patterns, and integrating TypeScript into modern UI development.",
     "category": "Development",
@@ -322,7 +318,6 @@
     "extraNotes": "Participants will receive a project certificate and GitHub repo template."
   },
   {
-    "_id": "evnt202511",
     "title": "UX Design Essentials Workshop",
     "description": "Master the fundamentals of UI/UX design in this hands-on workshop. Learn wireframing, usability, and interaction design using Figma.",
     "category": "Design",
@@ -377,7 +372,6 @@
     "extraNotes": "Bring your own laptop with Figma installed."
   },
   {
-    "_id": "evnt202512",
     "title": "Startup Legal Basics 2025",
     "description": "Understand the legal foundation for launching your startup, from incorporation to IP protection and investor agreements.",
     "category": "Business",
@@ -440,7 +434,6 @@
     "extraNotes": "Includes legal template packs for attendees."
   },
   {
-    "_id": "evnt202513",
     "title": "E-commerce Mastery 2025",
     "description": "A hands-on training program for building and scaling successful online businesses using Shopify, Facebook Ads, and influencer partnerships.",
     "category": "Business",
@@ -503,7 +496,6 @@
     "extraNotes": "Full replays and worksheets will be provided."
   },
   {
-    "_id": "evnt202514",
     "title": "CyberSecurity Awareness Summit",
     "description": "A nationwide summit to address digital risks, ethical hacking, and data privacy issues for corporations and civilians.",
     "category": "Security",
@@ -556,7 +548,6 @@
     "extraNotes": "National CERT team will run a live penetration demo."
   },
   {
-    "_id": "evnt202515",
     "title": "Dhaka Indie Film Festival 2025",
     "description": "Celebrating independent cinema from Bangladesh and beyond. Includes screenings, director Q&As, and networking mixers.",
     "category": "Entertainment",
@@ -611,7 +602,6 @@
     "extraNotes": "Awards for Best Short Film and Best Cinematography will be announced on closing day."
   },
   {
-    "_id": "evnt202516",
     "title": "Bangladesh EdTech Expo",
     "description": "Explore how technology is transforming learning at every level. Tools, policies, and interactive experiences from local and global EdTech innovators.",
     "category": "Education",

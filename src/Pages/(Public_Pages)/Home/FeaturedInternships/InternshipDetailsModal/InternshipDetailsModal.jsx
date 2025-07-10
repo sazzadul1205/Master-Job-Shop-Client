@@ -122,11 +122,13 @@ const InternshipDetailsModal = ({
 
       {/* Category & Tags */}
       <div className="mb-4">
+        {/* Categories */}
         <p className="text-sm text-gray-600">
           <span className="font-semibold">Category:</span>{" "}
           {SelectedInternshipData?.category} ›{" "}
           {SelectedInternshipData?.subCategory}
         </p>
+
         {/* Tags */}
         <div>
           <h4 className="font-semibold text-gray-700 pb-1">Tags</h4>

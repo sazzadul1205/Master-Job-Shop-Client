@@ -12,7 +12,7 @@ const formatBudget = (min, max, currency) => {
   if (!min && !max) return "Not specified";
   if (min && !max) return `${currency}${min}+`;
   if (!min && max) return `Up to ${currency}${max}`;
-  return `${currency}${min} - ${max}`;
+  return `${currency} ${min} - ${max}`;
 };
 
 // Days ago formatter
@@ -51,11 +51,14 @@ const GigCard = ({ gig, setSelectedGigID }) => {
       {/* Budget Info */}
       <p className="text-sm text-gray-600 mb-1 font-medium">
         Budget:{" "}
-        {formatBudget(
-          gig?.budget?.min,
-          gig?.budget?.max,
-          gig?.budget?.currency
-        )}
+        <span className="text-green-700 font-semibold">
+          {formatBudget(
+            gig?.budget?.min,
+            gig?.budget?.max,
+            gig?.budget?.currency || "USD",
+            gig?.budget?.isNegotiable
+          )}
+        </span>
       </p>
 
       {/* Posted Time */}

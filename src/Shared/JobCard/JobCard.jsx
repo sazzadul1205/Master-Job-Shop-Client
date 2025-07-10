@@ -30,7 +30,7 @@ const calculateDaysAgo = (isoString) => {
 
 const JobCard = ({ job, setSelectedJobID }) => {
   return (
-    <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm p-6 bg-linear-to-bl from-white to-gray-100 hover:shadow-md transition duration-200 min-h-[300px]">
+    <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm hover:shadow-2xl p-6 bg-linear-to-bl from-white to-gray-100 transition duration-200 h-[350px]">
       {/* Top: Company Logo and Info */}
       <div>
         <div className="flex items-center gap-4 mb-4">

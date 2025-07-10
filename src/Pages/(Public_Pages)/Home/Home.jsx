@@ -24,6 +24,8 @@ import FeaturedSalaryInsights from "./FeaturedSalaryInsights/FeaturedSalaryInsig
 import FeaturedCompanyProfiles from "./FeaturedCompanyProfiles/FeaturedCompanyProfiles";
 import FeaturedTestimonials from "./FeaturedTestimonials/FeaturedTestimonials";
 import FeaturedBlogs from "./FeaturedBlogs/FeaturedBlogs";
+import WhyChooseUs from "./WhyChooseUs/WhyChooseUs";
+import NewsLetter from "./NewsLetter/NewsLetter";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
@@ -195,10 +197,9 @@ const Home = () => {
 
       <FeaturedTestimonials TestimonialsData={TestimonialsData} />
 
-      {/* 
       <NewsLetter />
-      <Testimonials TestimonialsData={TestimonialsData} />
-      <WhyChooseUs WhyChooseUsData={WhyChooseUsData} /> */}
+      
+      <WhyChooseUs />
     </>
   );
 };

@@ -1,7 +1,13 @@
+// Packages
 import { useForm } from "react-hook-form";
-import "./NewsLetter.css"; // Ensure to import your CSS file
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Swal from "sweetalert2";
+
+// Hooks
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+
+// Css
+import "./NewsLetter.css";
+import CommonButton from "../../../../Shared/CommonButton/CommonButton";
 
 const NewsLetter = () => {
   const axiosPublic = useAxiosPublic();
@@ -55,14 +61,14 @@ const NewsLetter = () => {
   };
 
   return (
-    <div className="Newsletter-item z-fixed py-20">
+    <section className="bg-gradient-to-bl from-blue-400 to-blue-600 py-10">
       <div className="max-w-2xl mx-auto text-black">
         {/* Title */}
-        <div className="mx-auto text-black">
-          <p className="text-center text-3xl font-bold">
+        <div className="text-center">
+          <h2 className="text-4xl font-bold text-white">
             Sign in to NewsLetter
-          </p>
-          <p className="text-center">
+          </h2>
+          <p className="lg:text-xl text-gray-200">
             Sign in to our NewsLetter for Latest News
           </p>
         </div>
@@ -71,7 +77,7 @@ const NewsLetter = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-5 px-5">
           {/* Name Input */}
           <div className="mb-4 items-center">
-            <label className="block mb-2 w-[120px] font-semibold mr-2">
+            <label className="block mb-2 playfair w-[120px] font-semibold mr-2 text-white">
               Name
             </label>
             <input
@@ -86,7 +92,7 @@ const NewsLetter = () => {
 
           {/* Email Input */}
           <div className="mb-4 items-center">
-            <label className="block mb-2 w-[120px] font-semibold mr-2">
+            <label className="block mb-2 playfair w-[120px] font-semibold mr-2 text-white">
               Email
             </label>
             <input
@@ -107,16 +113,20 @@ const NewsLetter = () => {
 
           {/* Submit Button */}
           <div className="text-center">
-            <button
+            <CommonButton
               type="submit"
-              className="bg-blue-500 text-white w-full py-3 font-semibold hover:bg-blue-600"
-            >
-              Subscribe
-            </button>
+              text="Subscribe"
+              bgColor="white"
+              width="full"
+              py="py-3"
+              px="px-5"
+              textColor="text-black"
+              borderRadius="rounded-md"
+            />
           </div>
         </form>
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -88,7 +88,7 @@ const Login = () => {
   );
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-100">
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-blue-400 to-blue-600">
       {/* Login card container */}
       <div className="w-full max-w-lg rounded-2xl shadow-md px-3 py-10 md:px-10 md:py-10 bg-linear-to-bl from-blue-500/80 to-blue-100/80">
         {/* Heading section */}

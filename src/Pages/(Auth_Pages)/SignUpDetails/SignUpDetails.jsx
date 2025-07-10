@@ -165,7 +165,7 @@ const SignUpDetails = () => {
   // If user already exists
   if (UserExistCheck?.exists) {
     return (
-      <div className="h-screen flex flex-col justify-center items-center bg-linear-to-br from-blue-300 to-white">
+      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-bl from-blue-400 to-blue-600">
         <div className="text-center text-2xl font-bold text-red-500 mb-6">
           You already have an account.
         </div>

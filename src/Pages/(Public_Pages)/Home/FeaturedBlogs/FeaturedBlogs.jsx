@@ -3,7 +3,6 @@ import { FaArrowRight } from "react-icons/fa";
 
 const blogs = [
   {
-    id: "1",
     title: "Mastering React Hooks in 2025",
     excerpt:
       "Discover the latest advancements in React Hooks and how they enhance modern frontend development.",
@@ -16,7 +15,6 @@ const blogs = [
     readTime: "6 min",
   },
   {
-    id: "2",
     title: "Web3 vs Web2: What Developers Need to Know",
     excerpt:
       "Explore the key differences between Web2 and Web3 development in today’s evolving tech space.",
@@ -29,7 +27,6 @@ const blogs = [
     readTime: "7 min",
   },
   {
-    id: "3",
     title: "Top 10 VS Code Extensions for Productivity",
     excerpt:
       "Boost your coding speed with these handpicked VS Code extensions for 2025.",
@@ -42,7 +39,6 @@ const blogs = [
     readTime: "5 min",
   },
   {
-    id: "4",
     title: "Designing for Accessibility: A 2025 Guide",
     excerpt:
       "Inclusive design isn't optional. Here's how to embed accessibility in your design system.",
@@ -55,7 +51,6 @@ const blogs = [
     readTime: "8 min",
   },
   {
-    id: "5",
     title: "State Management in React: Context API vs Redux",
     excerpt:
       "Wondering whether to use Redux or Context API in 2025? Here’s what to consider.",
@@ -68,7 +63,6 @@ const blogs = [
     readTime: "6 min",
   },
   {
-    id: "6",
     title: "How to Build a CI/CD Pipeline with GitHub Actions",
     excerpt:
       "Learn to automate deployment and testing using GitHub Actions in 2025.",
@@ -81,7 +75,6 @@ const blogs = [
     readTime: "9 min",
   },
   {
-    id: "7",
     title: "Tailwind CSS: Advanced Layout Techniques",
     excerpt:
       "Learn how to push Tailwind beyond basic utilities with advanced grid, flex, and responsiveness.",
@@ -94,7 +87,6 @@ const blogs = [
     readTime: "6 min",
   },
   {
-    id: "8",
     title: "Performance Optimization Tips for Large React Apps",
     excerpt:
       "Big React apps come with big performance risks — here’s how to stay fast.",
@@ -107,7 +99,6 @@ const blogs = [
     readTime: "7 min",
   },
   {
-    id: "9",
     title: "Understanding TypeScript Generics with Real Examples",
     excerpt:
       "Struggling with generics in TypeScript? This guide makes it click.",
@@ -120,7 +111,6 @@ const blogs = [
     readTime: "6 min",
   },
   {
-    id: "10",
     title: "What’s New in ECMAScript 2025",
     excerpt:
       "Check out the newest JavaScript features shipping in ES2025 and how to use them.",
@@ -134,9 +124,13 @@ const blogs = [
   },
 ];
 
-import DefaultBlogImage from "../../../../assets/DefaultBlogImage.jpg"; // Replace with actual path
+import DefaultBlogImage from "../../../../assets/DefaultBlogImage.jpg";
+import { useState } from "react";
+import BlogDetailsModal from "./BlogDetailsModal/BlogDetailsModal";
 
 const FeaturedBlogs = () => {
+  const [selectedBlog, setSelectedBlog] = useState(null);
+
   return (
     <section className="bg-gradient-to-bl from-blue-400 to-blue-600 py-20">
       <div className="px-20 mx-auto">
@@ -160,10 +154,13 @@ const FeaturedBlogs = () => {
         </div>
 
         {/* Blogs Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 cursor-pointer">
           {blogs.slice(0, 3).map((blog) => (
-            <Link
-              to={`/blogs/${blog.id}`}
+            <div
+              onClick={() => {
+                setSelectedBlog(blog);
+                document.getElementById("Blog_Details_Modal")?.showModal();
+              }}
               key={blog.id}
               className="bg-white rounded-md shadow hover:shadow-2xl transition overflow-hidden group"
             >
@@ -174,15 +171,20 @@ const FeaturedBlogs = () => {
                   e.target.onerror = null;
                   e.target.src = DefaultBlogImage;
                 }}
-                className="w-full h-48 object-cover "
+                className="w-full h-48 object-cover"
               />
               <div className="p-4">
+                {/* Title */}
                 <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-700 line-clamp-2">
                   {blog.title}
                 </h3>
+
+                {/* Expert */}
                 <p className="text-sm text-gray-600 mt-1 line-clamp-2">
                   {blog.excerpt}
                 </p>
+
+                {/* Author */}
                 <div className="flex justify-between items-center mt-3">
                   <p className="text-xs text-gray-400">By {blog.author}</p>
                   <p className="text-xs text-gray-400">
@@ -202,10 +204,18 @@ const FeaturedBlogs = () => {
                   ))}
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
+
+      {/* Blog Modal */}
+      <dialog id="Blog_Details_Modal" className="modal">
+        <BlogDetailsModal
+          selectedBlog={selectedBlog}
+          setSelectedBlog={setSelectedBlog}
+        />
+      </dialog>
     </section>
   );
 };

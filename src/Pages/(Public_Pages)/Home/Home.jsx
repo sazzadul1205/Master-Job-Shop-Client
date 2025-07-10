@@ -18,6 +18,7 @@ import FeaturedInternships from "./FeaturedInternships/FeaturedInternships";
 import FeaturedMentorship from "./FeaturedMentorship/FeaturedMentorship";
 import FeaturedCourses from "./FeaturedCourses/FeaturedCourses";
 import FeaturedEvents from "./FeaturedEvents/FeaturedEvents";
+import FeaturedSalaryInsights from "./FeaturedSalaryInsights/FeaturedSalaryInsights";
 
 // Extra
 // import EventsData from "../../../JSON/Events_Data.json";
@@ -184,9 +185,9 @@ const Home = () => {
       
       <FeaturedEvents EventsData={EventsData} />
 
+      <FeaturedSalaryInsights InsightsData={InsightsData} />
       {/* 
       <FeaturedCompanyProfiles CompanyProfilesData={CompanyProfilesData} />
-      <FeaturedSalaryInsights SalaryInsightData={SalaryInsightData} />
       <NewsLetter />
       <Testimonials testimonialsData={testimonialsData} />
       <WhyChooseUs WhyChooseUsData={WhyChooseUsData} /> */}

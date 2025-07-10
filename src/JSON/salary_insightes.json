@@ -1,0 +1,862 @@
+[
+  {
+    "title": "Frontend Developer",
+    "data": [
+      {
+        "country": "Netherlands",
+        "averageSalary": 4107,
+        "currency": "EUR",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 2464
+          },
+          {
+            "level": "Mid-level",
+            "salary": 4107
+          },
+          {
+            "level": "Senior",
+            "salary": 6160
+          }
+        ]
+      },
+      {
+        "country": "Australia",
+        "averageSalary": 4905,
+        "currency": "AUD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 2943
+          },
+          {
+            "level": "Mid-level",
+            "salary": 4905
+          },
+          {
+            "level": "Senior",
+            "salary": 7357
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Backend Developer",
+    "data": [
+      {
+        "country": "Brazil",
+        "averageSalary": 3839,
+        "currency": "BRL",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 2303
+          },
+          {
+            "level": "Mid-level",
+            "salary": 3839
+          },
+          {
+            "level": "Senior",
+            "salary": 5758
+          }
+        ]
+      },
+      {
+        "country": "Bangladesh",
+        "averageSalary": 5975,
+        "currency": "BDT",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 3585
+          },
+          {
+            "level": "Mid-level",
+            "salary": 5975
+          },
+          {
+            "level": "Senior",
+            "salary": 8962
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Full Stack Developer",
+    "data": [
+      {
+        "country": "Australia",
+        "averageSalary": 7064,
+        "currency": "AUD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 4238
+          },
+          {
+            "level": "Mid-level",
+            "salary": 7064
+          },
+          {
+            "level": "Senior",
+            "salary": 10596
+          }
+        ]
+      },
+      {
+        "country": "Canada",
+        "averageSalary": 7589,
+        "currency": "CAD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 4553
+          },
+          {
+            "level": "Mid-level",
+            "salary": 7589
+          },
+          {
+            "level": "Senior",
+            "salary": 11383
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "UI/UX Designer",
+    "data": [
+      {
+        "country": "Canada",
+        "averageSalary": 4265,
+        "currency": "CAD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 2559
+          },
+          {
+            "level": "Mid-level",
+            "salary": 4265
+          },
+          {
+            "level": "Senior",
+            "salary": 6397
+          }
+        ]
+      },
+      {
+        "country": "Netherlands",
+        "averageSalary": 5807,
+        "currency": "EUR",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 3484
+          },
+          {
+            "level": "Mid-level",
+            "salary": 5807
+          },
+          {
+            "level": "Senior",
+            "salary": 8710
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "DevOps Engineer",
+    "data": [
+      {
+        "country": "Canada",
+        "averageSalary": 4335,
+        "currency": "CAD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 2601
+          },
+          {
+            "level": "Mid-level",
+            "salary": 4335
+          },
+          {
+            "level": "Senior",
+            "salary": 6502
+          }
+        ]
+      },
+      {
+        "country": "Japan",
+        "averageSalary": 7717,
+        "currency": "JPY",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 4630
+          },
+          {
+            "level": "Mid-level",
+            "salary": 7717
+          },
+          {
+            "level": "Senior",
+            "salary": 11575
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Data Scientist",
+    "data": [
+      {
+        "country": "Australia",
+        "averageSalary": 7598,
+        "currency": "AUD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 4558
+          },
+          {
+            "level": "Mid-level",
+            "salary": 7598
+          },
+          {
+            "level": "Senior",
+            "salary": 11397
+          }
+        ]
+      },
+      {
+        "country": "Canada",
+        "averageSalary": 3115,
+        "currency": "CAD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 1869
+          },
+          {
+            "level": "Mid-level",
+            "salary": 3115
+          },
+          {
+            "level": "Senior",
+            "salary": 4672
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Machine Learning Engineer",
+    "data": [
+      {
+        "country": "Japan",
+        "averageSalary": 7907,
+        "currency": "JPY",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 4744
+          },
+          {
+            "level": "Mid-level",
+            "salary": 7907
+          },
+          {
+            "level": "Senior",
+            "salary": 11860
+          }
+        ]
+      },
+      {
+        "country": "Brazil",
+        "averageSalary": 5543,
+        "currency": "BRL",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 3325
+          },
+          {
+            "level": "Mid-level",
+            "salary": 5543
+          },
+          {
+            "level": "Senior",
+            "salary": 8314
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Product Manager",
+    "data": [
+      {
+        "country": "Netherlands",
+        "averageSalary": 3769,
+        "currency": "EUR",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 2261
+          },
+          {
+            "level": "Mid-level",
+            "salary": 3769
+          },
+          {
+            "level": "Senior",
+            "salary": 5653
+          }
+        ]
+      },
+      {
+        "country": "Japan",
+        "averageSalary": 6383,
+        "currency": "JPY",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 3829
+          },
+          {
+            "level": "Mid-level",
+            "salary": 6383
+          },
+          {
+            "level": "Senior",
+            "salary": 9574
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Project Manager",
+    "data": [
+      {
+        "country": "Bangladesh",
+        "averageSalary": 6884,
+        "currency": "BDT",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 4130
+          },
+          {
+            "level": "Mid-level",
+            "salary": 6884
+          },
+          {
+            "level": "Senior",
+            "salary": 10326
+          }
+        ]
+      },
+      {
+        "country": "USA",
+        "averageSalary": 3141,
+        "currency": "USD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 1884
+          },
+          {
+            "level": "Mid-level",
+            "salary": 3141
+          },
+          {
+            "level": "Senior",
+            "salary": 4711
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "QA Engineer",
+    "data": [
+      {
+        "country": "Netherlands",
+        "averageSalary": 4948,
+        "currency": "EUR",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 2968
+          },
+          {
+            "level": "Mid-level",
+            "salary": 4948
+          },
+          {
+            "level": "Senior",
+            "salary": 7422
+          }
+        ]
+      },
+      {
+        "country": "Brazil",
+        "averageSalary": 5615,
+        "currency": "BRL",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 3369
+          },
+          {
+            "level": "Mid-level",
+            "salary": 5615
+          },
+          {
+            "level": "Senior",
+            "salary": 8422
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Business Analyst",
+    "data": [
+      {
+        "country": "UK",
+        "averageSalary": 3010,
+        "currency": "GBP",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 1806
+          },
+          {
+            "level": "Mid-level",
+            "salary": 3010
+          },
+          {
+            "level": "Senior",
+            "salary": 4515
+          }
+        ]
+      },
+      {
+        "country": "USA",
+        "averageSalary": 2522,
+        "currency": "USD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 1513
+          },
+          {
+            "level": "Mid-level",
+            "salary": 2522
+          },
+          {
+            "level": "Senior",
+            "salary": 3783
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Cloud Engineer",
+    "data": [
+      {
+        "country": "UK",
+        "averageSalary": 2567,
+        "currency": "GBP",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 1540
+          },
+          {
+            "level": "Mid-level",
+            "salary": 2567
+          },
+          {
+            "level": "Senior",
+            "salary": 3850
+          }
+        ]
+      },
+      {
+        "country": "Germany",
+        "averageSalary": 2851,
+        "currency": "EUR",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 1710
+          },
+          {
+            "level": "Mid-level",
+            "salary": 2851
+          },
+          {
+            "level": "Senior",
+            "salary": 4276
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Cybersecurity Analyst",
+    "data": [
+      {
+        "country": "Canada",
+        "averageSalary": 5860,
+        "currency": "CAD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 3516
+          },
+          {
+            "level": "Mid-level",
+            "salary": 5860
+          },
+          {
+            "level": "Senior",
+            "salary": 8790
+          }
+        ]
+      },
+      {
+        "country": "Australia",
+        "averageSalary": 6862,
+        "currency": "AUD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 4117
+          },
+          {
+            "level": "Mid-level",
+            "salary": 6862
+          },
+          {
+            "level": "Senior",
+            "salary": 10293
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Mobile Developer",
+    "data": [
+      {
+        "country": "USA",
+        "averageSalary": 5448,
+        "currency": "USD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 3268
+          },
+          {
+            "level": "Mid-level",
+            "salary": 5448
+          },
+          {
+            "level": "Senior",
+            "salary": 8172
+          }
+        ]
+      },
+      {
+        "country": "Canada",
+        "averageSalary": 5174,
+        "currency": "CAD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 3104
+          },
+          {
+            "level": "Mid-level",
+            "salary": 5174
+          },
+          {
+            "level": "Senior",
+            "salary": 7761
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "AI Researcher",
+    "data": [
+      {
+        "country": "USA",
+        "averageSalary": 3781,
+        "currency": "USD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 2268
+          },
+          {
+            "level": "Mid-level",
+            "salary": 3781
+          },
+          {
+            "level": "Senior",
+            "salary": 5671
+          }
+        ]
+      },
+      {
+        "country": "India",
+        "averageSalary": 4824,
+        "currency": "INR",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 2894
+          },
+          {
+            "level": "Mid-level",
+            "salary": 4824
+          },
+          {
+            "level": "Senior",
+            "salary": 7236
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Game Developer",
+    "data": [
+      {
+        "country": "USA",
+        "averageSalary": 7730,
+        "currency": "USD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 4638
+          },
+          {
+            "level": "Mid-level",
+            "salary": 7730
+          },
+          {
+            "level": "Senior",
+            "salary": 11595
+          }
+        ]
+      },
+      {
+        "country": "Bangladesh",
+        "averageSalary": 4856,
+        "currency": "BDT",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 2913
+          },
+          {
+            "level": "Mid-level",
+            "salary": 4856
+          },
+          {
+            "level": "Senior",
+            "salary": 7284
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Blockchain Developer",
+    "data": [
+      {
+        "country": "Australia",
+        "averageSalary": 7130,
+        "currency": "AUD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 4278
+          },
+          {
+            "level": "Mid-level",
+            "salary": 7130
+          },
+          {
+            "level": "Senior",
+            "salary": 10695
+          }
+        ]
+      },
+      {
+        "country": "USA",
+        "averageSalary": 2582,
+        "currency": "USD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 1549
+          },
+          {
+            "level": "Mid-level",
+            "salary": 2582
+          },
+          {
+            "level": "Senior",
+            "salary": 3873
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "AR/VR Developer",
+    "data": [
+      {
+        "country": "Japan",
+        "averageSalary": 3100,
+        "currency": "JPY",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 1860
+          },
+          {
+            "level": "Mid-level",
+            "salary": 3100
+          },
+          {
+            "level": "Senior",
+            "salary": 4650
+          }
+        ]
+      },
+      {
+        "country": "USA",
+        "averageSalary": 3540,
+        "currency": "USD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 2124
+          },
+          {
+            "level": "Mid-level",
+            "salary": 3540
+          },
+          {
+            "level": "Senior",
+            "salary": 5310
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Technical Writer",
+    "data": [
+      {
+        "country": "USA",
+        "averageSalary": 2583,
+        "currency": "USD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 1549
+          },
+          {
+            "level": "Mid-level",
+            "salary": 2583
+          },
+          {
+            "level": "Senior",
+            "salary": 3874
+          }
+        ]
+      },
+      {
+        "country": "Canada",
+        "averageSalary": 7617,
+        "currency": "CAD",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 4570
+          },
+          {
+            "level": "Mid-level",
+            "salary": 7617
+          },
+          {
+            "level": "Senior",
+            "salary": 11425
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "System Administrator",
+    "data": [
+      {
+        "country": "Bangladesh",
+        "averageSalary": 6881,
+        "currency": "BDT",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 4128
+          },
+          {
+            "level": "Mid-level",
+            "salary": 6881
+          },
+          {
+            "level": "Senior",
+            "salary": 10321
+          }
+        ]
+      },
+      {
+        "country": "Brazil",
+        "averageSalary": 6536,
+        "currency": "BRL",
+        "experienceLevels": [
+          {
+            "level": "Junior",
+            "salary": 3921
+          },
+          {
+            "level": "Mid-level",
+            "salary": 6536
+          },
+          {
+            "level": "Senior",
+            "salary": 9804
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,110 +1,97 @@
-import { Link } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa";
 import { useState } from "react";
 import PropTypes from "prop-types";
-import ModalSalaryInsights from "../../Shared/ModalSalaryInsights/ModalSalaryInsights";
 
-const FeaturedSalaryInsights = ({ SalaryInsightData }) => {
-  const [selectedJob, setSelectedJob] = useState(null);
+const FeaturedSalaryInsights = ({ InsightsData }) => {
+  const [selectedRoleIndex, setSelectedRoleIndex] = useState(0);
 
-  const openModal = (job) => {
-    setSelectedJob(job);
-    const modal = document.getElementById("SalaryInsightsModal");
-    modal.showModal();
-  };
+  if (!Array.isArray(InsightsData) || InsightsData.length === 0) return null;
 
-  const closeModal = () => {
-    const modal = document.getElementById("SalaryInsightsModal");
-    modal.close();
-    setSelectedJob(null);
-  };
+  const selectedRole = InsightsData[selectedRoleIndex];
 
   return (
-    <div className="bg-gradient-to-b from-blue-50 to-blue-400">
-      <div className="max-w-[1200px] mx-auto text-black py-10">
-        {/* Top section */}
-        <div className="flex flex-col md:flex-row items-center pt-20 px-5">
-          <div className="text-center md:text-left mb-4 md:mb-0">
-            <p className="text-4xl md:text-5xl font-bold italic text-blue-700">
-              Salary Insights
-            </p>
-            <p className="lg:text-xl">
-              Get an overview of salary ranges for various roles.
-            </p>
-          </div>
-          <button className="mt-4 md:mt-0 md:ml-auto text-lg border-2 border-sky-800 px-8 py-2 rounded-full font-semibold text-black hover:text-blue-800 hover:bg-sky-300">
-            <Link to={"/SalaryInsights"} className="flex items-center">
-              Show More <FaArrowRight className="ml-2" />
-            </Link>
-          </button>
-        </div>
-
-        {/* Salary Cards Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-10 px-5 lg:px-0">
-          {SalaryInsightData.slice(0, 6).map((salaryInsight, index) => (
-            <div
-              key={index}
-              className="card bg-white lg:w-96 shadow-xl transform transition duration-300 hover:scale-105 hover:bg-green-50 hover:shadow-2xl"
-            >
-              <div className="card-body">
-                <p className="font-bold text-2xl">{salaryInsight.jobTitle}</p>
-                <p className="text-green-500 font-semibold">
-                  Average Salary: {salaryInsight.averageSalary}
-                </p>
-                <p className="text-blue-500">
-                  Experience Level: {salaryInsight.experienceLevel}
-                </p>
-                {salaryInsight.jobType && (
-                  <p className="text-gray-500">
-                    Job Type: {salaryInsight.jobType}
-                  </p>
-                )}
-                <div className="card-actions justify-end">
-                  <button
-                    className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 text-lg font-semibold text-white"
-                    onClick={() => openModal(salaryInsight)}
-                  >
-                    Learn More
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+    <section className="bg-gradient-to-bl from-blue-400 to-blue-600 py-5">
+      {/* Section Header */}
+      <div className="text-center mb-10">
+        <h2 className="text-4xl font-bold text-white">Know Your Worth</h2>
+        <p className="text-white font-semibold mt-2 max-w-2xl mx-auto">
+          Explore average salaries based on experience and location. Make
+          smarter career decisions with real-world insights.
+        </p>
       </div>
 
-      {/* Modal */}
-      <dialog id="SalaryInsightsModal" className="modal">
-        {selectedJob && (
-          <ModalSalaryInsights
-            selectedJob={selectedJob}
-            closeModal={closeModal}
-          ></ModalSalaryInsights>
-        )}
-      </dialog>
-    </div>
+      {/* Dropdown Role Selector */}
+      <div className="flex justify-center mb-8">
+        <select
+          value={selectedRoleIndex}
+          onChange={(e) => setSelectedRoleIndex(Number(e.target.value))}
+          className="text-base px-4 py-2 border min-w-3xl text-black border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+        >
+          {InsightsData.map((role, index) => (
+            <option key={role._id || role.title} value={index}>
+              {role.title}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Insights Table */}
+      <div className="grid md:grid-cols-2 gap-6 px-20">
+        {selectedRole?.data?.map((countryData, idx) => (
+          <div
+            key={`${countryData.country}-${idx}`}
+            className="bg-white shadow-md rounded-lg p-6 border border-gray-200 hover:shadow-lg transition"
+          >
+            <h3 className="text-xl font-semibold text-blue-800 mb-2">
+              {countryData.country}
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Average Salary:{" "}
+              <span className="font-semibold text-green-700">
+                {countryData.currency} {countryData.averageSalary}
+              </span>
+            </p>
+
+            {/* Experience Breakdown */}
+            <div className="space-y-1">
+              {countryData.experienceLevels.map((level) => (
+                <div
+                  key={level.level}
+                  className="flex justify-between text-sm text-gray-700"
+                >
+                  <span>{level.level}</span>
+                  <span>
+                    {countryData.currency} {level.salary}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 };
 
-// Add this at the end of your component
 FeaturedSalaryInsights.propTypes = {
-  SalaryInsightData: PropTypes.arrayOf(
+  InsightsData: PropTypes.arrayOf(
     PropTypes.shape({
-      jobTitle: PropTypes.string.isRequired,
-      averageSalary: PropTypes.string.isRequired,
-      experienceLevel: PropTypes.string.isRequired,
-      jobType: PropTypes.string,
-      globalSalaryRange: PropTypes.object.isRequired,
-      education: PropTypes.string,
-      responsibilities: PropTypes.arrayOf(PropTypes.string).isRequired,
-      typicalChallenges: PropTypes.arrayOf(PropTypes.string).isRequired,
-      careerPath: PropTypes.arrayOf(PropTypes.string).isRequired,
-      commonCertifications: PropTypes.arrayOf(PropTypes.string).isRequired,
-      potentialIndustries: PropTypes.arrayOf(PropTypes.string).isRequired,
-      toolsAndTechnologies: PropTypes.arrayOf(PropTypes.string).isRequired,
-      softSkills: PropTypes.arrayOf(PropTypes.string).isRequired,
+      _id: PropTypes.string,
+      title: PropTypes.string.isRequired,
+      data: PropTypes.arrayOf(
+        PropTypes.shape({
+          country: PropTypes.string.isRequired,
+          averageSalary: PropTypes.number.isRequired,
+          currency: PropTypes.string.isRequired,
+          experienceLevels: PropTypes.arrayOf(
+            PropTypes.shape({
+              level: PropTypes.string.isRequired,
+              salary: PropTypes.number.isRequired,
+            })
+          ).isRequired,
+        })
+      ).isRequired,
     })
-  ).isRequired,
+  ),
 };
 
 export default FeaturedSalaryInsights;

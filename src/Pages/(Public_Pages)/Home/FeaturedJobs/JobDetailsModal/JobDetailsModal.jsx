@@ -326,12 +326,14 @@ const JobDetailsModal = ({ selectedJobID, setSelectedJobID }) => {
 
           {/* Apply Now Button */}
           <Link
-            to={`/external-apply?url=${encodeURIComponent(
-              SelectedJobData?.application.applyUrl
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block mt-2 bg-blue-600 text-white px-5 py-2 rounded-md font-medium hover:bg-blue-700 text-sm"
+            to={`/Jobs/Apply/${SelectedJobData?._id}`}
+            onClick={() => {
+              setSelectedJobID("");
+              document.getElementById("Jobs_Details_Modal")?.close();
+            }}
+            className="inline-block
+            mt-2 bg-blue-600 text-white px-5 py-2 rounded-md font-medium
+            hover:bg-blue-700 text-sm"
           >
             Apply Now
           </Link>

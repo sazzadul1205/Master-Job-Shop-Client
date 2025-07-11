@@ -113,11 +113,7 @@ const JobCard = ({ job, setSelectedJobID }) => {
       {/* Bottom: Action Buttons */}
       <div className="flex justify-between items-center pt-2 mt-auto">
         {/* Apply Now Button */}
-        <Link
-          to={`/external-apply?url=${encodeURIComponent(
-            job.application.applyUrl
-          )}`}
-        >
+        <Link to={`/Jobs/Apply/${job?._id}`}>
           <CommonButton
             text="Apply Now"
             textColor="text-white"

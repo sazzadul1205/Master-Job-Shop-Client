@@ -25,6 +25,7 @@ import SignUpDetails from "./Pages/(Auth_Pages)/SignUpDetails/SignUpDetails";
 
 // Jobs
 import Jobs from "./Pages/(Public_Pages)/Jobs/Jobs";
+import JobsApplyPage from "./Pages/(Public_Pages)/JobsApplyPage/JobsApplyPage";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ createRoot(document.getElementById("root")).render(
 
             <Route element={<PublicLayout />}>
               <Route path="/Jobs" element={<Jobs />} />
+              <Route path="/Jobs/Apply/:jobId" element={<JobsApplyPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

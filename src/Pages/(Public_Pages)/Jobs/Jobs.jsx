@@ -8,16 +8,13 @@ import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 import JobDetailsModal from "../Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
 
-const jobTypes = ["Full-Time", "Part-Time", "Contract", "Internship", "Remote"];
-const categories = ["Development", "Design", "Marketing", "Writing", "Sales"];
-const levels = ["Entry", "Mid", "Senior"];
-const workingModes = ["Remote", "Onsite", "Hybrid"];
-
 const Jobs = () => {
   const axiosPublic = useAxiosPublic();
 
+  // State Management
   const [selectedJobID, setSelectedJobID] = useState(null);
 
+  // Filters
   const [filters, setFilters] = useState({
     keyword: "",
     location: "",
@@ -29,10 +26,12 @@ const Jobs = () => {
     maxSalary: "",
   });
 
+  // Handle Change
   const handleChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
+  // Handle Clear
   const handleClear = () => {
     setFilters({
       keyword: "",
@@ -56,7 +55,46 @@ const Jobs = () => {
     queryFn: () => axiosPublic.get(`/Jobs`).then((res) => res.data),
   });
 
+  // Job Types
+  const jobTypes = useMemo(() => {
+    if (!JobsData) return [];
+    return [...new Set(JobsData.map((job) => job.type).filter(Boolean))].sort();
+  }, [JobsData]);
+
+  // Categories
+  const categories = useMemo(() => {
+    if (!JobsData) return [];
+    return [
+      ...new Set(JobsData.map((job) => job.category).filter(Boolean)),
+    ].sort();
+  }, [JobsData]);
+
+  // Levels
+  const levels = useMemo(() => {
+    if (!JobsData) return [];
+    return [
+      ...new Set(JobsData.map((job) => job.level).filter(Boolean)),
+    ].sort();
+  }, [JobsData]);
+
+  // Working Modes
+  const workingModes = useMemo(() => {
+    if (!JobsData) return [];
+    const modesSet = new Set();
+    JobsData.forEach((job) => {
+      if (job.remote) modesSet.add("Remote");
+      if (job.onsite) modesSet.add("Onsite");
+      if (job.hybrid) modesSet.add("Hybrid");
+    });
+    return Array.from(modesSet).sort();
+  }, [JobsData]);
+
+  // Filter Jobs
   const filteredJobs = useMemo(() => {
+    // Return if no data
+    if (!JobsData) return [];
+
+    // Filter Jobs
     return JobsData.filter((job) => {
       const {
         keyword,
@@ -69,6 +107,7 @@ const Jobs = () => {
         maxSalary,
       } = filters;
 
+      // Filter Jobs
       const matchesKeyword =
         !keyword ||
         job.title.toLowerCase().includes(keyword.toLowerCase()) ||
@@ -110,14 +149,10 @@ const Jobs = () => {
   }, [JobsData, filters]);
 
   // Loading
-  if (JobsIsLoading) {
-    return <Loading />;
-  }
+  if (JobsIsLoading) return <Loading />;
 
   // Error
-  if (JobsError) {
-    return <Error />;
-  }
+  if (JobsError) return <Error />;
 
   return (
     <div className="min-h-screen">
@@ -326,12 +361,23 @@ const Jobs = () => {
       </div>
 
       {/* Display Jobs */}
-      <div className="grid grid-cols-3 gap-3 py-6 px-20">
-        {filteredJobs.map((job) => (
-          <div key={job._id}>
-            <JobCard job={job} setSelectedJobID={setSelectedJobID} />
+      <div className="py-6 px-20">
+        {filteredJobs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredJobs.map((job) => (
+              <div key={job._id}>
+                <JobCard job={job} setSelectedJobID={setSelectedJobID} />
+              </div>
+            ))}
           </div>
-        ))}
+        ) : (
+          <div className="text-center text-white text-lg font-medium bg-white/10 rounded p-6">
+            <p>😕 No jobs found matching your criteria.</p>
+            <p className="text-sm text-gray-300 mt-2">
+              Try adjusting the filters or clearing them to see more results.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Jobs Modal */}

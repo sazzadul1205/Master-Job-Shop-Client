@@ -553,3 +553,267 @@
     "notes": "Prioritize candidates with SaaS dashboard experience."
   }
 ]
+
+
+[
+  {
+    "title": "Backend Developer",
+    "category": "Software Development",
+    "type": "Full-Time",
+    "level": "Mid",
+    "experience": "2-3 years",
+    "description": "Join our team to develop stunning UI interfaces.",
+    "responsibilities": [
+      "Build reusable UI components",
+      "Work closely with design and backend teams"
+    ],
+    "requirements": [
+      "Solid knowledge of React.js",
+      "CSS/SCSS and component-driven development"
+    ],
+    "niceToHave": ["Storybook", "Jest testing"],
+    "location": "Remote",
+    "remote": true,
+    "hybrid": false,
+    "onsite": false,
+    "timezoneOverlap": "GMT+2 to GMT+7",
+    "salaryRange": { "min": 50000, "max": 75000, "currency": "USD" },
+    "isNegotiable": true,
+    "benefits": ["Health Insurance", "Home Office Setup Budget"],
+    "perks": ["Flexible Hours", "Annual Team Meetups"],
+    "skills": ["React.js", "CSS", "JavaScript"],
+    "company": {
+      "name": "Webify Inc.",
+      "logo": "https://cdn.webify.com/logo.png",
+      "website": "https://webify.com",
+      "description": "Building tools for a better web.",
+      "location": "Remote",
+      "size": "51-100",
+      "industry": "Tech / SaaS"
+    },
+    "application": {
+      "applyEmail": "apply@webify.com",
+      "applyUrl": "https://webify.com/jobs/frontend-engineer",
+      "requiresResume": true,
+      "requiresPortfolio": true,
+      "requiresCoverLetter": false,
+      "applicationDeadline": "2025-07-30T04:54:51.142754Z"
+    },
+    "postedBy": "1ac9ccfdf3a5492d80195cb1",
+    "postedAt": "2025-07-10T04:54:51.142566Z",
+    "tags": ["React.js", "Frontend", "Remote"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "backend-developer",
+    "notes": "UI experience with animations is a plus."
+  },
+  {
+    "title": "UI Designer",
+    "category": "Software Development",
+    "type": "Full-Time",
+    "level": "Mid",
+    "experience": "2-3 years",
+    "description": "Join our team to develop stunning UI interfaces.",
+    "responsibilities": [
+      "Build reusable UI components",
+      "Work closely with design and backend teams"
+    ],
+    "requirements": [
+      "Solid knowledge of React.js",
+      "CSS/SCSS and component-driven development"
+    ],
+    "niceToHave": ["Storybook", "Jest testing"],
+    "location": "Remote",
+    "remote": true,
+    "hybrid": false,
+    "onsite": false,
+    "timezoneOverlap": "GMT+2 to GMT+7",
+    "salaryRange": { "min": 50000, "max": 75000, "currency": "USD" },
+    "isNegotiable": true,
+    "benefits": ["Health Insurance", "Home Office Setup Budget"],
+    "perks": ["Flexible Hours", "Annual Team Meetups"],
+    "skills": ["React.js", "CSS", "JavaScript"],
+    "company": {
+      "name": "Webify Inc.",
+      "logo": "https://cdn.webify.com/logo.png",
+      "website": "https://webify.com",
+      "description": "Building tools for a better web.",
+      "location": "Remote",
+      "size": "51-100",
+      "industry": "Tech / SaaS"
+    },
+    "application": {
+      "applyEmail": "apply@webify.com",
+      "applyUrl": "https://webify.com/jobs/frontend-engineer",
+      "requiresResume": true,
+      "requiresPortfolio": true,
+      "requiresCoverLetter": false,
+      "applicationDeadline": "2025-07-30T04:54:51.142754Z"
+    },
+    "postedBy": "c2ace19d973e4781b60cc313",
+    "postedAt": "2025-07-07T04:54:51.142644Z",
+    "tags": ["React.js", "Frontend", "Remote"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "ui-designer",
+    "notes": "UI experience with animations is a plus."
+  },
+  {
+    "title": "DevOps Specialist",
+    "category": "Software Development",
+    "type": "Full-Time",
+    "level": "Mid",
+    "experience": "2-3 years",
+    "description": "Join our team to develop stunning UI interfaces.",
+    "responsibilities": [
+      "Build reusable UI components",
+      "Work closely with design and backend teams"
+    ],
+    "requirements": [
+      "Solid knowledge of React.js",
+      "CSS/SCSS and component-driven development"
+    ],
+    "niceToHave": ["Storybook", "Jest testing"],
+    "location": "Remote",
+    "remote": true,
+    "hybrid": false,
+    "onsite": false,
+    "timezoneOverlap": "GMT+2 to GMT+7",
+    "salaryRange": { "min": 50000, "max": 75000, "currency": "USD" },
+    "isNegotiable": true,
+    "benefits": ["Health Insurance", "Home Office Setup Budget"],
+    "perks": ["Flexible Hours", "Annual Team Meetups"],
+    "skills": ["React.js", "CSS", "JavaScript"],
+    "company": {
+      "name": "Webify Inc.",
+      "logo": "https://cdn.webify.com/logo.png",
+      "website": "https://webify.com",
+      "description": "Building tools for a better web.",
+      "location": "Remote",
+      "size": "51-100",
+      "industry": "Tech / SaaS"
+    },
+    "application": {
+      "applyEmail": "apply@webify.com",
+      "applyUrl": "https://webify.com/jobs/frontend-engineer",
+      "requiresResume": true,
+      "requiresPortfolio": true,
+      "requiresCoverLetter": false,
+      "applicationDeadline": "2025-07-30T04:54:51.142754Z"
+    },
+    "postedBy": "4f3f6bfdf97641d290f5ef51",
+    "postedAt": "2025-07-08T04:54:51.142683Z",
+    "tags": ["React.js", "Frontend", "Remote"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "devops-specialist",
+    "notes": "UI experience with animations is a plus."
+  },
+  {
+    "title": "Product Manager",
+    "category": "Software Development",
+    "type": "Full-Time",
+    "level": "Mid",
+    "experience": "2-3 years",
+    "description": "Join our team to develop stunning UI interfaces.",
+    "responsibilities": [
+      "Build reusable UI components",
+      "Work closely with design and backend teams"
+    ],
+    "requirements": [
+      "Solid knowledge of React.js",
+      "CSS/SCSS and component-driven development"
+    ],
+    "niceToHave": ["Storybook", "Jest testing"],
+    "location": "Remote",
+    "remote": true,
+    "hybrid": false,
+    "onsite": false,
+    "timezoneOverlap": "GMT+2 to GMT+7",
+    "salaryRange": { "min": 50000, "max": 75000, "currency": "USD" },
+    "isNegotiable": true,
+    "benefits": ["Health Insurance", "Home Office Setup Budget"],
+    "perks": ["Flexible Hours", "Annual Team Meetups"],
+    "skills": ["React.js", "CSS", "JavaScript"],
+    "company": {
+      "name": "Webify Inc.",
+      "logo": "https://cdn.webify.com/logo.png",
+      "website": "https://webify.com",
+      "description": "Building tools for a better web.",
+      "location": "Remote",
+      "size": "51-100",
+      "industry": "Tech / SaaS"
+    },
+    "application": {
+      "applyEmail": "apply@webify.com",
+      "applyUrl": "https://webify.com/jobs/frontend-engineer",
+      "requiresResume": true,
+      "requiresPortfolio": true,
+      "requiresCoverLetter": false,
+      "applicationDeadline": "2025-07-30T04:54:51.142754Z"
+    },
+    "postedBy": "66ada844c6fa49e08cb8b620",
+    "postedAt": "2025-07-09T04:54:51.142726Z",
+    "tags": ["React.js", "Frontend", "Remote"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "product-manager",
+    "notes": "UI experience with animations is a plus."
+  },
+  {
+    "title": "QA Tester",
+    "category": "Software Development",
+    "type": "Full-Time",
+    "level": "Mid",
+    "experience": "2-3 years",
+    "description": "Join our team to develop stunning UI interfaces.",
+    "responsibilities": [
+      "Build reusable UI components",
+      "Work closely with design and backend teams"
+    ],
+    "requirements": [
+      "Solid knowledge of React.js",
+      "CSS/SCSS and component-driven development"
+    ],
+    "niceToHave": ["Storybook", "Jest testing"],
+    "location": "Remote",
+    "remote": true,
+    "hybrid": false,
+    "onsite": false,
+    "timezoneOverlap": "GMT+2 to GMT+7",
+    "salaryRange": { "min": 50000, "max": 75000, "currency": "USD" },
+    "isNegotiable": true,
+    "benefits": ["Health Insurance", "Home Office Setup Budget"],
+    "perks": ["Flexible Hours", "Annual Team Meetups"],
+    "skills": ["React.js", "CSS", "JavaScript"],
+    "company": {
+      "name": "Webify Inc.",
+      "logo": "https://cdn.webify.com/logo.png",
+      "website": "https://webify.com",
+      "description": "Building tools for a better web.",
+      "location": "Remote",
+      "size": "51-100",
+      "industry": "Tech / SaaS"
+    },
+    "application": {
+      "applyEmail": "apply@webify.com",
+      "applyUrl": "https://webify.com/jobs/frontend-engineer",
+      "requiresResume": true,
+      "requiresPortfolio": true,
+      "requiresCoverLetter": false,
+      "applicationDeadline": "2025-07-30T04:54:51.142754Z"
+    },
+    "postedBy": "b95faafba7454daa98016941",
+    "postedAt": "2025-07-03T04:54:51.142748Z",
+    "tags": ["React.js", "Frontend", "Remote"],
+    "status": "open",
+    "priority": "normal",
+    "visibility": "public",
+    "slug": "qa-tester",
+    "notes": "UI experience with animations is a plus."
+  }
+]

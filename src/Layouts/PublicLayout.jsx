@@ -8,7 +8,7 @@ const PublicLayout = () => {
   return (
     <div data-theme="cupcake">
       <Navbar />
-      <main className="bg-gradient-to-br from-blue-500 to-blue-100 pt-28">
+      <main className="bg-gradient-to-bl from-blue-400 to-blue-600 pt-28">
         <Outlet />
       </main>
       <Footer />

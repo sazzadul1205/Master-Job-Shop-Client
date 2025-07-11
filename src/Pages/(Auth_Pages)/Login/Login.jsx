@@ -10,7 +10,6 @@ import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Icons
-
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 // Shared
@@ -18,28 +17,29 @@ import CommonButton from "../../../Shared/CommonButton/CommonButton";
 import SocialLogins from "../../../Shared/SocialLogins/SocialLogins";
 
 const Login = () => {
+  const axiosPublic = useAxiosPublic();
   const { signIn } = useAuth();
+
+  // Shared
   const navigate = useNavigate();
   const location = useLocation();
-  const axiosPublic = useAxiosPublic();
 
-  // Add loading state
+  // State Management
   const [loading, setLoading] = useState(false);
-
-  // Inside the component
   const [showPassword, setShowPassword] = useState(false);
 
-  // Determine the navigation path after login
-  const from = location.state?.from?.pathname || "/";
+  // Support both router state and query param fallback
+  const redirectParam = new URLSearchParams(location.search).get("redirectTo");
+  const from = location.state?.from || redirectParam || "/";
 
-  // Form handling with validation
+  // Form Control
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  // Function to handle login alerts
+  // Alert
   const showAlert = (type, message) => {
     Swal.fire({
       icon: type,
@@ -50,7 +50,6 @@ const Login = () => {
     });
   };
 
-  // Function to handle form submission (optimized with useCallback)
   const onSubmit = useCallback(
     async (data) => {
       setLoading(true);
@@ -63,7 +62,6 @@ const Login = () => {
           return;
         }
 
-        // Fetch user role or other data if needed
         const userData = await axiosPublic.get(`/Users?email=${user.email}`);
 
         if (!userData?.data) {
@@ -73,7 +71,7 @@ const Login = () => {
 
         showAlert("success", "You have successfully logged in!");
 
-        // ✅ Redirect to previous page or "/"
+        // ✅ Redirect to the previous route
         navigate(from, { replace: true });
       } catch (error) {
         showAlert(
@@ -89,23 +87,17 @@ const Login = () => {
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-blue-400 to-blue-600">
-      {/* Login card container */}
       <div className="w-full max-w-lg rounded-2xl shadow-md px-3 py-10 md:px-10 md:py-10 bg-linear-to-bl from-blue-500/80 to-blue-100/80">
-        {/* Heading section */}
         <div className="pb-5">
           <h4 className="text-3xl playfair font-bold text-center text-white">
             Welcome Back
           </h4>
-
-          {/* Please Login */}
           <p className="text-lg playfair text-white italic text-center font-semibold">
             Please Login
           </p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Email input field */}
           <div>
             <label className="block text-black playfair font-semibold text-lg pb-2">
               Email
@@ -129,7 +121,6 @@ const Login = () => {
             )}
           </div>
 
-          {/* Password input field */}
           <div className="relative mb-4">
             <label className="block text-black playfair font-semibold text-lg pb-2">
               Password
@@ -163,7 +154,6 @@ const Login = () => {
             )}
           </div>
 
-          {/* Login button */}
           <CommonButton
             type="submit"
             text="Log In"
@@ -179,24 +169,21 @@ const Login = () => {
             disabled={loading}
           />
 
-          {/* Don't have an Account */}
           <p className="text-lg font-semibold text-black mt-5">
             Don`t have an account?{" "}
             <Link
               to="/SignUp"
-              className="font-semibold playfair text-blue-800 hover:text-blue-500 hover:underline  "
+              className="font-semibold playfair text-blue-800 hover:text-blue-500 hover:underline"
             >
               Sign Up
             </Link>
           </p>
         </form>
 
-        {/* Divider for social login options */}
         <div className="divider divider-neutral text-black font-semibold">
           OR
         </div>
 
-        {/* Google Sign-In */}
         <SocialLogins />
       </div>
     </section>

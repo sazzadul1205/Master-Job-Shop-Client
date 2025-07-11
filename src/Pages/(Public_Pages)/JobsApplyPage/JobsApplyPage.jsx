@@ -1,20 +1,25 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useAuth from "../../../Hooks/useAuth";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
-import { useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import CommonButton from "../../../Shared/CommonButton/CommonButton";
+import { FaArrowLeft, FaInfo } from "react-icons/fa";
+import JobDetailsModal from "../Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
 
 const JobsApplyPage = () => {
   const axiosPublic = useAxiosPublic();
   const { jobId } = useParams();
-  const { user } = useAuth();
-  const loginModalRef = useRef(null);
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
+
+  // State Management
+  const [selectedJobID, setSelectedJobID] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Fetch job data
   const {
@@ -31,6 +36,12 @@ const JobsApplyPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    if (!loading && !user) {
+      setShowLoginModal(true);
+    }
+  }, [loading, user]);
+
   const {
     register,
     handleSubmit,
@@ -38,15 +49,9 @@ const JobsApplyPage = () => {
     reset,
   } = useForm();
 
-  useEffect(() => {
-    if (!user && loginModalRef.current) {
-      loginModalRef.current.showModal();
-    }
-  }, [user]);
-
   const onSubmit = (data) => {
     if (!user) {
-      loginModalRef.current?.showModal();
+      setShowLoginModal(true);
       return;
     }
 
@@ -65,7 +70,7 @@ const JobsApplyPage = () => {
     reset();
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading || loading) return <Loading />;
   if (error) return <Error />;
   if (!job) return null;
 
@@ -86,7 +91,41 @@ const JobsApplyPage = () => {
 
   return (
     <>
-      <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      {/* Top bar with Back and Details */}
+      <div className="flex items-center justify-between mb-1 px-20 mx-auto">
+        <CommonButton
+          type="button"
+          text="Back"
+          icon={<FaArrowLeft />}
+          iconSize="text-sm"
+          iconPosition="before"
+          clickEvent={() => navigate(-1)}
+          bgColor="white"
+          textColor="text-black"
+          borderRadius="rounded-md"
+          px="px-10"
+          py="py-2"
+        />
+        <CommonButton
+          type="button"
+          text="Details"
+          clickEvent={() => {
+            document.getElementById("Jobs_Details_Modal").showModal();
+            setSelectedJobID(job?._id);
+          }}
+          icon={<FaInfo />}
+          iconSize="text-sm"
+          iconPosition="before"
+          bgColor="white"
+          textColor="text-black"
+          borderRadius="rounded-md"
+          px="px-10"
+          py="py-2"
+        />
+      </div>
+
+      {/* Form  */}
+      <div className="min-h-screen py-2 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">{title}</h1>
@@ -233,20 +272,28 @@ const JobsApplyPage = () => {
         </div>
       </div>
 
-      {/* Login Modal using native <dialog> */}
-      <dialog id="login_modal" className="modal" ref={loginModalRef}>
-        <div className="modal-box min-w-xl relative bg-linear-to-bl from-white to-gray-200 rounded-xl shadow-lg w-full mx-auto overflow-y-auto max-h-[90vh] p-5">
-          <h3 className="font-bold text-lg text-black">🔒 Login Required</h3>
-          <p className="py-4 text-black font-semibold">
-            You must be logged in to apply for this job.
-          </p>
-          <div className="modal-action">
-            <form method="dialog" className="flex gap-2 justify-end">
+      {/* Login Modal via State */}
+      {showLoginModal && (
+        <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+            {/* Title */}
+            <h3 className="text-lg font-bold text-black mb-2">
+              🔒 Login Required
+            </h3>
+
+            {/* Sub Title */}
+            <p className="text-black font-semibold mb-4">
+              You must be logged in to apply for this job.
+            </p>
+
+            {/* Buttons */}
+            <div className="flex justify-end gap-3">
+              {/* Login Button */}
               <CommonButton
                 type="button"
                 text="Login"
                 clickEvent={() => {
-                  loginModalRef.current.close();
+                  setShowLoginModal(false);
                   window.location.href = "/Login";
                 }}
                 bgColor="blue"
@@ -255,15 +302,15 @@ const JobsApplyPage = () => {
                 py="py-2"
                 borderRadius="rounded"
                 width="auto"
-                className="btn-primary"
               />
 
+              {/* Cancel Button */}
               <CommonButton
                 type="button"
                 text="Cancel"
                 clickEvent={() => {
-                  loginModalRef.current.close();
-                  navigate(-1); // Go back one page in history
+                  setShowLoginModal(false);
+                  navigate(-1); // Go back
                 }}
                 bgColor="gray"
                 textColor="text-white"
@@ -272,9 +319,17 @@ const JobsApplyPage = () => {
                 borderRadius="rounded"
                 width="auto"
               />
-            </form>
+            </div>
           </div>
         </div>
+      )}
+
+      {/* Jobs Modal */}
+      <dialog id="Jobs_Details_Modal" className="modal">
+        <JobDetailsModal
+          selectedJobID={selectedJobID}
+          setSelectedJobID={setSelectedJobID}
+        />
       </dialog>
     </>
   );

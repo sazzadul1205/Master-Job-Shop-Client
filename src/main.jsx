@@ -27,6 +27,10 @@ import SignUpDetails from "./Pages/(Auth_Pages)/SignUpDetails/SignUpDetails";
 import Jobs from "./Pages/(Public_Pages)/Jobs/Jobs";
 import JobsApplyPage from "./Pages/(Public_Pages)/JobsApplyPage/JobsApplyPage";
 
+// Gigs
+import Gigs from "./Pages/(Public_Pages)/Gigs/Gigs";
+import GigBiddingpage from "./Pages/(Public_Pages)/GigBiddingpage/GigBiddingpage";
+
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -47,8 +51,12 @@ createRoot(document.getElementById("root")).render(
             </Route>
 
             <Route element={<PublicLayout />}>
+            
               <Route path="/Jobs" element={<Jobs />} />
               <Route path="/Jobs/Apply/:jobId" element={<JobsApplyPage />} />
+
+              <Route path="/Gigs" element={<Gigs />} />
+              <Route path="/Gigs/Bidding/:gigId" element={<GigBiddingpage />} />
             </Route>
           </Routes>
         </BrowserRouter>

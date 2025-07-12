@@ -1,11 +1,21 @@
 import { useState, useMemo } from "react";
-import { FaTimes } from "react-icons/fa";
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
-import JobCard from "../../../Shared/JobCard/JobCard";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Icons
+import { FaTimes } from "react-icons/fa";
+
+// Shared
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
+import JobCard from "../../../Shared/JobCard/JobCard";
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
+
+// Hooks
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Modals
 import JobDetailsModal from "../Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
 
 const Jobs = () => {
@@ -157,13 +167,13 @@ const Jobs = () => {
   return (
     <div className="min-h-screen">
       {/* Page Title */}
-      <div>
+      <div className="text-center" >
         {/* Titles */}
-        <h1 className="text-3xl font-bold text-white px-4 md:px-20 text-center">
+        <h1 className="text-3xl font-bold text-white px-4 md:px-20">
           🔍 Advanced Job Search
         </h1>
         {/* Sub Title */}
-        <p className="text-gray-200 font-semibold text-xl px-4 md:px-20 text-center">
+        <p className="text-gray-200 font-semibold text-xl px-4 md:px-20">
           Filter roles by type, skill, and location to find your next
           opportunity.
         </p>

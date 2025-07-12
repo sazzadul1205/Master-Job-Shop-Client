@@ -33,6 +33,7 @@ const JobsApplyPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedJobID, setSelectedJobID] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showAlreadyAppliedModal, setShowAlreadyAppliedModal] = useState(false);
 
   // Fetch job data
   const {
@@ -57,6 +58,22 @@ const JobsApplyPage = () => {
     enabled: !!user,
   });
 
+  // Check if user has already applied for this job
+  const {
+    data: CheckIfApplied,
+    isLoading: CheckIfAppliedIsLoading,
+    error: CheckIfAppliedError,
+  } = useQuery({
+    queryKey: ["CheckIfApplied", user?.email, jobId],
+    queryFn: async () => {
+      const { data } = await axiosPublic.get(
+        `/JobApplications/exists?email=${user?.email}&jobId=${jobId}`
+      );
+      return data.exists;
+    },
+    enabled: !!user?.email && !!jobId,
+  });
+
   // Scroll to top on page load
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -68,6 +85,13 @@ const JobsApplyPage = () => {
       setShowLoginModal(true);
     }
   }, [loading, user]);
+
+  // Show already applied modal if user has already applied for this job
+  useEffect(() => {
+    if (!CheckIfAppliedIsLoading && CheckIfApplied) {
+      setShowAlreadyAppliedModal(true);
+    }
+  }, [CheckIfApplied, CheckIfAppliedIsLoading]);
 
   // Form Handling
   const {
@@ -137,13 +161,21 @@ const JobsApplyPage = () => {
   };
 
   // Loading
-  if (SelectedJobIsLoading || UsersIsLoading || loading) return <Loading />;
+  if (
+    CheckIfAppliedIsLoading ||
+    SelectedJobIsLoading ||
+    UsersIsLoading ||
+    loading
+  )
+    return <Loading />;
 
   // Error
-  if (SelectedJobError || UsersError) return <Error />;
+  if (SelectedJobError || UsersError || CheckIfAppliedError) return <Error />;
 
   // show nothing if nothing is loaded
   if (!SelectedJobData || !UsersData) return null;
+
+  console.log("CheckIfApplied", CheckIfApplied);
 
   // Job Details
   const {
@@ -151,11 +183,11 @@ const JobsApplyPage = () => {
     company,
     description,
     application: {
+      applyUrl,
       requiresResume,
       requiresPortfolio,
       requiresCoverLetter,
       applicationDeadline,
-      applyUrl,
     } = {},
   } = SelectedJobData;
 
@@ -400,6 +432,51 @@ const JobsApplyPage = () => {
                 py="py-2"
                 borderRadius="rounded"
                 width="auto"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAlreadyAppliedModal && (
+        <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+            {/* Title */}
+            <h3 className="text-lg font-bold text-black mb-2">
+              Already Applied
+            </h3>
+
+            {/* Sub Title */}
+            <p className="text-black font-semibold mb-4">
+              You have already applied for this job.
+            </p>
+
+            {/* Buttons */}
+            <div className="flex justify-end gap-3">
+              <CommonButton
+                text="View Application"
+                clickEvent={() => {
+                  setShowAlreadyAppliedModal(false);
+                  navigate(`/JobApplications`);
+                }}
+                bgColor="blue"
+                textColor="text-white"
+                px="px-6"
+                py="py-2"
+                borderRadius="rounded"
+              />
+
+              <CommonButton
+                text="Back"
+                clickEvent={() => {
+                  setShowAlreadyAppliedModal(false);
+                  navigate(-1); // Go back
+                }}
+                bgColor="gray"
+                textColor="text-white"
+                px="px-6"
+                py="py-2"
+                borderRadius="rounded"
               />
             </div>
           </div>

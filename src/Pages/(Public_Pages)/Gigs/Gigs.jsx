@@ -3,15 +3,22 @@ import { useState, useMemo } from "react";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+import GigCard from "../../../Shared/GigCard/GigCard";
+import GigDetailsModal from "../Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
+import { FaTimes } from "react-icons/fa";
 
 const Gigs = () => {
   const axiosPublic = useAxiosPublic();
 
   // Filter States
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [minBudget, setMinBudget] = useState("");
   const [maxBudget, setMaxBudget] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  // Selected Gig
+  const [selectedGigID, setSelectedGigID] = useState(null);
 
   // Fetch Gigs
   const {
@@ -22,6 +29,14 @@ const Gigs = () => {
     queryKey: ["GigsData"],
     queryFn: () => axiosPublic.get(`/Gigs`).then((res) => res.data),
   });
+
+  // Reset filters
+  const handleClear = () => {
+    setSearchTerm("");
+    setSelectedCategory("");
+    setMinBudget("");
+    setMaxBudget("");
+  };
 
   // Filtered Gigs
   const filteredGigs = useMemo(() => {
@@ -47,7 +62,7 @@ const Gigs = () => {
   if (GigsError) return <Error />;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="min-h-screen">
       {/* Page Header */}
       <div className="text-center">
         <h1 className="text-3xl font-bold text-white px-4 md:px-20">
@@ -59,8 +74,8 @@ const Gigs = () => {
         </p>
       </div>
 
-      {/*working on gigs page partially compleat Filter Control working on gigs page partially compleate */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Filter Controls */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-black px-20 pt-10">
         {/* Keyword Search */}
         <div className="flex flex-col">
           <label
@@ -140,35 +155,57 @@ const Gigs = () => {
         </div>
       </div>
 
+      {/* Clear all and Found Document  */}
+      <div className="flex justify-between items-center px-20 py-3">
+        {/* Documents Found */}
+        <div className="text-lg text-white playfair">
+          {filteredGigs.length} Gig{filteredGigs.length !== 1 && "s"} found
+        </div>
+
+        {/* Remove Button */}
+        <div className="flex gap-2">
+          <CommonButton
+            clickEvent={handleClear}
+            text="Clear"
+            icon={<FaTimes />}
+            bgColor="white"
+            textColor="text-black"
+            px="px-10"
+            py="py-2"
+            borderRadius="rounded"
+            iconSize="text-base"
+            width="auto"
+          />
+        </div>
+      </div>
+
       {/* Gigs Display */}
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="py-6 px-20">
         {filteredGigs.length > 0 ? (
-          filteredGigs.map((gig) => (
-            <div
-              key={gig._id}
-              className="border p-4 rounded shadow hover:shadow-md transition"
-            >
-              <h3 className="text-lg font-semibold text-gray-800">
-                {gig.title}
-              </h3>
-              <p className="text-sm text-gray-600 mb-2">{gig.category}</p>
-              <p className="text-sm text-gray-700 line-clamp-3">
-                {gig.description}
-              </p>
-              <p className="text-sm text-blue-600 mt-2">
-                Budget: ${gig.budget.min} - ${gig.budget.max}
-              </p>
-              <p className="text-xs text-gray-400 mt-1">
-                Posted by: {gig.postedBy?.name}
-              </p>
-            </div>
-          ))
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredGigs.map((gig) => (
+              <div key={gig._id}>
+                <GigCard gig={gig} setSelectedGigID={setSelectedGigID} />
+              </div>
+            ))}
+          </div>
         ) : (
-          <div className="col-span-full text-center py-10 text-gray-500">
-            No gigs match your filters.
+          <div className="text-center text-white text-lg font-medium bg-white/10 rounded p-6">
+            <p>😕 No Gigs Found matching your criteria.</p>
+            <p className="text-sm text-gray-300 mt-2">
+              Try adjusting the filters or clearing them to see more results.
+            </p>
           </div>
         )}
       </div>
+
+      {/* Gigs Modal */}
+      <dialog id="Gig_Details_Modal" className="modal">
+        <GigDetailsModal
+          selectedGigID={selectedGigID}
+          setSelectedGigID={setSelectedGigID}
+        />
+      </dialog>
     </div>
   );
 };

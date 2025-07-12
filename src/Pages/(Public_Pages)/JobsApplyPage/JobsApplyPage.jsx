@@ -46,7 +46,7 @@ const JobsApplyPage = () => {
     enabled: !!jobId,
   });
 
-  // Fetch job data
+  // Fetch Users data
   const {
     data: UsersData,
     isLoading: UsersIsLoading,
@@ -174,8 +174,6 @@ const JobsApplyPage = () => {
 
   // show nothing if nothing is loaded
   if (!SelectedJobData || !UsersData) return null;
-
-  console.log("CheckIfApplied", CheckIfApplied);
 
   // Job Details
   const {

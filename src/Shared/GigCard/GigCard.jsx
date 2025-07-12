@@ -68,7 +68,7 @@ const GigCard = ({ gig, setSelectedGigID }) => {
 
       {/* Action Buttons */}
       <div className="flex justify-between items-center pt-2 mt-auto">
-        <Link to={`/PostedGigsDetails/${gig?._id}`}>
+        <Link to={`/Gigs/Bidding/${gig?._id}`}>
           <CommonButton
             text="Bid Now"
             textColor="text-white"

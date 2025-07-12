@@ -20,7 +20,7 @@ const GigBiddingPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedGigID, setSelectedGigID] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showAlreadyAppliedModal, setShowAlreadyAppliedModal] = useState(false);
+  const [showAlreadyBidedModal, setShowAlreadyBidedModal] = useState(false);
 
   // Fetch Gig Data
   const {
@@ -45,13 +45,13 @@ const GigBiddingPage = () => {
     enabled: !!user,
   });
 
-  // Check if user has already applied for this job
+  // Check if user has already Bided for this job
   const {
-    data: CheckIfApplied,
-    isLoading: CheckIfAppliedIsLoading,
-    error: CheckIfAppliedError,
+    data: CheckIfBided,
+    isLoading: CheckIfBidedIsLoading,
+    error: CheckIfBidedError,
   } = useQuery({
-    queryKey: ["CheckIfApplied", user?.email, gigId],
+    queryKey: ["CheckIfBided", user?.email, gigId],
     queryFn: async () => {
       const { data } = await axiosPublic.get(
         `/GigBids/Exists?email=${user?.email}&gigId=${gigId}`
@@ -73,12 +73,12 @@ const GigBiddingPage = () => {
     }
   }, [loading, user]);
 
-  // Show already applied modal if user has already applied for this job
+  // Show already Bided modal if user has already Bided for this job
   useEffect(() => {
-    if (!CheckIfAppliedIsLoading && CheckIfApplied) {
-      setShowAlreadyAppliedModal(true);
+    if (!CheckIfBidedIsLoading && CheckIfBided) {
+      setShowAlreadyBidedModal(true);
     }
-  }, [CheckIfApplied, CheckIfAppliedIsLoading]);
+  }, [CheckIfBided, CheckIfBidedIsLoading]);
 
   // Form Setup
   const {
@@ -127,7 +127,7 @@ const GigBiddingPage = () => {
 
   // Loading / Error Handling
   if (SelectedGigIsLoading || UsersIsLoading || loading) return <Loading />;
-  if (SelectedGigError || UsersError || CheckIfAppliedError) return <Error />;
+  if (SelectedGigError || UsersError || CheckIfBidedError) return <Error />;
 
   const budget = SelectedGigData?.budget || {
     min: 0,
@@ -138,8 +138,6 @@ const GigBiddingPage = () => {
 
   const deadlinePassed =
     new Date(SelectedGigData.deliveryDeadline) < new Date();
-
-  console.log(CheckIfApplied);
 
   return (
     <>
@@ -320,26 +318,24 @@ const GigBiddingPage = () => {
         </div>
       )}
 
-      {showAlreadyAppliedModal && (
+      {showAlreadyBidedModal && (
         <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
             {/* Title */}
-            <h3 className="text-lg font-bold text-black mb-2">
-              Already Applied
-            </h3>
+            <h3 className="text-lg font-bold text-black mb-2">Already Bided</h3>
 
             {/* Sub Title */}
             <p className="text-black font-semibold mb-4">
-              You have already applied for this job.
+              You have already Bided for this Gig.
             </p>
 
             {/* Buttons */}
             <div className="flex justify-end gap-3">
               <CommonButton
-                text="View Application"
+                text="View Bids"
                 clickEvent={() => {
-                  setShowAlreadyAppliedModal(false);
-                  navigate(`/JobApplications`);
+                  setShowAlreadyBidedModal(false);
+                  navigate(`/GigBids`);
                 }}
                 bgColor="blue"
                 textColor="text-white"
@@ -351,7 +347,7 @@ const GigBiddingPage = () => {
               <CommonButton
                 text="Back"
                 clickEvent={() => {
-                  setShowAlreadyAppliedModal(false);
+                  setShowAlreadyBidedModal(false);
                   navigate(-1); // Go back
                 }}
                 bgColor="gray"

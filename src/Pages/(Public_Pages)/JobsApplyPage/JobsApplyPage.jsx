@@ -67,7 +67,7 @@ const JobsApplyPage = () => {
     queryKey: ["CheckIfApplied", user?.email, jobId],
     queryFn: async () => {
       const { data } = await axiosPublic.get(
-        `/JobApplications/exists?email=${user?.email}&jobId=${jobId}`
+        `/JobApplications/Exists?email=${user?.email}&jobId=${jobId}`
       );
       return data.exists;
     },
@@ -171,9 +171,6 @@ const JobsApplyPage = () => {
 
   // Error
   if (SelectedJobError || UsersError || CheckIfAppliedError) return <Error />;
-
-  // show nothing if nothing is loaded
-  if (!SelectedJobData || !UsersData) return null;
 
   // Job Details
   const {

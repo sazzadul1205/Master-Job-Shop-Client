@@ -9,6 +9,7 @@ import { FaArrowLeft, FaInfo } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
+import GigDetailsModal from "../Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
 
 const GigBiddingPage = () => {
   const axiosPublic = useAxiosPublic();
@@ -19,6 +20,7 @@ const GigBiddingPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedGigID, setSelectedGigID] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showAlreadyAppliedModal, setShowAlreadyAppliedModal] = useState(false);
 
   // Fetch Gig Data
   const {
@@ -43,6 +45,22 @@ const GigBiddingPage = () => {
     enabled: !!user,
   });
 
+  // Check if user has already applied for this job
+  const {
+    data: CheckIfApplied,
+    isLoading: CheckIfAppliedIsLoading,
+    error: CheckIfAppliedError,
+  } = useQuery({
+    queryKey: ["CheckIfApplied", user?.email, gigId],
+    queryFn: async () => {
+      const { data } = await axiosPublic.get(
+        `/GigBids/Exists?email=${user?.email}&gigId=${gigId}`
+      );
+      return data.exists;
+    },
+    enabled: !!user?.email && !!gigId,
+  });
+
   // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -54,6 +72,13 @@ const GigBiddingPage = () => {
       setShowLoginModal(true);
     }
   }, [loading, user]);
+
+  // Show already applied modal if user has already applied for this job
+  useEffect(() => {
+    if (!CheckIfAppliedIsLoading && CheckIfApplied) {
+      setShowAlreadyAppliedModal(true);
+    }
+  }, [CheckIfApplied, CheckIfAppliedIsLoading]);
 
   // Form Setup
   const {
@@ -69,13 +94,14 @@ const GigBiddingPage = () => {
       setIsSubmitting(true);
 
       const bidData = {
+        name: UsersData.name,
+        phone: UsersData.phone,
+        email: UsersData.email,
         gigId: SelectedGigData._id,
-        bidderEmail: UsersData.email,
-        bidderName: UsersData.name,
-        bidAmount: parseFloat(data.bidAmount),
-        deliveryDays: parseInt(data.deliveryDays),
         coverLetter: data.coverLetter,
         submittedAt: new Date().toISOString(),
+        bidAmount: parseFloat(data.bidAmount),
+        deliveryDays: parseInt(data.deliveryDays),
       };
 
       await axiosPublic.post("/GigBids", bidData);
@@ -101,7 +127,7 @@ const GigBiddingPage = () => {
 
   // Loading / Error Handling
   if (SelectedGigIsLoading || UsersIsLoading || loading) return <Loading />;
-  if (SelectedGigError || UsersError) return <Error />;
+  if (SelectedGigError || UsersError || CheckIfAppliedError) return <Error />;
 
   const budget = SelectedGigData?.budget || {
     min: 0,
@@ -112,6 +138,8 @@ const GigBiddingPage = () => {
 
   const deadlinePassed =
     new Date(SelectedGigData.deliveryDeadline) < new Date();
+
+  console.log(CheckIfApplied);
 
   return (
     <>
@@ -135,7 +163,7 @@ const GigBiddingPage = () => {
           type="button"
           text="Details"
           clickEvent={() => {
-            document.getElementById("Gigs_Details_Modal")?.showModal();
+            document.getElementById("Gig_Details_Modal")?.showModal();
             setSelectedGigID(SelectedGigData._id);
           }}
           icon={<FaInfo />}
@@ -291,6 +319,59 @@ const GigBiddingPage = () => {
           </div>
         </div>
       )}
+
+      {showAlreadyAppliedModal && (
+        <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+            {/* Title */}
+            <h3 className="text-lg font-bold text-black mb-2">
+              Already Applied
+            </h3>
+
+            {/* Sub Title */}
+            <p className="text-black font-semibold mb-4">
+              You have already applied for this job.
+            </p>
+
+            {/* Buttons */}
+            <div className="flex justify-end gap-3">
+              <CommonButton
+                text="View Application"
+                clickEvent={() => {
+                  setShowAlreadyAppliedModal(false);
+                  navigate(`/JobApplications`);
+                }}
+                bgColor="blue"
+                textColor="text-white"
+                px="px-6"
+                py="py-2"
+                borderRadius="rounded"
+              />
+
+              <CommonButton
+                text="Back"
+                clickEvent={() => {
+                  setShowAlreadyAppliedModal(false);
+                  navigate(-1); // Go back
+                }}
+                bgColor="gray"
+                textColor="text-white"
+                px="px-6"
+                py="py-2"
+                borderRadius="rounded"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Gig Modal */}
+      <dialog id="Gig_Details_Modal" className="modal">
+        <GigDetailsModal
+          selectedGigID={selectedGigID}
+          setSelectedGigID={setSelectedGigID}
+        />
+      </dialog>
     </>
   );
 };

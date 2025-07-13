@@ -1,13 +1,23 @@
+import { useState, useMemo } from "react";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
-import { useState, useMemo, useEffect } from "react";
+
+// Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+
+// Icons
 import { FaSearch, FaTimes } from "react-icons/fa";
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
 
 // Assets
 import DefaultBlogImage from "../../../assets/DefaultBlogImage.jpg";
+
+// Modals
 import BlogDetailsModal from "../Home/FeaturedBlogs/BlogDetailsModal/BlogDetailsModal";
 
 const Blogs = () => {
@@ -32,11 +42,6 @@ const Blogs = () => {
     queryKey: ["BlogsData"],
     queryFn: () => axiosPublic.get("/Blogs").then((res) => res.data),
   });
-
-  // DEBUG: Log fetched data
-  useEffect(() => {
-    console.log("Fetched BlogsData:", BlogsData);
-  }, [BlogsData]);
 
   // Filter and Sort Blogs locally
   const filteredBlogs = useMemo(() => {

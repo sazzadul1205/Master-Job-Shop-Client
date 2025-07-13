@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 // Icons
-import { FaTimes } from "react-icons/fa";
+import { FaSearch, FaTimes } from "react-icons/fa";
 
 // Shared
 import Error from "../../../Shared/Error/Error";
@@ -22,6 +22,7 @@ const Jobs = () => {
   const axiosPublic = useAxiosPublic();
 
   // State Management
+  const [showFilters, setShowFilters] = useState(false);
   const [selectedJobID, setSelectedJobID] = useState(null);
 
   // Filters
@@ -167,206 +168,226 @@ const Jobs = () => {
   return (
     <div className="min-h-screen">
       {/* Page Title */}
-      <div className="text-center" >
+      <div className="relative text-center">
+        {/* Search Toggle */}
+        <div className="absolute right-1/4 top-1/2 -translate-y-1/2">
+          <div
+            onClick={() => setShowFilters(!showFilters)}
+            className="bg-white hover:bg-gray-200 rounded-full p-3 cursor-pointer"
+          >
+            {showFilters ? (
+              <FaTimes className="text-lg text-black font-bold" />
+            ) : (
+              <FaSearch className="text-lg text-black font-bold" />
+            )}
+          </div>
+        </div>
         {/* Titles */}
         <h1 className="text-3xl font-bold text-white px-4 md:px-20">
-          🔍 Advanced Job Search
+          Find Your Job
         </h1>
         {/* Sub Title */}
-        <p className="text-gray-200 font-semibold text-xl px-4 md:px-20">
-          Filter roles by type, skill, and location to find your next
-          opportunity.
+        <p className="text-gray-200 mx-auto max-w-4xl font-semibold text-xl px-4 md:px-20">
+          Explore opportunities that match your passion, skills, and ambition —
+          your next career move starts here.
         </p>
       </div>
 
       {/* Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-black px-20 pt-10">
-        {/* Keyword */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="keyword"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Keyword
-          </label>
-          <input
-            id="keyword"
-            type="text"
-            name="keyword"
-            placeholder="Title, skill, company"
-            value={filters.keyword}
-            onChange={handleChange}
-            className="p-2 border rounded text-black bg-white"
-          />
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${
+          showFilters ? "max-h-[600px] opacity-100 mt-6" : "max-h-0 opacity-0"
+        }`}
+      >
+        {/* Filters */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-black px-20 pt-10">
+          {/* Keyword */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="keyword"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Keyword
+            </label>
+            <input
+              id="keyword"
+              type="text"
+              name="keyword"
+              placeholder="Title, skill, company"
+              value={filters.keyword}
+              onChange={handleChange}
+              className="p-2 border rounded text-black bg-white"
+            />
+          </div>
+
+          {/* Location */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="location"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Location
+            </label>
+            <input
+              id="location"
+              type="text"
+              name="location"
+              placeholder="e.g. Remote, Dhaka"
+              value={filters.location}
+              onChange={handleChange}
+              className="p-2 border rounded text-black bg-white"
+            />
+          </div>
+
+          {/* Job Type */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="jobType"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Job Type
+            </label>
+            <select
+              id="jobType"
+              name="jobType"
+              value={filters.jobType}
+              onChange={handleChange}
+              className="p-2 border rounded text-black bg-white"
+            >
+              <option value="">All Job Types</option>
+              {jobTypes.map((type) => (
+                <option key={type}>{type}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Category */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="category"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Category
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={filters.category}
+              onChange={handleChange}
+              className="p-2 border rounded text-black bg-white"
+            >
+              <option value="">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Level */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="level"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Experience Level
+            </label>
+            <select
+              id="level"
+              name="level"
+              value={filters.level}
+              onChange={handleChange}
+              className="p-2 border rounded text-black bg-white"
+            >
+              <option value="">All Levels</option>
+              {levels.map((level) => (
+                <option key={level}>{level}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Work Mode */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="mode"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Work Mode
+            </label>
+            <select
+              id="mode"
+              name="mode"
+              value={filters.mode}
+              onChange={handleChange}
+              className="p-2 border rounded text-black bg-white"
+            >
+              <option value="">All Modes</option>
+              {workingModes.map((m) => (
+                <option key={m}>{m}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Min Salary */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="minSalary"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Minimum Salary
+            </label>
+            <input
+              id="minSalary"
+              type="number"
+              name="minSalary"
+              placeholder="USD"
+              value={filters.minSalary}
+              onChange={handleChange}
+              className="p-2 border rounded text-black bg-white"
+            />
+          </div>
+
+          {/* Max Salary */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="maxSalary"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Maximum Salary
+            </label>
+            <input
+              id="maxSalary"
+              type="number"
+              name="maxSalary"
+              placeholder="USD"
+              value={filters.maxSalary}
+              onChange={handleChange}
+              className="p-2 border rounded text-black bg-white"
+            />
+          </div>
         </div>
 
-        {/* Location */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="location"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Location
-          </label>
-          <input
-            id="location"
-            type="text"
-            name="location"
-            placeholder="e.g. Remote, Dhaka"
-            value={filters.location}
-            onChange={handleChange}
-            className="p-2 border rounded text-black bg-white"
-          />
-        </div>
+        {/* Clear all and Found Document  */}
+        <div className="flex justify-between items-center px-20 py-3">
+          {/* Documents Found */}
+          <div className="text-lg text-white playfair">
+            {filteredJobs.length} job{filteredJobs.length !== 1 && "s"} found
+          </div>
 
-        {/* Job Type */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="jobType"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Job Type
-          </label>
-          <select
-            id="jobType"
-            name="jobType"
-            value={filters.jobType}
-            onChange={handleChange}
-            className="p-2 border rounded text-black bg-white"
-          >
-            <option value="">All Job Types</option>
-            {jobTypes.map((type) => (
-              <option key={type}>{type}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Category */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="category"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Category
-          </label>
-          <select
-            id="category"
-            name="category"
-            value={filters.category}
-            onChange={handleChange}
-            className="p-2 border rounded text-black bg-white"
-          >
-            <option value="">All Categories</option>
-            {categories.map((cat) => (
-              <option key={cat}>{cat}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Level */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="level"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Experience Level
-          </label>
-          <select
-            id="level"
-            name="level"
-            value={filters.level}
-            onChange={handleChange}
-            className="p-2 border rounded text-black bg-white"
-          >
-            <option value="">All Levels</option>
-            {levels.map((level) => (
-              <option key={level}>{level}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Work Mode */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="mode"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Work Mode
-          </label>
-          <select
-            id="mode"
-            name="mode"
-            value={filters.mode}
-            onChange={handleChange}
-            className="p-2 border rounded text-black bg-white"
-          >
-            <option value="">All Modes</option>
-            {workingModes.map((m) => (
-              <option key={m}>{m}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Min Salary */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="minSalary"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Minimum Salary
-          </label>
-          <input
-            id="minSalary"
-            type="number"
-            name="minSalary"
-            placeholder="USD"
-            value={filters.minSalary}
-            onChange={handleChange}
-            className="p-2 border rounded text-black bg-white"
-          />
-        </div>
-
-        {/* Max Salary */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="maxSalary"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Maximum Salary
-          </label>
-          <input
-            id="maxSalary"
-            type="number"
-            name="maxSalary"
-            placeholder="USD"
-            value={filters.maxSalary}
-            onChange={handleChange}
-            className="p-2 border rounded text-black bg-white"
-          />
-        </div>
-      </div>
-
-      {/* Clear all and Found Document  */}
-      <div className="flex justify-between items-center px-20 py-3">
-        {/* Documents Found */}
-        <div className="text-lg text-white playfair">
-          {filteredJobs.length} job{filteredJobs.length !== 1 && "s"} found
-        </div>
-
-        {/* Remove Button */}
-        <div className="flex gap-2">
-          <CommonButton
-            clickEvent={handleClear}
-            text="Clear"
-            icon={<FaTimes />}
-            bgColor="white"
-            textColor="text-black"
-            px="px-10"
-            py="py-2"
-            borderRadius="rounded"
-            iconSize="text-base"
-            width="auto"
-          />
+          {/* Remove Button */}
+          <div className="flex gap-2">
+            <CommonButton
+              clickEvent={handleClear}
+              text="Clear"
+              icon={<FaTimes />}
+              bgColor="white"
+              textColor="text-black"
+              px="px-10"
+              py="py-2"
+              borderRadius="rounded"
+              iconSize="text-base"
+              width="auto"
+            />
+          </div>
         </div>
       </div>
 

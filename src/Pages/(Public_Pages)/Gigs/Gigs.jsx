@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 // Icons
-import { FaTimes } from "react-icons/fa";
+import { FaSearch, FaTimes } from "react-icons/fa";
 
 // Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
@@ -25,6 +25,7 @@ const Gigs = () => {
   const [minBudget, setMinBudget] = useState("");
   const [maxBudget, setMaxBudget] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
 
   // Selected Gig
@@ -74,118 +75,139 @@ const Gigs = () => {
   return (
     <div className="min-h-screen">
       {/* Page Header */}
-      <div className="text-center">
+      <div className="relative text-center">
+        {/* Search Toggle */}
+        <div className="absolute right-1/4 top-1/2 -translate-y-1/2">
+          <div
+            onClick={() => setShowFilters(!showFilters)}
+            className="bg-white hover:bg-gray-200 rounded-full p-3 cursor-pointer"
+          >
+            {showFilters ? (
+              <FaTimes className="text-lg text-black font-bold" />
+            ) : (
+              <FaSearch className="text-lg text-black font-bold" />
+            )}
+          </div>
+        </div>
+
         <h1 className="text-3xl font-bold text-white px-4 md:px-20">
           Explore Gigs
         </h1>
-        <p className="text-gray-200 font-semibold text-xl px-4 md:px-20">
+        <p className="text-gray-200 mx-auto max-w-4xl font-semibold text-xl px-4 md:px-20">
           Browse freelance opportunities and apply based on your skills and
           budget preferences.
         </p>
       </div>
 
-      {/* Filter Controls */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-black px-20 pt-10">
-        {/* Keyword Search */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="keyword"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Keyword
-          </label>
-          <input
-            id="keyword"
-            type="text"
-            name="keyword"
-            placeholder="Title, skill, company"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="p-2 border rounded text-black bg-white"
-          />
+      {/* Filters */}
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${
+          showFilters ? "max-h-[600px] opacity-100 mt-6" : "max-h-0 opacity-0"
+        }`}
+      >
+        {/* Filter Controls */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-black px-20 pt-10">
+          {/* Keyword Search */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="keyword"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Keyword
+            </label>
+            <input
+              id="keyword"
+              type="text"
+              name="keyword"
+              placeholder="Title, skill, company"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="p-2 border rounded text-black bg-white"
+            />
+          </div>
+
+          {/* Category Select */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="category"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Category
+            </label>
+            <select
+              id="category"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="p-2 border rounded text-black bg-white"
+            >
+              <option value="">All Categories</option>
+              {[...new Set(GigsData.map((gig) => gig.category))].map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Min Budget */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="minBudget"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Min Budget
+            </label>
+            <input
+              id="minBudget"
+              type="number"
+              placeholder="$0"
+              value={minBudget}
+              onChange={(e) => setMinBudget(e.target.value)}
+              className="p-2 border rounded text-black bg-white"
+            />
+          </div>
+
+          {/* Max Budget */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="maxBudget"
+              className="mb-1 text-lg text-white playfair font-medium"
+            >
+              Max Budget
+            </label>
+            <input
+              id="maxBudget"
+              type="number"
+              placeholder="$1000"
+              value={maxBudget}
+              onChange={(e) => setMaxBudget(e.target.value)}
+              className="p-2 border rounded text-black bg-white"
+            />
+          </div>
         </div>
 
-        {/* Category Select */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="category"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Category
-          </label>
-          <select
-            id="category"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="p-2 border rounded text-black bg-white"
-          >
-            <option value="">All Categories</option>
-            {[...new Set(GigsData.map((gig) => gig.category))].map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Clear all and Found Document  */}
+        <div className="flex justify-between items-center px-20 py-3">
+          {/* Documents Found */}
+          <div className="text-lg text-white playfair">
+            {filteredGigs.length} Gig{filteredGigs.length !== 1 && "s"} found
+          </div>
 
-        {/* Min Budget */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="minBudget"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Min Budget
-          </label>
-          <input
-            id="minBudget"
-            type="number"
-            placeholder="$0"
-            value={minBudget}
-            onChange={(e) => setMinBudget(e.target.value)}
-            className="p-2 border rounded text-black bg-white"
-          />
-        </div>
-
-        {/* Max Budget */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="maxBudget"
-            className="mb-1 text-lg text-white playfair font-medium"
-          >
-            Max Budget
-          </label>
-          <input
-            id="maxBudget"
-            type="number"
-            placeholder="$1000"
-            value={maxBudget}
-            onChange={(e) => setMaxBudget(e.target.value)}
-            className="p-2 border rounded text-black bg-white"
-          />
-        </div>
-      </div>
-
-      {/* Clear all and Found Document  */}
-      <div className="flex justify-between items-center px-20 py-3">
-        {/* Documents Found */}
-        <div className="text-lg text-white playfair">
-          {filteredGigs.length} Gig{filteredGigs.length !== 1 && "s"} found
-        </div>
-
-        {/* Remove Button */}
-        <div className="flex gap-2">
-          <CommonButton
-            clickEvent={handleClear}
-            text="Clear"
-            icon={<FaTimes />}
-            bgColor="white"
-            textColor="text-black"
-            px="px-10"
-            py="py-2"
-            borderRadius="rounded"
-            iconSize="text-base"
-            width="auto"
-          />
+          {/* Remove Button */}
+          <div className="flex gap-2">
+            <CommonButton
+              clickEvent={handleClear}
+              text="Clear"
+              icon={<FaTimes />}
+              bgColor="white"
+              textColor="text-black"
+              px="px-10"
+              py="py-2"
+              borderRadius="rounded"
+              iconSize="text-base"
+              width="auto"
+            />
+          </div>
         </div>
       </div>
 

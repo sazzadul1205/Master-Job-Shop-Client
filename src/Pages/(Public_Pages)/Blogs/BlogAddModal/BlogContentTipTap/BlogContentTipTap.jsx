@@ -6,7 +6,6 @@ import Link from "@tiptap/extension-link";
 import Color from "@tiptap/extension-color";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
-import TextStyle from "@tiptap/extension-text-style";
 import TextAlign from "@tiptap/extension-text-align";
 import Placeholder from "@tiptap/extension-placeholder";
 import { EditorContent, useEditor, Extension } from "@tiptap/react";
@@ -19,6 +18,7 @@ import ToolbarButton from "./ToolbarButton/ToolbarButton";
 
 // CSS
 import "./tiptap.css";
+import { TextStyle } from "@tiptap/extension-text-style";
 
 // Custom FontSize Extension
 const FontSize = Extension.create({
@@ -138,6 +138,7 @@ const BlogContentTipTap = ({ content, setContent }) => {
 
   return (
     <div>
+       <label className="font-medium playfair pb-2">Contents</label>
       <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 mb-3 border-b pb-2">
         {/* Bold Button */}
         <ToolbarButton

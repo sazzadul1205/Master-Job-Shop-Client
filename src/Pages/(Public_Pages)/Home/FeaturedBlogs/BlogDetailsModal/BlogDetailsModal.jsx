@@ -22,7 +22,7 @@ const BlogDetailsModal = ({ selectedBlog, setSelectedBlog }) => {
   } = selectedBlog;
 
   return (
-    <div className="modal-box min-w-5xl relative bg-white rounded-xl shadow-lg w-full mx-auto overflow-y-auto max-h-[90vh] p-6">
+    <div className="modal-box min-w-[1080px] relative bg-white rounded-xl shadow-lg w-full mx-auto overflow-y-auto max-h-[90vh] p-6">
       {/* Close Button */}
       <div
         onClick={() => {
@@ -42,7 +42,7 @@ const BlogDetailsModal = ({ selectedBlog, setSelectedBlog }) => {
           e.target.src = DefaultBlogImage;
         }}
         alt={title}
-        className="w-full h-64 object-cover rounded-lg mb-4"
+        className="w-[1200px] h-[500px] object-cover rounded-lg mb-4"
       />
 
       {/* Title */}
@@ -73,10 +73,10 @@ const BlogDetailsModal = ({ selectedBlog, setSelectedBlog }) => {
       {/* Excerpt */}
       <p className="text-gray-700 font-medium italic mb-4">{excerpt}</p>
 
-      {/* Content */}
-      <div className="text-gray-800 leading-relaxed whitespace-pre-line">
-        {content}
-      </div>
+      <div
+        className="text-gray-800 leading-relaxed whitespace-pre-line"
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
     </div>
   );
 };

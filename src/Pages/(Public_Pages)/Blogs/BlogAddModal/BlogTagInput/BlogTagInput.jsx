@@ -1,27 +1,32 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const BlogTagInput = ({ register, setValue, errors }) => {
   const [inputValue, setInputValue] = useState("");
   const [tags, setTags] = useState([]);
+
+  // Register the field on mount and update value whenever tags change
+  useEffect(() => {
+    register("tags", { required: true });
+  }, [register]);
+
+  useEffect(() => {
+    setValue("tags", tags);
+  }, [tags, setValue]);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && inputValue.trim()) {
       e.preventDefault();
       const newTag = inputValue.trim();
       if (!tags.includes(newTag)) {
-        const updatedTags = [...tags, newTag];
-        setTags(updatedTags);
-        setValue("tags", updatedTags); // react-hook-form update
+        setTags((prevTags) => [...prevTags, newTag]);
       }
       setInputValue("");
     }
   };
 
   const removeTag = (tagToRemove) => {
-    const updatedTags = tags.filter((tag) => tag !== tagToRemove);
-    setTags(updatedTags);
-    setValue("tags", updatedTags);
+    setTags((prevTags) => prevTags.filter((tag) => tag !== tagToRemove));
   };
 
   return (
@@ -30,7 +35,6 @@ const BlogTagInput = ({ register, setValue, errors }) => {
         Tags (press Enter to add)
       </label>
 
-      {/* Tag Input Area */}
       <div
         className="flex flex-wrap items-center gap-2 p-2 border rounded min-h-[42px] bg-white"
         onClick={() => document.getElementById("tag-input")?.focus()}
@@ -45,6 +49,7 @@ const BlogTagInput = ({ register, setValue, errors }) => {
             <span className="text-xs font-bold">×</span>
           </div>
         ))}
+
         <input
           id="tag-input"
           type="text"
@@ -56,14 +61,6 @@ const BlogTagInput = ({ register, setValue, errors }) => {
         />
       </div>
 
-      {/* Hidden field for form submission */}
-      <input
-        type="hidden"
-        {...register("tags", { required: true })}
-        value={tags.join(",")}
-      />
-
-      {/* Error message */}
       {errors.tags && (
         <span className="text-red-500 text-sm mt-1">Tags are required</span>
       )}
@@ -71,7 +68,6 @@ const BlogTagInput = ({ register, setValue, errors }) => {
   );
 };
 
-// Prop Validation
 BlogTagInput.propTypes = {
   register: PropTypes.func.isRequired,
   setValue: PropTypes.func.isRequired,

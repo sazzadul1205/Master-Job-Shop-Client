@@ -344,7 +344,11 @@ const Blogs = () => {
                   <div className="flex justify-between items-center mt-3">
                     <p className="text-xs text-gray-400">By {blog.author}</p>
                     <p className="text-xs text-gray-400">
-                      {new Date(blog.publishedAt).toLocaleDateString()}
+                      {new Date(blog.publishedAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short", // abbreviated month like "Jan"
+                        day: "2-digit",
+                      })}
                     </p>
                   </div>
 

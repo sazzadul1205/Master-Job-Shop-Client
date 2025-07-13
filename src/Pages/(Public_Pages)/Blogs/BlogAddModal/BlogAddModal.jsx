@@ -1,20 +1,37 @@
 import { useState } from "react";
-import { ImCross } from "react-icons/im";
-import { useForm } from "react-hook-form";
 
+// Icons
+import { ImCross } from "react-icons/im";
+
+// Packages
+import { useForm } from "react-hook-form";
+import PropTypes from "prop-types";
 import Swal from "sweetalert2";
+
+// Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
+// Shared
+import CommonButton from "../../../../Shared/CommonButton/CommonButton";
+
+// Components
 import BlogImageDropZone from "./BlogImageDropZone/BlogImageDropZone";
-import BlogTagInput from "./BlogTagInput/BlogTagInput";
 import BlogContentTipTap from "./BlogContentTipTap/BlogContentTipTap";
+import BlogTagInput from "./BlogTagInput/BlogTagInput";
+
+// Image hosting API
+const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
 
 const BlogAddModal = ({ BlogsRefetch }) => {
   const axiosPublic = useAxiosPublic();
 
+  // State Management
   const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
 
+  // Form Control
   const {
     register,
     handleSubmit,
@@ -24,25 +41,108 @@ const BlogAddModal = ({ BlogsRefetch }) => {
     reset,
   } = useForm();
 
+  // Submitted Form
   const onSubmit = async (data) => {
     try {
+      // Validate that blog content exists
+      if (!content) {
+        Swal.fire("Error", "Blog content is required.", "error");
+        return;
+      }
+
+      // Validate that an image has been selected
+      if (!previewImage) {
+        Swal.fire("Error", "Blog image is required.", "error");
+        return;
+      }
+
+      // Set loading state true to indicate processing
+      setLoading(true);
+
+      let uploadedImageUrl = null;
+
+      // Upload the image if previewImage is present (base64 string)
+      if (previewImage) {
+        const formData = new FormData();
+        // Append only base64 string (strip out data:image/*;base64, prefix)
+        formData.append("image", previewImage.split(",")[1]);
+
+        try {
+          // POST request to image hosting API
+          const res = await axiosPublic.post(Image_Hosting_API, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+
+          // Extract uploaded image URL from response
+          uploadedImageUrl = res?.data?.data?.display_url;
+
+          if (!uploadedImageUrl) {
+            throw new Error("Image upload succeeded but URL is missing.");
+          }
+        } catch (error) {
+          // Show error alert on image upload failure and stop submission
+          Swal.fire({
+            icon: "error",
+            title: "Image Upload Failed",
+            text: `Failed to upload the image. ${
+              error?.response?.data?.message ||
+              error.message ||
+              "Please try again."
+            }`,
+          });
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Prepare final blog payload to send to server
       const blogData = {
         ...data,
-        tags: data.tags.split(",").map((tag) => tag.trim()),
-        publishedAt: new Date().toISOString(),
-        readTime: `${data.readTime} min`,
+        // Ensure tags is an array and trim each tag string
+        tags: Array.isArray(data.tags)
+          ? data.tags.map((tag) => tag.trim())
+          : [],
+        content, // Rich text HTML content
+        image: uploadedImageUrl, // Uploaded image URL from hosting service
+        publishedAt: new Date().toISOString(), // Current timestamp
+        readTime: `${data.readTime} min`, // Format read time
       };
 
+      // POST blog data to your Blogs API endpoint
       const res = await axiosPublic.post("/Blogs", blogData);
+
+      // Check for successful insertion acknowledgement
       if (res?.data?.insertedId || res?.data?.acknowledged) {
-        Swal.fire("Success", "Blog added successfully!", "success");
+        // Show success alert with 2-second timer, no confirmation button
+        await Swal.fire({
+          icon: "success",
+          title: "Blog Added!",
+          text: "Your blog has been added successfully.",
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+
+        // Reset form, clear content and preview image states
         reset();
+        setContent(null);
+        setPreviewImage(null);
+
+        // Trigger refetch to update blog list if refetch function is provided
         BlogsRefetch?.();
+
+        // Close the modal dialog
         document.getElementById("Blog_Add_Modal")?.close();
+      } else {
+        throw new Error("Unexpected response from server.");
       }
     } catch (err) {
-      console.error(err);
+      // Log error and display error alert to user
+      console.error("❌ Error Posting Blog:", err);
       Swal.fire("Error", "Failed to add blog", "error");
+    } finally {
+      // Always reset loading state when process finishes
+      setLoading(false);
     }
   };
 
@@ -58,14 +158,14 @@ const BlogAddModal = ({ BlogsRefetch }) => {
         <ImCross className="text-xl text-black hover:text-red-500" />
       </div>
 
-      {/* Blog Form */}
+      {/* Title */}
       <h2 className="text-2xl font-semibold mb-4 text-center playfair">
         Add New Blog
       </h2>
 
-      {/* Forms */}
+      {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Image Container */}
+        {/* Image */}
         <BlogImageDropZone
           previewImage={previewImage}
           setPreviewImage={setPreviewImage}
@@ -155,18 +255,30 @@ const BlogAddModal = ({ BlogsRefetch }) => {
           )}
         </div>
 
-        {/* Submit */}
-        <div className="md:col-span-2 text-center mt-4">
-          <button
+        {/* Submit Button */}
+        <div className="md:col-span-2 flex justify-center mt-4">
+          <CommonButton
             type="submit"
-            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition"
-          >
-            Submit Blog
-          </button>
+            text="Submit Blog"
+            isLoading={loading}
+            loadingText="Publishing..."
+            textColor="text-white"
+            bgColor="blue"
+            px="px-10"
+            py="py-3"
+            borderRadius="rounded"
+            width="fit"
+            className="hover:bg-gray-800"
+          />
         </div>
       </form>
     </div>
   );
+};
+
+// Prop Validation
+BlogAddModal.propTypes = {
+  BlogsRefetch: PropTypes.func,
 };
 
 export default BlogAddModal;

@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 // Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import useAuth from "../../../Hooks/useAuth";
 
 // Shared
 import CommonButton from "../../../Shared/CommonButton/CommonButton";
@@ -12,16 +13,18 @@ import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
 
 // Icons
-import { FaSearch, FaTimes } from "react-icons/fa";
+import { FaPlus, FaSearch, FaTimes } from "react-icons/fa";
 
 // Assets
 import DefaultBlogImage from "../../../assets/DefaultBlogImage.jpg";
 
 // Modals
 import BlogDetailsModal from "../Home/FeaturedBlogs/BlogDetailsModal/BlogDetailsModal";
+import BlogAddModal from "./BlogAddModal/BlogAddModal";
 
 const Blogs = () => {
   const axiosPublic = useAxiosPublic();
+  const { user } = useAuth();
 
   // Filter States
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,6 +41,7 @@ const Blogs = () => {
     data: BlogsData = [],
     isLoading: BlogsIsLoading,
     error: BlogsError,
+    refetch: BlogsRefetch,
   } = useQuery({
     queryKey: ["BlogsData"],
     queryFn: () => axiosPublic.get("/Blogs").then((res) => res.data),
@@ -89,6 +93,7 @@ const Blogs = () => {
     sortOrder,
   ]);
 
+  // Loading / Hooks
   if (BlogsIsLoading) return <Loading />;
   if (BlogsError) return <Error />;
 
@@ -101,6 +106,8 @@ const Blogs = () => {
     setSortOrder("newest");
     setSelectedCategory("");
   };
+
+  console.log(BlogsData[0]);
 
   return (
     <div className="min-h-screen">
@@ -286,6 +293,20 @@ const Blogs = () => {
         </div>
       </div>
 
+      {user && (
+        <div className="px-20">
+          <CommonButton
+            text="Add a new blog"
+            clickEvent={() =>
+              document.getElementById("Blog_Add_Modal")?.showModal()
+            }
+            bgColor="white"
+            textColor="text-black"
+            icon={<FaPlus />}
+          />
+        </div>
+      )}
+
       {/* Blogs Display */}
       <div className="py-6 px-20">
         {filteredBlogs.length > 0 ? (
@@ -358,6 +379,11 @@ const Blogs = () => {
           selectedBlog={selectedBlog}
           setSelectedBlog={setSelectedBlog}
         />
+      </dialog>
+
+      {/* Blog Modal */}
+      <dialog id="Blog_Add_Modal" className="modal">
+        <BlogAddModal refetch={BlogsRefetch} />
       </dialog>
     </div>
   );

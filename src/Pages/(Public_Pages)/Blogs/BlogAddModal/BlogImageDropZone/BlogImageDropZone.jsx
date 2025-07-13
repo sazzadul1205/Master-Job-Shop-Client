@@ -1,34 +1,50 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
+import PropTypes from "prop-types";
 
-const BlogImageDropZone = () => {
-  const [previewImage, setPreviewImage] = useState(null);
+const BlogImageDropZone = ({ previewImage, setPreviewImage }) => {
   const [error, setError] = useState("");
   const fileInputRef = useRef();
 
-  const MIN_WIDTH = 400;
-  const MIN_HEIGHT = 300;
+  const MIN_WIDTH = 1200;
+  const MIN_HEIGHT = 500;
 
   const handleImageUpload = (file) => {
-    if (!file || !file.type.startsWith("image/")) {
-      setError("Only image files are allowed.");
+    // Reset error state for new upload
+    setError("");
+
+    if (!file) {
+      setError("No file selected.");
       return;
     }
 
-    const img = new Image();
+    if (!file.type.startsWith("image/")) {
+      setError("Invalid file type. Only image files are allowed.");
+      return;
+    }
+
     const reader = new FileReader();
-
     reader.onload = (e) => {
-      img.src = e.target.result;
-
+      const img = new Image();
       img.onload = () => {
         if (img.width < MIN_WIDTH || img.height < MIN_HEIGHT) {
-          setError(`Image must be at least ${MIN_WIDTH}x${MIN_HEIGHT}px.`);
+          setError(
+            `Image too small. Required: ${MIN_WIDTH}x${MIN_HEIGHT}px. Provided: ${img.width}x${img.height}px.`
+          );
           setPreviewImage(null);
         } else {
           setPreviewImage(e.target.result);
           setError("");
         }
       };
+      img.onerror = () => {
+        setError("Failed to load image. The file might be corrupted.");
+        setPreviewImage(null);
+      };
+      img.src = e.target.result;
+    };
+
+    reader.onerror = () => {
+      setError("File reading failed. Try another image.");
     };
 
     reader.readAsDataURL(file);
@@ -51,11 +67,12 @@ const BlogImageDropZone = () => {
 
   return (
     <>
+      <h3 className="playfair text-lg font-semibold">Upload Image:</h3>
       <div
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
         onClick={handleClick}
-        className="h-[300px] w-full border-2 border-dashed border-gray-500 hover:border-black flex flex-col items-center justify-center cursor-pointer transition"
+        className="h-[500px] w-full border-2 border-dashed border-gray-500 hover:border-black flex flex-col items-center justify-center cursor-pointer transition"
       >
         <input
           type="file"
@@ -66,11 +83,22 @@ const BlogImageDropZone = () => {
         />
 
         {previewImage ? (
-          <img
-            src={previewImage}
-            alt="Preview"
-            className="h-[200px] object-contain"
-          />
+          <div className="relative group w-full flex justify-center p-0">
+            <img
+              src={previewImage}
+              alt="Preview"
+              className="h-[500px] object-contain"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-500/20 opacity-10 group-hover:opacity-100 transition-opacity duration-500">
+              <div className="bg-gray-200 p-4 border-2 border-dashed border-gray-500 rounded-full">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/126/126477.png"
+                  alt="Overlay Icon"
+                  className="w-[50px] opacity-80"
+                />
+              </div>
+            </div>
+          </div>
         ) : (
           <>
             <div className="bg-gray-200 p-5 border-2 border-dashed border-gray-500 hover:border-black rounded-full">
@@ -81,7 +109,7 @@ const BlogImageDropZone = () => {
               />
             </div>
             <h3 className="pt-5 font-semibold text-gray-700">
-              Min Width: 400px X 300px
+              Min Width: {MIN_WIDTH}px X {MIN_HEIGHT}px
             </h3>
             <p className="text-sm text-gray-500">
               Click or drag & drop to upload
@@ -95,6 +123,11 @@ const BlogImageDropZone = () => {
       )}
     </>
   );
+};
+
+BlogImageDropZone.propTypes = {
+  previewImage: PropTypes.string,
+  setPreviewImage: PropTypes.func.isRequired,
 };
 
 export default BlogImageDropZone;

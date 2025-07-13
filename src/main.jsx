@@ -30,6 +30,7 @@ import JobsApplyPage from "./Pages/(Public_Pages)/JobsApplyPage/JobsApplyPage";
 // Gigs
 import Gigs from "./Pages/(Public_Pages)/Gigs/Gigs";
 import GigBiddingpage from "./Pages/(Public_Pages)/GigBiddingpage/GigBiddingpage";
+import Blogs from "./Pages/(Public_Pages)/Blogs/Blogs";
 
 const queryClient = new QueryClient();
 
@@ -51,12 +52,13 @@ createRoot(document.getElementById("root")).render(
             </Route>
 
             <Route element={<PublicLayout />}>
-            
               <Route path="/Jobs" element={<Jobs />} />
               <Route path="/Jobs/Apply/:jobId" element={<JobsApplyPage />} />
 
               <Route path="/Gigs" element={<Gigs />} />
               <Route path="/Gigs/Bidding/:gigId" element={<GigBiddingpage />} />
+
+              <Route path="/Blogs" element={<Blogs />} />
             </Route>
           </Routes>
         </BrowserRouter>

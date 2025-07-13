@@ -160,7 +160,7 @@ const JobsApplyPage = () => {
     }
   };
 
-  // Loading
+  // Loading /Error Handling
   if (
     CheckIfAppliedIsLoading ||
     SelectedJobIsLoading ||
@@ -169,7 +169,6 @@ const JobsApplyPage = () => {
   )
     return <Loading />;
 
-  // Error
   if (SelectedJobError || UsersError || CheckIfAppliedError) return <Error />;
 
   // Job Details

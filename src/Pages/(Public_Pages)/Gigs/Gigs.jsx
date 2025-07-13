@@ -1,12 +1,22 @@
-import { useQuery } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
+
+// Packages
+import { useQuery } from "@tanstack/react-query";
+
+// Icons
+import { FaTimes } from "react-icons/fa";
+
+// Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
 import GigCard from "../../../Shared/GigCard/GigCard";
+
+// Modals
 import GigDetailsModal from "../Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
-import { FaTimes } from "react-icons/fa";
 
 const Gigs = () => {
   const axiosPublic = useAxiosPublic();

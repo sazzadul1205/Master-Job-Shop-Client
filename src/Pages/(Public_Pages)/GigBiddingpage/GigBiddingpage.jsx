@@ -1,22 +1,35 @@
 import { useNavigate, useParams } from "react-router-dom";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import useAuth from "../../../Hooks/useAuth";
+import { useState, useEffect } from "react";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
-import Loading from "../../../Shared/Loading/Loading";
-import Error from "../../../Shared/Error/Error";
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
-import { FaArrowLeft, FaInfo } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import { useEffect, useState } from "react";
+
+// Hooks
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import useAuth from "../../../Hooks/useAuth";
+
+// Shared
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
+import Loading from "../../../Shared/Loading/Loading";
+import Error from "../../../Shared/Error/Error";
+
+// Icons
+import { FaArrowLeft, FaInfo } from "react-icons/fa";
+
+// Modals
 import GigDetailsModal from "../Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
 
 const GigBiddingPage = () => {
   const axiosPublic = useAxiosPublic();
   const { user, loading } = useAuth();
   const { gigId } = useParams();
+
+  // Navigation
   const navigate = useNavigate();
 
+  // State Management
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedGigID, setSelectedGigID] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -66,7 +79,7 @@ const GigBiddingPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Show login modal if unauthenticated
+  // Show login modal if user is not logged in
   useEffect(() => {
     if (!loading && !user) {
       setShowLoginModal(true);
@@ -136,6 +149,7 @@ const GigBiddingPage = () => {
   };
   const posterName = SelectedGigData?.postedBy?.name || "Unknown";
 
+  // Check if application deadline has passed
   const deadlinePassed =
     new Date(SelectedGigData.deliveryDeadline) < new Date();
 

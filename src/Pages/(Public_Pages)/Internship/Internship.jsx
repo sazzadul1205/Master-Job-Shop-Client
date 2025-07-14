@@ -1,12 +1,22 @@
 import { useState, useMemo } from "react";
+
+// Packages
+import { useQuery } from "@tanstack/react-query";
+
+// Icons
 import { FaSearch, FaTimes } from "react-icons/fa";
+
+// Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
+import InternshipCard from "../../../Shared/InternshipCard/InternshipCard";
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
-import { useQuery } from "@tanstack/react-query";
-import InternshipCard from "../../../Shared/InternshipCard/InternshipCard";
+
+// Modal
 import InternshipDetailsModal from "../Home/FeaturedInternships/InternshipDetailsModal/InternshipDetailsModal";
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
 
 const Internship = () => {
   const axiosPublic = useAxiosPublic();

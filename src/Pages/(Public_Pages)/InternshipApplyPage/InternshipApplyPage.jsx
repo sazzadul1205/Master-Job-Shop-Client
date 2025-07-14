@@ -1,14 +1,24 @@
-import Swal from "sweetalert2";
-import Error from "../../../Shared/Error/Error";
-import Loading from "../../../Shared/Loading/Loading";
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import useAuth from "../../../Hooks/useAuth";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useForm } from "react-hook-form";
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
+import { useEffect, useState } from "react";
+
+// Icons
 import { FaArrowLeft, FaInfo } from "react-icons/fa";
+
+// Packages
+import { useQuery } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
+
+// Shared
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
+import Loading from "../../../Shared/Loading/Loading";
+import Error from "../../../Shared/Error/Error";
+
+// Hooks
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import useAuth from "../../../Hooks/useAuth";
+
+// Modal
 import InternshipDetailsModal from "../Home/FeaturedInternships/InternshipDetailsModal/InternshipDetailsModal";
 
 const InternshipApplyPage = () => {

@@ -39,6 +39,8 @@ import Courses from "./Pages/(Public_Pages)/Courses/Courses";
 import CoursesApplyPage from "./Pages/(Public_Pages)/CoursesApplyPage/CoursesApplyPage";
 import Mentorship from "./Pages/(Public_Pages)/Mentorship/Mentorship";
 import MentorshipApplyPage from "./Pages/(Public_Pages)/MentorshipApplyPage/MentorshipApplyPage";
+import InternshipApplyPage from "./Pages/(Public_Pages)/InternshipApplyPage/InternshipApplyPage";
+import Internship from "./Pages/(Public_Pages)/Internship/Internship";
 
 const queryClient = new QueryClient();
 
@@ -83,6 +85,13 @@ createRoot(document.getElementById("root")).render(
               <Route
                 path="/Mentorship/Apply/:mentorshipId"
                 element={<MentorshipApplyPage />}
+              />
+
+              {/* internship */}
+              <Route path="/Internship" element={<Internship />} />
+              <Route
+                path="/Internship/Apply/:internshipId"
+                element={<InternshipApplyPage />}
               />
             </Route>
           </Routes>

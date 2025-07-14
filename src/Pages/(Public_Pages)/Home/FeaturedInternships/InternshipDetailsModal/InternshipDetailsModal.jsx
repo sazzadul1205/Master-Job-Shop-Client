@@ -213,7 +213,7 @@ const InternshipDetailsModal = ({
 
       {/* Action Area */}
       <div className="flex justify-between items-center mt-6">
-        <Link to={`/Internships/${SelectedInternshipData?._id}`}>
+        <Link to={`/Internship/Apply/${SelectedInternshipData?._id}`}>
           <CommonButton
             text="Apply Now"
             textColor="text-white"

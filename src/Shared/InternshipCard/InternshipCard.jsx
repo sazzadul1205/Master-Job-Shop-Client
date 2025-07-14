@@ -88,7 +88,7 @@ const InternshipCard = ({ internship, setSelectedInternshipID }) => {
 
       {/* Action Buttons */}
       <div className="flex justify-between items-center pt-2 mt-auto">
-        <Link to={`/Internships/${internship?._id}`}>
+        <Link to={`/Internship/Apply/${internship?._id}`}>
           <CommonButton
             text="Apply Now"
             textColor="text-white"

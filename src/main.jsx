@@ -87,12 +87,14 @@ createRoot(document.getElementById("root")).render(
                 element={<MentorshipApplyPage />}
               />
 
-              {/* internship */}
+              {/* Internship */}
               <Route path="/Internship" element={<Internship />} />
               <Route
                 path="/Internship/Apply/:internshipId"
                 element={<InternshipApplyPage />}
               />
+
+              
             </Route>
           </Routes>
         </BrowserRouter>

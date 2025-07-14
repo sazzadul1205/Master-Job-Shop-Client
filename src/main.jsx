@@ -41,6 +41,8 @@ import Mentorship from "./Pages/(Public_Pages)/Mentorship/Mentorship";
 import MentorshipApplyPage from "./Pages/(Public_Pages)/MentorshipApplyPage/MentorshipApplyPage";
 import InternshipApplyPage from "./Pages/(Public_Pages)/InternshipApplyPage/InternshipApplyPage";
 import Internship from "./Pages/(Public_Pages)/Internship/Internship";
+import Events from "./Pages/(Public_Pages)/Events/Events";
+import EventApplicationPage from "./Pages/(Public_Pages)/EventApplicationPage/EventApplicationPage";
 
 const queryClient = new QueryClient();
 
@@ -94,7 +96,12 @@ createRoot(document.getElementById("root")).render(
                 element={<InternshipApplyPage />}
               />
 
-              
+              {/* Events */}
+              <Route path="/Events" element={<Events />} />
+              <Route
+                path="/Events/Apply/:eventId"
+                element={<EventApplicationPage />}
+              />
             </Route>
           </Routes>
         </BrowserRouter>

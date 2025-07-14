@@ -33,9 +33,10 @@ import GigBiddingpage from "./Pages/(Public_Pages)/GigBiddingpage/GigBiddingpage
 
 // Blogs
 import Blogs from "./Pages/(Public_Pages)/Blogs/Blogs";
-import Courses from "./Pages/(Public_Pages)/Courses/Courses";
 
 // Courses
+import Courses from "./Pages/(Public_Pages)/Courses/Courses";
+import CoursesApplyPage from "./Pages/(Public_Pages)/CoursesApplyPage/CoursesApplyPage";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,10 @@ createRoot(document.getElementById("root")).render(
 
               {/* Courses */}
               <Route path="/Courses" element={<Courses />} />
+              <Route
+                path="/Courses/Apply/:courseId"
+                element={<CoursesApplyPage />}
+              />
             </Route>
           </Routes>
         </BrowserRouter>

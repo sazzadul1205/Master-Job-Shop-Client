@@ -1,26 +1,37 @@
 import { useState, useMemo } from "react";
+
+// Icons
 import { FaSearch, FaTimes } from "react-icons/fa";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
+
+// Hooks
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
+import CourseCard from "../../../Shared/CourseCard/CourseCard";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
-import CourseCard from "../../../Shared/CourseCard/CourseCard";
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
+
+// Modal
+import CourseDetailsModal from "../Home/FeaturedCourses/CourseDetailsModal/CourseDetailsModal";
 
 const Courses = () => {
   const axiosPublic = useAxiosPublic();
 
   // UI States
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedGigID, setSelectedGigID] = useState(null);
+  const [selectedCourseID, setSelectedCourseID] = useState(null);
 
   // Filter States
+  const [level, setLevel] = useState("All");
+  const [category, setCategory] = useState("All");
+  const [language, setLanguage] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
-  const [category, setCategory] = useState("");
-  const [level, setLevel] = useState("");
-  const [language, setLanguage] = useState("");
 
-  // Fetch All Courses Once
+  // Fetch Courses
   const {
     data: allCourses = [],
     isLoading,
@@ -30,7 +41,23 @@ const Courses = () => {
     queryFn: () => axiosPublic.get("/Courses").then((res) => res.data),
   });
 
-  // Filtered Courses using useMemo for performance
+  // Generate dynamic dropdown options
+  const allCategories = useMemo(() => {
+    const set = new Set(allCourses.map((c) => c.category));
+    return ["All", ...Array.from(set)];
+  }, [allCourses]);
+
+  const allLevels = useMemo(() => {
+    const set = new Set(allCourses.map((c) => c.level));
+    return ["All", ...Array.from(set)];
+  }, [allCourses]);
+
+  const allLanguages = useMemo(() => {
+    const set = new Set(allCourses.map((c) => c.language));
+    return ["All", ...Array.from(set)];
+  }, [allCourses]);
+
+  // Filter logic
   const filteredCourses = useMemo(() => {
     return allCourses.filter((course) => {
       const keywordMatch =
@@ -44,30 +71,30 @@ const Courses = () => {
           .includes(searchTerm.toLowerCase());
 
       const categoryMatch =
-        category === "" ||
+        category === "All" ||
         course.category.toLowerCase() === category.toLowerCase();
 
       const levelMatch =
-        level === "" || course.level.toLowerCase() === level.toLowerCase();
+        level === "All" || course.level.toLowerCase() === level.toLowerCase();
 
       const languageMatch =
-        language === "" ||
+        language === "All" ||
         course.language.toLowerCase() === language.toLowerCase();
 
       return keywordMatch && categoryMatch && levelMatch && languageMatch;
     });
   }, [searchTerm, category, level, language, allCourses]);
 
-  if (isLoading) return <Loading />;
-  if (error) return <Error />;
-
-  // Clear all filters
+  // Reset filters
   const handleClear = () => {
     setSearchTerm("");
-    setLanguage("");
-    setCategory("");
-    setLevel("");
+    setCategory("All");
+    setLevel("All");
+    setLanguage("All");
   };
+
+  if (isLoading) return <Loading />;
+  if (error) return <Error />;
 
   return (
     <div className="min-h-screen">
@@ -127,10 +154,11 @@ const Courses = () => {
               onChange={(e) => setCategory(e.target.value)}
               className="p-2 border rounded bg-white text-black"
             >
-              <option value="">All</option>
-              <option value="Data Science">Data Science</option>
-              <option value="Web Development">Web Development</option>
-              <option value="Design">Design</option>
+              {allCategories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -144,10 +172,11 @@ const Courses = () => {
               onChange={(e) => setLevel(e.target.value)}
               className="p-2 border rounded bg-white text-black"
             >
-              <option value="">All</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
+              {allLevels.map((lvl) => (
+                <option key={lvl} value={lvl}>
+                  {lvl}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -161,37 +190,34 @@ const Courses = () => {
               onChange={(e) => setLanguage(e.target.value)}
               className="p-2 border rounded bg-white text-black"
             >
-              <option value="">All</option>
-              <option value="English">English</option>
-              <option value="Bangla">Bangla</option>
-              <option value="Hindi">Hindi</option>
+              {allLanguages.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang}
+                </option>
+              ))}
             </select>
           </div>
         </div>
 
-        {/* Clear all and Found Document  */}
+        {/* Clear Button & Results */}
         <div className="flex justify-between items-center px-20 py-3">
-          {/* Documents Found */}
           <div className="text-lg text-white playfair">
-            {filteredCourses.length} Gig{filteredCourses.length !== 1 && "s"}{" "}
-            found
+            {filteredCourses.length} Course
+            {filteredCourses.length !== 1 && "s"} found
           </div>
 
-          {/* Remove Button */}
-          <div className="flex gap-2">
-            <CommonButton
-              clickEvent={handleClear}
-              text="Clear"
-              icon={<FaTimes />}
-              bgColor="white"
-              textColor="text-black"
-              px="px-10"
-              py="py-2"
-              borderRadius="rounded"
-              iconSize="text-base"
-              width="auto"
-            />
-          </div>
+          <CommonButton
+            clickEvent={handleClear}
+            text="Clear"
+            icon={<FaTimes />}
+            bgColor="white"
+            textColor="text-black"
+            px="px-10"
+            py="py-2"
+            borderRadius="rounded"
+            iconSize="text-base"
+            width="auto"
+          />
         </div>
       </div>
 
@@ -203,7 +229,7 @@ const Courses = () => {
               <CourseCard
                 key={course._id}
                 course={course}
-                setSelectedGigID={setSelectedGigID}
+                setSelectedCourseID={setSelectedCourseID}
               />
             ))}
           </div>
@@ -216,6 +242,14 @@ const Courses = () => {
           </div>
         )}
       </div>
+
+      {/* Course Modal */}
+      <dialog id="Course_Details_Modal" className="modal">
+        <CourseDetailsModal
+          selectedCourseID={selectedCourseID}
+          setSelectedCourseID={setSelectedCourseID}
+        />
+      </dialog>
     </div>
   );
 };

@@ -79,7 +79,7 @@ const CourseCard = ({ course, setSelectedCourseID }) => {
 
       {/* Action Buttons */}
       <div className="flex justify-between items-center pt-2 mt-auto">
-        <Link to={`/Courses/${course?._id}`}>
+        <Link to={`/Courses/Apply/${course?._id}`}>
           <CommonButton
             text="Enroll Now"
             textColor="text-white"

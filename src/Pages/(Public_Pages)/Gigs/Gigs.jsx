@@ -12,8 +12,8 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 // Shared
 import CommonButton from "../../../Shared/CommonButton/CommonButton";
 import Loading from "../../../Shared/Loading/Loading";
-import Error from "../../../Shared/Error/Error";
 import GigCard from "../../../Shared/GigCard/GigCard";
+import Error from "../../../Shared/Error/Error";
 
 // Modals
 import GigDetailsModal from "../Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";

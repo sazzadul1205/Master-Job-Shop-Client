@@ -50,11 +50,24 @@ const BlogDetailsModal = ({ selectedBlog, setSelectedBlog }) => {
 
       {/* Metadata */}
       <div className="text-sm text-gray-500 mb-4 flex flex-wrap gap-4">
+        {/* Author */}
         <span>
           By <span className="font-medium text-gray-700">{author}</span>
         </span>
-        <span>{new Date(publishedAt).toLocaleDateString()}</span>
+
+        {/* Published Date */}
+        <span>
+          {new Date(publishedAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short", // abbreviated month like "Jan"
+            day: "2-digit",
+          })}
+        </span>
+
+        {/* Category */}
         {category && <span>Category: {category}</span>}
+
+        {/* Read Time */}
         {readTime && <span>Read Time: {readTime}</span>}
       </div>
 

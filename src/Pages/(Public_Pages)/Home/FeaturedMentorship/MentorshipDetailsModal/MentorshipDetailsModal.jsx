@@ -221,7 +221,7 @@ const MentorshipDetailsModal = ({
       )}
 
       {/* Actions */}
-      <Link to={`/Mentorship/${selectedMentorshipID}`}>
+      <Link to={`/Mentorship/Apply/${selectedMentorshipID}`}>
         <CommonButton
           text="Apply Now"
           textColor="text-white"

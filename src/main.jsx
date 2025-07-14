@@ -37,6 +37,7 @@ import Blogs from "./Pages/(Public_Pages)/Blogs/Blogs";
 // Courses
 import Courses from "./Pages/(Public_Pages)/Courses/Courses";
 import CoursesApplyPage from "./Pages/(Public_Pages)/CoursesApplyPage/CoursesApplyPage";
+import Mentorship from "./Pages/(Public_Pages)/Mentorship/Mentorship";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +75,13 @@ createRoot(document.getElementById("root")).render(
               <Route
                 path="/Courses/Apply/:courseId"
                 element={<CoursesApplyPage />}
+              />
+
+              {/* Mentorship */}
+              <Route path="/Mentorship" element={<Mentorship />} />
+              <Route
+                path="/Mentorship/Apply/:mentorshipId"
+                element={<div>Mentorship Id</div>}
               />
             </Route>
           </Routes>

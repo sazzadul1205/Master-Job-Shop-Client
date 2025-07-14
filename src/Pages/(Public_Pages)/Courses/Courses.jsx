@@ -33,9 +33,9 @@ const Courses = () => {
 
   // Fetch Courses
   const {
-    data: allCourses = [],
-    isLoading,
-    error,
+    data: CoursesData = [],
+    isLoading: CoursesIsLoading,
+    error: CoursesError,
   } = useQuery({
     queryKey: ["CoursesData"],
     queryFn: () => axiosPublic.get("/Courses").then((res) => res.data),
@@ -43,23 +43,23 @@ const Courses = () => {
 
   // Generate dynamic dropdown options
   const allCategories = useMemo(() => {
-    const set = new Set(allCourses.map((c) => c.category));
+    const set = new Set(CoursesData.map((c) => c.category));
     return ["All", ...Array.from(set)];
-  }, [allCourses]);
+  }, [CoursesData]);
 
   const allLevels = useMemo(() => {
-    const set = new Set(allCourses.map((c) => c.level));
+    const set = new Set(CoursesData.map((c) => c.level));
     return ["All", ...Array.from(set)];
-  }, [allCourses]);
+  }, [CoursesData]);
 
   const allLanguages = useMemo(() => {
-    const set = new Set(allCourses.map((c) => c.language));
+    const set = new Set(CoursesData.map((c) => c.language));
     return ["All", ...Array.from(set)];
-  }, [allCourses]);
+  }, [CoursesData]);
 
   // Filter logic
   const filteredCourses = useMemo(() => {
-    return allCourses.filter((course) => {
+    return CoursesData.filter((course) => {
       const keywordMatch =
         searchTerm === "" ||
         course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -83,7 +83,7 @@ const Courses = () => {
 
       return keywordMatch && categoryMatch && levelMatch && languageMatch;
     });
-  }, [searchTerm, category, level, language, allCourses]);
+  }, [searchTerm, category, level, language, CoursesData]);
 
   // Reset filters
   const handleClear = () => {
@@ -93,8 +93,8 @@ const Courses = () => {
     setLanguage("All");
   };
 
-  if (isLoading) return <Loading />;
-  if (error) return <Error />;
+  if (CoursesIsLoading) return <Loading />;
+  if (CoursesError) return <Error />;
 
   return (
     <div className="min-h-screen">

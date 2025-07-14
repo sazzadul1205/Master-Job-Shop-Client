@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
+
+// Icons
 import { FaSearch, FaTimes } from "react-icons/fa";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
-import Loading from "../../../Shared/Loading/Loading";
-import Error from "../../../Shared/Error/Error";
+
+// Hooks
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
 import MentorshipCard from "../../../Shared/MentorshipCard/MentorshipCard";
 import CommonButton from "../../../Shared/CommonButton/CommonButton";
+import Loading from "../../../Shared/Loading/Loading";
+import Error from "../../../Shared/Error/Error";
+
+// Modal
 import MentorshipDetailsModal from "../Home/FeaturedMentorship/MentorshipDetailsModal/MentorshipDetailsModal";
 
 const Mentorship = () => {
@@ -16,9 +26,9 @@ const Mentorship = () => {
   const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
 
   // Filter States
+  const [subCategory, setSubCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("");
-  const [subCategory, setSubCategory] = useState("");
 
   // Fetch Mentorship
   const {
@@ -29,7 +39,6 @@ const Mentorship = () => {
     queryKey: ["MentorshipData"],
     queryFn: () => axiosPublic.get("/Mentorship").then((res) => res.data),
   });
-  
 
   // Filtered mentorship's
   const filteredMentorship = MentorshipData.filter((mentorship) => {

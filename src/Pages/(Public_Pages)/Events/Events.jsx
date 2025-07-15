@@ -111,6 +111,7 @@ const Events = () => {
     [EventsData]
   );
 
+  //  Loading / Error UI
   if (isLoading) return <Loading />;
   if (error) return <Error />;
 

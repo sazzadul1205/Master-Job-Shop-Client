@@ -52,6 +52,7 @@ import EventApplicationPage from "./Pages/(Public_Pages)/EventApplicationPage/Ev
 
 // Company Profile
 import CompanyProfiles from "./Pages/(Public_Pages)/CompanyProfiles/CompanyProfiles";
+import CompanyProfilesDetails from "./Pages/(Public_Pages)/CompanyProfilesDetails/CompanyProfilesDetails";
 
 const queryClient = new QueryClient();
 

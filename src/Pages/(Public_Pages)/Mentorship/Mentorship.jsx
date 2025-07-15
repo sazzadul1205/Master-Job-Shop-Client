@@ -214,7 +214,7 @@ const Mentorship = () => {
         {/* Clear Button & Results */}
         <div className="flex justify-between items-center px-20 py-3">
           <div className="text-lg text-white playfair">
-            {filteredMentorship.length} Course
+            {filteredMentorship.length} Mentorship
             {filteredMentorship.length !== 1 && "s"} found
           </div>
 

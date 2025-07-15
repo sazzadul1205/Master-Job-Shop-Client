@@ -20,7 +20,7 @@ const MenuItems = [
       { name: "COURSES", path: "/Courses" },
       { name: "MENTORSHIP", path: "/Mentorship" },
       { name: "INTERNSHIPS", path: "/Internship" },
-      { name: "UPCOMING EVENTS", path: "/UpcomingEvents" },
+      { name: "UPCOMING EVENTS", path: "/Events" },
       { name: "SALARY INSIGHTS", path: "/SalaryInsights" },
       { name: "COMPANY PROFILES", path: "/CompanyProfiles" },
     ],

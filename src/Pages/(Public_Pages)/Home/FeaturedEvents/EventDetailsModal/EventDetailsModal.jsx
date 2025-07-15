@@ -213,7 +213,7 @@ const EventDetailsModal = ({ selectedEventID, setSelectedEventID }) => {
 
       {/* Action Area */}
       <div className="flex justify-between items-center mt-6">
-        <Link to={`/Internships/${SelectedEventData?._id}`}>
+        <Link to={`/Events/Apply/${SelectedEventData?._id}`}>
           <CommonButton
             text="Register"
             textColor="text-white"

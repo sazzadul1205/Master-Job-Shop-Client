@@ -91,7 +91,7 @@ const EventCard = ({ event, setSelectedEventID }) => {
 
       {/* Action Buttons */}
       <div className="flex justify-between items-center pt-2 mt-auto">
-        <Link to={`/events/${event?._id}`}>
+        <Link to={`/Events/Apply/${event?._id}`}>
           <CommonButton
             text="Register"
             textColor="text-white"

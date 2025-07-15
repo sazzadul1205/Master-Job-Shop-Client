@@ -21,7 +21,6 @@ const MenuItems = [
       { name: "MENTORSHIP", path: "/Mentorship" },
       { name: "INTERNSHIPS", path: "/Internship" },
       { name: "UPCOMING EVENTS", path: "/Events" },
-      { name: "SALARY INSIGHTS", path: "/SalaryInsights" },
       { name: "COMPANY PROFILES", path: "/CompanyProfiles" },
     ],
   },

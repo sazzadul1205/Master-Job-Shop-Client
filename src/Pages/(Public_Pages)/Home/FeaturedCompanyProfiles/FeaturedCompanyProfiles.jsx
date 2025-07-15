@@ -50,7 +50,7 @@ const FeaturedCompanyProfiles = ({ CompanyData }) => {
           {CompanyData.slice(0, 6).map((company, index) => (
             <Link
               key={company._id}
-              to={`/companies/${company._id}`}
+              to={`/CompanyProfiles/${company._id}`}
               data-aos="fade-up"
               data-aos-delay={index * 150} // 150ms delay between cards
               className="bg-white rounded-xl shadow hover:shadow-lg transition p-4 flex flex-col items-center text-center group"

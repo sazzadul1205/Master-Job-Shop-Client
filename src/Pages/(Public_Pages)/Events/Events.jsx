@@ -1,12 +1,22 @@
-import { FaSearch, FaTimes } from "react-icons/fa";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useState, useMemo } from "react";
+
+// Packages
+import { useQuery } from "@tanstack/react-query";
+
+// Icons
+import { FaSearch, FaTimes } from "react-icons/fa";
+
+// Hooks
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
 import CommonButton from "../../../Shared/CommonButton/CommonButton";
 import EventCard from "../../../Shared/EventCard/EventCard";
-import EventDetailsModal from "../Home/FeaturedEvents/EventDetailsModal/EventDetailsModal";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
-import { useQuery } from "@tanstack/react-query";
+
+// Modal
+import EventDetailsModal from "../Home/FeaturedEvents/EventDetailsModal/EventDetailsModal";
 
 const Events = () => {
   const axiosPublic = useAxiosPublic();

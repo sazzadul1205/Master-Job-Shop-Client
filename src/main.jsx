@@ -37,12 +37,21 @@ import Blogs from "./Pages/(Public_Pages)/Blogs/Blogs";
 // Courses
 import Courses from "./Pages/(Public_Pages)/Courses/Courses";
 import CoursesApplyPage from "./Pages/(Public_Pages)/CoursesApplyPage/CoursesApplyPage";
+
+// Mentorship
 import Mentorship from "./Pages/(Public_Pages)/Mentorship/Mentorship";
 import MentorshipApplyPage from "./Pages/(Public_Pages)/MentorshipApplyPage/MentorshipApplyPage";
-import InternshipApplyPage from "./Pages/(Public_Pages)/InternshipApplyPage/InternshipApplyPage";
+
+// Internship
 import Internship from "./Pages/(Public_Pages)/Internship/Internship";
+import InternshipApplyPage from "./Pages/(Public_Pages)/InternshipApplyPage/InternshipApplyPage";
+
+// Event
 import Events from "./Pages/(Public_Pages)/Events/Events";
 import EventApplicationPage from "./Pages/(Public_Pages)/EventApplicationPage/EventApplicationPage";
+
+// Company Profile
+import CompanyProfiles from "./Pages/(Public_Pages)/CompanyProfiles/CompanyProfiles";
 
 const queryClient = new QueryClient();
 
@@ -102,6 +111,10 @@ createRoot(document.getElementById("root")).render(
                 path="/Events/Apply/:eventId"
                 element={<EventApplicationPage />}
               />
+
+              {/* Company Profiles */}
+              <Route path="/CompanyProfiles" element={<CompanyProfiles />} />
+              <Route path="/CompanyProfiles/:companyId" element={<CompanyProfilesDetails />} />
             </Route>
           </Routes>
         </BrowserRouter>

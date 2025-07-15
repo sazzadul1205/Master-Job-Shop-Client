@@ -17,6 +17,8 @@ import Error from "../../../Shared/Error/Error";
 // Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useAuth from "../../../Hooks/useAuth";
+
+// Modal
 import EventDetailsModal from "../Home/FeaturedEvents/EventDetailsModal/EventDetailsModal";
 
 const EventApplicationPage = () => {

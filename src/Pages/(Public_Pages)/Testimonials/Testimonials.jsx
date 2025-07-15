@@ -1,0 +1,171 @@
+import { useState, useEffect } from "react";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../../../Shared/Loading/Loading";
+import Error from "../../../Shared/Error/Error";
+import DefaultUserLogo from "../../../assets/DefaultUserLogo.jpg";
+import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
+
+const Testimonials = () => {
+  const axiosPublic = useAxiosPublic();
+  const [focusedTestimonial, setFocusedTestimonial] = useState(null);
+
+  // Disable scroll when modal is open
+  useEffect(() => {
+    if (focusedTestimonial) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [focusedTestimonial]);
+
+  const {
+    data: TestimonialsData,
+    isLoading: TestimonialsIsLoading,
+    error: TestimonialsError,
+  } = useQuery({
+    queryKey: ["TestimonialsData"],
+    queryFn: () => axiosPublic.get(`/Testimonials`).then((res) => res.data),
+  });
+
+  if (TestimonialsIsLoading) return <Loading />;
+  if (TestimonialsError) return <Error />;
+
+  // Helper function to render stars
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+    return (
+      <div className="flex text-yellow-400 text-sm">
+        {[...Array(fullStars)].map((_, i) => (
+          <FaStar key={`full-${i}`} />
+        ))}
+        {halfStar && <FaStarHalfAlt />}
+        {[...Array(emptyStars)].map((_, i) => (
+          <FaRegStar key={`empty-${i}`} />
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-20 relative">
+      {/* Title */}
+      <div className="text-center mb-10">
+        <h1 className="text-3xl font-bold text-white">
+          What Our Clients Say
+        </h1>
+        <p className="text-gray-200 font-semibold text-lg max-w-2xl mx-auto mt-2">
+          Genuine feedback from industry leaders and professionals who’ve
+          partnered with us.
+        </p>
+      </div>
+
+      {/* Testimonials Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 z-10 relative">
+        {TestimonialsData.map((testimonial) => (
+          <div
+            key={testimonial._id}
+            onClick={() => setFocusedTestimonial(testimonial)}
+            className="cursor-pointer bg-linear-to-bl from-gray-200 to-white rounded-lg shadow-md hover:shadow-lg transition p-6"
+          >
+            {/* Testimonial Basic Info */}
+            <div className="flex items-center gap-4 mb-4">
+              {/* Image */}
+              <img
+                src={testimonial?.image || DefaultUserLogo}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = DefaultUserLogo;
+                }}
+                alt={testimonial?.name}
+                className="w-16 h-16 rounded-full object-cover border"
+              />
+
+              {/* Data */}
+              <div>
+                {/* Name */}
+                <h4 className="font-semibold text-lg text-gray-800">
+                  {testimonial?.name}
+                </h4>
+
+                {/* Title */}
+                <p className="text-sm text-gray-500">{testimonial?.title}</p>
+              </div>
+            </div>
+
+            {/* Main Message */}
+            <div className="mb-2 font-medium text-gray-700">
+              &quot;{testimonial?.mainMessage}&quot;
+            </div>
+
+            {/* Content */}
+            <p className="text-gray-600 text-sm leading-relaxed mb-4">
+              {testimonial?.content}
+            </p>
+
+            {/* Rating */}
+            {renderStars(testimonial?.rating)}
+          </div>
+        ))}
+      </div>
+
+      {/* Overlay Modal */}
+      {focusedTestimonial && (
+        <div
+          onClick={() => setFocusedTestimonial(null)}
+          className="fixed inset-0 bg-black/70 bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition p-6"
+          >
+            {/* Testimonial Basic Info */}
+            <div className="flex items-center gap-4 mb-4">
+              {/* Image */}
+              <img
+                src={focusedTestimonial?.image || DefaultUserLogo}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = DefaultUserLogo;
+                }}
+                alt={focusedTestimonial?.name}
+                className="w-16 h-16 rounded-full object-cover border"
+              />
+
+              {/* Data */}
+              <div>
+                {/* Name */}
+                <h4 className="font-semibold text-lg text-gray-800">
+                  {focusedTestimonial?.name}
+                </h4>
+
+                {/* Title */}
+                <p className="text-sm text-gray-500">
+                  {focusedTestimonial?.title}
+                </p>
+              </div>
+            </div>
+
+            {/* Main Message */}
+            <div className="mb-2 font-medium text-gray-700">
+              &quot;{focusedTestimonial?.mainMessage}&quot;
+            </div>
+
+            {/* Content */}
+            <p className="text-gray-600 text-sm leading-relaxed mb-4">
+              {focusedTestimonial?.content}
+            </p>
+
+            {/* Rating */}
+            {renderStars(focusedTestimonial?.rating)}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Testimonials;

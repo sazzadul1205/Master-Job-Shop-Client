@@ -1,11 +1,19 @@
 import { useState, useMemo } from "react";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
-import Loading from "../../../Shared/Loading/Loading";
-import Error from "../../../Shared/Error/Error";
+
+// Icons
 import { FaSearch, FaTimes } from "react-icons/fa";
+
+// Packages
+import { useQuery } from "@tanstack/react-query";
+
+// Shared
+import Error from "../../../Shared/Error/Error";
+import Loading from "../../../Shared/Loading/Loading";
 import CompanyCard from "../../../Shared/CompanyCard/CompanyCard";
 import CommonButton from "../../../Shared/CommonButton/CommonButton";
+
+// Hooks
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 const CompanyProfiles = () => {
   const axiosPublic = useAxiosPublic();

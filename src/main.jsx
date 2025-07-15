@@ -54,6 +54,9 @@ import EventApplicationPage from "./Pages/(Public_Pages)/EventApplicationPage/Ev
 import CompanyProfiles from "./Pages/(Public_Pages)/CompanyProfiles/CompanyProfiles";
 import CompanyProfilesDetails from "./Pages/(Public_Pages)/CompanyProfilesDetails/CompanyProfilesDetails";
 
+// Testimonials
+import Testimonials from "./Pages/(Public_Pages)/Testimonials/Testimonials";
+
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -115,7 +118,13 @@ createRoot(document.getElementById("root")).render(
 
               {/* Company Profiles */}
               <Route path="/CompanyProfiles" element={<CompanyProfiles />} />
-              <Route path="/CompanyProfiles/:companyId" element={<CompanyProfilesDetails />} />
+              <Route
+                path="/CompanyProfiles/:companyId"
+                element={<CompanyProfilesDetails />}
+              />
+
+              {/* Testimonials */}
+              <Route path="/Testimonials" element={<Testimonials />} />
             </Route>
           </Routes>
         </BrowserRouter>

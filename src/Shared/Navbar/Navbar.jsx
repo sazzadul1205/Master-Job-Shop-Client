@@ -25,7 +25,7 @@ const MenuItems = [
     ],
   },
   { name: "TESTIMONIALS", path: "/Testimonials" },
-  { name: "ABOUT US", path: "/AboutUS" },
+  { name: "ABOUT US", path: "/AboutUs" },
 ];
 
 const Navbar = () => {

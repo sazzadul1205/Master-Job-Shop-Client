@@ -57,6 +57,9 @@ import CompanyProfilesDetails from "./Pages/(Public_Pages)/CompanyProfilesDetail
 // Testimonials
 import Testimonials from "./Pages/(Public_Pages)/Testimonials/Testimonials";
 
+// About Us
+import AboutUs from "./Pages/(Public_Pages)/AboutUs/AboutUs";
+
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -125,10 +128,12 @@ createRoot(document.getElementById("root")).render(
 
               {/* Testimonials */}
               <Route path="/Testimonials" element={<Testimonials />} />
+
+              {/* About Us */}
+              <Route path="/AboutUs" element={<AboutUs />} />
             </Route>
           </Routes>
         </BrowserRouter>
-        {/* <RouterProvider router={router} /> */}
       </QueryClientProvider>
     </AuthProvider>
   </StrictMode>

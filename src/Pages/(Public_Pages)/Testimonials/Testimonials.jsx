@@ -1,10 +1,20 @@
 import { useState, useEffect } from "react";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Icons
+import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
+
+// Hooks
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+
+// Assets
 import DefaultUserLogo from "../../../assets/DefaultUserLogo.jpg";
-import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
 const Testimonials = () => {
   const axiosPublic = useAxiosPublic();
@@ -19,6 +29,7 @@ const Testimonials = () => {
     }
   }, [focusedTestimonial]);
 
+  // Testimonials Data
   const {
     data: TestimonialsData,
     isLoading: TestimonialsIsLoading,
@@ -28,6 +39,7 @@ const Testimonials = () => {
     queryFn: () => axiosPublic.get(`/Testimonials`).then((res) => res.data),
   });
 
+  // Loading / Error UI
   if (TestimonialsIsLoading) return <Loading />;
   if (TestimonialsError) return <Error />;
 
@@ -52,11 +64,12 @@ const Testimonials = () => {
 
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-20 relative">
-      {/* Title */}
+      {/* Header */}
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-white">
-          What Our Clients Say
-        </h1>
+        {/* Title */}
+        <h1 className="text-3xl font-bold text-white">What Our Clients Say</h1>
+
+        {/* Sub Title */}
         <p className="text-gray-200 font-semibold text-lg max-w-2xl mx-auto mt-2">
           Genuine feedback from industry leaders and professionals who’ve
           partnered with us.

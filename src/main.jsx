@@ -26,6 +26,7 @@ import SignUpDetails from "./Pages/(Auth_Pages)/SignUpDetails/SignUpDetails";
 // Jobs
 import Jobs from "./Pages/(Public_Pages)/Jobs/Jobs";
 import JobsApplyPage from "./Pages/(Public_Pages)/JobsApplyPage/JobsApplyPage";
+import MyJobApplications from "./Pages/(Member_Pages)/MyJobApplications/MyJobApplications";
 
 // Gigs
 import Gigs from "./Pages/(Public_Pages)/Gigs/Gigs";
@@ -60,6 +61,8 @@ import Testimonials from "./Pages/(Public_Pages)/Testimonials/Testimonials";
 // About Us
 import AboutUs from "./Pages/(Public_Pages)/AboutUs/AboutUs";
 
+
+
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -83,6 +86,7 @@ createRoot(document.getElementById("root")).render(
               {/* Jobs Part */}
               <Route path="/Jobs" element={<Jobs />} />
               <Route path="/Jobs/Apply/:jobId" element={<JobsApplyPage />} />
+              <Route path="/MyJobApplications" element={<MyJobApplications />} />
 
               {/* Gigs Part */}
               <Route path="/Gigs" element={<Gigs />} />

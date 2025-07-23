@@ -13,8 +13,12 @@ import CommonButton from "../../CommonButton/CommonButton";
 import { useEffect, useRef, useState } from "react";
 import { ImExit } from "react-icons/im";
 
-import JobApplication from "../../../assets/Navbar/Member/JobApplication.png";
+import Events from "../../../assets/Navbar/Member/Events.png";
+import Profile from "../../../assets/Navbar/Member/Profile.png";
+import Courses from "../../../assets/Navbar/Member/Courses.png";
 import GigBids from "../../../assets/Navbar/Member/GigBids.png";
+import Mentorship from "../../../assets/Navbar/Member/Mentorship.png";
+import JobApplication from "../../../assets/Navbar/Member/JobApplication.png";
 import InternshipApplication from "../../../assets/Navbar/Member/InternshipApplication.png";
 
 const NavbarEnd = () => {
@@ -67,12 +71,32 @@ const NavbarEnd = () => {
         path: `/MyInternships`,
         img: InternshipApplication,
       },
+      {
+        name: "My Mentorship",
+        path: `/MyMentorship`,
+        img: Mentorship,
+      },
+      {
+        name: "My Courses",
+        path: `/MyCourses`,
+        img: Courses,
+      },
+      {
+        name: "My Events",
+        path: `/MyEvents`,
+        img: Events,
+      },
+      {
+        name: "My Profile",
+        path: `/MyProfile`,
+        img: Profile,
+      },
     ],
   };
 
-  // Handle logout with Swal alert
   // Logout function
   const handleLogOut = async () => {
+    // Handle logout with Swal alert
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You will be logged out of your account.",
@@ -149,6 +173,7 @@ const NavbarEnd = () => {
     }, 1000);
   };
 
+  // 
   if (UsersDataIsLoading) return <p>Loading . . . </p>;
   if (UsersDataError) return <p>Error</p>;
 

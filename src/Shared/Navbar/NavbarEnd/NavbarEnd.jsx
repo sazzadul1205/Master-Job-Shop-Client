@@ -11,8 +11,11 @@ import useAxiosPublic from "../../..//Hooks/useAxiosPublic";
 // Shared
 import CommonButton from "../../CommonButton/CommonButton";
 import { useEffect, useRef, useState } from "react";
-import { FaUser } from "react-icons/fa";
 import { ImExit } from "react-icons/im";
+
+import JobApplication from "../../../assets/Navbar/Member/JobApplication.png";
+import GigBids from "../../../assets/Navbar/Member/GigBids.png";
+import InternshipApplication from "../../../assets/Navbar/Member/InternshipApplication.png";
 
 const NavbarEnd = () => {
   const { user, logOut } = useAuth();
@@ -50,9 +53,19 @@ const NavbarEnd = () => {
   const roleBasedLinks = {
     Member: [
       {
-        name: UsersData?.fullName,
-        path: `/Dashboard`,
-        icon: <FaUser />,
+        name: "My Job Application's",
+        path: `/MyJobApplications`,
+        img: JobApplication,
+      },
+      {
+        name: "My Gig Bid's",
+        path: `/MyGigBids`,
+        img: GigBids,
+      },
+      {
+        name: "My Internship's",
+        path: `/MyInternships`,
+        img: InternshipApplication,
       },
     ],
   };
@@ -177,9 +190,9 @@ const NavbarEnd = () => {
                       className="flex items-center gap-2 w-full"
                     >
                       <span className="border-r border-black pr-2">
-                        {link.icon}
+                        <img src={link.img} className="w-5" alt="" />
                       </span>
-                      <span>{link.name}</span>
+                      <span className="font-semibold">{link.name}</span>
                     </Link>
                   </li>
                 ))}

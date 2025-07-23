@@ -126,6 +126,7 @@ const SignUpDetails = () => {
     const Payload = {
       email: user?.email,
       phone: phoneNumber,
+      role: "Member",
       ...data,
       profileImage: uploadedImageUrl,
       creationTime,

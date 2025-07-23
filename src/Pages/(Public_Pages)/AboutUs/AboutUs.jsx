@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import { useEffect } from "react";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
-import Loading from "../../../Shared/Loading/Loading";
-import Error from "../../../Shared/Error/Error";
+
+// Icons
 import {
   FaEnvelope,
   FaMapMarkerAlt,
@@ -13,8 +14,17 @@ import {
   FaCheckCircle,
   FaUserTie,
 } from "react-icons/fa";
+
+// AOS
 import AOS from "aos";
 import "aos/dist/aos.css";
+
+// Hooks
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
+import Loading from "../../../Shared/Loading/Loading";
+import Error from "../../../Shared/Error/Error";
 
 const AboutUs = () => {
   const axiosPublic = useAxiosPublic();
@@ -126,15 +136,15 @@ const AboutUs = () => {
           <div className="flex justify-between pt-10 text-gray-200">
             <p className="flex items-center gap-2">
               <FaEnvelope className="text-white text-2xl" />
-              <span className="text-xl" >{contact.email}</span>
+              <span className="text-xl">{contact.email}</span>
             </p>
             <p className="flex items-center gap-2">
               <FaPhoneAlt className="text-white text-2xl" />
-              <span className="text-xl" >{contact.phone}</span>
+              <span className="text-xl">{contact.phone}</span>
             </p>
             <p className="flex items-center gap-2">
               <FaMapMarkerAlt className="text-white text-2xl" />
-              <span className="text-xl" >{contact.address}</span>
+              <span className="text-xl">{contact.address}</span>
             </p>
           </div>
         </section>

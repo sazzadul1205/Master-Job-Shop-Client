@@ -13,10 +13,15 @@ import Error from "../../../Shared/Error/Error";
 
 // Assets
 import JobApplication from "../../..//assets/Navbar/Member/JobApplication.png";
+import MyJobApplicationModal from "./MyJobApplicationModal/MyJobApplicationModal";
+import { useState } from "react";
 
 const MyJobApplications = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
+
+  // Select Application
+  const [selectedApplicationID, setSelectedApplicationID] = useState(null);
 
   // Step 1: Fetch applications
   const {
@@ -50,6 +55,7 @@ const MyJobApplications = () => {
     enabled: !!user?.email && uniqueJobIds.length > 0,
   });
 
+  // UI Error / Loading
   if (loading || JobApplicationsIsLoading || JobsIsLoading) return <Loading />;
   if (JobApplicationsError || JobsError) return <Error />;
 
@@ -62,16 +68,17 @@ const MyJobApplications = () => {
     };
   }).filter((item) => item.job); // filter out missing jobs
 
-  console.log(mergedData);
-
   return (
     <section className="px-4 md:px-12 min-h-screen">
+      {/* Title */}
       <h3 className="text-3xl font-bold text-white text-center pb-2">
         My Applied Jobs
       </h3>
 
+      {/* Divider */}
       <p className="bg-white py-[2px] w-1/3 mx-auto" />
 
+      {/* Table */}
       <div className="overflow-x-auto shadow mt-5">
         <table className="min-w-full text-sm text-gray-800">
           {/* Table Header */}
@@ -138,7 +145,12 @@ const MyJobApplications = () => {
                         id={`job-btn-${job?._id}`} // Unique ID per button
                         data-tooltip-content="View Application"
                         className="bg-white hover:bg-blue-300/50 border-2 border-blue-600 rounded-full p-3 cursor-pointer transition"
-                        onClick={() => console.log("View job", job?._id)}
+                        onClick={() => {
+                          setSelectedApplicationID({ _id });
+                          document
+                            .getElementById("View_Application_Modal")
+                            .showModal();
+                        }}
                       >
                         <img
                           src={JobApplication}
@@ -157,6 +169,7 @@ const MyJobApplications = () => {
                 </tr>
               ))
             ) : (
+              // No job applications found Fallback
               <tr>
                 <td
                   colSpan="8"
@@ -169,6 +182,11 @@ const MyJobApplications = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Modal */}
+      <dialog id="View_Application_Modal" className="modal">
+        <MyJobApplicationModal selectedApplicationID={selectedApplicationID} />
+      </dialog>
     </section>
   );
 };

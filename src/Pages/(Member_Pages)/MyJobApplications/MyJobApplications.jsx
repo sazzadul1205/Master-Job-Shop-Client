@@ -185,7 +185,10 @@ const MyJobApplications = () => {
 
       {/* Modal */}
       <dialog id="View_Application_Modal" className="modal">
-        <MyJobApplicationModal selectedApplicationID={selectedApplicationID} />
+        <MyJobApplicationModal
+          selectedApplicationID={selectedApplicationID}
+          setSelectedApplicationID={setSelectedApplicationID}
+        />
       </dialog>
     </section>
   );

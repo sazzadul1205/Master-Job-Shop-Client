@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { Tooltip } from "react-tooltip";
+import Swal from "sweetalert2";
 
 // Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
@@ -15,6 +16,7 @@ import Error from "../../../Shared/Error/Error";
 import JobApplication from "../../..//assets/Navbar/Member/JobApplication.png";
 import MyJobApplicationModal from "./MyJobApplicationModal/MyJobApplicationModal";
 import { useState } from "react";
+import { ImCross } from "react-icons/im";
 
 const MyJobApplications = () => {
   const { user, loading } = useAuth();
@@ -28,6 +30,7 @@ const MyJobApplications = () => {
     data: JobApplicationsData = [],
     isLoading: JobApplicationsIsLoading,
     error: JobApplicationsError,
+    refetch: refetchApplications,
   } = useQuery({
     queryKey: ["JobApplicationsData"],
     queryFn: () =>
@@ -46,6 +49,7 @@ const MyJobApplications = () => {
     data: JobsData = [],
     isLoading: JobsIsLoading,
     error: JobsError,
+    refetch: JobsRefetch,
   } = useQuery({
     queryKey: ["JobsData", uniqueJobIds],
     queryFn: () =>
@@ -54,6 +58,11 @@ const MyJobApplications = () => {
         .then((res) => res.data),
     enabled: !!user?.email && uniqueJobIds.length > 0,
   });
+
+  const refetchAll = async () => {
+    await refetchApplications();
+    await JobsRefetch();
+  };
 
   // UI Error / Loading
   if (loading || JobApplicationsIsLoading || JobsIsLoading) return <Loading />;
@@ -67,6 +76,52 @@ const MyJobApplications = () => {
       job,
     };
   }).filter((item) => item.job); // filter out missing jobs
+
+  const handleDeleteApplication = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This will permanently delete the application.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const res = await axiosPublic.delete(`/JobApplications/${id}`);
+
+        if (res.status === 200) {
+          // Refetch updated data
+          await refetchAll();
+
+          // Temporary success toast (auto-dismiss)
+          Swal.fire({
+            icon: "success",
+            title: "Deleted!",
+            text: "The application has been successfully removed.",
+            timer: 1800,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+        } else {
+          throw new Error("Unexpected server response.");
+        }
+      } catch (err) {
+        // Show detailed error
+        Swal.fire({
+          icon: "error",
+          title: "Failed to delete",
+          text:
+            err?.response?.data?.message ||
+            err.message ||
+            "Something went wrong.",
+          confirmButtonColor: "#d33",
+        });
+      }
+    }
+  };
 
   return (
     <section className="px-4 md:px-12 min-h-screen">
@@ -139,10 +194,11 @@ const MyJobApplications = () => {
                   </td>
 
                   {/* Actions */}
-                  <td className="px-5 py-4 text-center">
+                  <td className="flex items-center gap-2  px-5 py-4 text-center">
+                    {/* View Button */}
                     <>
                       <button
-                        id={`job-btn-${job?._id}`} // Unique ID per button
+                        id={`job-btn-${job?._id}`}
                         data-tooltip-content="View Application"
                         className="bg-white hover:bg-blue-300/50 border-2 border-blue-600 rounded-full p-3 cursor-pointer transition"
                         onClick={() => {
@@ -161,6 +217,26 @@ const MyJobApplications = () => {
 
                       <Tooltip
                         anchorSelect={`#job-btn-${job?._id}`}
+                        place="top"
+                        className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
+                      />
+                    </>
+
+                    {/* Delete Button */}
+                    <>
+                      <div
+                        id={`job-btn-cross-${job?._id}`}
+                        data-tooltip-content="Delete Application"
+                        className="p-3 text-lg rounded-full border-2 border-red-500 hover:bg-red-200 cursor-pointer"
+                        onClick={() => {
+                          handleDeleteApplication(_id);
+                        }}
+                      >
+                        <ImCross />
+                      </div>
+
+                      <Tooltip
+                        anchorSelect={`#job-btn-cross-${job?._id}`}
                         place="top"
                         className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
                       />

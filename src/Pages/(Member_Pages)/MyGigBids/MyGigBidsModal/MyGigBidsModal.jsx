@@ -13,7 +13,7 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import Loading from "../../../../Shared/Loading/Loading";
 import Error from "../../../../Shared/Error/Error";
 
-const MyGigBidsModal = ({ selectedGigID, setSelectedGigID }) => {
+const MyGigBidsModal = ({ selectedBidID, setSelectedBidID }) => {
   const axiosPublic = useAxiosPublic();
 
   // Fetch selected Bids Data
@@ -22,10 +22,10 @@ const MyGigBidsModal = ({ selectedGigID, setSelectedGigID }) => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["SelectedGigBidsData", selectedGigID],
+    queryKey: ["SelectedGigBidsData", selectedBidID],
     queryFn: () =>
-      axiosPublic.get(`/GigBids?id=${selectedGigID}`).then((res) => res.data),
-    enabled: !!selectedGigID,
+      axiosPublic.get(`/GigBids?id=${selectedBidID}`).then((res) => res.data),
+    enabled: !!selectedBidID,
   });
 
   // UI Loading / Error State
@@ -45,7 +45,7 @@ const MyGigBidsModal = ({ selectedGigID, setSelectedGigID }) => {
         <button
           className="text-gray-500 hover:text-red-500 p-2 rounded-full cursor-pointer"
           onClick={() => {
-            setSelectedGigID(null);
+            setSelectedBidID(null);
             document.getElementById("View_Gig_Bids_Modal").close();
           }}
         >
@@ -106,8 +106,8 @@ const MyGigBidsModal = ({ selectedGigID, setSelectedGigID }) => {
 };
 
 MyGigBidsModal.propTypes = {
-  selectedGigID: PropTypes.string,
-  setSelectedGigID: PropTypes.func.isRequired,
+  selectedBidID: PropTypes.string,
+  setSelectedBidID: PropTypes.func.isRequired,
 };
 
 export default MyGigBidsModal;

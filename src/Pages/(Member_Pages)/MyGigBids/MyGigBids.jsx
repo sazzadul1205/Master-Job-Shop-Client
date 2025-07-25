@@ -22,12 +22,15 @@ import GigBids from "../../../assets/Navbar/Member/GigBids.png";
 // Modals
 import MyGigBidsModal from "./MyGigBidsModal/MyGigBidsModal";
 import Swal from "sweetalert2";
+import GigDetailsModal from "../../(Public_Pages)/Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
+import { FaInfo } from "react-icons/fa";
 
 const MyGigBids = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
   // Select Gigs ID
+  const [selectedBidID, setSelectedBidID] = useState(null);
   const [selectedGigID, setSelectedGigID] = useState(null);
 
   // Step 1: Fetch Gig Bids
@@ -193,12 +196,12 @@ const MyGigBids = () => {
                     {/* Actions */}
                     <td className="px-5 py-4 flex items-center gap-2">
                       {/* View Bid Button */}
-                      <div className="relative">
+                      <>
                         <button
                           id={`view-bid-${item?._id}`}
                           data-tooltip-content="View Bid Data"
                           onClick={() => {
-                            setSelectedGigID(item?._id);
+                            setSelectedBidID(item?._id);
                             document
                               .getElementById("View_Gig_Bids_Modal")
                               .showModal();
@@ -212,10 +215,10 @@ const MyGigBids = () => {
                           place="top"
                           className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
                         />
-                      </div>
+                      </>
 
                       {/* Delete Application Button */}
-                      <div className="relative">
+                      <>
                         <div
                           id={`delete-bid-${item._id}`}
                           data-tooltip-content="Cancel Bid"
@@ -229,7 +232,30 @@ const MyGigBids = () => {
                           place="top"
                           className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
                         />
-                      </div>
+                      </>
+
+                      {/* Details Button */}
+                      <>
+                        <div
+                          id={`gig-details-btn-${item?._id}`}
+                          data-tooltip-content="View Gig Details"
+                          className="p-3 text-lg rounded-full border-2 border-yellow-500 hover:bg-yellow-200 cursor-pointer"
+                          onClick={() => {
+                            setSelectedGigID(item?.gig?._id);
+                            document
+                              .getElementById("Gig_Details_Modal")
+                              .showModal();
+                          }}
+                        >
+                          <FaInfo />
+                        </div>
+
+                        <Tooltip
+                          anchorSelect={`#gig-details-btn-${item?._id}`}
+                          place="top"
+                          className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
+                        />
+                      </>
                     </td>
                   </tr>
                 );
@@ -248,6 +274,14 @@ const MyGigBids = () => {
       {/* Modal */}
       <dialog id="View_Gig_Bids_Modal" className="modal">
         <MyGigBidsModal
+          selectedBidID={selectedBidID}
+          setSelectedBidID={setSelectedBidID}
+        />
+      </dialog>
+
+      {/* Gigs Modal */}
+      <dialog id="Gig_Details_Modal" className="modal">
+        <GigDetailsModal
           selectedGigID={selectedGigID}
           setSelectedGigID={setSelectedGigID}
         />

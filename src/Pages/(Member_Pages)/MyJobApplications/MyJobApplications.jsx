@@ -22,6 +22,8 @@ import JobApplication from "../../..//assets/Navbar/Member/JobApplication.png";
 
 // Modal
 import MyJobApplicationModal from "./MyJobApplicationModal/MyJobApplicationModal";
+import JobDetailsModal from "../../(Public_Pages)/Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
+import { FaInfo } from "react-icons/fa";
 
 const MyJobApplications = () => {
   const { user, loading } = useAuth();
@@ -29,6 +31,7 @@ const MyJobApplications = () => {
 
   // Select Application
   const [selectedApplicationID, setSelectedApplicationID] = useState(null);
+  const [selectedJobID, setSelectedJobID] = useState(null);
 
   // Step 1: Fetch applications
   const {
@@ -248,6 +251,29 @@ const MyJobApplications = () => {
                         className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
                       />
                     </>
+
+                    {/* Details Button */}
+                    <>
+                      <div
+                        id={`job-details-btn-${job?._id}`}
+                        data-tooltip-content="View Job Details"
+                        className="p-3 text-lg rounded-full border-2 border-yellow-500 hover:bg-yellow-200 cursor-pointer"
+                        onClick={() => {
+                          setSelectedJobID(job?._id);
+                          document
+                            .getElementById("Jobs_Details_Modal")
+                            .showModal();
+                        }}
+                      >
+                        <FaInfo />
+                      </div>
+
+                      <Tooltip
+                        anchorSelect={`#job-details-btn-${job?._id}`}
+                        place="top"
+                        className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
+                      />
+                    </>
                   </td>
                 </tr>
               ))
@@ -271,6 +297,14 @@ const MyJobApplications = () => {
         <MyJobApplicationModal
           selectedApplicationID={selectedApplicationID}
           setSelectedApplicationID={setSelectedApplicationID}
+        />
+      </dialog>
+
+      {/* Jobs Modal */}
+      <dialog id="Jobs_Details_Modal" className="modal">
+        <JobDetailsModal
+          selectedJobID={selectedJobID}
+          setSelectedJobID={setSelectedJobID}
         />
       </dialog>
     </section>

@@ -43,6 +43,7 @@ import CoursesApplyPage from "./Pages/(Public_Pages)/CoursesApplyPage/CoursesApp
 // Mentorship
 import Mentorship from "./Pages/(Public_Pages)/Mentorship/Mentorship";
 import MentorshipApplyPage from "./Pages/(Public_Pages)/MentorshipApplyPage/MentorshipApplyPage";
+import MyMentorshipApplications from "./Pages/(Member_Pages)/MyMentorshipApplications/MyMentorshipApplications";
 
 // Internship
 import Internship from "./Pages/(Public_Pages)/Internship/Internship";
@@ -111,6 +112,10 @@ createRoot(document.getElementById("root")).render(
               <Route
                 path="/Mentorship/Apply/:mentorshipId"
                 element={<MentorshipApplyPage />}
+              />
+              <Route
+                path="/MyMentorshipApplication"
+                element={<MyMentorshipApplications />}
               />
 
               {/* Internship */}

@@ -73,7 +73,7 @@ const NavbarEnd = () => {
       },
       {
         name: "My Mentorship",
-        path: `/MyMentorship`,
+        path: `/MyMentorshipApplication`,
         img: Mentorship,
       },
       {

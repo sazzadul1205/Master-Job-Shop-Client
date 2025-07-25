@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 // Packages
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
@@ -12,11 +14,14 @@ import useAuth from "../../../Hooks/useAuth";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
 
+// Icons
+import { ImCross } from "react-icons/im";
+
 // Assets
 import JobApplication from "../../..//assets/Navbar/Member/JobApplication.png";
+
+// Modal
 import MyJobApplicationModal from "./MyJobApplicationModal/MyJobApplicationModal";
-import { useState } from "react";
-import { ImCross } from "react-icons/im";
 
 const MyJobApplications = () => {
   const { user, loading } = useAuth();
@@ -59,6 +64,7 @@ const MyJobApplications = () => {
     enabled: !!user?.email && uniqueJobIds.length > 0,
   });
 
+  // Refetch All
   const refetchAll = async () => {
     await refetchApplications();
     await JobsRefetch();
@@ -75,8 +81,9 @@ const MyJobApplications = () => {
       ...application,
       job,
     };
-  }).filter((item) => item.job); // filter out missing jobs
+  }).filter((item) => item.job);
 
+  // Delete Application Handler
   const handleDeleteApplication = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",

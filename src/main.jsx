@@ -30,6 +30,7 @@ import MyJobApplications from "./Pages/(Member_Pages)/MyJobApplications/MyJobApp
 
 // Gigs
 import Gigs from "./Pages/(Public_Pages)/Gigs/Gigs";
+import MyGigBids from "./Pages/(Member_Pages)/MyGigBids/MyGigBids";
 import GigBiddingpage from "./Pages/(Public_Pages)/GigBiddingpage/GigBiddingpage";
 
 // Blogs
@@ -61,8 +62,6 @@ import Testimonials from "./Pages/(Public_Pages)/Testimonials/Testimonials";
 // About Us
 import AboutUs from "./Pages/(Public_Pages)/AboutUs/AboutUs";
 
-
-
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -86,11 +85,15 @@ createRoot(document.getElementById("root")).render(
               {/* Jobs Part */}
               <Route path="/Jobs" element={<Jobs />} />
               <Route path="/Jobs/Apply/:jobId" element={<JobsApplyPage />} />
-              <Route path="/MyJobApplications" element={<MyJobApplications />} />
+              <Route
+                path="/MyJobApplications"
+                element={<MyJobApplications />}
+              />
 
               {/* Gigs Part */}
               <Route path="/Gigs" element={<Gigs />} />
               <Route path="/Gigs/Bidding/:gigId" element={<GigBiddingpage />} />
+              <Route path="/MyGigBids" element={<MyGigBids />} />
 
               {/* Blogs Part */}
               <Route path="/Blogs" element={<Blogs />} />

@@ -47,6 +47,7 @@ import MentorshipApplyPage from "./Pages/(Public_Pages)/MentorshipApplyPage/Ment
 // Internship
 import Internship from "./Pages/(Public_Pages)/Internship/Internship";
 import InternshipApplyPage from "./Pages/(Public_Pages)/InternshipApplyPage/InternshipApplyPage";
+import MyInternshipApplications from "./Pages/(Member_Pages)/MyInternshipApplications/MyInternshipApplications";
 
 // Event
 import Events from "./Pages/(Public_Pages)/Events/Events";
@@ -117,6 +118,10 @@ createRoot(document.getElementById("root")).render(
               <Route
                 path="/Internship/Apply/:internshipId"
                 element={<InternshipApplyPage />}
+              />
+              <Route
+                path="/MyInternshipApplications"
+                element={<MyInternshipApplications />}
               />
 
               {/* Events */}

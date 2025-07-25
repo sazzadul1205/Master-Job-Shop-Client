@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { Tooltip } from "react-tooltip";
+import Swal from "sweetalert2";
 
 // Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
@@ -14,6 +15,7 @@ import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
 
 // Icons
+import { FaInfo } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 
 // Assets
@@ -21,9 +23,7 @@ import GigBids from "../../../assets/Navbar/Member/GigBids.png";
 
 // Modals
 import MyGigBidsModal from "./MyGigBidsModal/MyGigBidsModal";
-import Swal from "sweetalert2";
 import GigDetailsModal from "../../(Public_Pages)/Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
-import { FaInfo } from "react-icons/fa";
 
 const MyGigBids = () => {
   const { user, loading } = useAuth();

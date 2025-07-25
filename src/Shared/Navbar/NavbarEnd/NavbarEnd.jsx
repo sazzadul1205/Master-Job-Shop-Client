@@ -68,7 +68,7 @@ const NavbarEnd = () => {
       },
       {
         name: "My Internship's",
-        path: `/MyInternships`,
+        path: `/MyInternshipApplications`,
         img: InternshipApplication,
       },
       {
@@ -173,7 +173,7 @@ const NavbarEnd = () => {
     }, 1000);
   };
 
-  // 
+  //
   if (UsersDataIsLoading) return <p>Loading . . . </p>;
   if (UsersDataError) return <p>Error</p>;
 

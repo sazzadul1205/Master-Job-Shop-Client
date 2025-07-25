@@ -130,7 +130,6 @@ const InternshipApplyPage = () => {
 
       // Send application to backend
       await axiosPublic.post("/InternshipApplications", applicationData);
-      //   console.log(applicationData);
 
       Swal.fire({
         icon: "success",

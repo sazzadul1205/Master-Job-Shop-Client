@@ -83,7 +83,7 @@ const NavbarEnd = () => {
       },
       {
         name: "My Events",
-        path: `/MyEvents`,
+        path: `/MyEventApplications`,
         img: Events,
       },
       {

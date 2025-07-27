@@ -53,6 +53,7 @@ import MyInternshipApplications from "./Pages/(Member_Pages)/MyInternshipApplica
 // Event
 import Events from "./Pages/(Public_Pages)/Events/Events";
 import EventApplicationPage from "./Pages/(Public_Pages)/EventApplicationPage/EventApplicationPage";
+import MyEventApplications from "./Pages/(Member_Pages)/MyEventApplications/MyEventApplications";
 
 // Company Profile
 import CompanyProfiles from "./Pages/(Public_Pages)/CompanyProfiles/CompanyProfiles";
@@ -134,6 +135,10 @@ createRoot(document.getElementById("root")).render(
               <Route
                 path="/Events/Apply/:eventId"
                 element={<EventApplicationPage />}
+              />
+              <Route
+                path="/MyEventApplications"
+                element={<MyEventApplications />}
               />
 
               {/* Company Profiles */}

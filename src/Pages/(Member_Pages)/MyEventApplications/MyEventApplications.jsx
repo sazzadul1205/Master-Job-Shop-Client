@@ -53,6 +53,7 @@ const MyEventApplications = () => {
   const uniqueEventIds = [...new Set(eventIds)];
 
   //   Step 3: Fetch Events Data
+  // Step 3: Fetch Events Data
   const {
     data: EventsData = [],
     isLoading: EventsIsLoading,
@@ -63,7 +64,10 @@ const MyEventApplications = () => {
     queryFn: () =>
       axiosPublic
         .get(`/Events?eventIds=${uniqueEventIds.join(",")}`)
-        .then((res) => res.data),
+        .then((res) => {
+          const data = res.data;
+          return Array.isArray(data) ? data : [data]; // normalize to array
+        }),
     enabled: !!user?.email && uniqueEventIds.length > 0,
   });
 
@@ -133,8 +137,6 @@ const MyEventApplications = () => {
       }
     }
   };
-
-  console.log("merged Data :", mergedData);
 
   return (
     <section className="px-4 md:px-12 min-h-screen">
@@ -270,59 +272,65 @@ const MyEventApplications = () => {
                     {/* Actions */}
                     <td className="px-5 py-4 flex items-center gap-2">
                       {/* View Application */}
-                      <button
-                        id={`view-events-application-${app._id}`}
-                        data-tooltip-content="View Events Application Data"
-                        onClick={() => {
-                          setSelectedEventApplicationID(app._id);
-                          document
-                            .getElementById("View_Event_Application_Modal")
-                            .showModal();
-                        }}
-                        className="bg-white hover:bg-blue-300/50 border-2 border-blue-600 rounded-full p-3 cursor-pointer"
-                      >
-                        <img src={Events} alt="events app" className="w-5" />
-                      </button>
-                      <Tooltip
-                        anchorSelect={`#view-events-application-${app._id}`}
-                        place="top"
-                        className="!text-sm !bg-gray-800 !text-white"
-                      />
+                      <>
+                        <button
+                          id={`view-events-application-${app._id}`}
+                          data-tooltip-content="View Events Application Data"
+                          onClick={() => {
+                            setSelectedEventApplicationID(app._id);
+                            document
+                              .getElementById("View_Event_Application_Modal")
+                              .showModal();
+                          }}
+                          className="bg-white hover:bg-blue-300/50 border-2 border-blue-600 rounded-full p-3 cursor-pointer"
+                        >
+                          <img src={Events} alt="events app" className="w-5" />
+                        </button>
+                        <Tooltip
+                          anchorSelect={`#view-events-application-${app._id}`}
+                          place="top"
+                          className="!text-sm !bg-gray-800 !text-white"
+                        />
+                      </>
 
                       {/* Delete */}
-                      <div
-                        id={`delete-events-application-${app._id}`}
-                        data-tooltip-content="Cancel Event Application"
-                        onClick={() => handleDeleteEventApplication(app._id)}
-                        className="p-3 text-lg border-2 border-red-500 hover:bg-red-200 rounded-full cursor-pointer"
-                      >
-                        <ImCross />
-                      </div>
-                      <Tooltip
-                        anchorSelect={`#delete-events-application-${app._id}`}
-                        place="top"
-                        className="!text-sm !bg-gray-800 !text-white"
-                      />
+                      <>
+                        <div
+                          id={`delete-events-application-${app._id}`}
+                          data-tooltip-content="Cancel Event Application"
+                          onClick={() => handleDeleteEventApplication(app._id)}
+                          className="p-3 text-lg border-2 border-red-500 hover:bg-red-200 rounded-full cursor-pointer"
+                        >
+                          <ImCross />
+                        </div>
+                        <Tooltip
+                          anchorSelect={`#delete-events-application-${app._id}`}
+                          place="top"
+                          className="!text-sm !bg-gray-800 !text-white"
+                        />
+                      </>
 
                       {/* View Details */}
-                      <div
-                        id={`event-details-btn-${app._id}`}
-                        data-tooltip-content="View Event Details"
-                        onClick={() => {
-                          setSelectedEventID(event._id);
-                          document
-                            .getElementById("Event_Details_Modal")
-                            .showModal();
-                        }}
-                        className="p-3 text-lg border-2 border-yellow-500 hover:bg-yellow-200 rounded-full cursor-pointer"
-                      >
-                        <FaInfo />
-                      </div>
-                      <Tooltip
-                        anchorSelect={`#event-details-btn-${app._id}`}
-                        place="top"
-                        className="!text-sm !bg-gray-800 !text-white"
-                      />
+                      <>
+                        <div
+                          id={`event-details-btn-${app._id}`}
+                          data-tooltip-content="View Event Details"
+                          onClick={() => {
+                            setSelectedEventID(event._id);
+                            document
+                              .getElementById("Event_Details_Modal")
+                              .showModal();
+                          }}
+                          className="p-3 text-lg border-2 border-yellow-500 hover:bg-yellow-200 rounded-full cursor-pointer"
+                        >
+                          <FaInfo />
+                        </div>
+                        <Tooltip
+                          anchorSelect={`#event-details-btn-${app._id}`}
+                          place="top"
+                          className="!text-sm !bg-gray-800 !text-white"
+                        />
+                      </>
                     </td>
                   </tr>
                 );
@@ -338,6 +346,8 @@ const MyEventApplications = () => {
         </table>
       </div>
 
+      {/* Modals */}
+      {/* View Event Application Modal */}
       <dialog id="View_Event_Application_Modal" className="modal">
         <MyEventApplicationsModal
           selectedEventApplicationID={selectedEventApplicationID}
@@ -345,6 +355,7 @@ const MyEventApplications = () => {
         />
       </dialog>
 
+      {/* Event Details Modal */}
       <dialog id="Event_Details_Modal" className="modal">
         <EventDetailsModal
           selectedEventID={selectedEventID}

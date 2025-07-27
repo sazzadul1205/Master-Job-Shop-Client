@@ -78,7 +78,7 @@ const NavbarEnd = () => {
       },
       {
         name: "My Courses",
-        path: `/MyCourses`,
+        path: `/MyCourseApplications`,
         img: Courses,
       },
       {

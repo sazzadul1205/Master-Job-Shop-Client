@@ -52,11 +52,12 @@ import MyInternshipApplications from "./Pages/(Member_Pages)/MyInternshipApplica
 
 // Event
 import Events from "./Pages/(Public_Pages)/Events/Events";
-import EventApplicationPage from "./Pages/(Public_Pages)/EventApplicationPage/EventApplicationPage";
 import MyEventApplications from "./Pages/(Member_Pages)/MyEventApplications/MyEventApplications";
+import EventApplicationPage from "./Pages/(Public_Pages)/EventApplicationPage/EventApplicationPage";
 
 // Company Profile
 import CompanyProfiles from "./Pages/(Public_Pages)/CompanyProfiles/CompanyProfiles";
+import MyCourseApplications from "./Pages/(Member_Pages)/MyCourseApplications/MyCourseApplications";
 import CompanyProfilesDetails from "./Pages/(Public_Pages)/CompanyProfilesDetails/CompanyProfilesDetails";
 
 // Testimonials
@@ -106,6 +107,10 @@ createRoot(document.getElementById("root")).render(
               <Route
                 path="/Courses/Apply/:courseId"
                 element={<CoursesApplyPage />}
+              />
+              <Route
+                path="/MyCourseApplications"
+                element={<MyCourseApplications />}
               />
 
               {/* Mentorship */}

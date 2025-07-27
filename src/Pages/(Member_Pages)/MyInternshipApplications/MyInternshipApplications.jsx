@@ -44,7 +44,10 @@ const MyInternshipApplications = () => {
     queryFn: () =>
       axiosPublic
         .get(`/InternshipApplications?email=${user?.email}`)
-        .then((res) => res.data),
+        .then((res) => {
+          const data = res.data;
+          return Array.isArray(data) ? data : [data]; // normalize to array
+        }),
     enabled: !!user?.email,
   });
 
@@ -67,7 +70,10 @@ const MyInternshipApplications = () => {
     queryFn: () =>
       axiosPublic
         .get(`/Internship?internshipIds=${uniqueInternshipIds.join(",")}`)
-        .then((res) => res.data),
+        .then((res) => {
+          const data = res.data;
+          return Array.isArray(data) ? data : [data]; // normalize to array
+        }),
     enabled: !!user?.email && uniqueInternshipIds.length > 0,
   });
 

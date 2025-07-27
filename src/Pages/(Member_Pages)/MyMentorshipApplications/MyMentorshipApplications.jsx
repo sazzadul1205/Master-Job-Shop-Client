@@ -45,7 +45,10 @@ const MyMentorshipApplications = () => {
     queryFn: () =>
       axiosPublic
         .get(`/MentorshipApplications?email=${user?.email}`)
-        .then((res) => res.data),
+        .then((res) => {
+          const data = res.data;
+          return Array.isArray(data) ? data : [data]; // normalize to array
+        }),
     enabled: !!user?.email,
   });
 
@@ -66,7 +69,10 @@ const MyMentorshipApplications = () => {
     queryFn: () =>
       axiosPublic
         .get(`/Mentorship?mentorshipIds=${uniqueMentorshipIds.join(",")}`)
-        .then((res) => res.data),
+        .then((res) => {
+          const data = res.data;
+          return Array.isArray(data) ? data : [data]; // normalize to array
+        }),
     enabled: !!user?.email && uniqueMentorshipIds.length > 0,
   });
 

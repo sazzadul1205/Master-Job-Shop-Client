@@ -42,7 +42,10 @@ const MyGigBids = () => {
   } = useQuery({
     queryKey: ["GigBidsData"],
     queryFn: () =>
-      axiosPublic.get(`/GigBids?email=${user?.email}`).then((res) => res.data),
+      axiosPublic.get(`/GigBids?email=${user?.email}`).then((res) => {
+        const data = res.data;
+        return Array.isArray(data) ? data : [data]; // normalize to array
+      }),
     enabled: !!user?.email,
   });
 
@@ -59,9 +62,10 @@ const MyGigBids = () => {
   } = useQuery({
     queryKey: ["GigsData", uniqueGigIds],
     queryFn: () =>
-      axiosPublic
-        .get(`/Gigs?gigIds=${uniqueGigIds.join(",")}`)
-        .then((res) => res.data),
+      axiosPublic.get(`/Gigs?gigIds=${uniqueGigIds.join(",")}`).then((res) => {
+        const data = res.data;
+        return Array.isArray(data) ? data : [data]; // normalize to array
+      }),
     enabled: !!user?.email && uniqueGigIds.length > 0,
   });
 

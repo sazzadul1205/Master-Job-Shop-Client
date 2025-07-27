@@ -42,9 +42,10 @@ const MyJobApplications = () => {
   } = useQuery({
     queryKey: ["JobApplicationsData"],
     queryFn: () =>
-      axiosPublic
-        .get(`/JobApplications?email=${user?.email}`)
-        .then((res) => res.data),
+      axiosPublic.get(`/JobApplications?email=${user?.email}`).then((res) => {
+        const data = res.data;
+        return Array.isArray(data) ? data : [data]; // normalize to array
+      }),
     enabled: !!user?.email,
   });
 
@@ -61,9 +62,10 @@ const MyJobApplications = () => {
   } = useQuery({
     queryKey: ["JobsData", uniqueJobIds],
     queryFn: () =>
-      axiosPublic
-        .get(`/Jobs?jobIds=${uniqueJobIds.join(",")}`)
-        .then((res) => res.data),
+      axiosPublic.get(`/Jobs?jobIds=${uniqueJobIds.join(",")}`).then((res) => {
+        const data = res.data;
+        return Array.isArray(data) ? data : [data]; // normalize to array
+      }),
     enabled: !!user?.email && uniqueJobIds.length > 0,
   });
 

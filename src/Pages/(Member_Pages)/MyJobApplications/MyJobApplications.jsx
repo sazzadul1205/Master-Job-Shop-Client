@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
@@ -16,24 +16,24 @@ import Error from "../../../Shared/Error/Error";
 
 // Icons
 import { ImCross } from "react-icons/im";
+import { FaInfo } from "react-icons/fa";
 
 // Assets
-import JobApplication from "../../..//assets/Navbar/Member/JobApplication.png";
+import JobApplication from "../../../assets/Navbar/Member/JobApplication.png";
 
 // Modal
 import MyJobApplicationModal from "./MyJobApplicationModal/MyJobApplicationModal";
 import JobDetailsModal from "../../(Public_Pages)/Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
-import { FaInfo } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const MyJobApplications = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
-  // Select Application
   const [selectedApplicationID, setSelectedApplicationID] = useState(null);
+  const [applicationsList, setApplicationsList] = useState([]);
   const [selectedJobID, setSelectedJobID] = useState(null);
 
-  // Step 1: Fetch applications
   const {
     data: JobApplicationsData = [],
     isLoading: JobApplicationsIsLoading,
@@ -44,16 +44,14 @@ const MyJobApplications = () => {
     queryFn: () =>
       axiosPublic.get(`/JobApplications?email=${user?.email}`).then((res) => {
         const data = res.data;
-        return Array.isArray(data) ? data : [data]; // normalize to array
+        return Array.isArray(data) ? data : [data];
       }),
     enabled: !!user?.email,
   });
 
-  // Step 2: Extract unique jobIds
   const jobIds = JobApplicationsData.map((app) => app.jobId);
   const uniqueJobIds = [...new Set(jobIds)];
 
-  // Step 3: Fetch jobs
   const {
     data: JobsData = [],
     isLoading: JobsIsLoading,
@@ -64,29 +62,17 @@ const MyJobApplications = () => {
     queryFn: () =>
       axiosPublic.get(`/Jobs?jobIds=${uniqueJobIds.join(",")}`).then((res) => {
         const data = res.data;
-        return Array.isArray(data) ? data : [data]; // normalize to array
+        return Array.isArray(data) ? data : [data];
       }),
     enabled: !!user?.email && uniqueJobIds.length > 0,
   });
 
-  // Refetch All
-  const refetchAll = async () => {
-    await refetchApplications();
-    await JobsRefetch();
-  };
-
-  // UI Error / Loading
-  if (loading || JobApplicationsIsLoading || JobsIsLoading) return <Loading />;
-  if (JobApplicationsError || JobsError) return <Error />;
-
-  // Merge application & job data
-  const mergedData = JobApplicationsData.map((application) => {
-    const job = JobsData.find((job) => job._id === application.jobId);
-    return {
-      ...application,
-      job,
-    };
-  }).filter((item) => item.job);
+  //
+  useEffect(() => {
+    if (JobApplicationsData.length > 0) {
+      setApplicationsList(JobApplicationsData);
+    }
+  }, [JobApplicationsData]);
 
   // Delete Application Handler
   const handleDeleteApplication = async (id) => {
@@ -105,10 +91,9 @@ const MyJobApplications = () => {
         const res = await axiosPublic.delete(`/JobApplications/${id}`);
 
         if (res.status === 200) {
-          // Refetch updated data
-          await refetchAll();
+          // Optimistically remove deleted app from local state
+          setApplicationsList((prev) => prev.filter((app) => app._id !== id));
 
-          // Temporary success toast (auto-dismiss)
           Swal.fire({
             icon: "success",
             title: "Deleted!",
@@ -117,11 +102,14 @@ const MyJobApplications = () => {
             timerProgressBar: true,
             showConfirmButton: false,
           });
+
+          // Trigger silent refetch to keep data fresh without loading UI
+          await refetchApplications({ throwOnError: false });
+          await JobsRefetch({ throwOnError: false });
         } else {
           throw new Error("Unexpected server response.");
         }
       } catch (err) {
-        // Show detailed error
         Swal.fire({
           icon: "error",
           title: "Failed to delete",
@@ -135,166 +123,176 @@ const MyJobApplications = () => {
     }
   };
 
+  // UI Loading / Error State
+  if (
+    loading ||
+    (JobApplicationsIsLoading && JobApplicationsData.length === 0) ||
+    (JobsIsLoading && JobsData.length === 0)
+  )
+    return <Loading />;
+  if (JobApplicationsError || JobsError) return <Error />;
+
+  // Merge data
+  const mergedData = applicationsList
+    .map((application) => {
+      const job = JobsData.find((job) => job._id === application.jobId);
+      return {
+        ...application,
+        job,
+      };
+    })
+    .filter((item) => item.job);
+
   return (
-    <section className="px-4 md:px-12 min-h-screen">
+    <section className="px-4 md:px-12 min-h-screen ">
       {/* Title */}
       <h3 className="text-3xl font-bold text-white text-center pb-2">
         My Applied Jobs
       </h3>
 
       {/* Divider */}
-      <p className="bg-white py-[2px] w-1/3 mx-auto" />
+      <p className="bg-white py-[2px] w-1/3 mx-auto mb-8" />
 
-      {/* Table */}
-      <div className="overflow-x-auto shadow mt-5">
-        <table className="min-w-full text-sm text-gray-800">
-          {/* Table Header */}
-          <thead className="bg-gray-500 border-b text-xs text-white border border-black uppercase tracking-wide cursor-default">
-            <tr>
-              <th className="px-5 py-4 text-left">Title</th>
-              <th className="px-5 py-4 text-left">Company</th>
-              <th className="px-5 py-4 text-left">Location</th>
-              <th className="px-5 py-4 text-left">Type</th>
-              <th className="px-5 py-4 text-left">Level</th>
-              <th className="px-5 py-4 text-left">Salary</th>
-              <th className="px-5 py-4 text-left">Applied</th>
-              <th className="px-5 py-4 text-center">Action</th>
-            </tr>
-          </thead>
+      {/* Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {mergedData.length > 0 ? (
+          mergedData.map(({ job, appliedAt, _id }) => (
+            <article
+              key={_id}
+              className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col justify-between p-6"
+            >
+              {/* Job Info */}
+              <div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-2 truncate">
+                  {job?.title || "N/A"}
+                </h4>
+                <p className="text-sm text-gray-600 mb-4 truncate">
+                  {job?.company?.name || "N/A"}
+                </p>
 
-          {/* Table Body */}
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {mergedData.length > 0 ? (
-              mergedData.map(({ job, appliedAt, _id }) => (
-                <tr
-                  key={_id}
-                  className="hover:bg-gray-50 transition duration-200"
+                {/* Details */}
+                <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-gray-700 text-sm mb-5">
+                  <div>
+                    <dt className="font-semibold">Location:</dt>
+                    <dd>{job?.location || "N/A"}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold">Type:</dt>
+                    <dd>{job?.type || "N/A"}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold">Level:</dt>
+                    <dd>{job?.level || "N/A"}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold">Salary:</dt>
+                    <dd>
+                      {job?.salaryRange
+                        ? `${job.salaryRange.min?.toLocaleString()} - ${job.salaryRange.max?.toLocaleString()} ${
+                            job.salaryRange.currency || ""
+                          }`
+                        : "Not disclosed"}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+
+              {/* Applied Time */}
+              <p className="text-xs text-gray-500 mb-5">
+                Applied{" "}
+                {appliedAt
+                  ? formatDistanceToNow(new Date(appliedAt), {
+                      addSuffix: true,
+                    })
+                  : "N/A"}
+              </p>
+
+              {/* Actions */}
+              <div className="flex justify-between items-center gap-3">
+                {/* View Application */}
+                <button
+                  id={`job-btn-${job._id}`}
+                  data-tooltip-content="View Application"
+                  className="flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
+                  onClick={() => {
+                    setSelectedApplicationID(_id);
+                    document
+                      .getElementById("View_Application_Modal")
+                      .showModal();
+                  }}
                 >
-                  {/* Title */}
-                  <td className="px-5 py-4 font-medium text-gray-900">
-                    {job?.title || "N/A"}
-                  </td>
+                  <img
+                    src={JobApplication}
+                    alt="Job Application"
+                    className="w-5"
+                  />
+                </button>
+                <Tooltip
+                  anchorSelect={`#job-btn-${job._id}`}
+                  place="top"
+                  className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
+                />
 
-                  {/* Company */}
-                  <td className="px-5 py-4">{job?.company?.name || "N/A"}</td>
-
-                  {/* Location */}
-                  <td className="px-5 py-4">{job?.location || "N/A"}</td>
-
-                  {/* Type */}
-                  <td className="px-5 py-4">{job?.type || "N/A"}</td>
-
-                  {/* Level */}
-                  <td className="px-5 py-4">{job?.level || "N/A"}</td>
-
-                  {/* Salary Range */}
-                  <td className="px-5 py-4">
-                    {job.salaryRange
-                      ? `${job.salaryRange.min?.toLocaleString()} - ${job.salaryRange.max?.toLocaleString()} ${
-                          job.salaryRange.currency || ""
-                        }`
-                      : "N/A"}
-                  </td>
-
-                  {/* Applied Ago */}
-                  <td className="px-5 py-4 text-gray-600">
-                    {appliedAt
-                      ? formatDistanceToNow(new Date(appliedAt), {
-                          addSuffix: true,
-                        })
-                      : "N/A"}
-                  </td>
-
-                  {/* Actions */}
-                  <td className="flex items-center gap-2  px-5 py-4 text-center">
-                    {/* View Button */}
-                    <>
-                      <button
-                        id={`job-btn-${job?._id}`}
-                        data-tooltip-content="View Application"
-                        className="bg-white hover:bg-blue-300/50 border-2 border-blue-600 rounded-full p-3 cursor-pointer transition"
-                        onClick={() => {
-                          setSelectedApplicationID({ _id });
-                          document
-                            .getElementById("View_Application_Modal")
-                            .showModal();
-                        }}
-                      >
-                        <img
-                          src={JobApplication}
-                          alt="Job Applications"
-                          className="w-5"
-                        />
-                      </button>
-
-                      <Tooltip
-                        anchorSelect={`#job-btn-${job?._id}`}
-                        place="top"
-                        className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                      />
-                    </>
-
-                    {/* Delete Button */}
-                    <>
-                      <div
-                        id={`job-btn-cross-${job?._id}`}
-                        data-tooltip-content="Delete Application"
-                        className="p-3 text-lg rounded-full border-2 border-red-500 hover:bg-red-200 cursor-pointer"
-                        onClick={() => {
-                          handleDeleteApplication(_id);
-                        }}
-                      >
-                        <ImCross />
-                      </div>
-
-                      <Tooltip
-                        anchorSelect={`#job-btn-cross-${job?._id}`}
-                        place="top"
-                        className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                      />
-                    </>
-
-                    {/* Details Button */}
-                    <>
-                      <div
-                        id={`job-details-btn-${job?._id}`}
-                        data-tooltip-content="View Job Details"
-                        className="p-3 text-lg rounded-full border-2 border-yellow-500 hover:bg-yellow-200 cursor-pointer"
-                        onClick={() => {
-                          setSelectedJobID(job?._id);
-                          document
-                            .getElementById("Jobs_Details_Modal")
-                            .showModal();
-                        }}
-                      >
-                        <FaInfo />
-                      </div>
-
-                      <Tooltip
-                        anchorSelect={`#job-details-btn-${job?._id}`}
-                        place="top"
-                        className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                      />
-                    </>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              // No job applications found Fallback
-              <tr>
-                <td
-                  colSpan="8"
-                  className="text-center py-10 text-gray-500 font-medium"
+                {/* Delete */}
+                <button
+                  id={`job-btn-cross-${job._id}`}
+                  data-tooltip-content="Delete Application"
+                  className="flex items-center justify-center w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
+                  onClick={() => handleDeleteApplication(_id)}
                 >
-                  No job applications found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  <ImCross size={18} />
+                </button>
+                <Tooltip
+                  anchorSelect={`#job-btn-cross-${job._id}`}
+                  place="top"
+                  className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
+                />
+
+                {/* View Job Details */}
+                <button
+                  id={`job-details-btn-${job._id}`}
+                  data-tooltip-content="View Job Details"
+                  className="flex items-center justify-center w-10 h-10 bg-yellow-400 hover:bg-yellow-500 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
+                  onClick={() => {
+                    setSelectedJobID(job._id);
+                    document.getElementById("Jobs_Details_Modal").showModal();
+                  }}
+                >
+                  <FaInfo size={18} />
+                </button>
+                <Tooltip
+                  anchorSelect={`#job-details-btn-${job._id}`}
+                  place="top"
+                  className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
+                />
+              </div>
+            </article>
+          ))
+        ) : (
+          <div className="text-center col-span-full mt-20 px-4">
+            <p className="text-2xl font-semibold text-white mb-4">
+              You have not applied to any jobs yet.
+            </p>
+            <p className="text-lg text-gray-300 mb-6">
+              Browse available job openings and start applying to find your next
+              opportunity.
+            </p>
+            <Link
+              onClick={() => {
+                // Redirect or open job listings page
+                window.location.href = "/jobs"; // change this URL to your jobs page
+              }}
+              to={"/Jobs"}
+              className="inline-block bg-linear-to-bl hover:bg-linear-to-tl from-white to-gray-300 hover:bg-blue-700 text-black font-semibold py-3 px-10 rounded shadow-md transition cursor-pointer hover:shadow-lg"
+            >
+              Browse Jobs
+            </Link>
+          </div>
+        )}
       </div>
 
-      {/* Modal */}
+      {/* Modals */}
+      {/* View Application Modal */}
       <dialog id="View_Application_Modal" className="modal">
         <MyJobApplicationModal
           selectedApplicationID={selectedApplicationID}
@@ -302,7 +300,7 @@ const MyJobApplications = () => {
         />
       </dialog>
 
-      {/* Jobs Modal */}
+      {/* View Job Details Modal */}
       <dialog id="Jobs_Details_Modal" className="modal">
         <JobDetailsModal
           selectedJobID={selectedJobID}

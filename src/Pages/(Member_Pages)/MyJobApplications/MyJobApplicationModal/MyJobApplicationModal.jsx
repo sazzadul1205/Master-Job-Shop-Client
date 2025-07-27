@@ -25,13 +25,15 @@ const MyJobApplicationModal = ({
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["SelectedJobApplicationsData", selectedApplicationID?._id],
+    queryKey: ["SelectedJobApplicationsData", selectedApplicationID], // just ID string
     queryFn: () =>
       axiosPublic
-        .get(`/JobApplications?id=${selectedApplicationID?._id}`)
+        .get(`/JobApplications?id=${selectedApplicationID}`)
         .then((res) => res.data),
     enabled: !!selectedApplicationID,
   });
+
+  if (!selectedApplicationID) return null; // or return empty fragment
 
   // UI Loading / Error State
   if (isLoading)
@@ -55,8 +57,8 @@ const MyJobApplicationModal = ({
         <button
           className="text-gray-500 hover:text-red-500 p-2 rounded-full cursor-pointer"
           onClick={() => {
-            setSelectedApplicationID(null);
             document.getElementById("View_Application_Modal").close();
+            setSelectedApplicationID(null);
           }}
         >
           <ImCross />

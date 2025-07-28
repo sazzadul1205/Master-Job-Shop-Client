@@ -126,6 +126,9 @@ const GigBiddingPage = () => {
       });
 
       reset();
+
+      // Navigate one step back
+      navigate(-1);
     } catch (error) {
       console.error(error);
       Swal.fire({

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
@@ -22,18 +23,19 @@ import { FaInfo } from "react-icons/fa";
 import JobApplication from "../../../assets/Navbar/Member/JobApplication.png";
 
 // Modal
-import MyJobApplicationModal from "./MyJobApplicationModal/MyJobApplicationModal";
 import JobDetailsModal from "../../(Public_Pages)/Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
-import { Link } from "react-router-dom";
+import MyJobApplicationModal from "./MyJobApplicationModal/MyJobApplicationModal";
 
 const MyJobApplications = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
+  // State Hooks
   const [selectedApplicationID, setSelectedApplicationID] = useState(null);
   const [applicationsList, setApplicationsList] = useState([]);
   const [selectedJobID, setSelectedJobID] = useState(null);
 
+  // Fetch Job Applications
   const {
     data: JobApplicationsData = [],
     isLoading: JobApplicationsIsLoading,
@@ -49,9 +51,11 @@ const MyJobApplications = () => {
     enabled: !!user?.email,
   });
 
+  // Get unique job IDs from JobApplicationsData
   const jobIds = JobApplicationsData.map((app) => app.jobId);
   const uniqueJobIds = [...new Set(jobIds)];
 
+  // Fetch Jobs Data
   const {
     data: JobsData = [],
     isLoading: JobsIsLoading,
@@ -67,7 +71,6 @@ const MyJobApplications = () => {
     enabled: !!user?.email && uniqueJobIds.length > 0,
   });
 
-  //
   useEffect(() => {
     if (JobApplicationsData.length > 0) {
       setApplicationsList(JobApplicationsData);
@@ -151,7 +154,11 @@ const MyJobApplications = () => {
       </h3>
 
       {/* Divider */}
-      <p className="bg-white py-[2px] w-1/3 mx-auto mb-8" />
+      <div className="flex items-center justify-center gap-4 my-5">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+      </div>
 
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -278,10 +285,6 @@ const MyJobApplications = () => {
               opportunity.
             </p>
             <Link
-              onClick={() => {
-                // Redirect or open job listings page
-                window.location.href = "/jobs"; // change this URL to your jobs page
-              }}
               to={"/Jobs"}
               className="inline-block bg-linear-to-bl hover:bg-linear-to-tl from-white to-gray-300 hover:bg-blue-700 text-black font-semibold py-3 px-10 rounded shadow-md transition cursor-pointer hover:shadow-lg"
             >

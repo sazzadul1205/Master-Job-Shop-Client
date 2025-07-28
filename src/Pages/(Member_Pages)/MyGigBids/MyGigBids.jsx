@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
@@ -24,12 +24,14 @@ import GigBids from "../../../assets/Navbar/Member/GigBids.png";
 // Modals
 import MyGigBidsModal from "./MyGigBidsModal/MyGigBidsModal";
 import GigDetailsModal from "../../(Public_Pages)/Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
+import { Link } from "react-router-dom";
 
 const MyGigBids = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
   // Select Gigs ID
+  const [bidsList, setBidsList] = useState([]);
   const [selectedBidID, setSelectedBidID] = useState(null);
   const [selectedGigID, setSelectedGigID] = useState(null);
 
@@ -69,26 +71,12 @@ const MyGigBids = () => {
     enabled: !!user?.email && uniqueGigIds.length > 0,
   });
 
-  // Refetch All
-  const refetchAll = async () => {
-    await refetchGigBids();
-    await GigsRefetch();
-  };
+  useEffect(() => {
+    if (GigBidsData.length > 0) {
+      setBidsList(GigBidsData);
+    }
+  }, [GigBidsData]);
 
-  // UI Error / Loading
-  if (loading || GigBidsIsLoading || GigsIsLoading) return <Loading />;
-  if (GigBidsError || GigsError) return <Error />;
-
-  // Merge application & gig data
-  const mergedData = GigBidsData.map((application) => {
-    const gig = GigsData.find((gig) => gig._id === application.gigId);
-    return {
-      ...application,
-      gig,
-    };
-  }).filter((item) => item.gig);
-
-  // Delete Bid Handler
   const handleDeleteBid = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -105,10 +93,9 @@ const MyGigBids = () => {
         const res = await axiosPublic.delete(`/GigBids/${id}`);
 
         if (res.status === 200) {
-          // Refetch updated data
-          await refetchAll();
+          // Optimistically update state
+          setBidsList((prev) => prev.filter((bid) => bid._id !== id));
 
-          // Temporary success toast (auto-dismiss)
           Swal.fire({
             icon: "success",
             title: "Deleted!",
@@ -117,11 +104,14 @@ const MyGigBids = () => {
             timerProgressBar: true,
             showConfirmButton: false,
           });
+
+          // Silent refetch
+          await refetchGigBids({ throwOnError: false });
+          await GigsRefetch({ throwOnError: false });
         } else {
           throw new Error("Unexpected server response.");
         }
       } catch (err) {
-        // Show detailed error
         Swal.fire({
           icon: "error",
           title: "Failed to delete",
@@ -135,6 +125,20 @@ const MyGigBids = () => {
     }
   };
 
+  // UI Error / Loading
+  if (loading || GigBidsIsLoading || GigsIsLoading) return <Loading />;
+  if (GigBidsError || GigsError) return <Error />;
+
+  const mergedData = bidsList
+    .map((application) => {
+      const gig = GigsData.find((gig) => gig._id === application.gigId);
+      return {
+        ...application,
+        gig,
+      };
+    })
+    .filter((item) => item.gig);
+
   return (
     <section className="px-4 md:px-12 min-h-screen">
       {/* Title */}
@@ -143,139 +147,140 @@ const MyGigBids = () => {
       </h3>
 
       {/* Divider */}
-      <p className="bg-white py-[2px] w-1/3 mx-auto" />
+      <div className="flex items-center justify-center gap-4 my-5">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+      </div>
 
       {/* Table */}
-      <div className="overflow-x-auto shadow mt-5">
-        <table className="min-w-full text-sm text-gray-800">
-          {/* Table Header */}
-          <thead className="bg-gray-500 border-b text-xs text-white border border-black uppercase tracking-wide cursor-default">
-            <tr>
-              <th className="px-3 py-4 text-left">Gig Title</th>
-              <th className="px-3 py-4 text-left">Category</th>
-              <th className="px-3 py-4 text-left">Bid Amount</th>
-              <th className="px-3 py-4 text-left">Delivery Days</th>
-              <th className="px-3 py-4 text-left">Bided Ago</th>
-              <th className="px-3 py-4 text-left">Posted By</th>
-              <th className="px-3 py-4 text-left">Actions</th>
-            </tr>
-          </thead>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
+        {mergedData.length > 0 ? (
+          mergedData.map((item) => {
+            const bidedAgo = formatDistanceToNow(new Date(item.submittedAt), {
+              addSuffix: true,
+            });
 
-          {/* Table Body */}
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {mergedData.length > 0 ? (
-              mergedData.map((item) => {
-                // Calculate bidedAgo based on submittedAt
-                const bidedAgo = formatDistanceToNow(
-                  new Date(item.submittedAt),
-                  { addSuffix: true }
-                );
+            return (
+              <div
+                key={item._id}
+                className="bg-white border rounded-xl shadow hover:shadow-md transition p-5 space-y-4 flex flex-col justify-between"
+              >
+                {/* Title & Category */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    {item.gig.title || "Gig not available"}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {item.gig.category} &gt; {item.gig.subCategory}
+                  </p>
+                </div>
 
-                return (
-                  <tr key={item._id} className="hover:bg-gray-50 transition">
-                    {/* Gig Details */}
-                    <td className="px-5 py-4 font-medium">
-                      {item.gig.title || "Gig not available"}
-                    </td>
+                {/* Bid Info */}
+                <div className="text-sm text-gray-700 space-y-1">
+                  <p>
+                    <span className="font-medium">Bid:</span> ${item.bidAmount}
+                  </p>
+                  <p>
+                    <span className="font-medium">Delivery:</span>{" "}
+                    {item.deliveryDays} Days
+                  </p>
+                  <p>
+                    <span className="font-medium">Bided:</span> {bidedAgo}
+                  </p>
+                  <p>
+                    <span className="font-medium">Posted By:</span>{" "}
+                    {item.gig?.postedBy?.name || "N/A"}
+                  </p>
+                </div>
 
-                    {/* Category - Subcategory */}
-                    <td className="px-5 py-4">
-                      {item.gig.category} &gt; {item.gig.subCategory}
-                    </td>
+                {/* Action Buttons */}
+                <div className="flex items-center gap-3 mt-3">
+                  {/* View Bid */}
+                  <>
+                    <button
+                      id={`view-bid-${item?._id}`}
+                      data-tooltip-content="View Bid Data"
+                      onClick={() => {
+                        setSelectedBidID(item?._id);
+                        document
+                          .getElementById("View_Gig_Bids_Modal")
+                          .showModal();
+                      }}
+                      className="flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
+                    >
+                      <img src={GigBids} alt="gig app" className="w-5" />
+                    </button>
+                    <Tooltip
+                      anchorSelect={`#view-bid-${item?._id}`}
+                      place="top"
+                      className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
+                    />
+                  </>
 
-                    {/* Bid Amount */}
-                    <td className="px-5 py-4">$ {item.bidAmount}</td>
+                  {/* Cancel Bid */}
+                  <>
+                    <div
+                      id={`delete-bid-${item._id}`}
+                      data-tooltip-content="Cancel Bid"
+                      onClick={() => handleDeleteBid(item._id)}
+                      className="flex items-center justify-center w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
+                    >
+                      <ImCross />
+                    </div>
+                    <Tooltip
+                      anchorSelect={`#delete-bid-${item._id}`}
+                      place="top"
+                      className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
+                    />
+                  </>
 
-                    {/* Delivery Days */}
-                    <td className="px-5 py-4">{item.deliveryDays} Days</td>
-
-                    {/* Bided Ago */}
-                    <td className="px-5 py-4">{bidedAgo}</td>
-
-                    {/* Posted By */}
-                    <td className="px-5 py-4">
-                      {item.gig?.postedBy?.name || "N/A"}
-                    </td>
-
-                    {/* Actions */}
-                    <td className="px-5 py-4 flex items-center gap-2">
-                      {/* View Bid Button */}
-                      <>
-                        <button
-                          id={`view-bid-${item?._id}`}
-                          data-tooltip-content="View Bid Data"
-                          onClick={() => {
-                            setSelectedBidID(item?._id);
-                            document
-                              .getElementById("View_Gig_Bids_Modal")
-                              .showModal();
-                          }}
-                          className="bg-white hover:bg-blue-300/50 border-2 border-blue-600 rounded-full p-3 transition cursor-pointer"
-                        >
-                          <img src={GigBids} alt="gig app" className="w-5" />
-                        </button>
-                        <Tooltip
-                          anchorSelect={`#view-bid-${item?._id}`}
-                          place="top"
-                          className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                        />
-                      </>
-
-                      {/* Delete Application Button */}
-                      <>
-                        <div
-                          id={`delete-bid-${item._id}`}
-                          data-tooltip-content="Cancel Bid"
-                          onClick={() => handleDeleteBid(item._id)}
-                          className="p-3 text-lg rounded-full border-2 border-red-500 hover:bg-red-200 cursor-pointer"
-                        >
-                          <ImCross />
-                        </div>
-                        <Tooltip
-                          anchorSelect={`#delete-bid-${item._id}`}
-                          place="top"
-                          className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                        />
-                      </>
-
-                      {/* Details Button */}
-                      <>
-                        <div
-                          id={`gig-details-btn-${item?._id}`}
-                          data-tooltip-content="View Gig Details"
-                          className="p-3 text-lg rounded-full border-2 border-yellow-500 hover:bg-yellow-200 cursor-pointer"
-                          onClick={() => {
-                            setSelectedGigID(item?.gig?._id);
-                            document
-                              .getElementById("Gig_Details_Modal")
-                              .showModal();
-                          }}
-                        >
-                          <FaInfo />
-                        </div>
-
-                        <Tooltip
-                          anchorSelect={`#gig-details-btn-${item?._id}`}
-                          place="top"
-                          className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                        />
-                      </>
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan="7" className="p-4 text-center text-gray-500">
-                  No bids found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  {/* Gig Details */}
+                  <>
+                    <div
+                      id={`gig-details-btn-${item?._id}`}
+                      data-tooltip-content="View Gig Details"
+                      className="flex items-center justify-center w-10 h-10 bg-yellow-400 hover:bg-yellow-500 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
+                      onClick={() => {
+                        setSelectedGigID(item?.gig?._id);
+                        document
+                          .getElementById("Gig_Details_Modal")
+                          .showModal();
+                      }}
+                    >
+                      <FaInfo />
+                    </div>
+                    <Tooltip
+                      anchorSelect={`#gig-details-btn-${item?._id}`}
+                      place="top"
+                      className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
+                    />
+                  </>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="text-center col-span-full mt-20 px-4">
+            <p className="text-2xl font-semibold text-white mb-4">
+              No Bids Found
+            </p>
+            <p className="text-lg text-gray-300 mb-6">
+              You haven’t placed any bids yet. Browse available gigs and start
+              submitting your proposals to get hired.
+            </p>
+            <Link 
+              to={"/Gigs"}
+              className="inline-block bg-linear-to-bl hover:bg-linear-to-tl from-white to-gray-300 hover:bg-blue-700 text-black font-semibold py-3 px-10 rounded shadow-md transition cursor-pointer hover:shadow-lg"
+            >
+              Explore Gigs
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Modal */}
+      {/* View Bid Modal */}
       <dialog id="View_Gig_Bids_Modal" className="modal">
         <MyGigBidsModal
           selectedBidID={selectedBidID}

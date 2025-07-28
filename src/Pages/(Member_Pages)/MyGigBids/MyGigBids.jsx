@@ -131,6 +131,7 @@ const MyGigBids = () => {
   if (loading || GigBidsIsLoading || GigsIsLoading) return <Loading />;
   if (GigBidsError || GigsError) return <Error />;
 
+  // Merge bids with gigs
   const mergedData = bidsList
     .map((application) => {
       const gig = GigsData.find((gig) => gig._id === application.gigId);

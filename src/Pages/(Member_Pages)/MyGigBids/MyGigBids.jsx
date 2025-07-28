@@ -77,6 +77,7 @@ const MyGigBids = () => {
     }
   }, [GigBidsData]);
 
+  // Delete Bid Handler
   const handleDeleteBid = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -153,125 +154,186 @@ const MyGigBids = () => {
         <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
-      {/* Table */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
+      {/* Bids Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
         {mergedData.length > 0 ? (
           mergedData.map((item) => {
             const bidedAgo = formatDistanceToNow(new Date(item.submittedAt), {
               addSuffix: true,
             });
+            const deliveryDeadline = item.gig?.deliveryDeadline
+              ? new Date(item.gig.deliveryDeadline).toLocaleDateString()
+              : "N/A";
+
+            const budget = item.gig?.budget;
+            const budgetRange = budget
+              ? `${budget.min?.toLocaleString()} - ${budget.max?.toLocaleString()} ${
+                  budget.currency || ""
+                }`
+              : "Not specified";
 
             return (
-              <div
+              <article
                 key={item._id}
-                className="bg-white border rounded-xl shadow hover:shadow-md transition p-5 space-y-4 flex flex-col justify-between"
+                className="bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between p-6 min-h-[360px]"
               >
                 {/* Title & Category */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {item.gig.title || "Gig not available"}
+                  <h3
+                    className="text-xl font-semibold text-gray-900 mb-1 truncate"
+                    title={item.gig?.title}
+                  >
+                    {item.gig?.title || "Gig Title Not Available"}
                   </h3>
-                  <p className="text-sm text-gray-500">
-                    {item.gig.category} &gt; {item.gig.subCategory}
+                  <p
+                    className="text-sm text-gray-600"
+                    title={`${item.gig?.category} > ${item.gig?.subCategory}`}
+                  >
+                    {item.gig?.category} &gt; {item.gig?.subCategory}
                   </p>
                 </div>
 
                 {/* Bid Info */}
-                <div className="text-sm text-gray-700 space-y-1">
-                  <p>
-                    <span className="font-medium">Bid:</span> ${item.bidAmount}
-                  </p>
-                  <p>
-                    <span className="font-medium">Delivery:</span>{" "}
-                    {item.deliveryDays} Days
-                  </p>
-                  <p>
-                    <span className="font-medium">Bided:</span> {bidedAgo}
-                  </p>
-                  <p>
-                    <span className="font-medium">Posted By:</span>{" "}
-                    {item.gig?.postedBy?.name || "N/A"}
-                  </p>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex items-center gap-3 mt-3">
-                  {/* View Bid */}
-                  <>
-                    <button
-                      id={`view-bid-${item?._id}`}
-                      data-tooltip-content="View Bid Data"
-                      onClick={() => {
-                        setSelectedBidID(item?._id);
-                        document
-                          .getElementById("View_Gig_Bids_Modal")
-                          .showModal();
-                      }}
-                      className="flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
+                <dl className="mt-4 text-gray-700 text-sm grid grid-cols-2 gap-y-2 gap-x-6">
+                  <div>
+                    <dt className="font-semibold text-gray-800">Bid Amount</dt>
+                    <dd className="mt-1">${item.bidAmount?.toFixed(2)}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold text-gray-800">
+                      Delivery Time
+                    </dt>
+                    <dd className="mt-1">{item.deliveryDays} Days</dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold text-gray-800">Submitted</dt>
+                    <dd className="mt-1">{bidedAgo}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold text-gray-800">Posted By</dt>
+                    <dd
+                      className="mt-1 truncate"
+                      title={item.gig?.postedBy?.name || "N/A"}
                     >
-                      <img src={GigBids} alt="gig app" className="w-5" />
-                    </button>
-                    <Tooltip
-                      anchorSelect={`#view-bid-${item?._id}`}
-                      place="top"
-                      className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                    />
-                  </>
+                      {item.gig?.postedBy?.name || "N/A"}
+                    </dd>
+                  </div>
+
+                  {/* Added Budget Range */}
+                  <div>
+                    <dt className="font-semibold text-gray-800">
+                      Budget Range
+                    </dt>
+                    <dd className="mt-1">{budgetRange}</dd>
+                  </div>
+
+                  {/* Delivery Deadline */}
+                  <div>
+                    <dt className="font-semibold text-gray-800">Deadline</dt>
+                    <dd className="mt-1">{deliveryDeadline}</dd>
+                  </div>
+
+                  {/* Remote or Not */}
+                  <div>
+                    <dt className="font-semibold text-gray-800">Remote</dt>
+                    <dd className="mt-1">
+                      {item.gig?.isRemote ? "Yes" : "No"}
+                    </dd>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="col-span-2">
+                    <dt className="font-semibold text-gray-800">Tags</dt>
+                    <dd className="mt-1 flex flex-wrap gap-2">
+                      {item.gig?.tags?.length > 0 ? (
+                        item.gig.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium"
+                          >
+                            {tag}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-500">No tags</span>
+                      )}
+                    </dd>
+                  </div>
+                </dl>
+
+                {/* Actions */}
+                <div className="flex justify-end items-center gap-4 mt-6">
+                  {/* View Bid */}
+                  <button
+                    id={`view-bid-${item._id}`}
+                    data-tooltip-content="View Bid Details"
+                    onClick={() => {
+                      setSelectedBidID(item._id);
+                      document
+                        .getElementById("View_Gig_Bids_Modal")
+                        .showModal();
+                    }}
+                    className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                    aria-label="View Bid Details"
+                  >
+                    <img src={GigBids} alt="View Bid" className="w-6" />
+                  </button>
+                  <Tooltip
+                    anchorSelect={`#view-bid-${item._id}`}
+                    place="top"
+                    className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
+                  />
 
                   {/* Cancel Bid */}
-                  <>
-                    <div
-                      id={`delete-bid-${item._id}`}
-                      data-tooltip-content="Cancel Bid"
-                      onClick={() => handleDeleteBid(item._id)}
-                      className="flex items-center justify-center w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
-                    >
-                      <ImCross />
-                    </div>
-                    <Tooltip
-                      anchorSelect={`#delete-bid-${item._id}`}
-                      place="top"
-                      className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                    />
-                  </>
+                  <button
+                    id={`delete-bid-${item._id}`}
+                    data-tooltip-content="Cancel Bid"
+                    onClick={() => handleDeleteBid(item._id)}
+                    className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                    aria-label="Cancel Bid"
+                  >
+                    <ImCross size={20} />
+                  </button>
+                  <Tooltip
+                    anchorSelect={`#delete-bid-${item._id}`}
+                    place="top"
+                    className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
+                  />
 
                   {/* Gig Details */}
-                  <>
-                    <div
-                      id={`gig-details-btn-${item?._id}`}
-                      data-tooltip-content="View Gig Details"
-                      className="flex items-center justify-center w-10 h-10 bg-yellow-400 hover:bg-yellow-500 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
-                      onClick={() => {
-                        setSelectedGigID(item?.gig?._id);
-                        document
-                          .getElementById("Gig_Details_Modal")
-                          .showModal();
-                      }}
-                    >
-                      <FaInfo />
-                    </div>
-                    <Tooltip
-                      anchorSelect={`#gig-details-btn-${item?._id}`}
-                      place="top"
-                      className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                    />
-                  </>
+                  <button
+                    id={`gig-details-btn-${item._id}`}
+                    data-tooltip-content="View Gig Details"
+                    onClick={() => {
+                      setSelectedGigID(item.gig?._id);
+                      document.getElementById("Gig_Details_Modal").showModal();
+                    }}
+                    className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                    aria-label="View Gig Details"
+                  >
+                    <FaInfo size={20} />
+                  </button>
+                  <Tooltip
+                    anchorSelect={`#gig-details-btn-${item._id}`}
+                    place="top"
+                    className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
+                  />
                 </div>
-              </div>
+              </article>
             );
           })
         ) : (
-          <div className="text-center col-span-full mt-20 px-4">
-            <p className="text-2xl font-semibold text-white mb-4">
+          <div className="text-center col-span-full mt-32 px-6 max-w-lg mx-auto">
+            <p className="text-3xl font-semibold text-gray-100 mb-4">
               No Bids Found
             </p>
-            <p className="text-lg text-gray-300 mb-6">
+            <p className="text-lg text-gray-300 mb-8">
               You haven’t placed any bids yet. Browse available gigs and start
               submitting your proposals to get hired.
             </p>
-            <Link 
-              to={"/Gigs"}
-              className="inline-block bg-linear-to-bl hover:bg-linear-to-tl from-white to-gray-300 hover:bg-blue-700 text-black font-semibold py-3 px-10 rounded shadow-md transition cursor-pointer hover:shadow-lg"
+            <Link
+              to="/Gigs"
+              className="inline-block bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded shadow-lg transition"
             >
               Explore Gigs
             </Link>

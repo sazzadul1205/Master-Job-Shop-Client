@@ -14,8 +14,8 @@ import Loading from "../../../../Shared/Loading/Loading";
 import Error from "../../../../Shared/Error/Error";
 
 const MyCourseApplicationsModal = ({
-  selectedCourseApplicationID,
-  setSelectedCourseApplicationID,
+  selectedApplicationID,
+  setSelectedApplicationID,
 }) => {
   const axiosPublic = useAxiosPublic();
 
@@ -25,12 +25,12 @@ const MyCourseApplicationsModal = ({
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["SelectedCourseApplications", selectedCourseApplicationID],
+    queryKey: ["SelectedCourseApplications", selectedApplicationID],
     queryFn: () =>
       axiosPublic
-        .get(`/CourseApplications?id=${selectedCourseApplicationID}`)
+        .get(`/CourseApplications?id=${selectedApplicationID}`)
         .then((res) => res.data),
-    enabled: !!selectedCourseApplicationID,
+    enabled: !!selectedApplicationID,
   });
 
   // UI Loading / Error
@@ -52,7 +52,7 @@ const MyCourseApplicationsModal = ({
         <button
           className="text-gray-500 hover:text-red-500 p-2 rounded-full cursor-pointer"
           onClick={() => {
-            setSelectedCourseApplicationID(null);
+            setSelectedApplicationID(null);
             document.getElementById("View_Course_Application_Modal").close();
           }}
         >
@@ -116,8 +116,8 @@ const MyCourseApplicationsModal = ({
 
 // Prop Validation
 MyCourseApplicationsModal.propTypes = {
-  selectedCourseApplicationID: PropTypes.string,
-  setSelectedCourseApplicationID: PropTypes.func.isRequired,
+  selectedApplicationID: PropTypes.string,
+  setSelectedApplicationID: PropTypes.func.isRequired,
 };
 
 export default MyCourseApplicationsModal;

@@ -146,6 +146,8 @@ const MyJobApplications = () => {
     })
     .filter((item) => item.job);
 
+  console.log(mergedData[0]);
+
   return (
     <section className="px-4 md:px-12 min-h-screen ">
       {/* Title */}
@@ -160,48 +162,115 @@ const MyJobApplications = () => {
         <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
-      {/* Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {/* Job Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
         {mergedData.length > 0 ? (
           mergedData.map(({ job, appliedAt, _id }) => (
             <article
               key={_id}
-              className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col justify-between p-6"
+              className="bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between p-6 min-h-[400px]"
             >
-              {/* Job Info */}
-              <div>
-                <h4 className="text-xl font-semibold text-gray-900 mb-2 truncate">
-                  {job?.title || "N/A"}
-                </h4>
-                <p className="text-sm text-gray-600 mb-4 truncate">
-                  {job?.company?.name || "N/A"}
-                </p>
+              {/* Company Logo & Job Title */}
+              <div className="flex items-center gap-4 mb-4">
+                {job?.company?.logo ? (
+                  <img
+                    src={job.company.logo}
+                    alt={`${job.company.name} logo`}
+                    className="w-12 h-12 object-contain rounded"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-400 font-bold text-xl">
+                    {job?.company?.name?.[0] || "?"}
+                  </div>
+                )}
+                <div className="flex flex-col">
+                  <h4
+                    className="text-xl font-semibold text-gray-900 truncate max-w-xs"
+                    title={job?.title}
+                  >
+                    {job?.title || "N/A"}
+                  </h4>
+                  <p
+                    className="text-sm text-gray-600 truncate max-w-xs"
+                    title={job?.company?.name}
+                  >
+                    {job?.company?.name || "N/A"}
+                  </p>
+                </div>
+              </div>
 
-                {/* Details */}
-                <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-gray-700 text-sm mb-5">
-                  <div>
-                    <dt className="font-semibold">Location:</dt>
-                    <dd>{job?.location || "N/A"}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold">Type:</dt>
-                    <dd>{job?.type || "N/A"}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold">Level:</dt>
-                    <dd>{job?.level || "N/A"}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold">Salary:</dt>
-                    <dd>
-                      {job?.salaryRange
-                        ? `${job.salaryRange.min?.toLocaleString()} - ${job.salaryRange.max?.toLocaleString()} ${
-                            job.salaryRange.currency || ""
-                          }`
-                        : "Not disclosed"}
-                    </dd>
-                  </div>
-                </dl>
+              {/* Job Details Grid */}
+              <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-gray-700 text-sm mb-5">
+                <div>
+                  <dt className="font-semibold">Location:</dt>
+                  <dd>{job?.location || "N/A"}</dd>
+                </div>
+                <div>
+                  <dt className="font-semibold">Type:</dt>
+                  <dd>{job?.type || "N/A"}</dd>
+                </div>
+                <div>
+                  <dt className="font-semibold">Level:</dt>
+                  <dd>{job?.level || "N/A"}</dd>
+                </div>
+                <div>
+                  <dt className="font-semibold">Experience:</dt>
+                  <dd>{job?.experience || "N/A"}</dd>
+                </div>
+                <div>
+                  <dt className="font-semibold">Salary:</dt>
+                  <dd>
+                    {job?.salaryRange
+                      ? `${job.salaryRange.min.toLocaleString()} - ${job.salaryRange.max.toLocaleString()} ${
+                          job.salaryRange.currency || ""
+                        }`
+                      : "Not disclosed"}
+                    {job?.isNegotiable && (
+                      <span className="ml-1 text-xs italic">(Negotiable)</span>
+                    )}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="font-semibold">Application Deadline:</dt>
+                  <dd>
+                    {job?.application?.applicationDeadline
+                      ? new Date(
+                          job.application.applicationDeadline
+                        ).toLocaleDateString()
+                      : "N/A"}
+                  </dd>
+                </div>
+              </dl>
+
+              {/* Tags & Perks */}
+              <div className="flex flex-wrap gap-2 mb-5">
+                {/* Tags */}
+                {job?.tags?.map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full"
+                  >
+                    {tag}
+                  </span>
+                ))}
+
+                {/* Remote/Hybrid/Onsite badges */}
+                {job?.remote && (
+                  <span className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                    Remote
+                  </span>
+                )}
+                {job?.hybrid && (
+                  <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded-full">
+                    Hybrid
+                  </span>
+                )}
+                {!job?.remote && !job?.hybrid && job?.onsite && (
+                  <span className="bg-gray-100 text-gray-800 text-xs font-semibold px-2 py-1 rounded-full">
+                    Onsite
+                  </span>
+                )}
               </div>
 
               {/* Applied Time */}
@@ -215,18 +284,19 @@ const MyJobApplications = () => {
               </p>
 
               {/* Actions */}
-              <div className="flex justify-between items-center gap-3">
+              <div className="flex justify-end items-center gap-4">
                 {/* View Application */}
                 <button
                   id={`job-btn-${job._id}`}
                   data-tooltip-content="View Application"
-                  className="flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
+                  className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition"
                   onClick={() => {
                     setSelectedApplicationID(_id);
                     document
                       .getElementById("View_Application_Modal")
                       .showModal();
                   }}
+                  aria-label="View Application"
                 >
                   <img
                     src={JobApplication}
@@ -244,8 +314,9 @@ const MyJobApplications = () => {
                 <button
                   id={`job-btn-cross-${job._id}`}
                   data-tooltip-content="Delete Application"
-                  className="flex items-center justify-center w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
+                  className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition"
                   onClick={() => handleDeleteApplication(_id)}
+                  aria-label="Delete Application"
                 >
                   <ImCross size={18} />
                 </button>
@@ -259,11 +330,12 @@ const MyJobApplications = () => {
                 <button
                   id={`job-details-btn-${job._id}`}
                   data-tooltip-content="View Job Details"
-                  className="flex items-center justify-center w-10 h-10 bg-yellow-400 hover:bg-yellow-500 text-white rounded-full transition-shadow shadow-md hover:shadow-lg cursor-pointer"
+                  className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition"
                   onClick={() => {
                     setSelectedJobID(job._id);
                     document.getElementById("Jobs_Details_Modal").showModal();
                   }}
+                  aria-label="View Job Details"
                 >
                   <FaInfo size={18} />
                 </button>
@@ -286,7 +358,7 @@ const MyJobApplications = () => {
             </p>
             <Link
               to={"/Jobs"}
-              className="inline-block bg-linear-to-bl hover:bg-linear-to-tl from-white to-gray-300 hover:bg-blue-700 text-black font-semibold py-3 px-10 rounded shadow-md transition cursor-pointer hover:shadow-lg"
+              className="inline-block bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold py-3 px-10 rounded shadow-md transition cursor-pointer hover:shadow-lg"
             >
               Browse Jobs
             </Link>

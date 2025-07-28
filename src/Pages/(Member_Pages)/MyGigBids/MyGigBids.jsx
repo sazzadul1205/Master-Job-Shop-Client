@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
@@ -24,7 +25,7 @@ import GigBids from "../../../assets/Navbar/Member/GigBids.png";
 // Modals
 import MyGigBidsModal from "./MyGigBidsModal/MyGigBidsModal";
 import GigDetailsModal from "../../(Public_Pages)/Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
-import { Link } from "react-router-dom";
+
 
 const MyGigBids = () => {
   const { user, loading } = useAuth();
@@ -273,7 +274,7 @@ const MyGigBids = () => {
                         .getElementById("View_Gig_Bids_Modal")
                         .showModal();
                     }}
-                    className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                    className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
                     aria-label="View Bid Details"
                   >
                     <img src={GigBids} alt="View Bid" className="w-6" />
@@ -289,7 +290,7 @@ const MyGigBids = () => {
                     id={`delete-bid-${item._id}`}
                     data-tooltip-content="Cancel Bid"
                     onClick={() => handleDeleteBid(item._id)}
-                    className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                    className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
                     aria-label="Cancel Bid"
                   >
                     <ImCross size={20} />
@@ -308,7 +309,7 @@ const MyGigBids = () => {
                       setSelectedGigID(item.gig?._id);
                       document.getElementById("Gig_Details_Modal").showModal();
                     }}
-                    className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                    className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
                     aria-label="View Gig Details"
                   >
                     <FaInfo size={20} />

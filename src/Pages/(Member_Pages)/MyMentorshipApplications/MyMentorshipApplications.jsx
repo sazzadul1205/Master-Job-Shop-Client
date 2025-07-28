@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
@@ -24,15 +24,16 @@ import Mentorship from "../../../assets/Navbar/Member/Mentorship.png";
 // Modals
 import MentorshipDetailsModal from "../../(Public_Pages)/Home/FeaturedMentorship/MentorshipDetailsModal/MentorshipDetailsModal";
 import MyMentorshipApplicationModal from "./MyMentorshipApplicationModal/MyMentorshipApplicationModal";
+import { Link } from "react-router-dom";
 
 const MyMentorshipApplications = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
   // Select Mentorship ID
-  const [selectedMentorshipApplicationID, setSelectedMentorshipApplicationID] =
-    useState(null);
+  const [applicationList, setApplicationList] = useState([]);
   const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
+  const [selectedApplicationID, setSelectedApplicationID] = useState(null);
 
   // Step 1: Fetch Mentorship Bids
   const {
@@ -76,27 +77,11 @@ const MyMentorshipApplications = () => {
     enabled: !!user?.email && uniqueMentorshipIds.length > 0,
   });
 
-  // Refetch All
-  const refetchAll = async () => {
-    await refetchMentorshipApplications();
-    await MentorshipRefetch();
-  };
-
-  //   UI Error / Loading
-  if (loading || MentorshipApplicationsIsLoading || MentorshipIsLoading)
-    return <Loading />;
-  if (MentorshipApplicationsError || MentorshipError) return <Error />;
-
-  // Merge application & Mentorship data
-  const mergedData = MentorshipApplicationsData.map((application) => {
-    const mentorship = MentorshipData.find(
-      (mentorship) => mentorship._id === application.mentorshipId
-    );
-    return {
-      ...application,
-      mentorship,
-    };
-  }).filter((item) => item.mentorship);
+  useEffect(() => {
+    if (MentorshipApplicationsData.length > 0) {
+      setApplicationList(MentorshipApplicationsData);
+    }
+  }, [MentorshipApplicationsData]);
 
   // Delete Bid Handler
   const handleDeleteMentorshipApplication = async (id) => {
@@ -115,9 +100,6 @@ const MyMentorshipApplications = () => {
         const res = await axiosPublic.delete(`/MentorshipApplications/${id}`);
 
         if (res.status === 200) {
-          // Refetch updated data
-          await refetchAll();
-
           // Temporary success toast (auto-dismiss)
           Swal.fire({
             icon: "success",
@@ -127,6 +109,10 @@ const MyMentorshipApplications = () => {
             timerProgressBar: true,
             showConfirmButton: false,
           });
+
+          // Silent refetch
+          await refetchMentorshipApplications({ throwOnError: false });
+          await MentorshipRefetch({ throwOnError: false });
         } else {
           throw new Error("Unexpected server response.");
         }
@@ -145,6 +131,24 @@ const MyMentorshipApplications = () => {
     }
   };
 
+  //   UI Error / Loading
+  if (loading || MentorshipApplicationsIsLoading || MentorshipIsLoading)
+    return <Loading />;
+  if (MentorshipApplicationsError || MentorshipError) return <Error />;
+
+  // Merge mentorship and applications
+  const mergedData = applicationList
+    .map((application) => {
+      const mentorship = MentorshipData.find(
+        (item) => item._id === application.mentorshipId
+      );
+      return {
+        ...application,
+        mentorship,
+      };
+    })
+    .filter((item) => item.mentorship);
+
   return (
     <section className="px-4 md:px-12 min-h-screen">
       {/* Title */}
@@ -153,176 +157,185 @@ const MyMentorshipApplications = () => {
       </h3>
 
       {/* Divider */}
-      <p className="bg-white py-[2px] w-1/3 mx-auto" />
+      <div className="flex items-center justify-center gap-4 my-5">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+      </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto shadow mt-5">
-        <table className="min-w-full text-sm text-gray-800">
-          {/* Table Header */}
-          <thead className="bg-gray-500 border-b text-xs text-white border border-black uppercase tracking-wide cursor-default">
-            <tr>
-              <th className="px-3 py-4 text-left">Mentorship Title</th>
-              <th className="px-3 py-4 text-left">Mentor</th>
-              <th className="px-3 py-4 text-left">Skills</th>
-              <th className="px-3 py-4 text-left">Fee</th>
-              <th className="px-3 py-4 text-left">Applied</th>
-              <th className="px-3 py-4 text-left">Status</th>
-              <th className="px-3 py-4 text-left">Action</th>
-            </tr>
-          </thead>
+      {/* Mentorship Applications Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+        {mergedData.length > 0 ? (
+          mergedData.map((item) => {
+            const appliedAgo = item.appliedAt
+              ? formatDistanceToNow(new Date(item.appliedAt), {
+                  addSuffix: true,
+                })
+              : "N/A";
 
-          {/* Table Body */}
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {mergedData?.length > 0 ? (
-              mergedData.map((item) => (
-                <tr key={item._id} className="hover:bg-gray-50 transition">
-                  {/* Title & Category */}
-                  <td className="px-4 py-3 font-medium">
-                    <div>{item.mentorship?.title}</div>
-                    <div className="text-xs text-gray-500">
-                      {item.mentorship?.category} →{" "}
-                      {item.mentorship?.subCategory}
-                    </div>
-                  </td>
+            const fee = item.mentorship?.fee;
+            const isFree = fee?.type === "free";
+            const feeDisplay = isFree
+              ? "Free"
+              : `$${fee?.amount} ${fee?.currency || ""}`;
 
-                  {/* Mentor */}
-                  <td className="px-4 py-3">
-                    <div>{item.mentorship?.mentor?.name}</div>
-                    <div className="text-xs text-gray-500">
-                      ⭐ {item.mentorship?.mentor?.rating} •{" "}
-                      {item.mentorship?.mentor?.totalMentees} mentees
-                    </div>
-                  </td>
+            return (
+              <article
+                key={item._id}
+                className="bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between p-6 min-h-[360px]"
+              >
+                {/* Title & Category */}
+                <div>
+                  <h3
+                    className="text-xl font-semibold text-gray-900 mb-1 truncate"
+                    title={item.mentorship?.title}
+                  >
+                    {item.mentorship?.title || "Mentorship Title"}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {item.mentorship?.category} &gt;{" "}
+                    {item.mentorship?.subCategory}
+                  </p>
+                </div>
 
-                  {/* Skills */}
-                  <td className="px-4 py-3">
-                    {item.skills?.slice(0, 3).map((skill, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded mr-1 mb-1"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </td>
+                {/* Mentor Info */}
+                <div className="mt-4 text-gray-700 text-sm space-y-2">
+                  <div>
+                    <span className="font-semibold text-gray-800">
+                      Mentor:{" "}
+                    </span>
+                    {item.mentorship?.mentor?.name || "N/A"} • ⭐{" "}
+                    {item.mentorship?.mentor?.rating} (
+                    {item.mentorship?.mentor?.totalMentees || 0} mentees)
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-800">Fee: </span>
+                    {feeDisplay}
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-800">
+                      Applied:{" "}
+                    </span>
+                    {appliedAgo}
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-800">
+                      Status:{" "}
+                    </span>
+                    {item.mentorship?.status || "N/A"}
+                  </div>
+                </div>
 
-                  {/* Fee */}
-                  <td className="px-4 py-3">
-                    {item.mentorship?.fee?.type === "free" ? (
-                      <span className="text-green-600 font-semibold">Free</span>
-                    ) : (
-                      <span>
-                        ${item.mentorship?.fee?.amount}{" "}
-                        <span className="text-xs text-gray-500">
-                          {item.mentorship?.fee?.currency}
+                {/* Skills */}
+                <div className="mt-4">
+                  <span className="font-semibold text-gray-800 block mb-1">
+                    Skills
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {item.skills?.length ? (
+                      item.skills.slice(0, 6).map((skill, idx) => (
+                        <span
+                          key={idx}
+                          className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded"
+                        >
+                          {skill}
                         </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-500 text-sm">
+                        No skills listed
                       </span>
                     )}
-                  </td>
+                  </div>
+                </div>
 
-                  {/* Applied */}
-                  <td className="px-4 py-3">
-                    {item.appliedAt
-                      ? formatDistanceToNow(new Date(item.appliedAt), {
-                          addSuffix: true,
-                        })
-                      : "N/A"}
-                  </td>
+                {/* Action Buttons */}
+                <div className="flex justify-end items-center gap-4 mt-6">
+                  {/* View Application */}
+                  <button
+                    id={`view-mentorship-application-${item._id}`}
+                    data-tooltip-content="View Mentorship Application"
+                    onClick={() => {
+                      setSelectedApplicationID(item._id);
+                      document
+                        .getElementById("View_Mentorship_Application_Modal")
+                        .showModal();
+                    }}
+                    className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                    aria-label="View Application"
+                  >
+                    <img src={Mentorship} alt="View App" className="w-5" />
+                  </button>
+                  <Tooltip
+                    anchorSelect={`#view-mentorship-application-${item._id}`}
+                    place="top"
+                    className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
+                  />
 
-                  {/* Status */}
-                  <td className="px-4 py-3 capitalize">
-                    {item.mentorship?.status || "N/A"}
-                  </td>
+                  {/* Delete */}
+                  <button
+                    id={`delete-mentorship-application-${item._id}`}
+                    data-tooltip-content="Cancel Application"
+                    onClick={() => handleDeleteMentorshipApplication(item._id)}
+                    className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                    aria-label="Cancel Application"
+                  >
+                    <ImCross size={18} />
+                  </button>
+                  <Tooltip
+                    anchorSelect={`#delete-mentorship-application-${item._id}`}
+                    place="top"
+                    className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
+                  />
 
-                  {/* Actions */}
-                  <td className="px-5 py-4 flex items-center gap-2">
-                    {/* View Mentorship Application Button */}
-                    <>
-                      <button
-                        id={`view-mentorship-application-${item?._id}`}
-                        data-tooltip-content="View Mentorship Application Data"
-                        onClick={() => {
-                          setSelectedMentorshipApplicationID(item?._id);
-                          document
-                            .getElementById("View_Mentorship_Application_Modal")
-                            .showModal();
-                        }}
-                        className="bg-white hover:bg-blue-300/50 border-2 border-blue-600 rounded-full p-3 transition cursor-pointer"
-                      >
-                        <img src={Mentorship} alt="gig app" className="w-5" />
-                      </button>
-                      <Tooltip
-                        anchorSelect={`#view-mentorship-application-${item?._id}`}
-                        place="top"
-                        className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                      />
-                    </>
-
-                    {/* Delete Application Button */}
-                    <>
-                      <div
-                        id={`delete-mentorship-application-${item._id}`}
-                        data-tooltip-content="Cancel Mentorship Application"
-                        onClick={() =>
-                          handleDeleteMentorshipApplication(item._id)
-                        }
-                        className="p-3 text-lg rounded-full border-2 border-red-500 hover:bg-red-200 cursor-pointer"
-                      >
-                        <ImCross />
-                      </div>
-                      <Tooltip
-                        anchorSelect={`#delete-mentorship-application-${item._id}`}
-                        place="top"
-                        className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                      />
-                    </>
-
-                    {/* Details Button */}
-                    <>
-                      <div
-                        id={`mentorship-details-btn-${item?._id}`}
-                        data-tooltip-content="View Mentorship Details"
-                        className="p-3 text-lg rounded-full border-2 border-yellow-500 hover:bg-yellow-200 cursor-pointer"
-                        onClick={() => {
-                          setSelectedMentorshipID(item?.gig?._id);
-                          document
-                            .getElementById("Mentorship_Details_Modal")
-                            .showModal();
-                        }}
-                      >
-                        <FaInfo />
-                      </div>
-
-                      <Tooltip
-                        anchorSelect={`#gig-details-btn-${item?._id}`}
-                        place="top"
-                        className="!text-sm !bg-gray-800 !text-white !py-1 !px-3 !rounded"
-                      />
-                    </>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan="7"
-                  className="text-center text-gray-500 py-6 font-medium"
-                >
-                  No applications found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  {/* Mentorship Details */}
+                  <button
+                    id={`mentorship-details-btn-${item._id}`}
+                    data-tooltip-content="View Mentorship Details"
+                    onClick={() => {
+                      setSelectedMentorshipID(item?.mentorship?._id);
+                      document
+                        .getElementById("Mentorship_Details_Modal")
+                        .showModal();
+                    }}
+                    className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                    aria-label="View Mentorship Details"
+                  >
+                    <FaInfo size={18} />
+                  </button>
+                  <Tooltip
+                    anchorSelect={`#mentorship-details-btn-${item._id}`}
+                    place="top"
+                    className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
+                  />
+                </div>
+              </article>
+            );
+          })
+        ) : (
+          <div className="text-center col-span-full mt-32 px-6 max-w-lg mx-auto">
+            <p className="text-3xl font-semibold text-gray-100 mb-4">
+              No Applications Found
+            </p>
+            <p className="text-lg text-gray-300 mb-8">
+              You haven’t applied to any mentorship&apos;s yet. Browse available
+              mentorship&apos;s and apply to grow under expert guidance.
+            </p>
+            <Link
+              to="/Mentorship"
+              className="inline-block bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded shadow-lg transition"
+            >
+              Explore Mentorship&apos;s
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Modal */}
       <dialog id="View_Mentorship_Application_Modal" className="modal">
         <MyMentorshipApplicationModal
-          selectedMentorshipApplicationID={selectedMentorshipApplicationID}
-          setSelectedMentorshipApplicationID={
-            setSelectedMentorshipApplicationID
-          }
+          selectedApplicationID={selectedApplicationID}
+          setSelectedApplicationID={setSelectedApplicationID}
         />
       </dialog>
 

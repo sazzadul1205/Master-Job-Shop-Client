@@ -146,8 +146,6 @@ const MyJobApplications = () => {
     })
     .filter((item) => item.job);
 
-  console.log(mergedData[0]);
-
   return (
     <section className="px-4 md:px-12 min-h-screen ">
       {/* Title */}

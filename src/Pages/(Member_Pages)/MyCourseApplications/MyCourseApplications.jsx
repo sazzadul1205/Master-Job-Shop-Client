@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
@@ -24,7 +25,6 @@ import Courses from "../../../assets/Navbar/Member/Courses.png";
 // Modals
 import MyCourseApplicationsModal from "./MyCourseApplicationsModal/MyCourseApplicationsModal";
 import CourseDetailsModal from "../../(Public_Pages)/Home/FeaturedCourses/CourseDetailsModal/CourseDetailsModal";
-import { Link } from "react-router-dom";
 
 const MyCourseApplications = () => {
   const { user, loading } = useAuth();

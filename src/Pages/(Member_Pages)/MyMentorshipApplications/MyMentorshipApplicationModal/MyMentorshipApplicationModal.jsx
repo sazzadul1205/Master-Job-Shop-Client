@@ -14,8 +14,8 @@ import Loading from "../../../../Shared/Loading/Loading";
 import Error from "../../../../Shared/Error/Error";
 
 const MyMentorshipApplicationModal = ({
-  selectedMentorshipApplicationID,
-  setSelectedMentorshipApplicationID,
+  selectedApplicationID,
+  setSelectedApplicationID,
 }) => {
   const axiosPublic = useAxiosPublic();
 
@@ -25,15 +25,12 @@ const MyMentorshipApplicationModal = ({
     isLoading,
     error,
   } = useQuery({
-    queryKey: [
-      "SelectedMentorshipApplicationsData",
-      selectedMentorshipApplicationID,
-    ],
+    queryKey: ["SelectedMentorshipApplicationsData", selectedApplicationID],
     queryFn: () =>
       axiosPublic
-        .get(`/MentorshipApplications?id=${selectedMentorshipApplicationID}`)
+        .get(`/MentorshipApplications?id=${selectedApplicationID}`)
         .then((res) => res.data),
-    enabled: !!selectedMentorshipApplicationID,
+    enabled: !!selectedApplicationID,
   });
 
   // UI Loading / Error State
@@ -55,7 +52,7 @@ const MyMentorshipApplicationModal = ({
         <button
           className="text-gray-500 hover:text-red-500 p-2 rounded-full cursor-pointer"
           onClick={() => {
-            setSelectedMentorshipApplicationID(null);
+            setSelectedApplicationID(null);
             document
               .getElementById("View_Mentorship_Application_Modal")
               .close();
@@ -158,8 +155,8 @@ const MyMentorshipApplicationModal = ({
 };
 
 MyMentorshipApplicationModal.propTypes = {
-  selectedMentorshipApplicationID: PropTypes.string,
-  setSelectedMentorshipApplicationID: PropTypes.func.isRequired,
+  selectedApplicationID: PropTypes.string,
+  setSelectedApplicationID: PropTypes.func.isRequired,
 };
 
 export default MyMentorshipApplicationModal;

@@ -1,9 +1,18 @@
+// Packages
 import { useQuery } from "@tanstack/react-query";
+
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import ProfileHeader from "./ProfileHeader/ProfileHeader";
+
+// Shared
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+
+// Components
+import ProfileHeader from "./ProfileHeader/ProfileHeader";
+import ProfilePersonalInformation from "./ProfilePersonalInformation/ProfilePersonalInformation";
+import ProfileDocuments from "./ProfileDocuments/ProfileDocuments";
 
 const UserProfile = () => {
   const { user, loading } = useAuth();
@@ -27,8 +36,12 @@ const UserProfile = () => {
   if (UserError) return <Error />;
 
   return (
-    <div className="bg-white">
+    <div className="bg-white py-3">
       <ProfileHeader user={UserData} />
+
+      <ProfilePersonalInformation user={UserData} />
+
+      <ProfileDocuments user={UserData} />
     </div>
   );
 };

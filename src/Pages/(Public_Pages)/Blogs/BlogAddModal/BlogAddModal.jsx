@@ -138,7 +138,7 @@ const BlogAddModal = ({ BlogsRefetch }) => {
       }
     } catch (err) {
       // Log error and display error alert to user
-      console.error("❌ Error Posting Blog:", err);
+      console.error("Error Posting Blog:", err);
       Swal.fire("Error", "Failed to add blog", "error");
     } finally {
       // Always reset loading state when process finishes

@@ -4,7 +4,7 @@ import DefaultUserLogo from "../../../../assets/DefaultUserLogo.jpg";
 
 const ProfileHeader = ({ user }) => {
   return (
-    <div className="bg-white max-w-7xl mx-auto rounded-2xl shadow-sm border p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
+    <div className=" max-w-7xl mx-auto rounded-xl shadow-sm border p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
       {/* Profile Image */}
       <div className="w-24 h-24 rounded-full overflow-hidden border border-gray-300">
         <img

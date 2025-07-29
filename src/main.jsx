@@ -65,6 +65,7 @@ import Testimonials from "./Pages/(Public_Pages)/Testimonials/Testimonials";
 
 // About Us
 import AboutUs from "./Pages/(Public_Pages)/AboutUs/AboutUs";
+import UserProfile from "./Pages/(Member_Pages)/UserProfile/UserProfile";
 
 const queryClient = new QueryClient();
 
@@ -158,6 +159,9 @@ createRoot(document.getElementById("root")).render(
 
               {/* About Us */}
               <Route path="/AboutUs" element={<AboutUs />} />
+
+              {/* User Profile */}
+              <Route path="/MyProfile" element={<UserProfile />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -41,8 +41,6 @@ const MyInternshipApplicationModal = ({
 
   if (error) return <Error />;
 
-  console.log(application);
-
   return (
     <div className="modal-box bg-white rounded-xl shadow-lg p-0 max-w-3xl w-full">
       {/* Header */}

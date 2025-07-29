@@ -31,9 +31,9 @@ const MyJobApplications = () => {
   const axiosPublic = useAxiosPublic();
 
   // State Hooks
-  const [selectedApplicationID, setSelectedApplicationID] = useState(null);
-  const [applicationsList, setApplicationsList] = useState([]);
   const [selectedJobID, setSelectedJobID] = useState(null);
+  const [applicationsList, setApplicationsList] = useState([]);
+  const [selectedApplicationID, setSelectedApplicationID] = useState(null);
 
   // Fetch Job Applications
   const {
@@ -287,7 +287,7 @@ const MyJobApplications = () => {
                 <button
                   id={`job-btn-${job._id}`}
                   data-tooltip-content="View Application"
-                  className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                  className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
                   onClick={() => {
                     setSelectedApplicationID(_id);
                     document
@@ -312,7 +312,7 @@ const MyJobApplications = () => {
                 <button
                   id={`job-btn-cross-${job._id}`}
                   data-tooltip-content="Delete Application"
-                  className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                  className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
                   onClick={() => handleDeleteApplication(_id)}
                   aria-label="Delete Application"
                 >
@@ -328,7 +328,7 @@ const MyJobApplications = () => {
                 <button
                   id={`job-details-btn-${job._id}`}
                   data-tooltip-content="View Job Details"
-                  className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                  className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
                   onClick={() => {
                     setSelectedJobID(job._id);
                     document.getElementById("Jobs_Details_Modal").showModal();
@@ -346,17 +346,17 @@ const MyJobApplications = () => {
             </article>
           ))
         ) : (
-          <div className="text-center col-span-full mt-20 px-4">
-            <p className="text-2xl font-semibold text-white mb-4">
-              You have not applied to any jobs yet.
+          <div className="text-center col-span-full mt-24 px-6 max-w-xl mx-auto">
+            <p className="text-2xl font-medium text-white mb-3">
+              You haven’t applied to any jobs yet.
             </p>
-            <p className="text-lg text-gray-300 mb-6">
-              Browse available job openings and start applying to find your next
-              opportunity.
+            <p className="text-gray-200 font-semibold text-lg mb-5">
+              Explore the available job openings and take the first step toward
+              your next opportunity.
             </p>
             <Link
-              to={"/Jobs"}
-              className="inline-block bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold py-3 px-10 rounded shadow-md transition cursor-pointer hover:shadow-lg"
+              to="/jobs"
+              className="inline-block bg-linear-to-bl hover:bg-linear-to-tr from-white to-gray-200 text-black font-semibold py-3 px-10 shadow-lg hover:shadow-xl rounded transition"
             >
               Browse Jobs
             </Link>

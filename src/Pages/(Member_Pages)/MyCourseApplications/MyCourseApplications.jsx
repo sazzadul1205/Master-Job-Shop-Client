@@ -237,7 +237,7 @@ const MyCourseApplications = () => {
                 <button
                   id={`course-app-btn-${_id}`}
                   data-tooltip-content="View Application"
-                  className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                  className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
                   onClick={() => {
                     setSelectedApplicationID(_id);
                     document
@@ -258,7 +258,7 @@ const MyCourseApplications = () => {
                 <button
                   id={`course-app-cross-${_id}`}
                   data-tooltip-content="Cancel Application"
-                  className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                  className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
                   onClick={() => handleDeleteCourseApplication(_id)}
                   aria-label="Cancel Application"
                 >
@@ -274,7 +274,7 @@ const MyCourseApplications = () => {
                 <button
                   id={`course-details-btn-${_id}`}
                   data-tooltip-content="View Course Details"
-                  className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition"
+                  className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
                   onClick={() => {
                     setSelectedCourseID(course?._id);
                     document.getElementById("Course_Details_Modal").showModal();
@@ -293,17 +293,17 @@ const MyCourseApplications = () => {
           ))
         ) : (
           // Fallback UI
-          <div className="col-span-full mt-32 text-center px-6 max-w-xl mx-auto">
-            <p className="text-3xl font-semibold text-white mb-4">
+          <div className="text-center col-span-full mt-24 px-6 max-w-xl mx-auto">
+            <p className="text-2xl font-medium text-white mb-3">
               No course applications found.
             </p>
-            <p className="text-lg text-gray-300 mb-6">
+            <p className="text-gray-200 font-semibold text-lg mb-5">
               You haven’t applied for any courses yet. Find courses that match
               your interests and grow your skills.
             </p>
             <Link
               to="/Courses"
-              className="inline-block bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded shadow-lg transition"
+              className="inline-block bg-linear-to-bl hover:bg-linear-to-tr from-white to-gray-200 text-black font-semibold py-3 px-10 shadow-lg hover:shadow-xl rounded transition"
             >
               Browse Courses
             </Link>

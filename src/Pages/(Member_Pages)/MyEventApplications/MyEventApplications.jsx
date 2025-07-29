@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
@@ -20,17 +21,19 @@ import { ImCross } from "react-icons/im";
 
 // Assets
 import Events from "../../../assets/Navbar/Member/Events.png";
-import EventDetailsModal from "../../(Public_Pages)/Home/FeaturedEvents/EventDetailsModal/EventDetailsModal";
+
+// Modals
 import MyEventApplicationsModal from "./MyEventApplicationsModal/MyEventApplicationsModal";
+import EventDetailsModal from "../../(Public_Pages)/Home/FeaturedEvents/EventDetailsModal/EventDetailsModal";
 
 const MyEventApplications = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
   // Select Events ID
-  const [selectedEventApplicationID, setSelectedEventApplicationID] =
-    useState(null);
+  const [applicationList, setApplicationList] = useState([]);
   const [selectedEventID, setSelectedEventID] = useState(null);
+  const [selectedApplicationID, setSelectedApplicationID] = useState(null);
 
   // Step 1: Fetch Events Bids
   const {
@@ -52,7 +55,6 @@ const MyEventApplications = () => {
   const eventIds = EventApplicationsData.map((app) => app.eventId);
   const uniqueEventIds = [...new Set(eventIds)];
 
-  //   Step 3: Fetch Events Data
   // Step 3: Fetch Events Data
   const {
     data: EventsData = [],
@@ -71,27 +73,14 @@ const MyEventApplications = () => {
     enabled: !!user?.email && uniqueEventIds.length > 0,
   });
 
-  // Refetch All
-  const refetchAll = async () => {
-    await refetchEventApplications();
-    await EventsRefetch();
-  };
+  // Set application list
+  useEffect(() => {
+    if (EventApplicationsData.length > 0) {
+      setApplicationList(EventApplicationsData);
+    }
+  }, [EventApplicationsData]);
 
-  //   UI Error / Loading
-  if (loading || EventApplicationsIsLoading || EventsIsLoading)
-    return <Loading />;
-  if (EventApplicationsError || EventsError) return <Error />;
-
-  // Merge application & Events data
-  const mergedData = EventApplicationsData.map((application) => {
-    const event = EventsData.find((event) => event._id === application.eventId);
-    return {
-      ...application,
-      event,
-    };
-  }).filter((item) => item.event);
-
-  // Delete Bid Handler
+  // Delete Event Handler
   const handleDeleteEventApplication = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -108,23 +97,27 @@ const MyEventApplications = () => {
         const res = await axiosPublic.delete(`/EventApplications/${id}`);
 
         if (res.status === 200) {
-          // Refetch updated data
-          await refetchAll();
+          // Optimistically update state
+          setApplicationList((prev) =>
+            prev.filter((internship) => internship._id !== id)
+          );
 
-          // Temporary success toast (auto-dismiss)
           Swal.fire({
             icon: "success",
             title: "Deleted!",
-            text: "The Event Application has been successfully removed.",
+            text: "The Event has been successfully removed.",
             timer: 1800,
             timerProgressBar: true,
             showConfirmButton: false,
           });
+
+          // Silent refetch
+          await refetchEventApplications({ throwOnError: false });
+          await EventsRefetch({ throwOnError: false });
         } else {
           throw new Error("Unexpected server response.");
         }
       } catch (err) {
-        // Show detailed error
         Swal.fire({
           icon: "error",
           title: "Failed to delete",
@@ -138,6 +131,26 @@ const MyEventApplications = () => {
     }
   };
 
+  //   UI Error / Loading
+  if (loading || EventApplicationsIsLoading || EventsIsLoading)
+    return <Loading />;
+  if (EventApplicationsError || EventsError) return <Error />;
+
+  // Merge application with Event
+  const mergedData = applicationList
+    .map((application) => {
+      const event = EventsData.find(
+        (event) => event._id === application.eventId
+      );
+      return {
+        ...application,
+        event,
+      };
+    })
+    .filter((item) => item.event);
+
+  console.log(mergedData[0]);
+
   return (
     <section className="px-4 md:px-12 min-h-screen">
       {/* Title */}
@@ -146,212 +159,200 @@ const MyEventApplications = () => {
       </h3>
 
       {/* Divider */}
-      <p className="bg-white py-[2px] w-1/3 mx-auto" />
+      <div className="flex items-center justify-center gap-4 my-5">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+      </div>
 
       {/* Table */}
-      <div className="overflow-x-auto shadow mt-5">
-        <table className="min-w-full text-sm text-gray-800">
-          {/* Table Header */}
-          <thead className="bg-gray-500 text-white text-xs uppercase tracking-wide">
-            <tr>
-              <th className="px-3 py-4 text-left">Event Title</th>
-              <th className="px-3 py-4 text-left">Type</th>
-              <th className="px-3 py-4 text-left">Category</th>
-              <th className="px-3 py-4 text-left">Format</th>
-              <th className="px-3 py-4 text-left">Price</th>
-              <th className="px-3 py-4 text-left">organize</th>
-              <th className="px-3 py-4 text-left">Attendance</th>
-              <th className="px-3 py-4 text-left">Applied On</th>
-              <th className="px-3 py-4 text-left">Actions</th>
-            </tr>
-          </thead>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+        {mergedData.length > 0 ? (
+          mergedData.map((app) => {
+            const event = app.event;
+            const fullDate = new Date(app.appliedAt).toLocaleDateString(
+              "en-BD",
+              {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              }
+            );
+            const relative = formatDistanceToNow(new Date(app.appliedAt), {
+              addSuffix: true,
+            });
 
-          {/* Table Body */}
-          <tbody className="divide-y bg-white">
-            {mergedData.length > 0 ? (
-              mergedData.map((app) => {
-                // Extract event data
-                const event = app.event;
+            return (
+              <div
+                key={app._id}
+                className="bg-white border border-gray-200 rounded-xl shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
+              >
+                {/* Header: Event Title & Location */}
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {event.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 truncate">
+                    {event?.location?.venue}, {event?.location?.city}
+                  </p>
+                </div>
 
-                // Format appliedAt
-                const fullDate = new Date(app.appliedAt).toLocaleString(
-                  "en-BD",
-                  {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  }
-                );
+                {/* Event Details */}
+                <div className="text-sm text-gray-700 space-y-1 mb-4">
+                  <p>
+                    <span className="font-medium text-gray-800">Type:</span>{" "}
+                    {event.type}
+                    {event.subCategory && (
+                      <span className="ml-1 text-xs text-gray-500">
+                        ({event.subCategory})
+                      </span>
+                    )}
+                  </p>
 
-                return (
-                  <tr key={app._id} className="hover:bg-gray-50 transition">
-                    {/* Event Title & Location */}
-                    <td className="px-4 py-3 text-sm font-semibold">
-                      <div>{event.title}</div>
-                      <div className="text-xs text-gray-500 italic">
-                        {event?.location?.venue}, {event?.location?.city}
-                      </div>
-                    </td>
+                  <p>
+                    <span className="font-medium text-gray-800">Category:</span>{" "}
+                    {event.category}
+                  </p>
 
-                    {/* Type / Subcategory */}
-                    <td className="px-4 py-3 text-sm">
-                      {event.type}
-                      <div className="text-xs text-gray-500">
-                        {event.subCategory}
-                      </div>
-                    </td>
+                  {event.tags?.length > 0 && (
+                    <div className="flex flex-wrap gap-1 text-xs text-gray-500">
+                      {event.tags.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="bg-gray-100 border px-1.5 py-0.5 rounded-md"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
-                    {/* Category & Tags */}
-                    <td className="px-4 py-3 text-sm">
-                      <div>{event.category}</div>
-                      <div className="flex flex-wrap gap-1 text-xs text-gray-500">
-                        {event.tags?.map((tag, idx) => (
-                          <span
-                            key={idx}
-                            className="bg-gray-100 border px-1 rounded"
-                          >
-                            #{tag}
+                  <p>
+                    <span className="font-medium text-gray-800">Format:</span>{" "}
+                    {event.format}
+                    {event.capacity && (
+                      <span className="ml-1 text-xs text-gray-500">
+                        (Capacity: {event.capacity})
+                      </span>
+                    )}
+                  </p>
+
+                  <p>
+                    <span className="font-medium text-gray-800">Price:</span>{" "}
+                    {event.price?.isFree ? (
+                      "Free"
+                    ) : (
+                      <>
+                        ${event.price?.standard ?? "—"}
+                        {event.price?.earlyBird && (
+                          <span className="ml-2 text-xs text-green-600">
+                            Early: ${event.price.earlyBird}
                           </span>
-                        ))}
-                      </div>
-                    </td>
-
-                    {/* Format & Capacity */}
-                    <td className="px-4 py-3 text-sm">
-                      {event.format}
-                      <div className="text-xs text-gray-500">
-                        Capacity: {event.capacity || "N/A"}
-                      </div>
-                    </td>
-
-                    {/* Price Details */}
-                    <td className="px-4 py-3 text-sm">
-                      {event.price?.isFree
-                        ? "Free"
-                        : `$${event.price?.standard ?? "?"}`}
-                      {event.price?.earlyBird && (
-                        <div className="text-xs text-green-600">
-                          Early Bird: ${event.price.earlyBird}
-                        </div>
-                      )}
-                      {event.price?.vip && (
-                        <div className="text-xs text-yellow-600">
-                          VIP: ${event.price.vip}
-                        </div>
-                      )}
-                    </td>
-
-                    {/* Organizer */}
-                    <td className="px-4 py-3 text-sm">
-                      {event.organizer?.name || "N/A"}
-                      <div className="text-xs text-blue-600 truncate">
-                        {event.organizer?.contactEmail}
-                      </div>
-                    </td>
-
-                    {/* Application Info */}
-                    <td className="px-4 py-3 text-sm">
-                      <div className="capitalize">{app.attendanceType}</div>
-                      <div className="text-xs text-gray-500">
-                        {app.attendees} attendee(s)
-                      </div>
-                      <div className="text-xs text-gray-500 truncate">
-                        Phone: {app.phone}
-                      </div>
-                    </td>
-
-                    {/* Applied Timestamp */}
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      <div>{fullDate}</div>
-                      <div className="text-xs italic text-gray-500">
-                        {formatDistanceToNow(new Date(app.appliedAt), {
-                          addSuffix: true,
-                        })}
-                      </div>
-                    </td>
-
-                    {/* Actions */}
-                    <td className="px-5 py-4 flex items-center gap-2">
-                      {/* View Application */}
-                      <>
-                        <button
-                          id={`view-events-application-${app._id}`}
-                          data-tooltip-content="View Events Application Data"
-                          onClick={() => {
-                            setSelectedEventApplicationID(app._id);
-                            document
-                              .getElementById("View_Event_Application_Modal")
-                              .showModal();
-                          }}
-                          className="bg-white hover:bg-blue-300/50 border-2 border-blue-600 rounded-full p-3 cursor-pointer"
-                        >
-                          <img src={Events} alt="events app" className="w-5" />
-                        </button>
-                        <Tooltip
-                          anchorSelect={`#view-events-application-${app._id}`}
-                          place="top"
-                          className="!text-sm !bg-gray-800 !text-white"
-                        />
+                        )}
+                        {event.price?.vip && (
+                          <span className="ml-2 text-xs text-yellow-600">
+                            VIP: ${event.price.vip}
+                          </span>
+                        )}
                       </>
+                    )}
+                  </p>
 
-                      {/* Delete */}
-                      <>
-                        <div
-                          id={`delete-events-application-${app._id}`}
-                          data-tooltip-content="Cancel Event Application"
-                          onClick={() => handleDeleteEventApplication(app._id)}
-                          className="p-3 text-lg border-2 border-red-500 hover:bg-red-200 rounded-full cursor-pointer"
-                        >
-                          <ImCross />
-                        </div>
-                        <Tooltip
-                          anchorSelect={`#delete-events-application-${app._id}`}
-                          place="top"
-                          className="!text-sm !bg-gray-800 !text-white"
-                        />
-                      </>
+                  <p>
+                    <span className="font-medium text-gray-800">
+                      Attendance:
+                    </span>{" "}
+                    {app.attendanceType} ({app.attendees})
+                  </p>
+                </div>
 
-                      {/* View Details */}
-                      <>
-                        <div
-                          id={`event-details-btn-${app._id}`}
-                          data-tooltip-content="View Event Details"
-                          onClick={() => {
-                            setSelectedEventID(event._id);
-                            document
-                              .getElementById("Event_Details_Modal")
-                              .showModal();
-                          }}
-                          className="p-3 text-lg border-2 border-yellow-500 hover:bg-yellow-200 rounded-full cursor-pointer"
-                        >
-                          <FaInfo />
-                        </div>
-                        <Tooltip
-                          anchorSelect={`#event-details-btn-${app._id}`}
-                          place="top"
-                          className="!text-sm !bg-gray-800 !text-white"
-                        />
-                      </>
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan="9" className="text-center py-6 text-gray-500">
-                  No events found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                {/* Application Timestamp */}
+                <div className="text-xs text-gray-500 italic">
+                  Applied on {fullDate} &mdash; {relative}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-end items-center gap-4 mt-6">
+                  {/* View Application */}
+                  <button
+                    id={`view-events-application-${app._id}`}
+                    data-tooltip-content="View Application"
+                    onClick={() => {
+                      setSelectedApplicationID(event?._id);
+                      document
+                        .getElementById("View_Event_Application_Modal")
+                        .showModal();
+                    }}
+                    className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                  >
+                    <img src={Events} alt="View" className="w-5" />
+                  </button>
+                  <Tooltip
+                    anchorSelect={`#view-events-application-${app._id}`}
+                    place="top"
+                  />
+
+                  {/* Delete */}
+                  <div
+                    id={`delete-events-application-${app._id}`}
+                    data-tooltip-content="Cancel Application"
+                    onClick={() => handleDeleteEventApplication(app._id)}
+                    className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                  >
+                    <ImCross />
+                  </div>
+                  <Tooltip
+                    anchorSelect={`#delete-events-application-${app._id}`}
+                    place="top"
+                  />
+
+                  {/* View Event Details */}
+                  <div
+                    id={`event-details-btn-${app._id}`}
+                    data-tooltip-content="View Event Details"
+                    onClick={() => {
+                      setSelectedEventID(event._id);
+                      document
+                        .getElementById("Event_Details_Modal")
+                        .showModal();
+                    }}
+                    className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                  >
+                    <FaInfo />
+                  </div>
+                  <Tooltip
+                    anchorSelect={`#event-details-btn-${app._id}`}
+                    place="top"
+                  />
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="text-center col-span-full mt-24 px-6 max-w-xl mx-auto">
+            <p className="text-2xl font-medium text-white mb-3">
+              No Event Applications Found
+            </p>
+            <p className="text-gray-200 font-semibold text-lg mb-5">
+              You haven’t applied to any events yet. Start exploring and get
+              involved.
+            </p>
+            <Link
+              to="/Events"
+              className="inline-block bg-linear-to-bl hover:bg-linear-to-tr from-white to-gray-200 text-black font-semibold py-3 px-10 shadow-lg hover:shadow-xl rounded transition"
+            >
+              Browse Events
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Modals */}
       {/* View Event Application Modal */}
       <dialog id="View_Event_Application_Modal" className="modal">
         <MyEventApplicationsModal
-          selectedEventApplicationID={selectedEventApplicationID}
-          setSelectedEventApplicationID={setSelectedEventApplicationID}
+          selectedApplicationID={selectedApplicationID}
+          setSelectedApplicationID={setSelectedApplicationID}
         />
       </dialog>
 

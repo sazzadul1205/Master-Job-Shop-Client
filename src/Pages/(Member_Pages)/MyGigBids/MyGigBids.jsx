@@ -26,7 +26,6 @@ import GigBids from "../../../assets/Navbar/Member/GigBids.png";
 import MyGigBidsModal from "./MyGigBidsModal/MyGigBidsModal";
 import GigDetailsModal from "../../(Public_Pages)/Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
 
-
 const MyGigBids = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
@@ -325,17 +324,17 @@ const MyGigBids = () => {
             );
           })
         ) : (
-          <div className="text-center col-span-full mt-32 px-6 max-w-lg mx-auto">
-            <p className="text-3xl font-semibold text-gray-100 mb-4">
-              No Bids Found
+          <div className="text-center col-span-full mt-24 px-6 max-w-xl mx-auto">
+            <p className="text-2xl font-medium text-white mb-3">
+              No Gig Bids Found
             </p>
-            <p className="text-lg text-gray-300 mb-8">
+            <p className="text-gray-200 font-semibold text-lg mb-5">
               You haven’t placed any bids yet. Browse available gigs and start
               submitting your proposals to get hired.
             </p>
             <Link
               to="/Gigs"
-              className="inline-block bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded shadow-lg transition"
+              className="inline-block bg-linear-to-bl hover:bg-linear-to-tr from-white to-gray-200 text-black font-semibold py-3 px-10 shadow-lg hover:shadow-xl rounded transition"
             >
               Explore Gigs
             </Link>

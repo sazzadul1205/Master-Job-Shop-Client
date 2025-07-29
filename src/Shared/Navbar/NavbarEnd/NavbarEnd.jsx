@@ -182,7 +182,7 @@ const NavbarEnd = () => {
       {/* Show user avatar if logged in, otherwise show login button */}
       {user ? (
         <div
-          className="relative rounded-full border-4 border-white"
+          className="relative rounded-full border-2 border-white hover:border-gray-300"
           ref={dropdownRef}
         >
           {/* User profile picture */}
@@ -192,7 +192,7 @@ const NavbarEnd = () => {
               "https://i.ibb.co.com/XtrM9rc/UsersData.jpg"
             }
             alt="User Avatar"
-            className="w-14 h-14 rounded-full cursor-pointer hover:scale-105"
+            className="w-15 h-15 rounded-full cursor-pointer"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           />
 

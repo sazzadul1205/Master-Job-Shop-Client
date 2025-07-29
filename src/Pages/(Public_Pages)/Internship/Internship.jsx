@@ -140,6 +140,7 @@ const Internship = () => {
     <div className="min-h-screen">
       {/* Page Title */}
       <div className="relative text-center">
+        {/* Search Toggle */}
         <div className="absolute right-1/4 top-1/2 -translate-y-1/2">
           <div
             onClick={() => setShowFilters(!showFilters)}
@@ -154,13 +155,24 @@ const Internship = () => {
             )}
           </div>
         </div>
+
+        {/* Title */}
         <h1 className="text-3xl font-bold text-white px-4 md:px-20">
           Discover Internship Opportunities
         </h1>
+
+        {/* Sub Title */}
         <p className="text-gray-200 mx-auto max-w-4xl font-semibold text-xl px-4 md:px-20">
           Launch your career with hands-on experience. Browse internships that
           align with your goals and grow under real-world Internship.
         </p>
+      </div>
+
+      {/* Divider */}
+      <div className="flex items-center justify-center gap-4 my-5 px-10">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
       {/* Filters */}
@@ -169,6 +181,7 @@ const Internship = () => {
           showFilters ? "max-h-[600px] opacity-100 mt-6" : "max-h-0 opacity-0"
         }`}
       >
+        {/* Filter Controls */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-black px-20 pt-10">
           {/* Keyword */}
           <div className="flex flex-col">
@@ -270,11 +283,13 @@ const Internship = () => {
 
         {/* Clear Button & Results */}
         <div className="flex justify-between items-center px-20 py-3">
+          {/* Results */}
           <div className="text-lg text-white playfair">
             {filteredInternship.length} Internship
             {filteredInternship.length !== 1 && "s"} found
           </div>
 
+          {/* Clear Button */}
           <CommonButton
             clickEvent={handleClear}
             text="Clear"
@@ -288,11 +303,19 @@ const Internship = () => {
             width="auto"
           />
         </div>
+
+        {/* Divider */}
+        <div className="flex items-center justify-center gap-4 my-5 px-10">
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+          <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+        </div>
       </div>
 
       {/* Internship Cards */}
       <div className="py-6 px-4 md:px-20">
         {filteredInternship.length > 0 ? (
+          // Display internship cards
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredInternship.map((internship) => (
               <InternshipCard
@@ -303,6 +326,7 @@ const Internship = () => {
             ))}
           </div>
         ) : (
+          // Display no internships found message
           <div className="text-center text-white text-lg font-medium bg-white/10 rounded p-6">
             <p>😕 No Internship&apos;s found matching your criteria.</p>
             <p className="text-sm text-gray-300 mt-2">

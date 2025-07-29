@@ -40,10 +40,11 @@ const Mentorship = () => {
     queryFn: () => axiosPublic.get("/Mentorship").then((res) => res.data),
   });
 
-  // Filtered mentorship's
+  // Filtered mentorship based on search and selected filters
   const filteredMentorship = MentorshipData.filter((mentorship) => {
     const lowerSearch = searchTerm.toLowerCase();
 
+    // Match search term in title, description, mentor name, or skills covered
     const matchSearch =
       mentorship.title.toLowerCase().includes(lowerSearch) ||
       mentorship.description.toLowerCase().includes(lowerSearch) ||
@@ -52,17 +53,23 @@ const Mentorship = () => {
         skill.toLowerCase().includes(lowerSearch)
       );
 
+    // Match selected category (if any)
     const matchCategory = category ? mentorship.category === category : true;
+
+    // Match selected subcategory (if any)
     const matchSubCategory = subCategory
       ? mentorship.subCategory === subCategory
       : true;
 
+    // Return mentorship if it matches all filters
     return matchSearch && matchCategory && matchSubCategory;
   });
 
+  // Loading / Error UI
   if (MentorshipIsLoading) return <Loading />;
   if (MentorshipError) return <Error />;
 
+  // Clear all filters and search input
   const handleClear = () => {
     setSearchTerm("");
     setCategory("");
@@ -73,6 +80,7 @@ const Mentorship = () => {
     <div className="min-h-screen">
       {/* Header */}
       <div className="relative text-center">
+        {/* Search Toggle */}
         <div className="absolute right-1/4 top-1/2 -translate-y-1/2">
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -86,13 +94,24 @@ const Mentorship = () => {
             )}
           </button>
         </div>
+
+        {/* Title */}
         <h1 className="text-3xl font-bold text-white px-4 md:px-20 pb-2">
           Find Your Ideal Mentor
         </h1>
+
+        {/* Sub Title */}
         <p className="text-gray-200 mx-auto max-w-4xl font-semibold text-xl px-4 md:px-20">
           Connect with experienced professionals for one-on-one guidance, career
           advice, and real-world insights tailored to your goals.
         </p>
+      </div>
+
+      {/* Divider */}
+      <div className="flex items-center justify-center gap-4 my-5 px-10">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
       {/* Filters */}
@@ -101,6 +120,7 @@ const Mentorship = () => {
           showFilters ? "max-h-[600px] opacity-100 mt-6" : "max-h-0 opacity-0"
         }`}
       >
+        {/* Filter Controls */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-black px-20 pt-10">
           {/* Keyword */}
           <div className="flex flex-col">
@@ -213,11 +233,13 @@ const Mentorship = () => {
 
         {/* Clear Button & Results */}
         <div className="flex justify-between items-center px-20 py-3">
+          {/* Results */}
           <div className="text-lg text-white playfair">
             {filteredMentorship.length} Mentorship
             {filteredMentorship.length !== 1 && "s"} found
           </div>
 
+          {/* Clear Button */}
           <CommonButton
             clickEvent={handleClear}
             text="Clear"
@@ -230,6 +252,13 @@ const Mentorship = () => {
             iconSize="text-base"
             width="auto"
           />
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center justify-center gap-4 my-5 px-10">
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+          <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+          <span className="w-3 h-3 bg-white rounded-full"></span>
         </div>
       </div>
 

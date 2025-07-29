@@ -29,10 +29,12 @@ import Error from "../../../Shared/Error/Error";
 const AboutUs = () => {
   const axiosPublic = useAxiosPublic();
 
+  // AOS Init
   useEffect(() => {
     AOS.init({ once: true, duration: 1000 });
   }, []);
 
+  // About Us Data
   const {
     data: AboutUsData,
     isLoading,
@@ -42,9 +44,11 @@ const AboutUs = () => {
     queryFn: () => axiosPublic.get(`/AboutUs`).then((res) => res.data),
   });
 
+  // Loading / Error UI
   if (isLoading) return <Loading />;
   if (error) return <Error />;
 
+  // Extract data from AboutUsData
   const { mission, values, history, team, contact } = AboutUsData || {};
 
   return (
@@ -56,6 +60,13 @@ const AboutUs = () => {
           Learn about our purpose, core values, journey, and the passionate team
           driving our mission forward.
         </p>
+      </div>
+
+      {/* Divider */}
+      <div className="flex items-center justify-center gap-4 my-5 px-10">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
       {/* Mission */}

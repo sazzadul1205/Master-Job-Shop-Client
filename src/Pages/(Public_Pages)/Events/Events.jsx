@@ -22,17 +22,17 @@ const Events = () => {
   const axiosPublic = useAxiosPublic();
 
   // UI States
-  const [showFilters, setShowFilters] = useState(false);
   const [selectedEventID, setSelectedEventID] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Filter states
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
-  const [type, setType] = useState("");
+  const [category, setCategory] = useState("");
+  const [isFree, setIsFree] = useState(false);
   const [format, setFormat] = useState("");
   const [city, setCity] = useState("");
-  const [isFree, setIsFree] = useState(false);
+  const [type, setType] = useState("");
 
   // Fetch events
   const {
@@ -44,36 +44,38 @@ const Events = () => {
     queryFn: () => axiosPublic.get("/Events").then((res) => res.data),
   });
 
-  // Clear filters handler
-  const handleClear = () => {
-    setSearchKeyword("");
-    setCategory("");
-    setSubCategory("");
-    setType("");
-    setFormat("");
-    setCity("");
-    setIsFree(false);
-  };
-
-  // Filter events based on all criteria
+  // Filter the list of events based on all selected criteria
   const filteredEvent = EventsData.filter((event) => {
+    // Check if keyword matches event title or any of the tags
     const matchesKeyword =
       event.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
       event.tags.some((tag) =>
         tag.toLowerCase().includes(searchKeyword.toLowerCase())
       );
 
+    // Check if the event matches selected category (if set)
     const matchesCategory = category ? event.category === category : true;
+
+    // Check if the event matches selected subcategory (if set)
     const matchesSubCategory = subCategory
       ? event.subCategory === subCategory
       : true;
+
+    // Check if the event matches selected type (e.g., Workshop, Seminar)
     const matchesType = type ? event.type === type : true;
+
+    // Check if the event matches selected format (e.g., Online, Offline)
     const matchesFormat = format ? event.format === format : true;
+
+    // Check if the city name matches user input (case-insensitive)
     const matchesCity = city
       ? event.location?.city.toLowerCase().includes(city.toLowerCase())
       : true;
+
+    // Check if the event is marked as free when the "isFree" toggle is enabled
     const matchesFree = isFree ? event.price.isFree === true : true;
 
+    // Return true only if all filters match
     return (
       matchesKeyword &&
       matchesCategory &&
@@ -85,27 +87,31 @@ const Events = () => {
     );
   });
 
-  // Extract unique filter options dynamically (memoized for perf)
+  // Extract unique categories from the event list for the category dropdown
   const uniqueCategories = useMemo(
     () => [...new Set(EventsData.map((e) => e.category).filter(Boolean))],
     [EventsData]
   );
 
+  // Extract unique subcategories from the event list
   const uniqueSubCategories = useMemo(
     () => [...new Set(EventsData.map((e) => e.subCategory).filter(Boolean))],
     [EventsData]
   );
 
+  // Extract unique event types (e.g., Workshop, Webinar) from the data
   const uniqueTypes = useMemo(
     () => [...new Set(EventsData.map((e) => e.type).filter(Boolean))],
     [EventsData]
   );
 
+  // Extract unique formats (e.g., Online, Offline) from the event data
   const uniqueFormats = useMemo(
     () => [...new Set(EventsData.map((e) => e.format).filter(Boolean))],
     [EventsData]
   );
 
+  // Extract unique cities from event locations for the city dropdown
   const uniqueCities = useMemo(
     () => [...new Set(EventsData.map((e) => e.location?.city).filter(Boolean))],
     [EventsData]
@@ -115,17 +121,26 @@ const Events = () => {
   if (isLoading) return <Loading />;
   if (error) return <Error />;
 
+  // Function to clear all filter states back to default values
+  const handleClear = () => {
+    setSearchKeyword("");
+    setCategory("");
+    setSubCategory("");
+    setType("");
+    setFormat("");
+    setCity("");
+    setIsFree(false);
+  };
+
   return (
     <div className="min-h-screen">
       {/* Page Title */}
       <div className="relative text-center">
-        {/* Filter Icon */}
+        {/* Search Toggle */}
         <div className="absolute right-1/4 top-1/2 -translate-y-1/2">
           <div
             onClick={() => setShowFilters(!showFilters)}
             className="bg-white hover:bg-gray-200 rounded-full p-3 cursor-pointer"
-            title={showFilters ? "Hide Filters" : "Show Filters"}
-            aria-label="Toggle Filters"
           >
             {showFilters ? (
               <FaTimes className="text-lg text-black font-bold" />
@@ -145,6 +160,13 @@ const Events = () => {
           Stay informed and engaged. Discover events that inspire growth, foster
           connections, and advance your journey.
         </p>
+      </div>
+
+      {/* Divider */}
+      <div className="flex items-center justify-center gap-4 my-5 px-10">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
       {/* Filters */}
@@ -284,10 +306,13 @@ const Events = () => {
 
         {/* Results Info & Clear Button */}
         <div className="flex justify-between items-center px-4 md:px-20 py-4">
+          {/* Results */}
           <div className="text-lg text-white playfair">
             {filteredEvent.length} Event{filteredEvent.length !== 1 && "s"}{" "}
             found
           </div>
+
+          {/* Clear Button */}
           <CommonButton
             clickEvent={handleClear}
             text="Clear"
@@ -301,11 +326,19 @@ const Events = () => {
             width="auto"
           />
         </div>
+
+        {/* Divider */}
+        <div className="flex items-center justify-center gap-4 my-5 px-10">
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+          <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+        </div>
       </div>
 
       {/* Event Cards */}
       <div className="py-6 px-4 md:px-20">
         {filteredEvent.length > 0 ? (
+          // Display event cards
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredEvent.map((event) => (
               <EventCard
@@ -316,6 +349,7 @@ const Events = () => {
             ))}
           </div>
         ) : (
+          // Display no events found message
           <div className="text-center text-white text-lg font-medium bg-white/10 rounded p-6">
             <p>😕 No Event&apos;s found matching your criteria.</p>
             <p className="text-sm text-gray-300 mt-2">

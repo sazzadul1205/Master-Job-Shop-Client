@@ -76,6 +76,13 @@ const Testimonials = () => {
         </p>
       </div>
 
+      {/* Divider */}
+      <div className="flex items-center justify-center gap-4 my-5 px-10">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+      </div>
+
       {/* Testimonials Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 z-10 relative">
         {TestimonialsData.map((testimonial) => (

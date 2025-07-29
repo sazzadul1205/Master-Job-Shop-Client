@@ -25,6 +25,7 @@ const CompanyProfiles = () => {
   const [country, setCountry] = useState("");
   const [size, setSize] = useState("");
 
+  // Fetch companies Data
   const {
     data: CompanyData = [],
     isLoading,
@@ -34,36 +35,48 @@ const CompanyProfiles = () => {
     queryFn: () => axiosPublic.get("/Company").then((res) => res.data),
   });
 
-  // Extract unique values for dropdowns
+  // Unique list of industries (e.g., Tech, Finance, Healthcare)
   const uniqueIndustries = [...new Set(CompanyData.map((c) => c.industry))];
+
+  // Unique list of countries from company headquarters
   const uniqueCountries = [
     ...new Set(CompanyData.map((c) => c.headquarters?.country)),
   ];
+
+  // Unique list of company sizes (e.g., Small, Medium, Large)
   const uniqueSizes = [...new Set(CompanyData.map((c) => c.size))];
 
+  // Filter companies based on search keyword and selected filters
   const filteredCompanies = useMemo(() => {
     return CompanyData.filter((company) => {
-      const keywordMatch =
-        company.name?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        company.tagline?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        company.industry?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        company.headquarters?.city
-          ?.toLowerCase()
-          .includes(searchKeyword.toLowerCase()) ||
-        company.tags?.some((tag) =>
-          tag.toLowerCase().includes(searchKeyword.toLowerCase())
-        );
+      // Convert the search keyword to lowercase once for comparison
+      const keyword = searchKeyword.toLowerCase();
 
+      // Match against company name, tagline, industry, city, and tags
+      const keywordMatch =
+        company.name?.toLowerCase().includes(keyword) ||
+        company.tagline?.toLowerCase().includes(keyword) ||
+        company.industry?.toLowerCase().includes(keyword) ||
+        company.headquarters?.city?.toLowerCase().includes(keyword) ||
+        company.tags?.some((tag) => tag.toLowerCase().includes(keyword));
+
+      // Match selected industry (if any)
       const industryMatch = industry ? company.industry === industry : true;
+
+      // Match selected country (if any)
       const countryMatch = country
         ? company.headquarters?.country === country
         : true;
+
+      // Match selected company size (if any)
       const sizeMatch = size ? company.size === size : true;
 
+      // Include company only if all conditions match
       return keywordMatch && industryMatch && countryMatch && sizeMatch;
     });
   }, [searchKeyword, industry, country, size, CompanyData]);
 
+  // Clear all filters and reset to defaults
   const handleClear = () => {
     setSearchKeyword("");
     setIndustry("");
@@ -71,6 +84,7 @@ const CompanyProfiles = () => {
     setSize("");
   };
 
+  // Loading / Error UI
   if (isLoading) return <Loading />;
   if (error) return <Error />;
 
@@ -78,6 +92,7 @@ const CompanyProfiles = () => {
     <div className="min-h-screen">
       {/* Page Title */}
       <div className="relative text-center">
+        {/* Search Toggle */}
         <div className="absolute right-1/4 top-1/2 -translate-y-1/2">
           <div
             onClick={() => setShowFilters(!showFilters)}
@@ -92,14 +107,25 @@ const CompanyProfiles = () => {
             )}
           </div>
         </div>
+
+        {/* Title */}
         <h1 className="text-3xl font-bold text-white px-4 md:px-20">
           Explore Leading Company Profiles
         </h1>
+
+        {/* Sub Title */}
         <p className="text-gray-200 mx-auto max-w-4xl font-semibold text-xl px-4 md:px-20">
           Get to know top organizations, their missions, values, and what makes
           them unique. Discover companies shaping the future of work and
           innovation.
         </p>
+      </div>
+
+      {/* Divider */}
+      <div className="flex items-center justify-center gap-4 my-5 px-10">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
       {/* Filters */}
@@ -108,6 +134,7 @@ const CompanyProfiles = () => {
           showFilters ? "max-h-[1000px] opacity-100 mt-6" : "max-h-0 opacity-0"
         }`}
       >
+        {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-white px-4 md:px-20 pt-10">
           {/* Keyword */}
           <div className="flex flex-col">
@@ -183,10 +210,13 @@ const CompanyProfiles = () => {
 
         {/* Results Info & Clear Button */}
         <div className="flex justify-between items-center px-4 md:px-20 py-4">
+          {/* Results */}
           <div className="text-lg text-white playfair">
             {filteredCompanies.length} Compan
             {filteredCompanies.length !== 1 ? "ies" : "y"} found
           </div>
+
+          {/* Clear Buttons */}
           <CommonButton
             clickEvent={handleClear}
             text="Clear"
@@ -200,6 +230,13 @@ const CompanyProfiles = () => {
             width="auto"
           />
         </div>
+
+        {/* Divider */}
+        <div className="flex items-center justify-center gap-4 my-5 px-10">
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+          <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+        </div>
       </div>
 
       {/* Company Cards */}
@@ -207,10 +244,12 @@ const CompanyProfiles = () => {
         {filteredCompanies.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredCompanies.map((Company) => (
+              // Render company cards
               <CompanyCard key={Company._id} Company={Company} />
             ))}
           </div>
         ) : (
+          // Display no companies found message
           <div className="text-center text-white text-lg font-medium bg-white/10 rounded p-6">
             <p>😕 No Companies found matching your criteria.</p>
             <p className="text-sm text-gray-300 mt-2">

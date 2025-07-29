@@ -52,18 +52,22 @@ const Gigs = () => {
   // Filtered Gigs
   const filteredGigs = useMemo(() => {
     return GigsData.filter((gig) => {
+      // Match keyword in title or description
       const matchesSearch =
         searchTerm === "" ||
         gig.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         gig.description.toLowerCase().includes(searchTerm.toLowerCase());
 
+      // Match selected category
       const matchesCategory =
         selectedCategory === "" || gig.category === selectedCategory;
 
+      // Match budget range
       const matchesBudget =
         (!minBudget || gig.budget.min >= parseFloat(minBudget)) &&
         (!maxBudget || gig.budget.max <= parseFloat(maxBudget));
 
+      // Include gig only if all filters match
       return matchesSearch && matchesCategory && matchesBudget;
     });
   }, [GigsData, searchTerm, selectedCategory, minBudget, maxBudget]);
@@ -90,13 +94,23 @@ const Gigs = () => {
           </div>
         </div>
 
+        {/* Title */}
         <h1 className="text-3xl font-bold text-white px-4 md:px-20">
           Explore Gigs
         </h1>
+
+        {/* Sub Title */}
         <p className="text-gray-200 mx-auto max-w-4xl font-semibold text-xl px-4 md:px-20">
           Browse freelance opportunities and apply based on your skills and
           budget preferences.
         </p>
+      </div>
+
+      {/* Divider */}
+      <div className="flex items-center justify-center gap-4 my-5 px-10">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
       {/* Filters */}
@@ -208,6 +222,13 @@ const Gigs = () => {
               width="auto"
             />
           </div>
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center justify-center gap-4 my-5 px-10">
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+          <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+          <span className="w-3 h-3 bg-white rounded-full"></span>
         </div>
       </div>
 

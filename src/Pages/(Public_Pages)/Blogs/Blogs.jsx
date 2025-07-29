@@ -136,6 +136,13 @@ const Blogs = () => {
         </p>
       </div>
 
+      {/* Divider */}
+      <div className="flex items-center justify-center gap-4 my-5 px-10">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+      </div>
+
       {/* Filters */}
       <div
         className={`overflow-hidden transition-all duration-500 ease-in-out ${
@@ -291,8 +298,16 @@ const Blogs = () => {
             />
           </div>
         </div>
+
+        {/* Divider */}
+        <div className="flex items-center justify-center gap-4 my-5 px-10">
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+          <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+        </div>
       </div>
 
+      {/* Blog Add Button */}
       {user && (
         <div className="px-20">
           <CommonButton

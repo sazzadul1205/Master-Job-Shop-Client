@@ -102,7 +102,7 @@ const Jobs = () => {
 
   // Filter Jobs
   const filteredJobs = useMemo(() => {
-    // Return if no data
+    // Return empty array if no job data
     if (!JobsData) return [];
 
     // Filter Jobs
@@ -118,7 +118,7 @@ const Jobs = () => {
         maxSalary,
       } = filters;
 
-      // Filter Jobs
+      // Match keyword in title, company name, or skills
       const matchesKeyword =
         !keyword ||
         job.title.toLowerCase().includes(keyword.toLowerCase()) ||
@@ -127,25 +127,34 @@ const Jobs = () => {
           skill.toLowerCase().includes(keyword.toLowerCase())
         );
 
+      // Match location
       const matchesLocation =
         !location ||
         job.location.toLowerCase().includes(location.toLowerCase());
 
+      // Match job type
       const matchesType = !jobType || job.type === jobType;
+
+      // Match category
       const matchesCategory = !category || job.category === category;
+
+      // Match experience level
       const matchesLevel = !level || job.level === level;
 
+      // Match work mode: Remote, Onsite, or Hybrid
       const matchesMode =
         !mode ||
         (mode === "Remote" && job.remote) ||
         (mode === "Onsite" && job.onsite) ||
         (mode === "Hybrid" && job.hybrid);
 
+      // Match salary range
       const jobMin = job.salaryRange?.min || 0;
       const jobMax = job.salaryRange?.max || 0;
       const salaryMinOk = !minSalary || jobMax >= Number(minSalary);
       const salaryMaxOk = !maxSalary || jobMin <= Number(maxSalary);
 
+      // Return true if all filters match
       return (
         matchesKeyword &&
         matchesLocation &&
@@ -182,15 +191,24 @@ const Jobs = () => {
             )}
           </div>
         </div>
+        
         {/* Titles */}
         <h1 className="text-3xl font-bold text-white px-4 md:px-20">
           Find Your Job
         </h1>
+
         {/* Sub Title */}
         <p className="text-gray-200 mx-auto max-w-4xl font-semibold text-xl px-4 md:px-20">
           Explore opportunities that match your passion, skills, and ambition —
           your next career move starts here.
         </p>
+      </div>
+
+      {/* Divider */}
+      <div className="flex items-center justify-center gap-4 my-5 px-10">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
       {/* Filters */}
@@ -388,6 +406,13 @@ const Jobs = () => {
               width="auto"
             />
           </div>
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center justify-center gap-4 my-5 px-10">
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+          <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+          <span className="w-3 h-3 bg-white rounded-full"></span>
         </div>
       </div>
 

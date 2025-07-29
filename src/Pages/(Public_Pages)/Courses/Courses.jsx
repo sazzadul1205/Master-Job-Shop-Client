@@ -43,23 +43,27 @@ const Courses = () => {
 
   // Generate dynamic dropdown options
   const allCategories = useMemo(() => {
+    // Extract unique course categories
     const set = new Set(CoursesData.map((c) => c.category));
     return ["All", ...Array.from(set)];
   }, [CoursesData]);
 
   const allLevels = useMemo(() => {
+    // Extract unique course levels
     const set = new Set(CoursesData.map((c) => c.level));
     return ["All", ...Array.from(set)];
   }, [CoursesData]);
 
   const allLanguages = useMemo(() => {
+    // Extract unique course languages
     const set = new Set(CoursesData.map((c) => c.language));
     return ["All", ...Array.from(set)];
   }, [CoursesData]);
 
-  // Filter logic
+  // Filter courses based on search and selected filters
   const filteredCourses = useMemo(() => {
     return CoursesData.filter((course) => {
+      // Match title, tags, or instructor name with search term
       const keywordMatch =
         searchTerm === "" ||
         course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -70,29 +74,34 @@ const Courses = () => {
           ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
 
+      // Match selected category
       const categoryMatch =
         category === "All" ||
         course.category.toLowerCase() === category.toLowerCase();
 
+      // Match selected level
       const levelMatch =
         level === "All" || course.level.toLowerCase() === level.toLowerCase();
 
+      // Match selected language
       const languageMatch =
         language === "All" ||
         course.language.toLowerCase() === language.toLowerCase();
 
+      // Include course if all filters match
       return keywordMatch && categoryMatch && levelMatch && languageMatch;
     });
   }, [searchTerm, category, level, language, CoursesData]);
 
   // Reset filters
   const handleClear = () => {
+    setLevel("All");
     setSearchTerm("");
     setCategory("All");
-    setLevel("All");
     setLanguage("All");
   };
 
+  // Loading / Error UI
   if (CoursesIsLoading) return <Loading />;
   if (CoursesError) return <Error />;
 
@@ -100,6 +109,7 @@ const Courses = () => {
     <div className="min-h-screen">
       {/* Header */}
       <div className="relative text-center">
+        {/* Search Toggle */}
         <div className="absolute right-1/4 top-1/2 -translate-y-1/2">
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -113,13 +123,24 @@ const Courses = () => {
             )}
           </button>
         </div>
+
+        {/* Title */}
         <h1 className="text-3xl font-bold text-white px-4 md:px-20 pb-2">
           Explore Courses
         </h1>
+
+        {/* Sub Title */}
         <p className="text-gray-200 mx-auto max-w-4xl font-semibold text-xl px-4 md:px-20">
           Discover our curated collection of expert-led courses. Learn new
           skills and enhance your career at your own pace.
         </p>
+      </div>
+
+      {/* Divider */}
+      <div className="flex items-center justify-center gap-4 my-5 px-10">
+        <span className="w-3 h-3 bg-white rounded-full"></span>
+        <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+        <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
       {/* Filters */}
@@ -219,11 +240,19 @@ const Courses = () => {
             width="auto"
           />
         </div>
+
+        {/* Divider */}
+        <div className="flex items-center justify-center gap-4 my-5 px-10">
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+          <div className="flex-grow h-[2px] bg-white opacity-70"></div>
+          <span className="w-3 h-3 bg-white rounded-full"></span>
+        </div>
       </div>
 
       {/* Course Cards */}
       <div className="py-6 px-20">
         {filteredCourses.length > 0 ? (
+          // Display course cards
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredCourses.map((course) => (
               <CourseCard
@@ -234,6 +263,7 @@ const Courses = () => {
             ))}
           </div>
         ) : (
+          // Display no courses found message
           <div className="text-center text-white text-lg font-medium bg-white/10 rounded p-6">
             <p>😕 No courses found matching your criteria.</p>
             <p className="text-sm text-gray-300 mt-2">

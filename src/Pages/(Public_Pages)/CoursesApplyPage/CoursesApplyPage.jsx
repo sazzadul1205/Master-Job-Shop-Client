@@ -108,6 +108,7 @@ const CoursesApplyPage = () => {
     try {
       setIsSubmitting(true);
 
+      // Create application data
       const applicationData = {
         courseId: courseId,
         applicantName: data.name,
@@ -117,22 +118,27 @@ const CoursesApplyPage = () => {
         status: "pending",
       };
 
+      // Send application to backend
       await axiosPublic.post("/CourseApplications", applicationData);
 
+      // Show success message
       Swal.fire({
         icon: "success",
         title: "Application Submitted",
         text: "Your application has been sent successfully!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
       });
-
-      reset();
-      navigate(-1);
     } catch (err) {
+
+      // Handle errors
       console.error(
         "Application Submit Error:",
         err?.response?.data || err.message
       );
 
+      // Show error message
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
@@ -142,6 +148,9 @@ const CoursesApplyPage = () => {
           "Something went wrong.",
       });
     } finally {
+      // Reset form and navigate
+      reset();
+      navigate(-1);
       setIsSubmitting(false);
     }
   };
@@ -157,6 +166,7 @@ const CoursesApplyPage = () => {
   if (SelectedCourseError || UsersError || CheckIfAppliedError)
     return <Error />;
 
+  // Course Details
   const { title, description, category, level, language } = SelectedCourseData;
 
   return (

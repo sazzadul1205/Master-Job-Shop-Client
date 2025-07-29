@@ -100,25 +100,32 @@ const InternshipApplyPage = () => {
 
   // Submit handler
   const onSubmit = async (data) => {
+    // Check if user is logged in
     if (!user) {
       setShowLoginModal(true);
       return;
     }
 
+    // Handle form submission
     try {
-      setIsSubmitting(true); // Start loading
+      // Start loading
+      setIsSubmitting(true);
 
+      // Create FormData object
       const formData = new FormData();
       formData.append("file", data.resume[0]);
 
+      // Upload resume to backend
       const res = await axiosPublic.post("/PDFUpload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
+      // Handle errors
       if (!res.data?.url) throw new Error("Failed to upload PDF");
 
+      // Create application data
       const applicationData = {
         ...data,
         internshipId: internshipId,
@@ -131,24 +138,30 @@ const InternshipApplyPage = () => {
       // Send application to backend
       await axiosPublic.post("/InternshipApplications", applicationData);
 
+      // Show success message
       Swal.fire({
         icon: "success",
         title: "Application Submitted",
         text: "Your application has been sent successfully!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
       });
-
-      reset();
     } catch (err) {
-      console.log(err);
+      // Handle errors
+      console.log("Error: ", err);
 
+      // Handle errors
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
         text: err?.message || "Something went wrong.",
       });
     } finally {
+      // Reset form
       setIsSubmitting(false);
       navigate(-1);
+      reset();
     }
   };
 
@@ -199,23 +212,31 @@ const InternshipApplyPage = () => {
       {/* Form  */}
       <div className="min-h-screen py-2 px-4 sm:px-6 lg:px-8 text-black">
         <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-          {/* Title */}
+          {/* Content */}
           <div className="mb-6">
+            {/* Title */}
             <h1 className="text-3xl font-bold mb-2">
               {SelectedInternshipData?.title}
             </h1>
 
+            {/* Description */}
             <p className="mb-4 ">{SelectedInternshipData?.description}</p>
 
+            {/* Details */}
             <p className="text-sm flex flex-wrap gap-x-4 gap-y-1">
+              {/* Clients */}
               <span>
                 <strong>Client:</strong>{" "}
                 {SelectedInternshipData?.postedBy?.name}
               </span>
+
+              {/* Category */}
               <span>
                 <strong>Category:</strong> {SelectedInternshipData?.category}{" "}
                 &rarr; {SelectedInternshipData?.subCategory}
               </span>
+
+              {/* Mode */}
               <span>
                 <strong>Mode:</strong>{" "}
                 {SelectedInternshipData?.isRemote ? "Remote" : "On-site"}

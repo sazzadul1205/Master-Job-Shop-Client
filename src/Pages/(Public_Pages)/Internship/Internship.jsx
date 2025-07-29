@@ -34,6 +34,7 @@ const Internship = () => {
   const [subCategory, setSubCategory] = useState("");
   const [selectedSkills, setSelectedSkills] = useState([]);
 
+  // Internship Data
   const {
     data: InternshipData = [],
     isLoading,
@@ -43,35 +44,48 @@ const Internship = () => {
     queryFn: () => axiosPublic.get("/Internship").then((res) => res.data),
   });
 
+  // Categories
   const categories = useMemo(
     () => [...new Set(InternshipData.map((i) => i.category))],
     [InternshipData]
   );
+
+  //
   const subCategories = useMemo(
     () => [...new Set(InternshipData.map((i) => i.subCategory))],
     [InternshipData]
   );
 
+  // Filter Internship
   const filteredInternship = InternshipData.filter((item) => {
+    // Prepare keyword for case-insensitive search
     const keyword = searchTerm.toLowerCase().trim();
 
+    // Normalize searchable fields to lowercase
     const title = item.title?.toLowerCase() || "";
     const description = item.description?.toLowerCase() || "";
     const tags = item.tags?.map((tag) => tag.toLowerCase()) || [];
     const postedBy = item.postedBy?.name?.toLowerCase() || "";
 
+    // Check if keyword matches title, description, tags, or poster name
     const matchKeyword =
       title.includes(keyword) ||
       description.includes(keyword) ||
       tags.some((tag) => tag.includes(keyword)) ||
       postedBy.includes(keyword);
 
+    // Check if internship matches selected category
     const matchCategory = category ? item.category === category : true;
+
+    // Check if internship matches selected subcategory
     const matchSubCategory = subCategory
       ? item.subCategory === subCategory
       : true;
+
+    // Check if internship is marked as remote (if filter is active)
     const matchRemote = isRemote ? item.isRemote === true : true;
 
+    // Check if internship includes all selected skills
     const matchSkills =
       selectedSkills.length > 0
         ? selectedSkills.every((skill) =>
@@ -81,15 +95,21 @@ const Internship = () => {
           )
         : true;
 
+    // Convert input budgets to float
     const min = parseFloat(minBudget);
     const max = parseFloat(maxBudget);
 
+    // Normalize internship's budget range
     const internshipMin = item.budget?.min ?? item.budget?.amount ?? 0;
     const internshipMax = item.budget?.max ?? item.budget?.amount ?? Infinity;
 
+    // Check if internship min budget is above user's min (if specified)
     const matchBudgetMin = !isNaN(min) ? internshipMin >= min : true;
+
+    // Check if internship max budget is below user's max (if specified)
     const matchBudgetMax = !isNaN(max) ? internshipMax <= max : true;
 
+    // Final decision: include internship only if it matches all filters
     return (
       matchKeyword &&
       matchCategory &&
@@ -101,6 +121,7 @@ const Internship = () => {
     );
   });
 
+  // Clear Filters
   const handleClear = () => {
     setCategory("");
     setMinBudget("");
@@ -111,6 +132,7 @@ const Internship = () => {
     setSelectedSkills([]);
   };
 
+  // UI Error / Loading
   if (isLoading) return <Loading />;
   if (error) return <Error />;
 

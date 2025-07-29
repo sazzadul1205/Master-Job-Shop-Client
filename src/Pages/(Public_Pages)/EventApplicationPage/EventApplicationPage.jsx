@@ -106,8 +106,10 @@ const EventApplicationPage = () => {
     }
 
     try {
-      setIsSubmitting(true); // Start loading
+      // Start loading
+      setIsSubmitting(true);
 
+      // Create application data
       const applicationData = {
         ...data,
         eventId: eventId,
@@ -118,18 +120,21 @@ const EventApplicationPage = () => {
 
       // Send application to backend
       await axiosPublic.post("/EventApplications", applicationData);
-      //   console.log(applicationData);
 
+      // Show success message
       Swal.fire({
         icon: "success",
         title: "Application Submitted",
         text: "Your application has been sent successfully!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
       });
-
-      reset();
     } catch (err) {
-      console.log(err);
+      // Handle errors
+      console.log("Error :", err);
 
+      // Handle errors
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
@@ -138,6 +143,7 @@ const EventApplicationPage = () => {
     } finally {
       setIsSubmitting(false);
       navigate(-1);
+      reset();
     }
   };
 

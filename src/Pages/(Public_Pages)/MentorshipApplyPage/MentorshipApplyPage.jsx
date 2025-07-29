@@ -106,19 +106,24 @@ const MentorshipApplyPage = () => {
     }
 
     try {
-      setIsSubmitting(true); // Start loading
+      // Start loading
+      setIsSubmitting(true);
 
+      // Create FormData object
       const formData = new FormData();
       formData.append("file", data.resume[0]);
 
+      // Upload resume to backend
       const res = await axiosPublic.post("/PDFUpload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
+      // Handle errors
       if (!res.data?.url) throw new Error("Failed to upload PDF");
 
+      // Create application data
       const applicationData = {
         ...data,
         mentorshipId: mentorshipId,
@@ -130,18 +135,21 @@ const MentorshipApplyPage = () => {
 
       // Send application to backend
       await axiosPublic.post("/MentorshipApplications", applicationData);
-      //   console.log(applicationData);
 
+      // Show success message
       Swal.fire({
         icon: "success",
         title: "Application Submitted",
         text: "Your application has been sent successfully!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
       });
-
-      reset();
     } catch (err) {
-      console.log(err);
+      // Handle errors
+      console.log("Error:", err);
 
+      // Handle errors
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
@@ -150,6 +158,7 @@ const MentorshipApplyPage = () => {
     } finally {
       setIsSubmitting(false);
       navigate(-1);
+      reset();
     }
   };
 
@@ -205,10 +214,17 @@ const MentorshipApplyPage = () => {
             <h1 className="text-3xl font-bold mb-2">
               {SelectedMentorshipData?.title}
             </h1>
+
+            {/* Description */}
             <p className="mb-4">{SelectedMentorshipData?.description}</p>
+
+            {/* Details */}
             <p className="text-sm gap-3 text-gray-600">
+              {/* Mentor */}
               <strong>Mentor:</strong> {SelectedMentorshipData?.mentor?.name} |{" "}
+              {/* Duration */}
               <strong>Duration:</strong> {SelectedMentorshipData?.durationWeeks}{" "}
+              {/* Fees */}
               weeks | <strong>Fee:</strong>{" "}
               {SelectedMentorshipData?.fee?.type === "free"
                 ? "Free"
@@ -433,6 +449,7 @@ const MentorshipApplyPage = () => {
         </div>
       )}
 
+      {/* Apply Modal via State */}
       {showAlreadyAppliedModal && (
         <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
@@ -465,7 +482,7 @@ const MentorshipApplyPage = () => {
                 text="Back"
                 clickEvent={() => {
                   setShowAlreadyAppliedModal(false);
-                  navigate(-1); // Go back
+                  navigate(-1);
                 }}
                 bgColor="gray"
                 textColor="text-white"

@@ -139,22 +139,30 @@ const JobsApplyPage = () => {
       // Send application to backend
       await axiosPublic.post("/JobApplications", applicationData);
 
+      // Reset form after submission
       Swal.fire({
         icon: "success",
         title: "Application Submitted",
         text: "Your application has been sent successfully!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
       });
 
+      // Reset form after submission
       reset();
     } catch (err) {
+      // Handle errors
       console.log(err);
 
+      // Show error message
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
         text: err?.message || "Something went wrong.",
       });
     } finally {
+      // Stop loading
       setIsSubmitting(false);
       navigate(-1);
     }
@@ -168,7 +176,6 @@ const JobsApplyPage = () => {
     loading
   )
     return <Loading />;
-
   if (SelectedJobError || UsersError || CheckIfAppliedError) return <Error />;
 
   // Job Details
@@ -287,12 +294,7 @@ const JobsApplyPage = () => {
                         {...register("resume", {
                           required: "Resume is required",
                         })}
-                        className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4
-                   file:rounded-full file:border-0
-                   file:text-sm file:font-semibold
-                   file:bg-blue-600 file:text-white
-                   hover:file:bg-blue-700
-                   cursor-pointer bg-gray-50 border border-gray-300 rounded-lg"
+                        className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer bg-gray-50 border border-gray-300 rounded-lg"
                       />
                     </div>
 

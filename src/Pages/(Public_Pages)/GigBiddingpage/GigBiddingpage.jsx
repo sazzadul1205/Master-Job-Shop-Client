@@ -106,6 +106,7 @@ const GigBiddingPage = () => {
     try {
       setIsSubmitting(true);
 
+      // Create bid data object
       const bidData = {
         name: UsersData.name,
         phone: UsersData.phone,
@@ -117,20 +118,23 @@ const GigBiddingPage = () => {
         deliveryDays: parseInt(data.deliveryDays),
       };
 
+      // Send bid to backend
       await axiosPublic.post("/GigBids", bidData);
 
+      // Show success message
       Swal.fire({
         icon: "success",
         title: "Bid Submitted",
         text: "Your proposal has been successfully submitted.",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
       });
-
-      reset();
-
-      // Navigate one step back
-      navigate(-1);
     } catch (error) {
+      // Handle errors
       console.error(error);
+
+      // Show error message
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
@@ -138,6 +142,8 @@ const GigBiddingPage = () => {
       });
     } finally {
       setIsSubmitting(false);
+      navigate(-1);
+      reset();
     }
   };
 

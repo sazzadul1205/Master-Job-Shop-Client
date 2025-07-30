@@ -1,54 +1,134 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+// Packages
+import PropTypes from "prop-types";
+import Swal from "sweetalert2";
+
+// Icons
 import { FaStar } from "react-icons/fa";
+
+// Hooks
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+
+// Components
 import AddNewDocumentModal from "./AddNewDocumentModal/AddNewDocumentModal";
 
-const initialDocuments = [
-  {
-    id: "resume",
-    name: "Resume.pdf",
-    fileUrl: "https://example.com/files/john-doe-resume.pdf",
-    starred: false,
-  },
-  {
-    id: "portfolio",
-    name: "Portfolio.pdf",
-    fileUrl: "https://example.com/files/john-doe-portfolio.pdf",
-    starred: false,
-  },
-];
+const ProfileDocuments = ({ user, refetch }) => {
+  const axiosPublic = useAxiosPublic();
 
-const ProfileDocuments = ({ user }) => {
-  const [documents, setDocuments] = useState(initialDocuments);
+  // State
+  const [documents, setDocuments] = useState([]);
 
-  // Toggle star, max 3
-  const toggleStar = (id) => {
+  // Load user documents on mount
+  useEffect(() => {
+    if (user?.documents) {
+      // Assign unique IDs for internal handling
+      const docsWithIds = user.documents.map((doc, idx) => ({
+        ...doc,
+        id: `${doc.name}-${idx}`,
+        fileUrl: doc.file, // for consistent naming
+      }));
+      setDocuments(docsWithIds);
+    }
+  }, [user]);
+
+  // Toggle star with optimistic update and rollback on failure
+  const toggleStar = async (id) => {
+    const targetDoc = documents.find((doc) => doc.id === id);
+    if (!targetDoc) return;
+
     const starredCount = documents.filter((d) => d.starred).length;
-    setDocuments((docs) =>
-      docs.map((doc) => {
-        if (doc.id === id) {
-          if (!doc.starred && starredCount >= 3) return doc; // max 3 stars
-          return { ...doc, starred: !doc.starred };
-        }
-        return doc;
-      })
+
+    // Prevent toggling on if max 3 starred reached
+    if (!targetDoc.starred && starredCount >= 3) {
+      Swal.fire({
+        icon: "warning",
+        title: "Limit reached",
+        text: "You can star up to 3 documents only.",
+      });
+      return;
+    }
+
+    // Save previous state for rollback
+    const previousDocuments = [...documents];
+
+    // Optimistically update UI
+    const updatedDocuments = documents.map((doc) =>
+      doc.id === id ? { ...doc, starred: !doc.starred } : doc
     );
+    setDocuments(updatedDocuments);
+
+    try {
+      // Call backend to toggle star
+      await axiosPublic.put(`/Users/ToggleStar/${user._id}`, {
+        name: targetDoc.name,
+      });
+
+      refetch();
+      // Success: nothing more needed here, UI already updated
+    } catch (err) {
+      // On failure, rollback UI and show error
+      setDocuments(previousDocuments);
+
+      Swal.fire({
+        icon: "error",
+        title: "Toggle failed",
+        text: err.response?.data?.message || "Failed to update star status.",
+        confirmButtonText: "OK",
+      });
+    }
   };
 
-  // Delete document
-  const deleteDocument = (id) => {
-    setDocuments((docs) => docs.filter((doc) => doc.id !== id));
+  // Delete document handler with confirmation and optimistic update
+  const deleteDocument = async (id, name) => {
+    const confirm = await Swal.fire({
+      title: `Delete "${name}"?`,
+      text: "Are you sure you want to remove this document? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        // Optimistic update
+        setDocuments((docs) => docs.filter((doc) => doc.id !== id));
+
+        await axiosPublic.delete(`/Users/DeleteDocument/${user._id}`, {
+          data: { name },
+        });
+
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: `${name} has been deleted.`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        refetch();
+      } catch (err) {
+        console.error("Failed to delete document:", err);
+        Swal.fire({
+          icon: "error",
+          title: "Delete Failed",
+          text: err.response?.data?.message || "Something went wrong.",
+          confirmButtonText: "OK",
+        });
+      }
+    }
   };
 
   return (
     <div className="bg-white border rounded-2xl shadow-sm p-6 max-w-7xl mx-auto mt-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        {/* Title */}
         <h2 className="text-xl font-semibold text-blue-700">
           Resume & Documents
         </h2>
-
-        {/* Add New Document Modal */}
         <button
           onClick={() =>
             document.getElementById("Add_New_Document_Modal").showModal()
@@ -59,7 +139,7 @@ const ProfileDocuments = ({ user }) => {
         </button>
       </div>
 
-      {/* Documents List or fallback */}
+      {/* Document List */}
       {documents.length > 0 ? (
         <ul className="space-y-4">
           {documents.map(({ id, name, fileUrl, starred }) => (
@@ -68,7 +148,7 @@ const ProfileDocuments = ({ user }) => {
               className="flex items-center justify-between border rounded-md p-3 shadow-sm"
             >
               <div className="flex items-center gap-3 max-w-[60%] truncate">
-                {/* Star Button */}
+                {/* Star */}
                 <button
                   onClick={() => toggleStar(id)}
                   title={
@@ -93,30 +173,27 @@ const ProfileDocuments = ({ user }) => {
                 {/* Document Name */}
                 <a
                   href={fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  download
                   className="text-blue-600 hover:underline truncate"
-                  title={name}
+                  title={`Download ${name}`}
                 >
                   {name}
                 </a>
               </div>
 
-              {/* Document Actions */}
+              {/* Actions */}
               <div className="flex items-center gap-3">
-                {/* Download Button */}
                 <a
                   href={fileUrl}
-                  download={name}
+                  download
                   title="Download"
                   className="text-green-600 hover:text-green-800 hover:bg-green-100 transition px-3 py-1 rounded border border-green-600 cursor-pointer"
                 >
                   Download
                 </a>
 
-                {/* Delete Button */}
                 <button
-                  onClick={() => deleteDocument(id)}
+                  onClick={() => deleteDocument(id, name)}
                   title="Delete document"
                   className="text-red-600 hover:text-red-800 hover:bg-red-100 transition px-3 py-1 rounded border border-red-600 cursor-pointer"
                 >
@@ -127,9 +204,8 @@ const ProfileDocuments = ({ user }) => {
           ))}
         </ul>
       ) : (
-        // Fallback UI
+        // Fallback when no documents
         <div className="flex flex-col items-center justify-center py-20 text-center text-gray-600">
-          {/* Empty Icon */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-20 w-20 mb-4 text-blue-300"
@@ -144,12 +220,9 @@ const ProfileDocuments = ({ user }) => {
               d="M12 4v16m8-8H4"
             />
           </svg>
-          {/* Fallback Title */}
           <p className="text-xl font-semibold mb-2">
             No documents uploaded yet
           </p>
-
-          {/* Fallback Description */}
           <p className="max-w-sm text-gray-400">
             Upload your important files here. Click &quot;Add New Document&quot;
             to get started.
@@ -157,12 +230,27 @@ const ProfileDocuments = ({ user }) => {
         </div>
       )}
 
-      {/* Add New Document Modal */}
+      {/* Add Modal */}
       <dialog id="Add_New_Document_Modal" className="modal">
-        <AddNewDocumentModal user={user} />
+        <AddNewDocumentModal user={user} refetch={refetch} />
       </dialog>
     </div>
   );
+};
+
+// Prop Validation
+ProfileDocuments.propTypes = {
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    documents: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        file: PropTypes.string.isRequired,
+        starred: PropTypes.bool,
+      })
+    ),
+  }).isRequired,
+  refetch: PropTypes.func,
 };
 
 export default ProfileDocuments;

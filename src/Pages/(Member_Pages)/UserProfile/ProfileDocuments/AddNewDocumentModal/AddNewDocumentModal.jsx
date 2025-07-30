@@ -17,7 +17,7 @@ import CommonButton from "../../../../../Shared/CommonButton/CommonButton";
 // Assets
 import AddDocument from "../../../../../assets/UserProfile/AddDocument.png";
 
-const AddNewDocumentModal = ({ user }) => {
+const AddNewDocumentModal = ({ user, refetch }) => {
   const axiosPublic = useAxiosPublic();
   const fileInputRef = useRef(null);
 
@@ -123,6 +123,7 @@ const AddNewDocumentModal = ({ user }) => {
       );
     } finally {
       setUploading(false);
+      refetch();
     }
   };
 
@@ -260,6 +261,7 @@ AddNewDocumentModal.propTypes = {
   user: PropTypes.shape({
     _id: PropTypes.string.isRequired,
   }).isRequired,
+  refetch: PropTypes.func,
 };
 
 export default AddNewDocumentModal;

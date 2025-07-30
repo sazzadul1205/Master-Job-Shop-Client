@@ -23,7 +23,7 @@ const UserProfile = () => {
     data: UserData,
     isLoading: UserIsLoading,
     error: UserError,
-    // refetch: refetchUser,
+    refetch: refetchUser,
   } = useQuery({
     queryKey: ["UserData"],
     queryFn: () =>
@@ -41,7 +41,7 @@ const UserProfile = () => {
 
       <ProfilePersonalInformation user={UserData} />
 
-      <ProfileDocuments user={UserData} />
+      <ProfileDocuments user={UserData} refetch={refetchUser} />
     </div>
   );
 };

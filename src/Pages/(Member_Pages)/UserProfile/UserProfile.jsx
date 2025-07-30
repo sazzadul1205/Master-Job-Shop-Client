@@ -14,6 +14,7 @@ import ProfileHeader from "./ProfileHeader/ProfileHeader";
 import ProfilePersonalInformation from "./ProfilePersonalInformation/ProfilePersonalInformation";
 import ProfileDocuments from "./ProfileDocuments/ProfileDocuments";
 import ProfileSkills from "./ProfileSkills/ProfileSkills";
+import ProfileJobPreference from "./ProfileJobPreference/ProfileJobPreference";
 
 const UserProfile = () => {
   const { user, loading } = useAuth();
@@ -45,6 +46,8 @@ const UserProfile = () => {
       <ProfileDocuments user={UserData} refetch={refetchUser} />
 
       <ProfileSkills user={UserData} />
+
+      <ProfileJobPreference />
     </div>
   );
 };

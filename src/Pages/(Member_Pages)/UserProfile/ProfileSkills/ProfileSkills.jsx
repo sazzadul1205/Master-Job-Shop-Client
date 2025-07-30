@@ -91,7 +91,10 @@ const ProfileSkills = ({ user }) => {
               className="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg flex items-center gap-2 shadow-sm border border-blue-300 cursor-pointer"
             >
               <span className="font-medium">{skill}</span>
-              <button className="hover:text-red-600" title="Remove skill">
+              <button
+                className="hover:text-red-600 cursor-pointer"
+                title="Remove skill"
+              >
                 <FaTimes className="text-sm" />
               </button>
             </div>

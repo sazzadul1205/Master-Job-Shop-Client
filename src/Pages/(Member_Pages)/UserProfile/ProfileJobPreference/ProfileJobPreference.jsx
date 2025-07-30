@@ -4,8 +4,9 @@ import {
   FaGlobe,
   FaMapMarkerAlt,
 } from "react-icons/fa";
+import EditJobPreferenceModal from "./EditJobPreferenceModal/EditJobPreferenceModal";
 
-const ProfileJobPreference = () => {
+const ProfileJobPreference = ({ user, refetch }) => {
   // Demo Data
   const preferences = {
     desiredRole: "Frontend Developer",

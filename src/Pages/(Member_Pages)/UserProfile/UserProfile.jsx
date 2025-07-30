@@ -47,7 +47,7 @@ const UserProfile = () => {
 
       <ProfileSkills user={UserData} />
 
-      <ProfileJobPreference />
+      <ProfileJobPreference user={UserData} refetch={refetchUser} />
     </div>
   );
 };

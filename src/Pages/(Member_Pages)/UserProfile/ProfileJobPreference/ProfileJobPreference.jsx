@@ -26,7 +26,10 @@ const ProfileJobPreference = ({ user, refetch }) => {
     <div className="bg-white border rounded-2xl shadow-sm p-6 max-w-7xl mx-auto mt-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
+        {/* Title */}
         <h2 className="text-xl font-semibold text-blue-700">Job Preferences</h2>
+
+        {/* Edit Preferences Button */}
         <button
           onClick={() =>
             document.getElementById("Edit_Job_Preference_Modal").showModal()
@@ -89,7 +92,6 @@ const ProfileJobPreference = ({ user, refetch }) => {
 };
 
 // Prop Validation
-
 ProfileJobPreference.propTypes = {
   user: PropTypes.shape({
     preferences: PropTypes.shape({

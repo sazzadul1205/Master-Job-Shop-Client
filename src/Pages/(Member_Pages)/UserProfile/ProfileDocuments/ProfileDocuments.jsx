@@ -126,14 +126,17 @@ const ProfileDocuments = ({ user, refetch }) => {
     <div className="bg-white border rounded-2xl shadow-sm p-6 max-w-7xl mx-auto mt-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
+        {/* Title */}
         <h2 className="text-xl font-semibold text-blue-700">
           Resume & Documents
         </h2>
+
+        {/* Add New Document Button */}
         <button
           onClick={() =>
             document.getElementById("Add_New_Document_Modal").showModal()
           }
-          className="bg-blue-600 text-white px-8 py-2 rounded hover:bg-blue-700 transition cursor-pointer"
+          className="text-sm bg-blue-600 text-white px-8 py-2 rounded hover:bg-blue-700 transition cursor-pointer"
         >
           Add New Document
         </button>

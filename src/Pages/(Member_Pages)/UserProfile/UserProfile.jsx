@@ -41,7 +41,7 @@ const UserProfile = () => {
     <div className="bg-white py-3">
       <ProfileHeader user={UserData} />
 
-      <ProfilePersonalInformation user={UserData} />
+      <ProfilePersonalInformation user={UserData} refetch={refetchUser} />
 
       <ProfileDocuments user={UserData} refetch={refetchUser} />
 

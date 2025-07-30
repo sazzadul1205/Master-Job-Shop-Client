@@ -146,7 +146,7 @@ const ProfileSkills = ({ user }) => {
         />
         <button
           onClick={handleAddSkill}
-          className="flex items-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          className="flex items-center gap-2 text-sm bg-blue-600 text-white px-8 py-2 rounded hover:bg-blue-700 transition cursor-pointer"
         >
           <FaPlus />
           Add Skill

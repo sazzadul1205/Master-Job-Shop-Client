@@ -13,6 +13,7 @@ import Error from "../../../Shared/Error/Error";
 import ProfileHeader from "./ProfileHeader/ProfileHeader";
 import ProfilePersonalInformation from "./ProfilePersonalInformation/ProfilePersonalInformation";
 import ProfileDocuments from "./ProfileDocuments/ProfileDocuments";
+import ProfileSkills from "./ProfileSkills/ProfileSkills";
 
 const UserProfile = () => {
   const { user, loading } = useAuth();
@@ -42,6 +43,8 @@ const UserProfile = () => {
       <ProfilePersonalInformation user={UserData} />
 
       <ProfileDocuments user={UserData} refetch={refetchUser} />
+
+      <ProfileSkills user={UserData} />
     </div>
   );
 };

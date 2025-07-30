@@ -1,12 +1,23 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+// Packages
 import { useForm } from "react-hook-form";
-import { ImCross } from "react-icons/im";
+import PropTypes from "prop-types";
 import Swal from "sweetalert2";
+
+// Icons
+import { ImCross } from "react-icons/im";
+
+// Shared
 import CommonButton from "../../../../../Shared/CommonButton/CommonButton";
+
+// Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 
 const EditJobPreferenceModal = ({ user, refetch }) => {
   const axiosPublic = useAxiosPublic();
+
+  // Initialize react-hook-form with default values from user.preferences or empty strings
   const {
     register,
     handleSubmit,
@@ -23,13 +34,14 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
     },
   });
 
-  const allValues = watch();
+  const allValues = watch(); // Watch all form fields for changes
 
+  // Local component states for loading, server error, and form change detection
   const [loading, setLoading] = useState(false);
-  const [serverError, setServerError] = useState("");
   const [isChanged, setIsChanged] = useState(false);
+  const [serverError, setServerError] = useState("");
 
-  // Reset form whenever user.preferences changes
+  // Reset the form whenever user.preferences changes
   useEffect(() => {
     reset({
       desiredRole: user?.preferences?.desiredRole || "",
@@ -42,18 +54,18 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
     setIsChanged(false);
   }, [user?.preferences, reset]);
 
-  // Detect changes between form values and initial user.preferences
+  // Detect if form values differ from initial user.preferences to enable submit button
   useEffect(() => {
     const initialPreferences = user?.preferences || {};
 
-    // Check if any field is different
+    // Check if any field value has changed (trimmed strings for accuracy)
     const changed = Object.entries(initialPreferences).some(
       ([key, value]) =>
         (allValues[key]?.toString().trim() || "") !==
         (value?.toString().trim() || "")
     );
 
-    // If no preferences exist initially, check if user entered any value
+    // If no initial preferences, consider form changed if any input has a value
     const hasInitialData = Object.keys(initialPreferences).length > 0;
     const hasInputData = Object.values(allValues).some(
       (v) => v && v.toString().trim() !== ""
@@ -62,6 +74,7 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
     setIsChanged(hasInitialData ? changed : hasInputData);
   }, [allValues, user?.preferences]);
 
+  // Close modal, reset form, clear errors and change flags
   const handleClose = () => {
     document.getElementById("Edit_Job_Preference_Modal")?.close();
     reset();
@@ -69,6 +82,7 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
     setIsChanged(false);
   };
 
+  // Form submit handler - updates preferences on server
   const onSubmit = async (data) => {
     if (!user?._id) {
       setServerError("Missing user ID. Please try again.");
@@ -79,7 +93,6 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
       setLoading(true);
       setServerError("");
 
-    //   
       const response = await axiosPublic.put(
         `Users/EditPreferences/${user._id}`,
         data
@@ -110,7 +123,10 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
   };
 
   return (
-    <div className="modal-box min-w-3xl relative bg-white rounded-xl shadow-xl w-full max-w-2xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto">
+    <div
+      id="Edit_Job_Preference_Modal"
+      className="modal-box min-w-3xl relative bg-white rounded-xl shadow-xl w-full max-w-2xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
+    >
       {/* Close Button */}
       <button
         type="button"
@@ -120,16 +136,19 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
         <ImCross className="text-xl text-black hover:text-red-500" />
       </button>
 
+      {/* Modal Title */}
       <h3 className="font-bold text-2xl mb-4 text-center">
         Edit Job Preference
       </h3>
 
+      {/* Server error message */}
       {serverError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-center">
           {serverError}
         </div>
       )}
 
+      {/* Preference Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Desired Role */}
         <div>
@@ -149,7 +168,7 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
         <div>
           <label className="block font-medium mb-1">Job Type</label>
           <select
-            {...register("jobType", { required: true })}
+            {...register("jobType", { required: "This field is required" })}
             className="select select-bordered w-full bg-white border border-black"
           >
             <option value="">Select Job Type</option>
@@ -157,6 +176,11 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
             <option value="On-site">On-site</option>
             <option value="Hybrid">Hybrid</option>
           </select>
+          {errors.jobType && (
+            <p className="text-sm text-red-600 mt-1">
+              {errors.jobType.message}
+            </p>
+          )}
         </div>
 
         {/* Preferred Location */}
@@ -233,6 +257,21 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
       </form>
     </div>
   );
+};
+
+// Prop validation with prop-types
+EditJobPreferenceModal.propTypes = {
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    preferences: PropTypes.shape({
+      desiredRole: PropTypes.string,
+      jobType: PropTypes.string,
+      preferredLocation: PropTypes.string,
+      salaryFrom: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      salaryTo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    }),
+  }).isRequired,
+  refetch: PropTypes.func.isRequired,
 };
 
 export default EditJobPreferenceModal;

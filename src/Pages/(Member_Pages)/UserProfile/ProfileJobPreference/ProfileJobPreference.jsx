@@ -1,19 +1,26 @@
+// Packages
+import PropTypes from "prop-types";
+
+// Icons
 import {
   FaBriefcase,
   FaDollarSign,
   FaGlobe,
   FaMapMarkerAlt,
 } from "react-icons/fa";
+
+// Modals
 import EditJobPreferenceModal from "./EditJobPreferenceModal/EditJobPreferenceModal";
 
 const ProfileJobPreference = ({ user, refetch }) => {
-  // Demo Data
-  const preferences = {
-    desiredRole: "Frontend Developer",
-    jobType: "Remote",
-    preferredLocation: "Anywhere",
-    salaryRange: "$1000 - $1500",
-  };
+  // Safely extract preferences or fallback to empty object
+  const preferences = user?.preferences || {};
+
+  // Build salary range display or fallback
+  const salaryRange =
+    preferences.salaryFrom && preferences.salaryTo
+      ? `$${preferences.salaryFrom} - $${preferences.salaryTo}`
+      : "-";
 
   return (
     <div className="bg-white border rounded-2xl shadow-sm p-6 max-w-7xl mx-auto mt-6">
@@ -37,7 +44,9 @@ const ProfileJobPreference = ({ user, refetch }) => {
           <FaBriefcase className="text-blue-600 w-5 h-5 mt-1" />
           <div>
             <p className="text-sm text-gray-500">Desired Role</p>
-            <p className="font-medium">{preferences.desiredRole}</p>
+            <p className="font-medium">
+              {preferences.desiredRole || "Not set"}
+            </p>
           </div>
         </div>
 
@@ -45,8 +54,8 @@ const ProfileJobPreference = ({ user, refetch }) => {
         <div className="flex items-start gap-3">
           <FaGlobe className="text-blue-600 w-5 h-5 mt-1" />
           <div>
-            <p className="text-sm text-gray-500">Expect Job Type</p>
-            <p className="font-medium">{preferences.jobType}</p>
+            <p className="text-sm text-gray-500">Expected Job Type</p>
+            <p className="font-medium">{preferences.jobType || "Not set"}</p>
           </div>
         </div>
 
@@ -54,8 +63,10 @@ const ProfileJobPreference = ({ user, refetch }) => {
         <div className="flex items-start gap-3">
           <FaMapMarkerAlt className="text-blue-600 w-5 h-5 mt-1" />
           <div>
-            <p className="text-sm text-gray-500">Expected Preferred Location</p>
-            <p className="font-medium">{preferences.preferredLocation}</p>
+            <p className="text-sm text-gray-500">Preferred Location</p>
+            <p className="font-medium">
+              {preferences.preferredLocation || "Not set"}
+            </p>
           </div>
         </div>
 
@@ -64,17 +75,32 @@ const ProfileJobPreference = ({ user, refetch }) => {
           <FaDollarSign className="text-blue-600 w-5 h-5 mt-1" />
           <div>
             <p className="text-sm text-gray-500">Expected Salary Range</p>
-            <p className="font-medium">{preferences.salaryRange}</p>
+            <p className="font-medium">{salaryRange}</p>
           </div>
         </div>
       </div>
 
-      {/* Add Modal */}
+      {/* Edit Modal */}
       <dialog id="Edit_Job_Preference_Modal" className="modal">
         <EditJobPreferenceModal user={user} refetch={refetch} />
       </dialog>
     </div>
   );
+};
+
+// Prop Validation
+
+ProfileJobPreference.propTypes = {
+  user: PropTypes.shape({
+    preferences: PropTypes.shape({
+      desiredRole: PropTypes.string,
+      jobType: PropTypes.string,
+      preferredLocation: PropTypes.string,
+      salaryFrom: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      salaryTo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    }),
+  }),
+  refetch: PropTypes.func.isRequired,
 };
 
 export default ProfileJobPreference;

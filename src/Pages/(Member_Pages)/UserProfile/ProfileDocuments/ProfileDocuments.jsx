@@ -20,8 +20,6 @@ const initialDocuments = [
 const ProfileDocuments = ({ user }) => {
   const [documents, setDocuments] = useState(initialDocuments);
 
-  lo
-
   // Toggle star, max 3
   const toggleStar = (id) => {
     const starredCount = documents.filter((d) => d.starred).length;

@@ -108,18 +108,24 @@ const PersonalInformationSection = ({ user, refetch }) => {
         </div>
 
         {/* Social links */}
+
+        {/* linkedin Links */}
         <SocialLink
           platform="linkedin"
           url={socialsMap.linkedin}
           icon={FaLinkedin}
           colorClass="text-blue-600"
         />
+
+        {/* github Links */}
         <SocialLink
           platform="github"
           url={socialsMap.github}
           icon={FaGithub}
           colorClass="text-gray-800"
         />
+
+        {/* portfolio Links */}
         <SocialLink
           platform="portfolio"
           url={socialsMap.portfolio}

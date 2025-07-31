@@ -39,7 +39,7 @@ const UserProfile = () => {
 
   return (
     <div className="bg-white py-3">
-      <ProfileHeader user={UserData} />
+      <ProfileHeader user={UserData} refetch={refetchUser} />
 
       <ProfilePersonalInformation user={UserData} refetch={refetchUser} />
 

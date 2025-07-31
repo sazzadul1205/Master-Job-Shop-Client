@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 // Packages
@@ -5,14 +6,17 @@ import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
 
 // Hooks
-import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../..//Hooks/useAxiosPublic";
+import useAuth from "../../../Hooks/useAuth";
 
 // Shared
 import CommonButton from "../../CommonButton/CommonButton";
-import { useEffect, useRef, useState } from "react";
+
+// Icons
 import { ImExit } from "react-icons/im";
 
+
+// Assets
 import Events from "../../../assets/Navbar/Member/Events.png";
 import Profile from "../../../assets/Navbar/Member/Profile.png";
 import Courses from "../../../assets/Navbar/Member/Courses.png";

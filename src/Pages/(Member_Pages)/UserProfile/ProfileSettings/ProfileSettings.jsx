@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
+
+// Packages
+import PropTypes from "prop-types";
 import Swal from "sweetalert2";
+
+// Icons
 import {
   FaBell,
   FaUserShield,
@@ -9,9 +14,11 @@ import {
   FaFacebookF,
   FaMoon,
 } from "react-icons/fa";
+
+// Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
-const SettingsPanel = ({ user = {}, refetch }) => {
+const ProfileSettings = ({ user = {}, refetch }) => {
   const axiosPublic = useAxiosPublic();
 
   const [settings, setSettings] = useState({
@@ -78,6 +85,8 @@ const SettingsPanel = ({ user = {}, refetch }) => {
 
         if (refetch) refetch();
       } catch (err) {
+        console.log(err);
+
         // Revert toggle if error
         setSettings((prev) => ({ ...prev, [field]: !newValue }));
 
@@ -169,6 +178,20 @@ const SettingsPanel = ({ user = {}, refetch }) => {
   );
 };
 
+// Prop Validation
+ProfileSettings.propTypes = {
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    emailUpdates: PropTypes.bool,
+    twoFactorAuth: PropTypes.bool,
+    isProfilePublic: PropTypes.bool,
+    googleConnected: PropTypes.bool,
+    facebookConnected: PropTypes.bool,
+    notificationsEnabled: PropTypes.bool,
+  }),
+  refetch: PropTypes.func,
+};
+
 const ToggleSetting = ({ icon, title, subtitle, enabled, onToggle }) => (
   <div className="flex items-center justify-between py-4 border-b">
     <div className="flex items-center gap-4">
@@ -193,4 +216,12 @@ const ToggleSetting = ({ icon, title, subtitle, enabled, onToggle }) => (
   </div>
 );
 
-export default SettingsPanel;
+// Prop Validation
+ToggleSetting.propTypes = {
+  icon: PropTypes.node.isRequired,
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string.isRequired,
+  enabled: PropTypes.bool.isRequired,
+  onToggle: PropTypes.func.isRequired,
+};
+export default ProfileSettings;

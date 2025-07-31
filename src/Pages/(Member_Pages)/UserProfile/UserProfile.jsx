@@ -16,6 +16,7 @@ import ProfileDocuments from "./ProfileDocuments/ProfileDocuments";
 import ProfileSkills from "./ProfileSkills/ProfileSkills";
 import ProfileJobPreference from "./ProfileJobPreference/ProfileJobPreference";
 import ProfileSettings from "./ProfileSettings/ProfileSettings";
+import ProfileDanger from "./ProfileDanger/ProfileDanger";
 
 const UserProfile = () => {
   const { user, loading } = useAuth();
@@ -39,7 +40,7 @@ const UserProfile = () => {
   if (UserError) return <Error />;
 
   return (
-    <div className="bg-white py-3">
+    <div className="bg-white py-3 ">
       <ProfileHeader user={UserData} refetch={refetchUser} />
 
       <ProfilePersonalInformation user={UserData} refetch={refetchUser} />
@@ -51,6 +52,8 @@ const UserProfile = () => {
       <ProfileJobPreference user={UserData} refetch={refetchUser} />
 
       <ProfileSettings user={UserData} refetch={refetchUser} />
+
+      <ProfileDanger user={UserData} refetch={refetchUser} />
     </div>
   );
 };

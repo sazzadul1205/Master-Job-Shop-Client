@@ -51,6 +51,8 @@ const NavbarEnd = () => {
       }
     },
     enabled: !!user,
+    refetchInterval: 30000,
+    staleTime: 10000,
   });
 
   // Role-based navigation links

@@ -65,7 +65,15 @@ import Testimonials from "./Pages/(Public_Pages)/Testimonials/Testimonials";
 
 // About Us
 import AboutUs from "./Pages/(Public_Pages)/AboutUs/AboutUs";
+
+// User Profile
 import UserProfile from "./Pages/(Member_Pages)/UserProfile/UserProfile";
+
+// Member Private Route
+import MemberPrivateRoute from "./Routes/MemberPrivateRoute";
+
+// Deleted User Page
+import DeletedUser from "./Pages/DeletedUser/DeletedUser";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +83,9 @@ createRoot(document.getElementById("root")).render(
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <Routes>
+            {/* Deleted User */}
+            <Route path="/DeletedUser" element={<DeletedUser />} />
+
             {/* Home Page Layout */}
             <Route element={<MainLayout />}>
               {/* Home Pages Link */}
@@ -86,19 +97,45 @@ createRoot(document.getElementById("root")).render(
               <Route path="/SignUp/Details" element={<SignUpDetails />} />
             </Route>
 
+            {/* Public Pages */}
             <Route element={<PublicLayout />}>
               {/* Jobs Part */}
               <Route path="/Jobs" element={<Jobs />} />
-              <Route path="/Jobs/Apply/:jobId" element={<JobsApplyPage />} />
+              <Route
+                path="/Jobs/Apply/:jobId"
+                element={
+                  <MemberPrivateRoute>
+                    <JobsApplyPage />
+                  </MemberPrivateRoute>
+                }
+              />
               <Route
                 path="/MyJobApplications"
-                element={<MyJobApplications />}
+                element={
+                  <MemberPrivateRoute>
+                    <MyJobApplications />
+                  </MemberPrivateRoute>
+                }
               />
 
               {/* Gigs Part */}
               <Route path="/Gigs" element={<Gigs />} />
-              <Route path="/Gigs/Bidding/:gigId" element={<GigBiddingpage />} />
-              <Route path="/MyGigBids" element={<MyGigBids />} />
+              <Route
+                path="/Gigs/Bidding/:gigId"
+                element={
+                  <MemberPrivateRoute>
+                    <GigBiddingpage />
+                  </MemberPrivateRoute>
+                }
+              />
+              <Route
+                path="/MyGigBids"
+                element={
+                  <MemberPrivateRoute>
+                    <MyGigBids />
+                  </MemberPrivateRoute>
+                }
+              />
 
               {/* Blogs Part */}
               <Route path="/Blogs" element={<Blogs />} />
@@ -107,33 +144,57 @@ createRoot(document.getElementById("root")).render(
               <Route path="/Courses" element={<Courses />} />
               <Route
                 path="/Courses/Apply/:courseId"
-                element={<CoursesApplyPage />}
+                element={
+                  <MemberPrivateRoute>
+                    <CoursesApplyPage />
+                  </MemberPrivateRoute>
+                }
               />
               <Route
                 path="/MyCourseApplications"
-                element={<MyCourseApplications />}
+                element={
+                  <MemberPrivateRoute>
+                    <MyCourseApplications />
+                  </MemberPrivateRoute>
+                }
               />
 
               {/* Mentorship */}
               <Route path="/Mentorship" element={<Mentorship />} />
               <Route
                 path="/Mentorship/Apply/:mentorshipId"
-                element={<MentorshipApplyPage />}
+                element={
+                  <MemberPrivateRoute>
+                    <MentorshipApplyPage />
+                  </MemberPrivateRoute>
+                }
               />
               <Route
                 path="/MyMentorshipApplication"
-                element={<MyMentorshipApplications />}
+                element={
+                  <MemberPrivateRoute>
+                    <MyMentorshipApplications />
+                  </MemberPrivateRoute>
+                }
               />
 
               {/* Internship */}
               <Route path="/Internship" element={<Internship />} />
               <Route
                 path="/Internship/Apply/:internshipId"
-                element={<InternshipApplyPage />}
+                element={
+                  <MemberPrivateRoute>
+                    <InternshipApplyPage />
+                  </MemberPrivateRoute>
+                }
               />
               <Route
                 path="/MyInternshipApplications"
-                element={<MyInternshipApplications />}
+                element={
+                  <MemberPrivateRoute>
+                    <MyInternshipApplications />
+                  </MemberPrivateRoute>
+                }
               />
 
               {/* Events */}
@@ -144,7 +205,11 @@ createRoot(document.getElementById("root")).render(
               />
               <Route
                 path="/MyEventApplications"
-                element={<MyEventApplications />}
+                element={
+                  <MemberPrivateRoute>
+                    <MyEventApplications />
+                  </MemberPrivateRoute>
+                }
               />
 
               {/* Company Profiles */}

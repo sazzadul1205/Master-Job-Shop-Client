@@ -1,25 +1,25 @@
+import { useEffect, useState } from "react";
+
 // Packages
-import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import { useQuery } from "@tanstack/react-query";
 
 // Hooks
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Shared
-import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+import Loading from "../../../Shared/Loading/Loading";
 
 // Components
 import ProfileHeader from "./ProfileHeader/ProfileHeader";
-import ProfilePersonalInformation from "./ProfilePersonalInformation/ProfilePersonalInformation";
-import ProfileDocuments from "./ProfileDocuments/ProfileDocuments";
 import ProfileSkills from "./ProfileSkills/ProfileSkills";
-import ProfileJobPreference from "./ProfileJobPreference/ProfileJobPreference";
-import ProfileSettings from "./ProfileSettings/ProfileSettings";
 import ProfileDanger from "./ProfileDanger/ProfileDanger";
-
-import { useEffect, useState } from "react";
+import ProfileSettings from "./ProfileSettings/ProfileSettings";
+import ProfileDocuments from "./ProfileDocuments/ProfileDocuments";
+import ProfileJobPreference from "./ProfileJobPreference/ProfileJobPreference";
+import ProfilePersonalInformation from "./ProfilePersonalInformation/ProfilePersonalInformation";
 
 const UserProfile = () => {
   const { user, loading } = useAuth();
@@ -28,8 +28,8 @@ const UserProfile = () => {
   // State for reactivation reason and terms acceptance
   const [reason, setReason] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [termsAccepted, setTermsAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   // Fetch User Data
   const {
@@ -53,18 +53,26 @@ const UserProfile = () => {
     }
   }, [UserData]);
 
+  // Check if the form is valid
   const isFormValid =
     reason.trim().length > 0 && termsAccepted && !isSubmitting;
 
+  // Handle form submission
   const handleSubmit = async () => {
+    // Validate form
     if (!isFormValid) return;
 
     setIsSubmitting(true);
     try {
-      const response = await axiosPublic.put(`/Users/ReActivate/${UserData?._id}`, {
-        reinstatedReason: reason,
-      });
+      // Call the API to reactivate the user account
+      const response = await axiosPublic.put(
+        `/Users/ReActivate/${UserData?._id}`,
+        {
+          reinstatedReason: reason,
+        }
+      );
 
+      // Show success message
       if (response.status === 200) {
         Swal.fire({
           icon: "success",
@@ -76,12 +84,13 @@ const UserProfile = () => {
           showConfirmButton: false,
         });
 
+        setTermsAccepted(false);
         setShowModal(false);
         setReason("");
-        setTermsAccepted(false);
         refetchUser();
       }
     } catch (error) {
+      // Handle error
       console.error("Reactivation error:", error);
       Swal.fire({
         icon: "error",
@@ -91,31 +100,48 @@ const UserProfile = () => {
           "There was a problem reactivating your account. Please try again later.",
       });
     } finally {
+      // Reset submitting state
       setIsSubmitting(false);
     }
   };
 
-  // UI Error / Loading
+  // UI Error / Loading State
   if (loading || UserIsLoading) return <Loading />;
   if (UserError) return <Error />;
 
   return (
     <div className="bg-white py-3">
+      {/* Profile Header */}
       <ProfileHeader user={UserData} refetch={refetchUser} />
+
+      {/* Profile Personal Information */}
       <ProfilePersonalInformation user={UserData} refetch={refetchUser} />
+
+      {/* Profile Documents */}
       <ProfileDocuments user={UserData} refetch={refetchUser} />
+
+      {/* Profile Skills */}
       <ProfileSkills user={UserData} />
+
+      {/* Profile Job Preference */}
       <ProfileJobPreference user={UserData} refetch={refetchUser} />
+
+      {/* Profile Settings */}
       <ProfileSettings user={UserData} refetch={refetchUser} />
+
+      {/* Profile Danger Zone */}
       <ProfileDanger user={UserData} refetch={refetchUser} />
 
+      {/* Re-Activation Modal */}
       {showModal && (
         <dialog id="my_modal_1" className="modal" open>
           <div className="modal-box bg-white text-black shadow-lg max-w-3xl w-full p-8 rounded-xl">
+            {/* Modal Header */}
             <h3 className="font-bold text-2xl mb-4 text-center">
               Reactivate Your Account
             </h3>
 
+            {/* Modal Content */}
             <p className="text-sm text-gray-600 mb-4">
               To proceed with account reactivation, please share a brief reason
               for your request and agree to our terms of service.
@@ -179,6 +205,7 @@ const UserProfile = () => {
               </button>
             </div>
 
+            {/* Modal Footer */}
             <p className="text-xs text-gray-400 mt-6 text-center">
               Press ESC key or click outside the box to close
             </p>

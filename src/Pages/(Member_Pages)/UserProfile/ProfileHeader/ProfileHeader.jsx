@@ -6,8 +6,15 @@ import DefaultUserLogo from "../../../../assets/DefaultUserLogo.jpg";
 
 // Modal
 import EditHeaderModal from "./EditHeaderModal/EditHeaderModal";
+import { Link } from "react-router-dom";
 
 const ProfileHeader = ({ user, refetch }) => {
+  // Encode Email
+  const encodeEmail = (email) => {
+    if (!email) return "";
+    return btoa(email);
+  };
+
   return (
     <div className="max-w-7xl mx-auto rounded-xl shadow-sm border p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
       {/* Profile Image */}
@@ -53,9 +60,12 @@ const ProfileHeader = ({ user, refetch }) => {
             </button>
 
             {/* View Public Profile Button */}
-            <button className="px-5 py-2.5 border border-blue-600 text-blue-600 font-medium text-sm rounded-xl bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-200 transition cursor-pointer">
+            <Link
+              to={`/Profile/${encodeEmail(user?.email)}`}
+              className="px-5 py-2.5 border border-blue-600 text-blue-600 font-medium text-sm rounded bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-200 transition cursor-pointer"
+            >
               View Public Profile
-            </button>
+            </Link>
           </div>
         </div>
 

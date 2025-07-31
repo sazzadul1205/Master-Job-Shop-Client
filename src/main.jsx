@@ -74,6 +74,7 @@ import MemberPrivateRoute from "./Routes/MemberPrivateRoute";
 
 // Deleted User Page
 import DeletedUser from "./Pages/DeletedUser/DeletedUser";
+import PublicUserProfile from "./Pages/(Public_Pages)/PublicUserProfile/PublicUserProfile";
 
 const queryClient = new QueryClient();
 
@@ -227,6 +228,8 @@ createRoot(document.getElementById("root")).render(
 
               {/* User Profile */}
               <Route path="/MyProfile" element={<UserProfile />} />
+
+              <Route path="/Profile/:email" element={<PublicUserProfile />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -1,15 +1,25 @@
-import { FaExclamationTriangle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+// Icons
+import { FaExclamationTriangle } from "react-icons/fa";
+
 const DeletedUser = () => {
+  // Navigation Hook
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-bl from-blue-400 to-blue-600 flex items-center justify-center px-4">
+      {/* Main Container */}
       <div className="bg-white text-gray-800 rounded-2xl shadow-2xl p-10 max-w-xl w-full text-center space-y-6">
+        {/* Account Deactivated Message */}
         <div className="flex flex-col items-center gap-3">
+          {/* Exclamation Triangle Icon */}
           <FaExclamationTriangle className="text-red-500 text-5xl" />
+
+          {/* Title */}
           <h1 className="text-3xl font-extrabold">Account Deactivated</h1>
+
+          {/* Account Deactivated Message */}
           <p className="text-lg text-gray-600">
             This account has been marked as{" "}
             <span className="font-semibold text-red-600">deleted</span>. If this
@@ -18,7 +28,9 @@ const DeletedUser = () => {
           </p>
         </div>
 
+        {/* Contact Support Button */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+          {/* Go to Profile Settings Button */}
           <button
             onClick={() => navigate("/MyProfile")}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer"

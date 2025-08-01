@@ -41,17 +41,21 @@ const BecomeEmployer = () => {
     data: EmployerData,
     isLoading: EmployerIsLoading,
     error: EmployerError,
-    refetch: refetchUser,
+    refetch: refetchEmployer,
   } = useQuery({
-    queryKey: ["UserData"],
+    queryKey: ["EmployerRequestData"],
     queryFn: () =>
-      axiosPublic.get(`/Users?email=${user?.email}`).then((res) => res.data),
+      axiosPublic
+        .get(`/EmployerRequest?userEmail=${user?.email}`)
+        .then((res) => res.data),
     enabled: !!user?.email,
   });
 
+  console.log("EmployerData", EmployerData);
+
   // UI Error / Loading State
-  if (loading || UserIsLoading) return <Loading />;
-  if (UserError) return <Error />;
+  if (loading || EmployerIsLoading || UserIsLoading) return <Loading />;
+  if (EmployerError || UserError) return <Error />;
 
   const onSubmit = async (data) => {
     const confirm = await Swal.fire({
@@ -66,6 +70,7 @@ const BecomeEmployer = () => {
     if (!confirm.isConfirmed) return;
 
     try {
+      // Create payload
       const payload = {
         ...data,
         employerType: type,
@@ -75,18 +80,25 @@ const BecomeEmployer = () => {
         userEmail: user?.email,
       };
 
+      // POST request to submit the Payload
       const res = await axiosPublic.post("/EmployerRequest", payload);
-      //   console.log(payload);
 
       if (res.status === 200) {
+        // Show success message
         Swal.fire({
           title: "Submitted",
           text: "Your employer application has been received.",
           icon: "success",
         });
+
+        // Reset state and refetch data
         reset();
+        refetchUser();
+        refetchEmployer();
+        setShowCompanyFields(true);
       }
     } catch (err) {
+      console.log("Error submitting application:", err);
       Swal.fire({
         title: "Error",
         text: err?.response?.data?.message || "Something went wrong.",
@@ -95,12 +107,174 @@ const BecomeEmployer = () => {
     }
   };
 
+  // Handle Cancel Request
+  const handleCancelRequest = async (_id) => {
+    const result = await Swal.fire({
+      title: "Cancel Employer Application?",
+      text: "Are you sure you want to cancel your employer application? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Cancel it",
+      cancelButtonText: "No, Keep it",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await axiosPublic.delete(`/EmployerRequest/${_id}`);
+
+      Swal.fire({
+        title: "Cancelled",
+        text: "Your employer application has been cancelled.",
+        icon: "success",
+      });
+
+      // Reset state and refetch data
+      refetchUser();
+      refetchEmployer();
+      setShowCompanyFields(false);
+
+      // TODO: refetch or update UI here after cancellation
+    } catch (error) {
+      console.error("Error cancelling application:", error);
+      Swal.fire({
+        title: "Error",
+        text:
+          error?.response?.data?.message || "Failed to cancel the application.",
+        icon: "error",
+      });
+    }
+  };
+
+  // If there is existing employer data, show the summary box
+  if (EmployerData && EmployerData.length > 0) {
+    // You can tweak how many requests you want to show or just show the first one
+    const existingRequest = EmployerData[0];
+
+    return (
+      <div className="bg-gradient-to-br from-blue-400 to-blue-600 min-h-screen flex justify-center items-center px-4">
+        {/* Employer Application Status */}
+        <div className="bg-white rounded-xl shadow-2xl p-10 w-full max-w-4xl text-black">
+          {/* Title */}
+          <h2 className="text-4xl font-extrabold text-blue-800 mb-6 text-center">
+            Employer Application Status
+          </h2>
+
+          {/* Sub Title */}
+          <p className="mb-8 text-center text-gray-700 text-lg">
+            You already have an employer application submitted. You don&apos;t
+            need to apply again.
+          </p>
+
+          {/* Request Details */}
+          <div className="space-y-5 mb-10">
+            {/* Full Name */}
+            <div className="flex justify-between border-b border-gray-200 pb-2">
+              <span className="font-semibold">Full Name:</span>
+              <span>{existingRequest?.contactName}</span>
+            </div>
+
+            {/* Email Address */}
+            <div className="flex justify-between border-b border-gray-200 pb-2">
+              <span className="font-semibold">Email:</span>
+              <span>{existingRequest?.contactEmail}</span>
+            </div>
+
+            {/* Company Details */}
+            {existingRequest?.employerType === "Company" && (
+              <>
+                {/* Company Name */}
+                <div className="flex justify-between border-b border-gray-200 pb-2">
+                  <span className="font-semibold">Company Name:</span>
+                  <span>{existingRequest?.companyName}</span>
+                </div>
+
+                {/* Industry */}
+                <div className="flex justify-between border-b border-gray-200 pb-2">
+                  <span className="font-semibold">Industry:</span>
+                  <span>{existingRequest?.industry}</span>
+                </div>
+
+                {/* Company Size */}
+                <div className="flex justify-between border-b border-gray-200 pb-2">
+                  <span className="font-semibold">Company Size:</span>
+                  <span>{existingRequest?.companySize}</span>
+                </div>
+
+                {/* Business Reg. Number */}
+                <div className="flex justify-between border-b border-gray-200 pb-2">
+                  <span className="font-semibold">Business Reg. Number:</span>
+                  <span>{existingRequest?.registrationNumber}</span>
+                </div>
+              </>
+            )}
+
+            {/* Description */}
+            <div className="flex justify-between border-b border-gray-200 pb-2">
+              <span className="font-semibold">Description:</span>
+              <span className="max-w-[60%] text-right">
+                {existingRequest?.description}
+              </span>
+            </div>
+
+            {/* Hiring Roles */}
+            <div className="flex justify-between border-b border-gray-200 pb-2">
+              <span className="font-semibold">Hiring Roles:</span>
+              <span className="max-w-[60%] text-right">
+                {existingRequest?.hiringRoles}
+              </span>
+            </div>
+
+            {/* Employer type */}
+            <div className="flex justify-between border-b border-gray-200 pb-2">
+              <span className="font-semibold">Employer Type:</span>
+              <span>{existingRequest?.employerType}</span>
+            </div>
+
+            {/* Status */}
+            <div className="flex justify-between border-b border-gray-200 pb-2">
+              <span className="font-semibold">Status:</span>
+              <span className="capitalize">{existingRequest?.status}</span>
+            </div>
+
+            {/* Requested At */}
+            <div className="flex justify-between border-b border-gray-200 pb-2">
+              <strong>Requested At:</strong>{" "}
+              {new Date(existingRequest?.requestedAt).toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+              })}
+            </div>
+          </div>
+
+          {/* Cancel Request Button */}
+          <div className="flex justify-end">
+            <button
+              onClick={() => handleCancelRequest(existingRequest?._id)}
+              className="mt-auto bg-red-600 hover:bg-red-700 transition-colors text-white font-semibold rounded-md py-3 px-10 cursor-pointer"
+            >
+              Cancel Request
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gradient-to-br from-blue-400 to-blue-600 min-h-screen flex justify-center items-center py-5 px-4">
+      {/* Employer Application Form */}
       <div className="bg-white rounded-xl shadow-2xl p-10 w-full max-w-4xl text-black">
+        {/* Title */}
         <h2 className="text-3xl font-bold text-blue-800 mb-1">
           Become an Employer
         </h2>
+
+        {/* Sub Title */}
         <p className="text-gray-600 mb-4">
           Choose your type and fill out the application below.
         </p>
@@ -130,7 +304,7 @@ const BecomeEmployer = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {/* Shared Fields */}
+          {/* Full Name */}
           <div className="col-span-2">
             <label className="block font-medium mb-1">Full Name *</label>
             <input
@@ -146,6 +320,7 @@ const BecomeEmployer = () => {
             )}
           </div>
 
+          {/* Email Address */}
           <div className="col-span-2">
             <label className="block font-medium mb-1">Email Address *</label>
             <input
@@ -169,6 +344,7 @@ const BecomeEmployer = () => {
                 : "opacity-0 max-h-0 invisible"
             }`}
           >
+            {/* Company Name */}
             <div className="col-span-2">
               <label className="block font-medium mb-1">Company Name *</label>
               <input
@@ -186,6 +362,7 @@ const BecomeEmployer = () => {
               )}
             </div>
 
+            {/* Industry */}
             <div>
               <label className="block font-medium mb-1">Industry *</label>
               <input
@@ -203,6 +380,7 @@ const BecomeEmployer = () => {
               )}
             </div>
 
+            {/* Company Size */}
             <div>
               <label className="block font-medium mb-1">Company Size *</label>
               <select
@@ -224,6 +402,7 @@ const BecomeEmployer = () => {
               )}
             </div>
 
+            {/* Registration Number */}
             <div className="col-span-2">
               <label className="block font-medium mb-1">
                 Business Reg. Number *

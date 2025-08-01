@@ -1,5 +1,10 @@
+// Packages
 import PropTypes from "prop-types";
+
+// Icons
 import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
+
+// Modal
 import EditPersonalInformationModal from "./EditPersonalInformationModal/EditPersonalInformationModal";
 
 const PersonalInformationSection = ({ user, refetch }) => {

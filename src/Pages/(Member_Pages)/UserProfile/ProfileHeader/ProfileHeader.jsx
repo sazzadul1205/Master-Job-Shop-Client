@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 // Packages
 import PropTypes from "prop-types";
 
@@ -6,7 +8,6 @@ import DefaultUserLogo from "../../../../assets/DefaultUserLogo.jpg";
 
 // Modal
 import EditHeaderModal from "./EditHeaderModal/EditHeaderModal";
-import { Link } from "react-router-dom";
 
 const ProfileHeader = ({ user, refetch }) => {
   // Encode Email

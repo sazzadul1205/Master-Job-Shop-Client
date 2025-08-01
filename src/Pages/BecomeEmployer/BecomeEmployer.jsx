@@ -1,9 +1,13 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
+
+// Icons
+import { FaArrowLeft } from "react-icons/fa";
 
 // Hooks
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
@@ -16,6 +20,9 @@ import Error from "../../Shared/Error/Error";
 const BecomeEmployer = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
+
+  // Navigation Hook
+  const navigate = useNavigate();
 
   // State for employer type and form visibility
   const [type, setType] = useState("Company");
@@ -156,7 +163,17 @@ const BecomeEmployer = () => {
     const existingRequest = EmployerData[0];
 
     return (
-      <div className="bg-gradient-to-br from-blue-400 to-blue-600 min-h-screen flex justify-center items-center px-4">
+      <div className="relative bg-gradient-to-br from-blue-400 to-blue-600 min-h-screen flex justify-center items-center py-5 px-4">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute rounded left-4 top-4 px-8 py-2 font-semibold flex items-center bg-white hover:bg-blue-50 gap-2 text-black transition cursor-pointer "
+        >
+          <FaArrowLeft className="mr-2" />
+          Back
+        </button>
+
+        {/* Employer Application Summary */}
         <div className="bg-white rounded-xl shadow-2xl p-10 w-full max-w-4xl text-black space-y-6">
           {/* Header */}
           <div className="flex justify-between items-center">
@@ -277,7 +294,16 @@ const BecomeEmployer = () => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-blue-400 to-blue-600 min-h-screen flex justify-center items-center py-5 px-4">
+    <div className="relative bg-gradient-to-br from-blue-400 to-blue-600 min-h-screen flex justify-center items-center py-5 px-4">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute rounded left-4 top-4 px-8 py-2 font-semibold flex items-center bg-white hover:bg-blue-50 gap-2 text-black transition cursor-pointer "
+      >
+        <FaArrowLeft className="mr-2" />
+        Back
+      </button>
+
       {/* Employer Application Form */}
       <div className="bg-white rounded-xl shadow-2xl p-10 w-full max-w-4xl text-black">
         {/* Title */}

@@ -1,9 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaEdit } from "react-icons/fa";
 
 // Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import useAuth from "../../../Hooks/useAuth";
 
 // Shared
 import Loading from "../../../Shared/Loading/Loading";
@@ -18,6 +19,9 @@ import PublicUserProfilePersonalInformation from "./PublicUserProfilePersonalInf
 
 const PublicUserProfile = () => {
   const { email } = useParams();
+  const { user, loading } = useAuth();
+
+  // Redirect to home if no email is provided
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
 
@@ -26,7 +30,7 @@ const PublicUserProfile = () => {
 
   // Fetch user by decoded email
   const {
-    data: user,
+    data: UserData,
     isLoading,
     error,
   } = useQuery({
@@ -37,37 +41,51 @@ const PublicUserProfile = () => {
   });
 
   // Modal should only show if profile is not public
-  const showModal = user ? !user.isProfilePublic : false;
+  const showModal = UserData ? !UserData.isProfilePublic : false;
+
+  const showEditButton =
+    user?.email && UserData?.email && user.email === UserData.email;
 
   // UI Error / Loading State
-  if (isLoading) return <Loading />;
+  if (isLoading || loading) return <Loading />;
   if (error) return <Error />;
 
   return (
-    <div className="bg-white py-3 min-h-screen">
+    <div className="bg-white py-3  min-h-screen relative">
+      {/* Edit Button positioned top-left without pushing content */}
+      {showEditButton && (
+        <button
+          onClick={() => navigate("/MyProfile")}
+          className="absolute top-4 right-4 px-5 py-2.5 flex items-center gap-2 border border-blue-600 text-blue-600 font-medium text-sm rounded bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-200 transition cursor-pointer"
+        >
+          <FaEdit />
+          Edit My Profile
+        </button>
+      )}
+
       <div className="max-w-7xl mx-auto rounded-xl shadow-sm border p-6">
         {/* Public User Header */}
-        <PublicUserProfileHeader user={user} />
+        <PublicUserProfileHeader user={UserData} />
 
         <div className="bg-gray-200 py-[1px] my-10" />
 
         {/* Public User Personal Information */}
-        <PublicUserProfilePersonalInformation user={user} />
+        <PublicUserProfilePersonalInformation user={UserData} />
 
         <div className="bg-gray-200 py-[1px] mt-10 mb-5" />
 
         {/* Public User Profile Documents */}
-        <PublicUserProfileDocuments user={user} />
+        <PublicUserProfileDocuments user={UserData} />
 
         <div className="bg-gray-200 py-[1px] mt-10 mb-5" />
 
         {/* Public User Skills */}
-        <PublicUserProfileSkills user={user} />
+        <PublicUserProfileSkills user={UserData} />
 
         <div className="bg-gray-200 py-[1px] mt-10 mb-5" />
 
         {/* Public User Preferences */}
-        <PublicUserProfilePreferences user={user} />
+        <PublicUserProfilePreferences user={UserData} />
       </div>
 
       {/* Conditional Modal */}

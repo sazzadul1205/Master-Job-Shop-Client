@@ -23,6 +23,8 @@ import ProfilePersonalInformation from "./ProfilePersonalInformation/ProfilePers
 
 const UserProfile = () => {
   const { user, loading } = useAuth();
+
+  // Axios instance for public requests
   const axiosPublic = useAxiosPublic();
 
   // State for reactivation reason and terms acceptance
@@ -134,7 +136,7 @@ const UserProfile = () => {
 
       {/* Re-Activation Modal */}
       {showModal && (
-        <dialog id="my_modal_1" className="modal" open>
+        <dialog id="User_Profile_Reactivation_Modal" className="modal" open>
           <div className="modal-box bg-white text-black shadow-lg max-w-3xl w-full p-8 rounded-xl">
             {/* Modal Header */}
             <h3 className="font-bold text-2xl mb-4 text-center">

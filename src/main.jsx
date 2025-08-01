@@ -229,6 +229,7 @@ createRoot(document.getElementById("root")).render(
               {/* User Profile */}
               <Route path="/MyProfile" element={<UserProfile />} />
 
+              {/* Public User Profile */}
               <Route path="/Profile/:email" element={<PublicUserProfile />} />
             </Route>
           </Routes>

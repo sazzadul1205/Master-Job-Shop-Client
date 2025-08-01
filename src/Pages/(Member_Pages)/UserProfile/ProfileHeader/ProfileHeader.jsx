@@ -86,7 +86,6 @@ const ProfileHeader = ({ user, refetch }) => {
 };
 
 // Prop Validation
-
 ProfileHeader.propTypes = {
   user: PropTypes.shape({
     fullName: PropTypes.string,
@@ -94,6 +93,8 @@ ProfileHeader.propTypes = {
     location: PropTypes.string,
     profileImage: PropTypes.string,
     bio: PropTypes.string,
+    email: PropTypes.string.isRequired,
+    _id: PropTypes.string,
   }).isRequired,
   refetch: PropTypes.func.isRequired,
 };

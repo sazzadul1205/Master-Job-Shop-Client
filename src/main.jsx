@@ -74,7 +74,12 @@ import MemberPrivateRoute from "./Routes/MemberPrivateRoute";
 
 // Deleted User Page
 import DeletedUser from "./Pages/DeletedUser/DeletedUser";
+
+// Public User Profile
 import PublicUserProfile from "./Pages/(Public_Pages)/PublicUserProfile/PublicUserProfile";
+
+// Become Employer Page
+import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +91,9 @@ createRoot(document.getElementById("root")).render(
           <Routes>
             {/* Deleted User */}
             <Route path="/DeletedUser" element={<DeletedUser />} />
+
+            {/* Become Employer */}
+            <Route path="/BecomeEmployer" element={<BecomeEmployer />} />
 
             {/* Home Page Layout */}
             <Route element={<MainLayout />}>

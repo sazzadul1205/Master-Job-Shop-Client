@@ -20,6 +20,7 @@ import ProfileSettings from "./ProfileSettings/ProfileSettings";
 import ProfileDocuments from "./ProfileDocuments/ProfileDocuments";
 import ProfileJobPreference from "./ProfileJobPreference/ProfileJobPreference";
 import ProfilePersonalInformation from "./ProfilePersonalInformation/ProfilePersonalInformation";
+import ProfileBecomeMentor from "./ProfileBecomeMentor/ProfileBecomeMentor";
 
 const UserProfile = () => {
   const { user, loading } = useAuth();
@@ -130,6 +131,8 @@ const UserProfile = () => {
 
       {/* Profile Settings */}
       <ProfileSettings user={UserData} refetch={refetchUser} />
+
+      <ProfileBecomeMentor user={UserData} refetch={refetchUser} />
 
       {/* Profile Danger Zone */}
       <ProfileDanger user={UserData} refetch={refetchUser} />

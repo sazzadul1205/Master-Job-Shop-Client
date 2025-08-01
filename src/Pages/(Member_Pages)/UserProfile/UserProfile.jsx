@@ -21,6 +21,7 @@ import ProfileDocuments from "./ProfileDocuments/ProfileDocuments";
 import ProfileJobPreference from "./ProfileJobPreference/ProfileJobPreference";
 import ProfilePersonalInformation from "./ProfilePersonalInformation/ProfilePersonalInformation";
 import ProfileBecomeMentor from "./ProfileBecomeMentor/ProfileBecomeMentor";
+import ProfileBecomeEmployer from "./ProfileBecomeEmployer/ProfileBecomeEmployer";
 
 const UserProfile = () => {
   const { user, loading } = useAuth();
@@ -132,6 +133,10 @@ const UserProfile = () => {
       {/* Profile Settings */}
       <ProfileSettings user={UserData} refetch={refetchUser} />
 
+      {/* Profile Become Employer */}
+      <ProfileBecomeEmployer user={UserData} refetch={refetchUser} />
+
+      {/* Profile Become Mentor */}
       <ProfileBecomeMentor user={UserData} refetch={refetchUser} />
 
       {/* Profile Danger Zone */}

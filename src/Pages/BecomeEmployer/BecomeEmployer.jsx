@@ -1,9 +1,15 @@
+import { useState } from "react";
+
+// Packages
+import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import { useState } from "react";
+
+// Hooks
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import useAuth from "../../Hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+
+// Shared
 import Loading from "../../Shared/Loading/Loading";
 import Error from "../../Shared/Error/Error";
 
@@ -50,8 +56,6 @@ const BecomeEmployer = () => {
         .then((res) => res.data),
     enabled: !!user?.email,
   });
-
-  console.log("EmployerData", EmployerData);
 
   // UI Error / Loading State
   if (loading || EmployerIsLoading || UserIsLoading) return <Loading />;

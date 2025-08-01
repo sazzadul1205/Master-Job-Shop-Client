@@ -80,6 +80,7 @@ import PublicUserProfile from "./Pages/(Public_Pages)/PublicUserProfile/PublicUs
 
 // Become Employer Page
 import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
+import BecomeMentor from "./Pages/BecomeMentor/BecomeMentor";
 
 const queryClient = new QueryClient();
 
@@ -239,6 +240,9 @@ createRoot(document.getElementById("root")).render(
 
               {/* Become Employer */}
               <Route path="/BecomeEmployer" element={<BecomeEmployer />} />
+
+              {/* Become Mentor */}
+              <Route path="/BecomeMentor" element={<BecomeMentor />} />
             </Route>
           </Routes>
         </BrowserRouter>

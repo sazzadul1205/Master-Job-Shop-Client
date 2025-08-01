@@ -38,9 +38,24 @@ const BecomeMentor = () => {
     enabled: !!user?.email,
   });
 
+  // Fetch Mentor Data
+  const {
+    data: MentorData,
+    isLoading: MentorIsLoading,
+    error: MentorError,
+    refetch: refetchMentor,
+  } = useQuery({
+    queryKey: ["MentorRequestData"],
+    queryFn: () =>
+      axiosPublic
+        .get(`/MentorRequest?userEmail=${user?.email}`)
+        .then((res) => res.data),
+    enabled: !!user?.email,
+  });
+
   // UI Error / Loading State
-  if (loading || UserIsLoading) return <Loading />;
-  if (UserError) return <Error />;
+  if (loading || MentorIsLoading || UserIsLoading) return <Loading />;
+  if (MentorError || UserError) return <Error />;
 
   // On Submit Handler
   const onSubmit = async (data) => {
@@ -78,6 +93,8 @@ const BecomeMentor = () => {
 
         // Reset state and refetch data
         reset();
+        refetchUser();
+        refetchMentor();
       }
     } catch (err) {
       console.log("Error submitting application:", err);
@@ -88,6 +105,180 @@ const BecomeMentor = () => {
       });
     }
   };
+
+  // Handle Cancel Request
+  const handleCancelRequest = async (_id) => {
+    const result = await Swal.fire({
+      title: "Cancel Mentor Application?",
+      text: "Are you sure you want to cancel your Mentor application? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Cancel it",
+      cancelButtonText: "No, Keep it",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await axiosPublic.delete(`/MentorRequest/${_id}`);
+
+      Swal.fire({
+        title: "Cancelled",
+        text: "Your Mentor application has been cancelled.",
+        icon: "success",
+      });
+
+      // Reset state and refetch data
+      reset();
+      refetchUser();
+      refetchMentor();
+
+      // TODO: refetch or update UI here after cancellation
+    } catch (error) {
+      console.error("Error cancelling application:", error);
+      Swal.fire({
+        title: "Error",
+        text:
+          error?.response?.data?.message || "Failed to cancel the application.",
+        icon: "error",
+      });
+    }
+  };
+
+  // If there is existing Mentor data, show the summary box
+  if (MentorData && MentorData.length > 0) {
+    // You can tweak how many requests you want to show or just show the first one
+    const existingRequest = MentorData[0];
+
+    return (
+      <div className="bg-gradient-to-br from-blue-400 to-blue-600 min-h-screen flex justify-center items-center px-4">
+        {/* Mentor Application Status */}
+        <div className="bg-white rounded-xl shadow-2xl p-10 w-full max-w-4xl text-black space-y-6">
+          {/* Title */}
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-blue-700">
+              Mentor Application Summary
+            </h2>
+            <span
+              className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                existingRequest.status === "pending"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : existingRequest.status === "approved"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }`}
+            >
+              {existingRequest.status.toUpperCase()}
+            </span>
+          </div>
+
+          {/* Grid View */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm">
+            {/* Full Name */}
+            <div>
+              <p className="font-semibold text-gray-700">Full Name</p>
+              <p>{existingRequest.fullName}</p>
+            </div>
+
+            {/* Email */}
+            <div>
+              <p className="font-semibold text-gray-700">Email</p>
+              <p>{existingRequest.email}</p>
+            </div>
+
+            {/* Expertise */}
+            <div>
+              <p className="font-semibold text-gray-700">Expertise</p>
+              <p>{existingRequest.expertise}</p>
+            </div>
+
+            {/* Year of Experience */}
+            <div>
+              <p className="font-semibold text-gray-700">Years of Experience</p>
+              <p>{existingRequest.experienceYears}</p>
+            </div>
+
+            {/* Availability */}
+            <div>
+              <p className="font-semibold text-gray-700">
+                Availability (hrs/week)
+              </p>
+              <p>{existingRequest.availability}</p>
+            </div>
+
+            {/* Request Date */}
+            <div>
+              <p className="font-semibold text-gray-700">Requested At</p>
+              <p>
+                {new Date(existingRequest.requestedAt).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })}
+              </p>
+            </div>
+
+            {/* LinkedIn */}
+            {existingRequest.linkedin && (
+              <div>
+                <p className="font-semibold text-gray-700">LinkedIn</p>
+                <a
+                  href={existingRequest.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  View Profile
+                </a>
+              </div>
+            )}
+
+            {/* Portfolio / Resume */}
+            {existingRequest.portfolio && (
+              <div>
+                <p className="font-semibold text-gray-700">
+                  Portfolio / Resume
+                </p>
+                <a
+                  href={existingRequest.portfolio}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  View Document
+                </a>
+              </div>
+            )}
+          </div>
+
+          {/* Skills */}
+          <div className="mt-6">
+            <p className="font-semibold text-gray-700 mb-1">Key Skills</p>
+            <p className="whitespace-pre-wrap">{existingRequest.skills}</p>
+          </div>
+
+          {/* Motivation */}
+          <div className="mt-4">
+            <p className="font-semibold text-gray-700 mb-1">Motivation</p>
+            <p className="whitespace-pre-wrap">{existingRequest.motivation}</p>
+          </div>
+
+          {/* Action */}
+          <div className="flex justify-end pt-4">
+            <button
+              onClick={() => handleCancelRequest(existingRequest?._id)}
+              className="bg-red-600 hover:bg-red-700 transition-colors text-white font-semibold rounded-md py-3 px-8 cursor-pointer"
+            >
+              Cancel Request
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gradient-to-br from-blue-400 to-blue-600 min-h-screen flex justify-center items-center py-5 px-4">

@@ -61,6 +61,7 @@ const BecomeEmployer = () => {
   if (loading || EmployerIsLoading || UserIsLoading) return <Loading />;
   if (EmployerError || UserError) return <Error />;
 
+  // On Submit Handler
   const onSubmit = async (data) => {
     const confirm = await Swal.fire({
       title: "Submit Employer Application?",
@@ -152,114 +153,120 @@ const BecomeEmployer = () => {
 
   // If there is existing employer data, show the summary box
   if (EmployerData && EmployerData.length > 0) {
-    // You can tweak how many requests you want to show or just show the first one
     const existingRequest = EmployerData[0];
 
     return (
       <div className="bg-gradient-to-br from-blue-400 to-blue-600 min-h-screen flex justify-center items-center px-4">
-        {/* Employer Application Status */}
-        <div className="bg-white rounded-xl shadow-2xl p-10 w-full max-w-4xl text-black">
-          {/* Title */}
-          <h2 className="text-4xl font-extrabold text-blue-800 mb-6 text-center">
-            Employer Application Status
-          </h2>
+        <div className="bg-white rounded-xl shadow-2xl p-10 w-full max-w-4xl text-black space-y-6">
+          {/* Header */}
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-blue-700">
+              Employer Application Summary
+            </h2>
+            <span
+              className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                existingRequest.status === "pending"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : existingRequest.status === "approved"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }`}
+            >
+              {existingRequest.status.toUpperCase()}
+            </span>
+          </div>
 
-          {/* Sub Title */}
-          <p className="mb-8 text-center text-gray-700 text-lg">
-            You already have an employer application submitted. You don&apos;t
-            need to apply again.
-          </p>
-
-          {/* Request Details */}
-          <div className="space-y-5 mb-10">
-            {/* Full Name */}
-            <div className="flex justify-between border-b border-gray-200 pb-2">
-              <span className="font-semibold">Full Name:</span>
-              <span>{existingRequest?.contactName}</span>
+          {/* Grid Data */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm">
+            {/* Contact Now */}
+            <div>
+              <p className="font-semibold text-gray-700">Contact Name</p>
+              <p>{existingRequest?.contactName}</p>
             </div>
 
-            {/* Email Address */}
-            <div className="flex justify-between border-b border-gray-200 pb-2">
-              <span className="font-semibold">Email:</span>
-              <span>{existingRequest?.contactEmail}</span>
+            {/* Email */}
+            <div>
+              <p className="font-semibold text-gray-700">Contact Email</p>
+              <p>{existingRequest?.contactEmail}</p>
+            </div>
+
+            {/* Employer Type */}
+            <div>
+              <p className="font-semibold text-gray-700">Employer Type</p>
+              <p>{existingRequest?.employerType}</p>
             </div>
 
             {/* Company Details */}
             {existingRequest?.employerType === "Company" && (
               <>
                 {/* Company Name */}
-                <div className="flex justify-between border-b border-gray-200 pb-2">
-                  <span className="font-semibold">Company Name:</span>
-                  <span>{existingRequest?.companyName}</span>
+                <div>
+                  <p className="font-semibold text-gray-700">Company Name</p>
+                  <p>{existingRequest?.companyName}</p>
                 </div>
 
-                {/* Industry */}
-                <div className="flex justify-between border-b border-gray-200 pb-2">
-                  <span className="font-semibold">Industry:</span>
-                  <span>{existingRequest?.industry}</span>
+                {/* Company Industry */}
+                <div>
+                  <p className="font-semibold text-gray-700">Industry</p>
+                  <p>{existingRequest?.industry}</p>
                 </div>
 
                 {/* Company Size */}
-                <div className="flex justify-between border-b border-gray-200 pb-2">
-                  <span className="font-semibold">Company Size:</span>
-                  <span>{existingRequest?.companySize}</span>
+                <div>
+                  <p className="font-semibold text-gray-700">Company Size</p>
+                  <p>{existingRequest?.companySize}</p>
                 </div>
 
-                {/* Business Reg. Number */}
-                <div className="flex justify-between border-b border-gray-200 pb-2">
-                  <span className="font-semibold">Business Reg. Number:</span>
-                  <span>{existingRequest?.registrationNumber}</span>
+                {/* Business Reg. Numbers */}
+                <div>
+                  <p className="font-semibold text-gray-700">
+                    Business Reg. Number
+                  </p>
+                  <p>{existingRequest?.registrationNumber}</p>
                 </div>
               </>
             )}
 
             {/* Description */}
-            <div className="flex justify-between border-b border-gray-200 pb-2">
-              <span className="font-semibold">Description:</span>
-              <span className="max-w-[60%] text-right">
+            <div className="md:col-span-2">
+              <p className="font-semibold text-gray-700">Description</p>
+              <p className="whitespace-pre-wrap">
                 {existingRequest?.description}
-              </span>
+              </p>
             </div>
 
-            {/* Hiring Roles */}
-            <div className="flex justify-between border-b border-gray-200 pb-2">
-              <span className="font-semibold">Hiring Roles:</span>
-              <span className="max-w-[60%] text-right">
+            {/* Roles */}
+            <div className="md:col-span-2">
+              <p className="font-semibold text-gray-700">Hiring Roles</p>
+              <p className="whitespace-pre-wrap">
                 {existingRequest?.hiringRoles}
-              </span>
+              </p>
             </div>
 
-            {/* Employer type */}
-            <div className="flex justify-between border-b border-gray-200 pb-2">
-              <span className="font-semibold">Employer Type:</span>
-              <span>{existingRequest?.employerType}</span>
-            </div>
-
-            {/* Status */}
-            <div className="flex justify-between border-b border-gray-200 pb-2">
-              <span className="font-semibold">Status:</span>
-              <span className="capitalize">{existingRequest?.status}</span>
-            </div>
-
-            {/* Requested At */}
-            <div className="flex justify-between border-b border-gray-200 pb-2">
-              <strong>Requested At:</strong>{" "}
-              {new Date(existingRequest?.requestedAt).toLocaleString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true,
-              })}
+            {/* Request Date */}
+            <div>
+              <p className="font-semibold text-gray-700">Requested At</p>
+              <p>
+                {new Date(existingRequest?.requestedAt).toLocaleString(
+                  "en-US",
+                  {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  }
+                )}
+              </p>
             </div>
           </div>
 
-          {/* Cancel Request Button */}
-          <div className="flex justify-end">
+          {/* Action */}
+          <div className="flex justify-end pt-4">
             <button
               onClick={() => handleCancelRequest(existingRequest?._id)}
-              className="mt-auto bg-red-600 hover:bg-red-700 transition-colors text-white font-semibold rounded-md py-3 px-10 cursor-pointer"
+              className="bg-red-600 hover:bg-red-700 transition-colors text-white font-semibold rounded-md py-3 px-8 cursor-pointer"
             >
               Cancel Request
             </button>

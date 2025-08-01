@@ -17,6 +17,7 @@ const ProfileBecomeMentor = () => {
 
       {/* Features Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        {/* Feature */}
         <div className="flex items-start gap-4">
           <Briefcase className="text-blue-600 w-6 h-6 mt-1" />
           <div>
@@ -28,6 +29,7 @@ const ProfileBecomeMentor = () => {
           </div>
         </div>
 
+        {/* Feature */}
         <div className="flex items-start gap-4">
           <Users className="text-blue-600 w-6 h-6 mt-1" />
           <div>
@@ -38,6 +40,7 @@ const ProfileBecomeMentor = () => {
           </div>
         </div>
 
+        {/* Feature */}
         <div className="flex items-start gap-4">
           <FileText className="text-blue-600 w-6 h-6 mt-1" />
           <div>

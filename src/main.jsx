@@ -92,9 +92,6 @@ createRoot(document.getElementById("root")).render(
             {/* Deleted User */}
             <Route path="/DeletedUser" element={<DeletedUser />} />
 
-            {/* Become Employer */}
-            <Route path="/BecomeEmployer" element={<BecomeEmployer />} />
-
             {/* Home Page Layout */}
             <Route element={<MainLayout />}>
               {/* Home Pages Link */}
@@ -239,6 +236,9 @@ createRoot(document.getElementById("root")).render(
 
               {/* Public User Profile */}
               <Route path="/Profile/:email" element={<PublicUserProfile />} />
+
+              {/* Become Employer */}
+              <Route path="/BecomeEmployer" element={<BecomeEmployer />} />
             </Route>
           </Routes>
         </BrowserRouter>

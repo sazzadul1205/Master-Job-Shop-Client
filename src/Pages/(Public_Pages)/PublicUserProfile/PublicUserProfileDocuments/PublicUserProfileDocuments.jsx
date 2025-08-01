@@ -26,6 +26,12 @@ const PublicUserProfileDocuments = ({ user }) => {
 
   return (
     <div>
+      {/* Header */}
+      <h3 className="text-black font-semibold text-lg flex items-center gap-2 pb-5">
+        <span className="w-2.5 h-2.5 bg-blue-500 rounded-full inline-block" />
+        <span className="text-blue-700">My Document&apos;s</span>
+      </h3>
+
       {documents.length > 0 ? (
         <ul className="space-y-4">
           {documents.map(({ id, name, fileUrl }) => (

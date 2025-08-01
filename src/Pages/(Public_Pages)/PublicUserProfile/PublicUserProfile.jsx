@@ -11,8 +11,9 @@ import Error from "../../../Shared/Error/Error";
 
 // Components
 import PublicUserProfileHeader from "./PublicUserProfileHeader/PublicUserProfileHeader";
-import PublicUserProfilePersonalInformation from "./PublicUserProfilePersonalInformation/PublicUserProfilePersonalInformation";
+import PublicUserProfileSkills from "./PublicUserProfileSkills/PublicUserProfileSkills";
 import PublicUserProfileDocuments from "./PublicUserProfileDocuments/PublicUserProfileDocuments";
+import PublicUserProfilePersonalInformation from "./PublicUserProfilePersonalInformation/PublicUserProfilePersonalInformation";
 
 const PublicUserProfile = () => {
   const { email } = useParams();
@@ -48,11 +49,13 @@ const PublicUserProfile = () => {
 
         <PublicUserProfilePersonalInformation user={user} />
 
-        <div className="bg-gray-200 py-[1px] my-10 " />
+        <div className="bg-gray-200 py-[1px] mt-10 mb-5 " />
 
         <PublicUserProfileDocuments user={user} />
 
-        <div className="bg-gray-200 py-[1px] my-10 " />
+        <div className="bg-gray-200 py-[1px] mt-10 mb-5 " />
+
+        <PublicUserProfileSkills user={user} />
       </div>
     </div>
   );

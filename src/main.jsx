@@ -228,6 +228,7 @@ createRoot(document.getElementById("root")).render(
 
               {/* Company Profiles */}
               <Route path="/CompanyProfiles" element={<CompanyProfiles />} />
+              
               <Route
                 path="/CompanyProfiles/:companyId"
                 element={<CompanyProfilesDetails />}

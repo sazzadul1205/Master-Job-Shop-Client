@@ -18,10 +18,10 @@ import ProfileSkills from "./ProfileSkills/ProfileSkills";
 import ProfileDanger from "./ProfileDanger/ProfileDanger";
 import ProfileSettings from "./ProfileSettings/ProfileSettings";
 import ProfileDocuments from "./ProfileDocuments/ProfileDocuments";
-import ProfileJobPreference from "./ProfileJobPreference/ProfileJobPreference";
-import ProfilePersonalInformation from "./ProfilePersonalInformation/ProfilePersonalInformation";
 import ProfileBecomeMentor from "./ProfileBecomeMentor/ProfileBecomeMentor";
+import ProfileJobPreference from "./ProfileJobPreference/ProfileJobPreference";
 import ProfileBecomeEmployer from "./ProfileBecomeEmployer/ProfileBecomeEmployer";
+import ProfilePersonalInformation from "./ProfilePersonalInformation/ProfilePersonalInformation";
 
 const UserProfile = () => {
   const { user, loading } = useAuth();

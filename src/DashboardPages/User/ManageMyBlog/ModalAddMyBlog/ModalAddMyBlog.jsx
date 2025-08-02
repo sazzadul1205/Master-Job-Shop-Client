@@ -59,8 +59,12 @@ const ModalAddMyBlog = ({ refetch }) => {
 
   return (
     <div className="modal-box bg-white max-w-[800px] p-0 rounded-none">
+      {/* Header */}
       <div className="flex justify-between items-center p-5 bg-blue-400 text-white">
+        {/* Title */}
         <p className="text-xl">Create New Blog</p>
+
+        {/* Close Button */}
         <button
           onClick={() => document.getElementById("Create_New_Blog").close()}
         >
@@ -68,6 +72,7 @@ const ModalAddMyBlog = ({ refetch }) => {
         </button>
       </div>
 
+      {/* Form */}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="p-5 space-y-4 text-black"

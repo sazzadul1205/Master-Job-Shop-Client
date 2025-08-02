@@ -14,6 +14,7 @@ import AuthProvider from "./Provider/AuthProvider";
 // Layouts
 import MainLayout from "./Layouts/MainLayout";
 import PublicLayout from "./Layouts/PublicLayout";
+import EmployerLayout from "./Layouts/EmployerLayout";
 
 // Public Pages
 import Home from "./Pages/(Public_Pages)/Home/Home";
@@ -80,7 +81,12 @@ import PublicUserProfile from "./Pages/(Public_Pages)/PublicUserProfile/PublicUs
 
 // Become Employer Page
 import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
+
+// Become Mentor Page
 import BecomeMentor from "./Pages/BecomeMentor/BecomeMentor";
+
+// Employer Pages
+import EmployerDashboard from "./Pages/(Employer_Pages)/EmployerDashboard/EmployerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -243,6 +249,15 @@ createRoot(document.getElementById("root")).render(
 
               {/* Become Mentor */}
               <Route path="/BecomeMentor" element={<BecomeMentor />} />
+            </Route>
+
+            {/* Employer Route */}
+            <Route element={<EmployerLayout />}>
+              {/* Add more routes here if needed */}
+              <Route
+                path="/Employer/Dashboard"
+                element={<EmployerDashboard />}
+              />
             </Route>
           </Routes>
         </BrowserRouter>

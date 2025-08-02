@@ -87,6 +87,7 @@ import BecomeMentor from "./Pages/BecomeMentor/BecomeMentor";
 
 // Employer Pages
 import EmployerDashboard from "./Pages/(Employer_Pages)/EmployerDashboard/EmployerDashboard";
+import ManageJobs from "./Pages/(Employer_Pages)/ManageJobs/ManageJobs";
 
 const queryClient = new QueryClient();
 
@@ -253,11 +254,14 @@ createRoot(document.getElementById("root")).render(
 
             {/* Employer Route */}
             <Route element={<EmployerLayout />}>
-              {/* Add more routes here if needed */}
+              {/* Employer Dashboard */}
               <Route
                 path="/Employer/Dashboard"
                 element={<EmployerDashboard />}
               />
+
+              {/* Employer Jobs */}
+              <Route path="/Employer/Jobs" element={<ManageJobs />} />
             </Route>
           </Routes>
         </BrowserRouter>

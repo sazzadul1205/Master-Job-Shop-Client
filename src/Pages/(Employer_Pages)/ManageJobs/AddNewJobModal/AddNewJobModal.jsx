@@ -1,6 +1,14 @@
 import { useState } from "react";
+
+// Packages
 import { useForm, useFieldArray } from "react-hook-form";
+
+// Icons
 import { ImCross } from "react-icons/im";
+import { RxCross2 } from "react-icons/rx";
+
+// Currency Data
+import Currencies from "../../../../JSON/Currencies.json";
 
 const AddNewJobModal = () => {
   const [newFieldValues, setNewFieldValues] = useState({});
@@ -84,6 +92,16 @@ const AddNewJobModal = () => {
     "perks",
     "skills",
   ];
+
+  const [values, setValues] = useState({
+    remote: false,
+    hybrid: false,
+    onsite: false,
+  });
+
+  const toggleValue = (key) => {
+    setValues((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   const onSubmit = (data) => {
     console.log("Form Data Submitted:", data);
@@ -263,13 +281,13 @@ const AddNewJobModal = () => {
             </label>
 
             {/* Tag Display */}
-            <div className="flex flex-wrap gap-2 rounded border border-gray-700 mb-3">
+            <div className="flex flex-wrap gap-2 rounded border border-gray-700 mb-3 px-2 py-2">
               {fieldArrays[field].fields.length > 0 ? (
                 fieldArrays[field].fields.map((item, index) => (
                   <div
                     key={item.id}
                     onClick={() => fieldArrays[field].remove(index)}
-                    className="border border-blue-700 font-semibold text-blue-800 gap-4 px-3 py-1 rounded cursor-pointer hover:bg-blue-200 transition-all duration-200 text-sm my-2 mx-2"
+                    className="flex items-center border border-blue-700 font-semibold text-blue-800 gap-2 px-3 py-1 rounded cursor-pointer hover:bg-blue-100 transition-all duration-200 text-sm "
                   >
                     {watch(`${field}.${index}`) || `${field} #${index + 1}`}{" "}
                     <RxCross2 />
@@ -295,7 +313,7 @@ const AddNewJobModal = () => {
                   }))
                 }
                 placeholder={`Add new ${field}`}
-                className="input input-bordered bg-white text-black border-black w-1/2"
+                className="input input-bordered bg-white text-black border-black w-2/3"
               />
               <button
                 type="button"
@@ -315,38 +333,95 @@ const AddNewJobModal = () => {
         ))}
 
         {/* Remote / Hybrid / Onsite */}
-        <div className="flex gap-4">
-          <label>
-            <input type="checkbox" {...register("remote")} /> Remote
+        {/* Work Type Selection */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-700">
+            Work Arrangement (select one or more):
           </label>
-          <label>
-            <input type="checkbox" {...register("hybrid")} /> Hybrid
-          </label>
-          <label>
-            <input type="checkbox" {...register("onsite")} /> Onsite
-          </label>
+
+          <div className="flex flex-wrap gap-4">
+            {["remote", "hybrid", "onsite"].map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => toggleValue(mode)}
+                className={`px-4 py-2 rounded border transition-all duration-300 text-sm font-semibold cursor-pointer ${
+                  values[mode]
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white text-gray-600 border-gray-400 hover:border-blue-500 hover:text-blue-500"
+                }`}
+              >
+                {mode.charAt(0).toUpperCase() + mode.slice(1)}
+              </button>
+            ))}
+
+            {/* Hidden inputs for form data */}
+            <input
+              type="hidden"
+              {...register("remote")}
+              value={values.remote}
+            />
+            <input
+              type="hidden"
+              {...register("hybrid")}
+              value={values.hybrid}
+            />
+            <input
+              type="hidden"
+              {...register("onsite")}
+              value={values.onsite}
+            />
+          </div>
         </div>
 
         {/* Salary Range */}
-        <div className="grid grid-cols-3 gap-2">
-          <input
-            type="number"
-            {...register("salaryRange.min")}
-            placeholder="Min Salary"
-            className="input input-bordered w-full"
-          />
-          <input
-            type="number"
-            {...register("salaryRange.max")}
-            placeholder="Max Salary"
-            className="input input-bordered w-full"
-          />
-          <input
-            {...register("salaryRange.currency")}
-            placeholder="Currency"
-            className="input input-bordered w-full"
-          />
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-700">
+            Salary Range
+          </label>
+
+          {/* Salary Range Inputs */}
+          <div className="grid grid-cols-3 gap-2">
+            {/* Minimum Salary  */}
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-600 mb-1">Minimum</label>
+              <input
+                type="number"
+                {...register("salaryRange.min")}
+                placeholder="e.g. 30000"
+                className="input input-bordered w-full bg-white text-black border-black"
+              />
+            </div>
+
+            {/* Maximum Salary */}
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-600 mb-1">Maximum</label>
+              <input
+                type="number"
+                {...register("salaryRange.max")}
+                placeholder="e.g. 60000"
+                className="input input-bordered w-full bg-white text-black border-black"
+              />
+            </div>
+
+            {/* Currency */}
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-600 mb-1">Currency</label>
+              <select
+                {...register("salaryRange.currency")}
+                className="input input-bordered w-full bg-white text-black border-black"
+              >
+                <option value="">Select Currency</option>
+                {Currencies.map((currency) => (
+                  <option key={currency.code} value={currency.code}>
+                    {currency.code} – {currency.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
+
         <label>
           <input type="checkbox" {...register("isNegotiable")} /> Salary is
           negotiable

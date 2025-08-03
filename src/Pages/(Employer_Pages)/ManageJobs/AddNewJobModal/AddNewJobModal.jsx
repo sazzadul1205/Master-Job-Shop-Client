@@ -11,6 +11,12 @@ import { RxCross2 } from "react-icons/rx";
 import Currencies from "../../../../JSON/Currencies.json";
 
 const AddNewJobModal = () => {
+  const [values, setValues] = useState({
+    remote: false,
+    hybrid: false,
+    onsite: false,
+  });
+
   const [newFieldValues, setNewFieldValues] = useState({});
 
   //   Form setup with default values
@@ -19,7 +25,7 @@ const AddNewJobModal = () => {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    // formState: { errors },
     reset,
   } = useForm({
     defaultValues: {
@@ -92,12 +98,6 @@ const AddNewJobModal = () => {
     "perks",
     "skills",
   ];
-
-  const [values, setValues] = useState({
-    remote: false,
-    hybrid: false,
-    onsite: false,
-  });
 
   const toggleValue = (key) => {
     setValues((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -422,80 +422,219 @@ const AddNewJobModal = () => {
           </div>
         </div>
 
-        <label>
-          <input type="checkbox" {...register("isNegotiable")} /> Salary is
-          negotiable
-        </label>
+        <div className="flex items-center gap-3">
+          <label
+            htmlFor="isNegotiable"
+            className="text-sm font-medium text-gray-700"
+          >
+            Salary is negotiable
+          </label>
+          <label className="relative inline-block w-11 h-6 cursor-pointer">
+            <input
+              type="checkbox"
+              id="isNegotiable"
+              {...register("isNegotiable")}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-700 transition-all duration-300" />
+            <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full" />
+          </label>
+        </div>
 
         {/* Company Info */}
-        <h4 className="font-semibold mt-4">Company Info</h4>
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            {...register("company.name")}
-            placeholder="Company Name"
-            className="input input-bordered w-full"
-          />
-          <input
-            {...register("company.logo")}
-            placeholder="Logo URL"
-            className="input input-bordered w-full"
-          />
-          <input
-            {...register("company.website")}
-            placeholder="Website URL"
-            className="input input-bordered w-full"
-          />
-          <input
-            {...register("company.size")}
-            placeholder="Company Size"
-            className="input input-bordered w-full"
-          />
-        </div>
-        <textarea
-          {...register("company.description")}
-          placeholder="Company Description"
-          className="textarea textarea-bordered w-full"
-        />
+        <>
+          {/* Title */}
+          <h4 className="font-semibold mt-4">Company Info</h4>
+
+          {/* Divider */}
+          <div className="bg-blue-700 p-[1px] mb-4" />
+
+          {/* Company Information */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Company Name */}
+            <div className="flex flex-col">
+              <label htmlFor="companyName" className="font-medium text-sm mb-1">
+                Company Name
+              </label>
+              <input
+                id="companyName"
+                {...register("company.name")}
+                placeholder="Company Name"
+                className="input input-bordered w-full bg-white text-black border-black"
+              />
+            </div>
+
+            {/* Company Logo */}
+            <div className="flex flex-col">
+              <label htmlFor="companyLogo" className="font-medium text-sm mb-1">
+                Logo URL
+              </label>
+              <input
+                id="companyLogo"
+                {...register("company.logo")}
+                placeholder="Logo URL"
+                className="input input-bordered w-full bg-white text-black border-black"
+              />
+            </div>
+
+            {/* Website URL */}
+            <div className="flex flex-col">
+              <label
+                htmlFor="companyWebsite"
+                className="font-medium text-sm mb-1"
+              >
+                Website URL
+              </label>
+              <input
+                id="companyWebsite"
+                {...register("company.website")}
+                placeholder="Website URL"
+                className="input input-bordered w-full bg-white text-black border-black"
+              />
+            </div>
+
+            {/* Company Size */}
+            <div className="flex flex-col">
+              <label htmlFor="companySize" className="font-medium text-sm mb-1">
+                Company Size
+              </label>
+              <input
+                id="companySize"
+                {...register("company.size")}
+                placeholder="Company Size"
+                className="input input-bordered w-full bg-white text-black border-black"
+              />
+            </div>
+          </div>
+
+          {/* Company Description */}
+          <div className="flex flex-col mt-4">
+            <label
+              htmlFor="companyDescription"
+              className="font-medium text-sm mb-1"
+            >
+              Company Description
+            </label>
+            <textarea
+              id="companyDescription"
+              {...register("company.description")}
+              placeholder="Company Description"
+              className="textarea textarea-bordered w-full bg-white text-black border-black"
+            />
+          </div>
+        </>
 
         {/* Application Info */}
-        <h4 className="font-semibold mt-4">Application Info</h4>
-        <input
-          {...register("application.applyEmail")}
-          placeholder="Apply Email"
-          className="input input-bordered w-full"
-        />
-        <input
-          {...register("application.applyUrl")}
-          placeholder="Apply URL"
-          className="input input-bordered w-full"
-        />
-        <input
-          type="datetime-local"
-          {...register("application.applicationDeadline")}
-          className="input input-bordered w-full"
-        />
-        <div className="flex gap-4">
-          <label>
+        <>
+          {/* Title */}
+          <h4 className="font-semibold mt-4">Application Info</h4>
+
+          {/* Divider */}
+          <div className="bg-blue-700 p-[1px] mb-4" />
+
+          {/* Apply Email */}
+          <div className="flex flex-col mb-4">
+            <label htmlFor="applyEmail" className="font-medium text-sm mb-1">
+              Apply Email ( If Required )
+            </label>
             <input
-              type="checkbox"
-              {...register("application.requiresResume")}
-            />{" "}
-            Requires Resume
-          </label>
-          <label>
+              id="applyEmail"
+              {...register("application.applyEmail")}
+              placeholder="Enter application email address"
+              className="input input-bordered w-full bg-white text-black border-black"
+            />
+          </div>
+
+          {/* Apply URL */}
+          <div className="flex flex-col mb-4">
+            <label htmlFor="applyUrl" className="font-medium text-sm mb-1">
+              Apply URL ( If Required )
+            </label>
             <input
-              type="checkbox"
-              {...register("application.requiresPortfolio")}
-            />{" "}
-            Requires Portfolio
-          </label>
-          <label>
+              id="applyUrl"
+              {...register("application.applyUrl")}
+              placeholder="Enter external application link"
+              className="input input-bordered w-full bg-white text-black border-black"
+            />
+          </div>
+
+          {/* Application Deadline */}
+          <div className="flex flex-col mb-4">
+            <label
+              htmlFor="applicationDeadline"
+              className="font-medium text-sm mb-1"
+            >
+              Application Deadline
+            </label>
             <input
-              type="checkbox"
-              {...register("application.requiresCoverLetter")}
-            />{" "}
-            Requires Cover Letter
-          </label>
+              id="applicationDeadline"
+              type="datetime-local"
+              {...register("application.applicationDeadline")}
+              className="input input-bordered w-full bg-white text-black border-black"
+            />
+          </div>
+        </>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Requires Resume */}
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="requiresResume"
+              className="text-sm font-medium text-gray-700"
+            >
+              Requires Resume
+            </label>
+            <label className="relative inline-block w-11 h-6 cursor-pointer">
+              <input
+                type="checkbox"
+                id="requiresResume"
+                {...register("application.requiresResume")}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-600 transition-all duration-300" />
+              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full" />
+            </label>
+          </div>
+
+          {/* Requires Portfolio */}
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="requiresPortfolio"
+              className="text-sm font-medium text-gray-700"
+            >
+              Requires Portfolio
+            </label>
+            <label className="relative inline-block w-11 h-6 cursor-pointer">
+              <input
+                type="checkbox"
+                id="requiresPortfolio"
+                {...register("application.requiresPortfolio")}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-600 transition-all duration-300" />
+              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full" />
+            </label>
+          </div>
+
+          {/* Requires Cover Letter */}
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="requiresCoverLetter"
+              className="text-sm font-medium text-gray-700"
+            >
+              Requires Cover Letter
+            </label>
+            <label className="relative inline-block w-11 h-6 cursor-pointer">
+              <input
+                type="checkbox"
+                id="requiresCoverLetter"
+                {...register("application.requiresCoverLetter")}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-600 transition-all duration-300" />
+              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full" />
+            </label>
+          </div>
         </div>
 
         <button type="submit" className="btn btn-primary w-full">

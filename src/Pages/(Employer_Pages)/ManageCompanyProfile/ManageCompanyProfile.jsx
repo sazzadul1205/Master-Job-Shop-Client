@@ -16,34 +16,71 @@ import DefaultCompanyLogo from "../../../assets/DefaultCompanyLogo.jpg";
 // Modals
 import AddCompanyProfileModal from "./AddCompanyProfileModal/AddCompanyProfileModal";
 import EditCompanyProfileModal from "./EditCompanyProfileModal/EditCompanyProfileModal";
+import Loading from "../../../Shared/Loading/Loading";
+import Error from "../../../Shared/Error/Error";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import useAuth from "../../../Hooks/useAuth";
 
 const ManageCompanyProfile = () => {
-  const company = {
-    name: "Aether Robotics",
-    logo: "https://aetherrobotics.com/logo.png",
-    tagline: "Engineering the Future of Autonomy.",
-    founded: 2020,
-    size: "11-50 employees",
-    industry: "Robotics & Automation",
-    headquarters: {
-      city: "Seoul",
-      state: null,
-      country: "South Korea",
-      address: "77 Tech Valley Rd, Gangnam, Seoul 06040",
-    },
-    contact: {
-      email: "hello@aetherrobotics.com",
-      phone: "+82 2-555-6789",
-    },
-    website: "https://aetherrobotics.com",
-    overview:
-      "Aether Robotics develops autonomous delivery bots, drones, and industrial robotic arms.",
-    socialLinks: {
-      linkedin: "https://linkedin.com/company/aetherrobotics",
-    },
-    tags: ["Innovative", "Hiring", "Great Culture"],
-    verificationStatus: "verified",
-  };
+  const { user, loading } = useAuth();
+  const axiosPublic = useAxiosPublic();
+
+  // Company Data
+  const {
+    data: CompanyData,
+    isLoading: CompanyIsLoading,
+    error: CompanyError,
+  } = useQuery({
+    queryKey: ["CompanyData"],
+    queryFn: () =>
+      axiosPublic.get(`/Company?email=${user?.email}`).then((res) => res.data),
+  });
+
+  // Loading / Error UI
+  if (CompanyIsLoading || loading) return <Loading />;
+  if (CompanyError) return <Error />;
+
+  console.log(CompanyData);
+
+  const company = CompanyData[0] || {};
+
+  // If no company data, show a placeholder card
+  if (!CompanyData || Object.keys(CompanyData).length === 0) {
+    return (
+      <div className="min-h-[60vh]  flex items-center justify-center">
+        {/* Placeholder Card */}
+        <div className="bg-white shadow-lg rounded-xl p-8 max-w-xl text-center space-y-4 border">
+          {/* Title */}
+          <h2 className="text-2xl font-semibold text-gray-800">
+            Create Your Company Profile
+          </h2>
+
+          {/* Description */}
+          <p className="text-gray-600 text-sm">
+            To post jobs, manage applicants, and enhance your visibility to
+            potential candidates, you need to set up your company profile first.
+            This helps us verify and showcase your brand professionally.
+          </p>
+
+          {/* Button to open modal */}
+          <button
+            onClick={() =>
+              document.getElementById("Add_Company_Profile_Modal").showModal()
+            }
+            className="mt-4 px-6 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition-colors duration-300 cursor-pointer"
+          >
+            Create Company Profile
+          </button>
+        </div>
+
+        {/* Add Company Profile Modal */}
+        <dialog id="Add_Company_Profile_Modal" className="modal">
+          <AddCompanyProfileModal />
+        </dialog>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
@@ -64,7 +101,7 @@ const ManageCompanyProfile = () => {
           {/* Add New Job Button */}
           <button
             onClick={() =>
-              document.getElementById("Edit_Company_Profile_Modal").showModal()
+              document.getElementById("Add_Company_Profile_Modal").showModal()
             }
             className="flex items-center gap-2 border-2 border-blue-700 font-semibold text-blue-700 rounded shadow-xl px-5 py-2 cursor-pointer hover:bg-blue-700 hover:text-white transition-colors duration-300"
           >
@@ -239,10 +276,6 @@ const ManageCompanyProfile = () => {
           </div>
         </div>
       </div>
-
-      <dialog id="Add_Company_Profile_Modal" className="modal">
-        <AddCompanyProfileModal />
-      </dialog>
 
       <dialog id="Edit_Company_Profile_Modal" className="modal">
         <EditCompanyProfileModal />

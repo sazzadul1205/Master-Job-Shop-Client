@@ -11,23 +11,10 @@ import { RxCross2 } from "react-icons/rx";
 import Currencies from "../../../../JSON/Currencies.json";
 
 const AddNewJobModal = () => {
-  const [values, setValues] = useState({
-    remote: false,
-    hybrid: false,
-    onsite: false,
-  });
-
   const [newFieldValues, setNewFieldValues] = useState({});
 
-  //   Form setup with default values
-  const {
-    watch,
-    register,
-    control,
-    handleSubmit,
-    // formState: { errors },
-    reset,
-  } = useForm({
+  // RHF Setup
+  const { watch, register, control, handleSubmit, setValue, reset } = useForm({
     defaultValues: {
       title: "",
       category: "",
@@ -46,7 +33,7 @@ const AddNewJobModal = () => {
       salaryRange: {
         min: "",
         max: "",
-        currency: "INR",
+        currency: "BDT",
       },
       isNegotiable: false,
       benefits: [""],
@@ -72,14 +59,15 @@ const AddNewJobModal = () => {
     },
   });
 
-  // Inside your component, not inside map
+  // Field Arrays
   const responsibilities = useFieldArray({ control, name: "responsibilities" });
   const requirements = useFieldArray({ control, name: "requirements" });
   const niceToHave = useFieldArray({ control, name: "niceToHave" });
   const benefits = useFieldArray({ control, name: "benefits" });
-  const perks = useFieldArray({ control, name: "perks" });
   const skills = useFieldArray({ control, name: "skills" });
+  const perks = useFieldArray({ control, name: "perks" });
 
+  // Combine field arrays for easier management
   const fieldArrays = {
     responsibilities,
     requirements,
@@ -89,7 +77,7 @@ const AddNewJobModal = () => {
     skills,
   };
 
-  // Fields to be displayed
+  // Fields to be dynamically rendered
   const fieldsConfig = [
     "responsibilities",
     "requirements",
@@ -99,13 +87,21 @@ const AddNewJobModal = () => {
     "skills",
   ];
 
+  // Updated toggleValue logic using RHF only (no useState)
   const toggleValue = (key) => {
-    setValues((prev) => ({ ...prev, [key]: !prev[key] }));
+    // Set all to false first
+    setValue("remote", false);
+    setValue("hybrid", false);
+    setValue("onsite", false);
+
+    // Then set only the selected one to true (toggle if clicked twice)
+    const current = watch(key);
+    setValue(key, !current);
   };
 
   const onSubmit = (data) => {
     console.log("Form Data Submitted:", data);
-    reset();
+    // reset();
     document.getElementById("Add_New_Job_Modal").close();
   };
 
@@ -120,9 +116,13 @@ const AddNewJobModal = () => {
         <ImCross className="text-xl" />
       </button>
 
+      {/* Modal Title */}
       <h3 className="font-bold text-xl text-center mb-4">Add New Job</h3>
+
+      {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-4" />
 
+      {/* Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Job Title */}
         <div className="flex flex-col">
@@ -332,59 +332,51 @@ const AddNewJobModal = () => {
           </div>
         ))}
 
-        {/* Remote / Hybrid / Onsite */}
-        {/* Work Type Selection */}
+        {/* Work Arrangement Selection */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-gray-700">
-            Work Arrangement (select one or more):
+            Work Arrangement (select one):
           </label>
 
           <div className="flex flex-wrap gap-4">
-            {["remote", "hybrid", "onsite"].map((mode) => (
-              <button
-                key={mode}
-                type="button"
-                onClick={() => toggleValue(mode)}
-                className={`px-4 py-2 rounded border transition-all duration-300 text-sm font-semibold cursor-pointer ${
-                  values[mode]
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white text-gray-600 border-gray-400 hover:border-blue-500 hover:text-blue-500"
-                }`}
-              >
-                {mode.charAt(0).toUpperCase() + mode.slice(1)}
-              </button>
-            ))}
+            {["remote", "hybrid", "onsite"].map((mode) => {
+              const isSelected = watch(mode); // RHF-managed state
 
-            {/* Hidden inputs for form data */}
-            <input
-              type="hidden"
-              {...register("remote")}
-              value={values.remote}
-            />
-            <input
-              type="hidden"
-              {...register("hybrid")}
-              value={values.hybrid}
-            />
-            <input
-              type="hidden"
-              {...register("onsite")}
-              value={values.onsite}
-            />
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => toggleValue(mode)}
+                  className={`px-4 py-2 rounded border transition-all duration-300 text-sm font-semibold cursor-pointer ${
+                    isSelected
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-white text-gray-600 border-gray-400 hover:border-blue-500 hover:text-blue-500"
+                  }`}
+                >
+                  {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Salary Range */}
         <div className="flex flex-col gap-2">
+          {/* Title */}
           <label className="text-sm font-medium text-gray-700">
             Salary Range
           </label>
+
+          {/* Divider */}
+          <div className="bg-blue-700 p-[1px] mb-4" />
 
           {/* Salary Range Inputs */}
           <div className="grid grid-cols-3 gap-2">
             {/* Minimum Salary  */}
             <div className="flex flex-col">
-              <label className="text-xs text-gray-600 mb-1">Minimum</label>
+              <label className="text-sm font-semibold text-black mb-1">
+                Minimum
+              </label>
               <input
                 type="number"
                 {...register("salaryRange.min")}
@@ -395,7 +387,9 @@ const AddNewJobModal = () => {
 
             {/* Maximum Salary */}
             <div className="flex flex-col">
-              <label className="text-xs text-gray-600 mb-1">Maximum</label>
+              <label className="text-sm font-semibold text-black mb-1">
+                Maximum
+              </label>
               <input
                 type="number"
                 {...register("salaryRange.max")}
@@ -406,7 +400,9 @@ const AddNewJobModal = () => {
 
             {/* Currency */}
             <div className="flex flex-col">
-              <label className="text-xs text-gray-600 mb-1">Currency</label>
+              <label className="text-sm font-semibold text-black mb-1">
+                Currency
+              </label>
               <select
                 {...register("salaryRange.currency")}
                 className="input input-bordered w-full bg-white text-black border-black"
@@ -422,6 +418,7 @@ const AddNewJobModal = () => {
           </div>
         </div>
 
+        {/* Salary Negotiable Toggle  */}
         <div className="flex items-center gap-3">
           <label
             htmlFor="isNegotiable"
@@ -575,6 +572,7 @@ const AddNewJobModal = () => {
           </div>
         </>
 
+        {/* Requirements */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Requires Resume */}
           <div className="flex items-center gap-3">
@@ -637,7 +635,11 @@ const AddNewJobModal = () => {
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary w-full">
+        {/* Post Job Button */}
+        <button
+          type="submit"
+          className="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2  w-full cursor-pointer rounded shadow-lg transition-colors duration-300 mt-6"
+        >
           Post Job
         </button>
       </form>

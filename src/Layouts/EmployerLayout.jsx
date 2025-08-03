@@ -5,13 +5,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 // Icons
-import { FaPowerOff } from "react-icons/fa";
-import {
-  MdDashboardCustomize,
-  MdWork,
-  MdAssignment,
-  MdPerson,
-} from "react-icons/md";
+import { FaBuilding, FaPowerOff } from "react-icons/fa";
+import { MdDashboardCustomize, MdWork, MdAssignment } from "react-icons/md";
 
 // Hooks
 import useAxiosPublic from "../Hooks/useAxiosPublic";
@@ -38,9 +33,9 @@ const navItems = [
     icon: <MdAssignment />,
   },
   {
-    label: "Profile",
-    path: "/Employer/Profile",
-    icon: <MdPerson />,
+    label: "Company Profile",
+    path: "/Employer/CompanyProfile",
+    icon: <FaBuilding />,
   },
 ];
 
@@ -93,8 +88,6 @@ const EmployerLayout = () => {
       setLogoutLoading(false);
     }
   };
-
-  console.log("EmployerData:", EmployerData);
 
   return (
     <div className="min-h-screen bg-linear-to-bl from-blue-100 to-white ">

@@ -88,6 +88,7 @@ import BecomeMentor from "./Pages/BecomeMentor/BecomeMentor";
 // Employer Pages
 import EmployerDashboard from "./Pages/(Employer_Pages)/EmployerDashboard/EmployerDashboard";
 import ManageJobs from "./Pages/(Employer_Pages)/ManageJobs/ManageJobs";
+import ManageCompanyProfile from "./Pages/(Employer_Pages)/ManageCompanyProfile/ManageCompanyProfile";
 
 const queryClient = new QueryClient();
 
@@ -263,6 +264,9 @@ createRoot(document.getElementById("root")).render(
 
               {/* Employer Jobs */}
               <Route path="/Employer/Jobs" element={<ManageJobs />} />
+
+              {/* Company Profile */}
+              <Route path="/Employer/CompanyProfile" element={<ManageCompanyProfile />} />
             </Route>
           </Routes>
         </BrowserRouter>

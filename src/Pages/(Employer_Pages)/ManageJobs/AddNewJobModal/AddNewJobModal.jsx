@@ -101,7 +101,7 @@ const AddNewJobModal = () => {
 
   const onSubmit = (data) => {
     console.log("Form Data Submitted:", data);
-    // reset();
+    reset();
     document.getElementById("Add_New_Job_Modal").close();
   };
 

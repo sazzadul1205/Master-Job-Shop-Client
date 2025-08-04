@@ -8,11 +8,16 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+import JobCard from "../../../Shared/JobCard/JobCard";
+import { useState } from "react";
+import JobDetailsModal from "../../(Public_Pages)/Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
 
 const ManageJobs = () => {
   const { user, loading } = useAuth();
 
   const axiosPublic = useAxiosPublic();
+
+  const [selectedJobID, setSelectedJobID] = useState(null);
 
   // Jobs Data
   const {
@@ -75,8 +80,55 @@ const ManageJobs = () => {
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mx-5" />
 
+      {/* Display Jobs */}
+      <div className="py-6 px-20">
+        {JobsData.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+            {JobsData.map((job) => (
+              <div key={job._id}>
+                <JobCard
+                  job={job}
+                  setSelectedJobID={setSelectedJobID}
+                  poster={true}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center text-black text-2xl font-medium bg-white/10 rounded p-6">
+            <p>No job postings available at the moment.</p>
+            <p className="text-lg text-gray-800 mt-2">
+              You haven&apos;t published any job listings yet. Post a new
+              opportunity to start attracting qualified candidates.
+            </p>
+
+            {/* Add New Job Button */}
+            <div className="flex justify-center pt-5">
+              <button
+                onClick={() =>
+                  document.getElementById("Add_New_Job_Modal").showModal()
+                }
+                className="flex items-center text-lg gap-2 border-2 border-blue-700 font-semibold text-blue-700 rounded shadow-xl px-10 py-2 cursor-pointer hover:bg-blue-700 hover:text-white transition-colors duration-500"
+              >
+                <FaPlus />
+                Add New Job
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Add New Job Modals */}
       <dialog id="Add_New_Job_Modal" className="modal">
         <AddNewJobModal CompanyData={company} refetch={refetch} />
+      </dialog>
+
+      {/* Jobs Modal */}
+      <dialog id="Jobs_Details_Modal" className="modal">
+        <JobDetailsModal
+          selectedJobID={selectedJobID}
+          setSelectedJobID={setSelectedJobID}
+        />
       </dialog>
     </>
   );

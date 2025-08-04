@@ -8,6 +8,8 @@ import CommonButton from "../CommonButton/CommonButton";
 
 // Default Company Logo
 import DefaultCompanyLogo from "../../assets/DefaultCompanyLogo.jpg";
+import { MdEdit } from "react-icons/md";
+import { FaEye, FaRegTrashAlt } from "react-icons/fa";
 
 // Salary Format
 const formatSalary = (min, max, currency) => {
@@ -28,9 +30,9 @@ const calculateDaysAgo = (isoString) => {
     : `${daysDiff} day${daysDiff > 1 ? "s" : ""} ago`;
 };
 
-const JobCard = ({ job, setSelectedJobID }) => {
+const JobCard = ({ job, setSelectedJobID, poster }) => {
   return (
-    <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm hover:shadow-2xl p-6 bg-linear-to-bl from-white to-gray-100 transition duration-200 h-[350px] overflow-auto">
+    <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm hover:shadow-2xl p-6 bg-linear-to-bl from-white to-gray-100 transition duration-200 h-[350px] overflow-hidden">
       {/* Top: Company Logo and Info */}
       <div>
         <div className="flex items-center gap-4 mb-4">
@@ -38,7 +40,7 @@ const JobCard = ({ job, setSelectedJobID }) => {
           <img
             src={job.company.logo || DefaultCompanyLogo}
             alt={job.company.name}
-            className="w-12 h-12 object-contain"
+            className="w-12 h-12 object-contain rounded-full"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = DefaultCompanyLogo;
@@ -70,7 +72,7 @@ const JobCard = ({ job, setSelectedJobID }) => {
           </p>
 
           {/* Salary */}
-          <p className="text-sm text-gray-600 mb-1">
+          <p className="text-sm font-bold  mb-1">
             Salary:{" "}
             <span className="text-green-700 font-semibold">
               {formatSalary(
@@ -105,36 +107,81 @@ const JobCard = ({ job, setSelectedJobID }) => {
         </div>
 
         {/* Short Description */}
-        <p className="text-gray-700 text-sm mb-6 line-clamp-3">
+        <p className="text-gray-700 text-sm mb-6 line-clamp-2">
           {job.description}
         </p>
       </div>
 
       {/* Bottom: Action Buttons */}
-      <div className="flex justify-between items-center pt-2 mt-auto">
-        {/* Apply Now Button */}
-        <Link to={`/Jobs/Apply/${job?._id}`}>
-          <CommonButton
-            text="Apply Now"
-            textColor="text-white"
-            bgColor="blue"
-            px="px-4"
-            py="py-2"
-            width="auto"
-            className="text-sm font-medium"
-          />
-        </Link>
+      <div>
+        {poster ? (
+          <div className="flex justify-between items-center gap-4 mt-auto pt-0">
+            {/* Edit Job */}
+            <button
+              title="Edit Job"
+              className="flex items-center gap-2 text-yellow-600 hover:text-white border border-yellow-600 hover:bg-yellow-600 px-5 py-1 rounded font-semibold transition-colors duration-300 cursor-pointer"
+              onClick={() => {
+                // Trigger your edit handler/modal here
+                document.getElementById("Edit_Job_Modal")?.showModal();
+                setSelectedJobID(job?._id);
+              }}
+            >
+              <MdEdit /> Edit
+            </button>
 
-        {/* Details Button */}
-        <button
-          onClick={() => {
-            document.getElementById("Jobs_Details_Modal").showModal();
-            setSelectedJobID(job?._id);
-          }}
-          className="text-sm text-blue-700 hover:underline cursor-pointer"
-        >
-          View Details
-        </button>
+            {/* Delete Job */}
+            <button
+              title="Delete Job"
+              className="flex items-center gap-2 text-red-600 hover:text-white border border-red-600 hover:bg-red-600 px-5 py-1 rounded font-semibold transition-colors duration-300 cursor-pointer"
+              onClick={() => {
+                // Trigger your delete handler here
+                document.getElementById("Delete_Job_Modal")?.showModal();
+                setSelectedJobID(job?._id);
+              }}
+            >
+              <FaRegTrashAlt /> Delete
+            </button>
+
+            {/* Details Button */}
+            <button
+              title="Delete Job"
+              className="flex items-center gap-2 text-blue-600 hover:text-white border border-blue-600 hover:bg-blue-600 px-5 py-1 rounded font-semibold transition-colors duration-300 cursor-pointer"
+              onClick={() => {
+                document.getElementById("Jobs_Details_Modal")?.showModal();
+                setSelectedJobID(job?._id);
+              }}
+            >
+              <FaEye />
+              View Details
+            </button>
+          </div>
+        ) : (
+          <div className="flex justify-between items-center mt-auto">
+            {/* Apply Now Button */}
+            <Link to={`/Jobs/Apply/${job?._id}`}>
+              <CommonButton
+                text="Apply Now"
+                textColor="text-white"
+                bgColor="blue"
+                px="px-4"
+                py="py-2"
+                width="auto"
+                className="text-sm font-medium"
+              />
+            </Link>
+
+            {/* Details Button */}
+            <button
+              onClick={() => {
+                document.getElementById("Jobs_Details_Modal")?.showModal();
+                setSelectedJobID(job?._id);
+              }}
+              className="text-sm text-blue-700 hover:underline cursor-pointer"
+            >
+              View Details
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -169,6 +216,7 @@ JobCard.propTypes = {
     _id: PropTypes.string.isRequired,
   }).isRequired,
   setSelectedJobID: PropTypes.func.isRequired,
+  poster: PropTypes.bool,
 };
 
 export default JobCard;

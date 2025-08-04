@@ -14,11 +14,24 @@ const ManageJobs = () => {
 
   const axiosPublic = useAxiosPublic();
 
+  // Jobs Data
+  const {
+    data: JobsData,
+    isLoading: JobsIsLoading,
+    error: JobsError,
+    refetch: JobsRefetch,
+  } = useQuery({
+    queryKey: ["JobsData"],
+    queryFn: () =>
+      axiosPublic.get(`/Jobs?postedBy=${user?.email}`).then((res) => res.data),
+  });
+
   // Company Data
   const {
     data: CompanyData,
     isLoading: CompanyIsLoading,
     error: CompanyError,
+    refetch: CompanyRefetch,
   } = useQuery({
     queryKey: ["CompanyData"],
     queryFn: () =>
@@ -28,9 +41,18 @@ const ManageJobs = () => {
   // Company Data Destructuring
   const company = CompanyData || {};
 
+  // Refetching Data
+  const refetch = () => {
+    JobsRefetch();
+    CompanyRefetch();
+  };
+
   // Loading / Error UI
-  if (CompanyIsLoading || loading) return <Loading />;
-  if (CompanyError) return <Error />;
+  if (CompanyIsLoading || JobsIsLoading || loading) return <Loading />;
+  if (CompanyError || JobsError) return <Error />;
+
+  console.log(JobsData);
+
   return (
     <>
       {/* Header Section */}
@@ -54,7 +76,7 @@ const ManageJobs = () => {
       <div className="p-[1px] bg-blue-500 mx-5" />
 
       <dialog id="Add_New_Job_Modal" className="modal">
-        <AddNewJobModal CompanyData={company} />
+        <AddNewJobModal CompanyData={company} refetch={refetch} />
       </dialog>
     </>
   );

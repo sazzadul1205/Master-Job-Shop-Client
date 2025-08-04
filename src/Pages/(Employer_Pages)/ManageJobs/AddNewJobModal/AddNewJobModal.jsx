@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 // Packages
 import { useForm, useFieldArray } from "react-hook-form";
@@ -16,7 +16,7 @@ import Currencies from "../../../../JSON/Currencies.json";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
-const AddNewJobModal = ({ CompanyData }) => {
+const AddNewJobModal = ({ CompanyData, refetch }) => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
 
@@ -26,6 +26,9 @@ const AddNewJobModal = ({ CompanyData }) => {
   // Posting States
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  // inside your component:
+  const inputRefs = useRef({});
 
   // RHF Setup
   const {
@@ -159,6 +162,7 @@ const AddNewJobModal = ({ CompanyData }) => {
         });
 
         reset();
+        refetch();
         setErrorMessage("");
         document.getElementById("Add_New_Job_Modal")?.close();
       } else {
@@ -433,6 +437,7 @@ const AddNewJobModal = ({ CompanyData }) => {
                 }
                 placeholder={`Add new ${field}`}
                 className="input input-bordered bg-white text-black border-black w-2/3"
+                ref={(el) => (inputRefs.current[field] = el)}
               />
               <button
                 type="button"
@@ -441,6 +446,9 @@ const AddNewJobModal = ({ CompanyData }) => {
                   if (value) {
                     fieldArrays[field].append(value);
                     setNewFieldValues((prev) => ({ ...prev, [field]: "" }));
+
+                    // Focus back to input after adding
+                    inputRefs.current[field]?.focus();
                   }
                 }}
                 className="flex items-center gap-2 border-2 border-blue-600 font-semibold text-blue-600 rounded shadow-xl px-5 py-1 cursor-pointer hover:bg-blue-600 hover:text-white transition-colors duration-500"
@@ -778,6 +786,7 @@ AddNewJobModal.propTypes = {
     size: PropTypes.string,
     industry: PropTypes.string,
   }),
+  refetch: PropTypes.func,
 };
 
 export default AddNewJobModal;

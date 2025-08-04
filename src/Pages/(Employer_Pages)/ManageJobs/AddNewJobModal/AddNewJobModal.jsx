@@ -2,6 +2,8 @@ import { useState } from "react";
 
 // Packages
 import { useForm, useFieldArray } from "react-hook-form";
+import PropTypes from "prop-types";
+import Swal from "sweetalert2";
 
 // Icons
 import { ImCross } from "react-icons/im";
@@ -9,15 +11,21 @@ import { RxCross2 } from "react-icons/rx";
 
 // Currency Data
 import Currencies from "../../../../JSON/Currencies.json";
+
+// Hooks
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 const AddNewJobModal = ({ CompanyData }) => {
-  const { user, loading } = useAuth();
-
+  const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
 
+  // New Field Values State
   const [newFieldValues, setNewFieldValues] = useState({});
+
+  // Posting States
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // RHF Setup
   const {
@@ -106,6 +114,7 @@ const AddNewJobModal = ({ CompanyData }) => {
     setValue(key, !current);
   };
 
+  // Company Data
   const company = {
     name: CompanyData?.name || "",
     logo: CompanyData?.logo || "",
@@ -122,16 +131,49 @@ const AddNewJobModal = ({ CompanyData }) => {
     industry: CompanyData?.industry || "",
   };
 
-  const onSubmit = (data) => {
+  // On Submit Handler
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    setErrorMessage("");
+
+    // Payload Structure
     const payload = {
       ...data,
       company,
-      poster: user?.email,
+      postedBy: user?.email,
       postedAt: new Date(),
     };
 
-    reset();
-    document.getElementById("Add_New_Job_Modal").close();
+    try {
+      // POST Request
+      const res = await axiosPublic.post("/Jobs", payload);
+
+      // Success Message
+      if (res?.status === 201 || res?.data?.insertedId) {
+        Swal.fire({
+          icon: "success",
+          title: "Job Posted",
+          text: "Your job has been posted successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+
+        reset();
+        setErrorMessage("");
+        document.getElementById("Add_New_Job_Modal")?.close();
+      } else {
+        throw new Error("Unexpected response from server");
+      }
+    } catch (err) {
+      console.error("Job post failed:", err);
+
+      setErrorMessage(
+        err.response?.data?.message ||
+          "Failed to post job. Please try again later."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -150,6 +192,13 @@ const AddNewJobModal = ({ CompanyData }) => {
 
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-4" />
+
+      {/* Alert Messages */}
+      {errorMessage && (
+        <div className="bg-red-100 text-red-800 font-medium border border-red-400 px-4 py-2 rounded mb-4 text-center">
+          {errorMessage}
+        </div>
+      )}
 
       {/* Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -701,13 +750,34 @@ const AddNewJobModal = ({ CompanyData }) => {
         {/* Post Job Button */}
         <button
           type="submit"
-          className="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2  w-full cursor-pointer rounded shadow-lg transition-colors duration-300 mt-6"
+          className={`bg-blue-700 text-white font-semibold py-2 w-full cursor-pointer rounded shadow-lg transition-colors duration-300 mt-6 ${
+            isLoading ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-800"
+          }`}
+          disabled={isLoading}
         >
-          Post Job
+          {isLoading ? "Posting..." : "Post Job"}
         </button>
       </form>
     </div>
   );
+};
+
+// Prop Vallation
+AddNewJobModal.propTypes = {
+  CompanyData: PropTypes.shape({
+    name: PropTypes.string,
+    logo: PropTypes.string,
+    website: PropTypes.string,
+    overview: PropTypes.string,
+    headquarters: PropTypes.shape({
+      address: PropTypes.string,
+      city: PropTypes.string,
+      state: PropTypes.string,
+      country: PropTypes.string,
+    }),
+    size: PropTypes.string,
+    industry: PropTypes.string,
+  }),
 };
 
 export default AddNewJobModal;

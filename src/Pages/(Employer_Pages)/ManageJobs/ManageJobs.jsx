@@ -11,6 +11,7 @@ import Error from "../../../Shared/Error/Error";
 import JobCard from "../../../Shared/JobCard/JobCard";
 import { useState } from "react";
 import JobDetailsModal from "../../(Public_Pages)/Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
+import EditJobModal from "./EditJobModal/EditJobModal";
 
 const ManageJobs = () => {
   const { user, loading } = useAuth();
@@ -18,6 +19,7 @@ const ManageJobs = () => {
   const axiosPublic = useAxiosPublic();
 
   const [selectedJobID, setSelectedJobID] = useState(null);
+  const [selectedJobData, setSelectedJobData] = useState(null);
 
   // Jobs Data
   const {
@@ -56,8 +58,6 @@ const ManageJobs = () => {
   if (CompanyIsLoading || JobsIsLoading || loading) return <Loading />;
   if (CompanyError || JobsError) return <Error />;
 
-  console.log(JobsData);
-
   return (
     <>
       {/* Header Section */}
@@ -89,6 +89,7 @@ const ManageJobs = () => {
                 <JobCard
                   job={job}
                   setSelectedJobID={setSelectedJobID}
+                  setSelectedJobData={setSelectedJobData}
                   poster={true}
                 />
               </div>
@@ -121,6 +122,11 @@ const ManageJobs = () => {
       {/* Add New Job Modals */}
       <dialog id="Add_New_Job_Modal" className="modal">
         <AddNewJobModal CompanyData={company} refetch={refetch} />
+      </dialog>
+
+      {/* Edit Job Modals */}
+      <dialog id="Edit_Job_Modal" className="modal">
+        <EditJobModal selectedJobData={selectedJobData} refetch={refetch} />
       </dialog>
 
       {/* Jobs Modal */}

@@ -30,7 +30,7 @@ const calculateDaysAgo = (isoString) => {
     : `${daysDiff} day${daysDiff > 1 ? "s" : ""} ago`;
 };
 
-const JobCard = ({ job, setSelectedJobID, poster }) => {
+const JobCard = ({ job, setSelectedJobID, setSelectedJobData, poster }) => {
   return (
     <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm hover:shadow-2xl p-6 bg-linear-to-bl from-white to-gray-100 transition duration-200 h-[350px] overflow-hidden">
       {/* Top: Company Logo and Info */}
@@ -123,7 +123,7 @@ const JobCard = ({ job, setSelectedJobID, poster }) => {
               onClick={() => {
                 // Trigger your edit handler/modal here
                 document.getElementById("Edit_Job_Modal")?.showModal();
-                setSelectedJobID(job?._id);
+                setSelectedJobData(job);
               }}
             >
               <MdEdit /> Edit
@@ -211,11 +211,12 @@ JobCard.propTypes = {
       logo: PropTypes.string,
     }),
     application: PropTypes.shape({
-      applyUrl: PropTypes.string.isRequired,
+      applyUrl: PropTypes.string,
     }),
     _id: PropTypes.string.isRequired,
   }).isRequired,
   setSelectedJobID: PropTypes.func.isRequired,
+  setSelectedJobData: PropTypes.func.isRequired,
   poster: PropTypes.bool,
 };
 

@@ -1,3 +1,6 @@
+// Packages
+import { useQuery } from "@tanstack/react-query";
+
 // Icons
 import {
   FaMapMarkerAlt,
@@ -14,13 +17,17 @@ import { MdEdit } from "react-icons/md";
 import DefaultCompanyLogo from "../../../assets/DefaultCompanyLogo.jpg";
 
 // Modals
-import AddCompanyProfileModal from "./AddCompanyProfileModal/AddCompanyProfileModal";
 import EditCompanyProfileModal from "./EditCompanyProfileModal/EditCompanyProfileModal";
+import AddCompanyProfileModal from "./AddCompanyProfileModal/AddCompanyProfileModal";
+
+// Shared
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
-import { useQuery } from "@tanstack/react-query";
+
+// Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useAuth from "../../../Hooks/useAuth";
+import ViewCompanyProfileModal from "./ViewCompanyProfileModal/ViewCompanyProfileModal";
 
 const ManageCompanyProfile = () => {
   const { user, loading } = useAuth();
@@ -38,6 +45,7 @@ const ManageCompanyProfile = () => {
       axiosPublic.get(`/Company?email=${user?.email}`).then((res) => res.data),
   });
 
+  // Company Data Destructuring
   const company = CompanyData || {};
 
   // Loading / Error UI
@@ -92,7 +100,12 @@ const ManageCompanyProfile = () => {
 
         <div className="flex items-center gap-5">
           {/* View Profile Button */}
-          <button className="flex items-center gap-2 bg-blue-700 text-white font-semibold rounded shadow-xl px-5 py-2 cursor-pointer hover:bg-blue-800 transition-colors duration-300">
+          <button
+            onClick={() =>
+              document.getElementById("View_Company_Profile_Modal").showModal()
+            }
+            className="flex items-center gap-2 bg-blue-700 text-white font-semibold rounded shadow-xl px-5 py-2 cursor-pointer hover:bg-blue-800 transition-colors duration-300"
+          >
             <FaEye />
             View Profile
           </button>
@@ -100,7 +113,7 @@ const ManageCompanyProfile = () => {
           {/* Add New Job Button */}
           <button
             onClick={() =>
-              document.getElementById("Add_Company_Profile_Modal").showModal()
+              document.getElementById("Edit_Company_Profile_Modal").showModal()
             }
             className="flex items-center gap-2 border-2 border-blue-700 font-semibold text-blue-700 rounded shadow-xl px-5 py-2 cursor-pointer hover:bg-blue-700 hover:text-white transition-colors duration-300"
           >
@@ -130,18 +143,23 @@ const ManageCompanyProfile = () => {
               }}
             />
 
+            {/* Name & Tagline */}
             <div>
               {/* Company Name */}
-              <h4 className="text-xl font-semibold">{company.name}</h4>
+              <h4 className="text-xl font-semibold">
+                {company.name || "Company Name"}
+              </h4>
 
               {/* Company Tagline */}
-              <p className="text-sm text-gray-600">{company.tagline}</p>
+              <p className="text-sm text-gray-600">
+                {company.tagline || "Industry"}
+              </p>
             </div>
           </div>
 
           {/* Company Overview */}
           <p className="text-gray-700 text-sm leading-relaxed">
-            {company.overview}
+            {company.overview || "Company Overview"}
           </p>
         </div>
 
@@ -161,7 +179,7 @@ const ManageCompanyProfile = () => {
                 <span className="font-semibold text-black text-md pr-2">
                   Founded:
                 </span>{" "}
-                {company.founded}
+                {company.founded || "Year"}
               </p>
 
               {/* Size */}
@@ -169,7 +187,7 @@ const ManageCompanyProfile = () => {
                 <span className="font-semibold text-black text-md pr-2">
                   Size:
                 </span>{" "}
-                {company.size}
+                {company.size || "Size"}
               </p>
 
               {/* Industry */}
@@ -177,7 +195,7 @@ const ManageCompanyProfile = () => {
                 <span className="font-semibold text-black text-md pr-2">
                   Industry:
                 </span>{" "}
-                {company.industry}
+                {company.industry || "Industry"}
               </p>
 
               {/* Verification Status */}
@@ -192,7 +210,7 @@ const ManageCompanyProfile = () => {
                       : "bg-yellow-100 text-yellow-700"
                   }`}
                 >
-                  {company.verificationStatus}
+                  {company.verificationStatus || "Status"}
                 </span>
               </p>
             </div>
@@ -200,13 +218,19 @@ const ManageCompanyProfile = () => {
 
           {/* Headquarters */}
           <div className="bg-white shadow-md rounded-xl p-6 space-y-3 border border-gray-100">
+            {/* Title Headquarters */}
             <h5 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
               <FaMapMarkerAlt className="text-blue-600" /> Headquarters
             </h5>
+
+            {/* Locations */}
             <p className="text-sm text-gray-700 leading-relaxed">
-              {company.headquarters.address}
+              {/* Address */}
+              {company.headquarters.address || "Address"}
               <br />
-              {company.headquarters.city}, {company.headquarters.country}
+              {/* City & Country */}
+              {company.headquarters.city || "City"},{" "}
+              {company.headquarters.country || "Country"}
             </p>
           </div>
         </div>
@@ -215,46 +239,72 @@ const ManageCompanyProfile = () => {
         <div className="text-black grid grid-cols-1 md:grid-cols-2 gap-3 mt-6">
           {/* Contact Info */}
           <div className="bg-white shadow-md rounded-xl p-6 space-y-3 border border-gray-100">
+            {/* information Title */}
             <h5 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
               <FaEnvelope className="text-blue-600" /> Contact Information
             </h5>
+
+            {/* Email & Phone */}
             <div className="text-sm space-y-1 text-gray-700">
+              {/* Email */}
               <p className="flex items-center gap-2">
-                <FaEnvelope className="text-blue-500" /> {company.contact.email}
+                <FaEnvelope className="text-blue-500" />{" "}
+                {company.contact.email || "Email"}
               </p>
+
+              {/* Phone */}
               <p className="flex items-center gap-2">
-                <FaPhoneAlt className="text-blue-500" /> {company.contact.phone}
+                <FaPhoneAlt className="text-blue-500" />{" "}
+                {company.contact.phone || "Phone"}
               </p>
             </div>
           </div>
 
           {/* Online Presence */}
           <div className="bg-white shadow-md rounded-xl p-6 space-y-3 border border-gray-100">
+            {/* Title */}
             <h5 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
               <FaGlobe className="text-blue-600" /> Online Presence
             </h5>
+
+            {/* Social Links */}
             <div className="text-sm space-y-1 text-gray-700">
+              {/* Website */}
               <p className="flex items-center gap-2">
                 <FaGlobe className="text-blue-500" />
-                <a
-                  href={company.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {company.website}
-                </a>
+                {company?.website ? (
+                  <a
+                    href={company.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {company.website}
+                  </a>
+                ) : (
+                  <span className="text-gray-500 italic">
+                    No website provided
+                  </span>
+                )}
               </p>
+
+              {/* LinkedIn */}
               <p className="flex items-center gap-2">
                 <FaLinkedin className="text-blue-500" />
-                <a
-                  href={company.socialLinks.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  LinkedIn
-                </a>
+                {company?.socialLinks?.linkedin ? (
+                  <a
+                    href={company.socialLinks.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    LinkedIn
+                  </a>
+                ) : (
+                  <span className="text-gray-500 italic">
+                    No LinkedIn available
+                  </span>
+                )}
               </p>
             </div>
           </div>
@@ -263,21 +313,31 @@ const ManageCompanyProfile = () => {
         {/* Tags */}
         <div className="text-black bg-white shadow-md rounded-xl p-5">
           <h5 className="font-semibold text-lg mb-2">Tags</h5>
-          <div className="flex flex-wrap gap-2">
-            {company.tags.map((tag, idx) => (
-              <span
-                key={idx}
-                className="bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1 rounded-full"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+          {company?.tags?.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {company.tags.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="bg-blue-100 hover:bg-blue-100/70 text-blue-700 hover:text-blue-700/70 text-sm font-medium px-5 py-2 rounded-lg cursor-pointer"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 italic">No tags available</p>
+          )}
         </div>
       </div>
 
+      {/* Edit Company Profile Modal  */}
       <dialog id="Edit_Company_Profile_Modal" className="modal">
-        <EditCompanyProfileModal />
+        <EditCompanyProfileModal company={company} refetch={CompanyRefetch} />
+      </dialog>
+
+      {/* View Company Profile Modal  */}
+      <dialog id="View_Company_Profile_Modal" className="modal">
+        <ViewCompanyProfileModal company={company} />
       </dialog>
     </div>
   );

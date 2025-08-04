@@ -1,58 +1,15 @@
-import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
 // Packages
-import { useQuery } from "@tanstack/react-query";
+import PropTypes from "prop-types";
 
 // Icons
-import {
-  FaCheckCircle,
-  FaGlobe,
-  FaPhone,
-  FaEnvelope,
-  FaArrowLeft,
-} from "react-icons/fa";
-
-// Shared
-import Error from "../../../Shared/Error/Error";
-import Loading from "../../../Shared/Loading/Loading";
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
-
-// Hooks
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import { FaCheckCircle, FaEnvelope, FaGlobe, FaPhone } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
 
 // Default Logo
-import DefaultCompanyLogo from "../../..//assets/DefaultCompanyLogo.jpg";
+import DefaultCompanyLogo from "../../../../assets/DefaultCompanyLogo.jpg";
 
-const CompanyProfilesDetails = () => {
-  const axiosPublic = useAxiosPublic();
-
-  // Get Company ID from URL
-  const { companyId } = useParams();
-
-  // Navigate Control
-  const navigate = useNavigate();
-
-  // Fetch Company Data
-  const {
-    data: SelectedCompanyData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["SelectedCompanyData", companyId],
-    queryFn: () =>
-      axiosPublic.get(`/Company?id=${companyId}`).then((res) => res.data),
-    enabled: !!companyId,
-  });
-
-  // Scroll to top on mount
-  useEffect(() => window.scrollTo(0, 0), []);
-
-  // Loading / Error UI
-  if (isLoading) return <Loading />;
-  if (error) return <Error />;
-
-  // Destructure Company Data
+const ViewCompanyProfileModal = ({ company }) => {
+  // Destructuring Company Data
   const {
     name,
     logo,
@@ -67,24 +24,28 @@ const CompanyProfilesDetails = () => {
     socialLinks,
     tags,
     verificationStatus,
-  } = SelectedCompanyData || {};
+  } = company || {};
 
   return (
-    <div className="min-h-screen  py-10 px-4 md:px-20">
-      {/* Top bar with Back and Details */}
-      <div className="flex items-center justify-between mb-4 px-20">
-        <CommonButton
-          type="button"
-          text="Back"
-          icon={<FaArrowLeft />}
-          clickEvent={() => navigate(-1)}
-          bgColor="white"
-          textColor="text-black"
-          px="px-10"
-          py="py-2"
-          borderRadius="rounded-md"
-        />
-      </div>
+    <div className="modal-box min-w-5xl relative bg-white rounded-lg shadow-xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto">
+      {/* Close Button */}
+      <button
+        type="button"
+        onClick={() => {
+          document.getElementById("View_Company_Profile_Modal").close();
+        }}
+        className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+      >
+        <ImCross className="text-xl" />
+      </button>
+
+      {/* Modal Title */}
+      <h3 className="font-bold text-xl text-center mb-4">
+        View Company Profile ( For Public View )
+      </h3>
+
+      {/* Divider */}
+      <div className="p-[1px] bg-blue-500 mb-4" />
 
       {/* Content */}
       <div className="bg-white text-black shadow-md rounded-xl p-8 space-y-8 max-w-5xl mx-auto">
@@ -244,4 +205,32 @@ const CompanyProfilesDetails = () => {
   );
 };
 
-export default CompanyProfilesDetails;
+// Prop Validation
+ViewCompanyProfileModal.propTypes = {
+  company: PropTypes.shape({
+    name: PropTypes.string,
+    logo: PropTypes.string,
+    tagline: PropTypes.string,
+    founded: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    size: PropTypes.string,
+    industry: PropTypes.string,
+    headquarters: PropTypes.shape({
+      address: PropTypes.string,
+      city: PropTypes.string,
+      country: PropTypes.string,
+    }),
+    contact: PropTypes.shape({
+      email: PropTypes.string,
+      phone: PropTypes.string,
+    }),
+    website: PropTypes.string,
+    overview: PropTypes.string,
+    socialLinks: PropTypes.shape({
+      linkedin: PropTypes.string,
+    }),
+    tags: PropTypes.arrayOf(PropTypes.string),
+    verificationStatus: PropTypes.string,
+  }).isRequired,
+};
+
+export default ViewCompanyProfileModal;

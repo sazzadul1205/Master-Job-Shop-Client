@@ -114,7 +114,7 @@ const AddCompanyProfileModal = ({ CompanyRefetch }) => {
         confirmButtonColor: "#2563eb",
       }).then(() => {
         // Close Modal
-        document.getElementById("Add_Company_Profile_Modal").close();
+        () => document.getElementById("Add_Company_Profile_Modal ").close();
         reset();
         CompanyRefetch();
         setPreview(null);
@@ -136,7 +136,7 @@ const AddCompanyProfileModal = ({ CompanyRefetch }) => {
       <button
         type="button"
         onClick={() => {
-          document.getElementById("Add_Company_Profile_Modal").close();
+          document.getElementById("Add_Company_Profile_Modal ").close();
           reset();
           setPreview(null);
           CompanyRefetch();
@@ -370,7 +370,7 @@ const AddCompanyProfileModal = ({ CompanyRefetch }) => {
             </div>
           </div>
         </div>
-        
+
         {/* Overview */}
         <div>
           <label className="font-medium text-sm mb-1">Company Overview</label>

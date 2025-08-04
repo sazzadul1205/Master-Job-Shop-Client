@@ -9,12 +9,27 @@ import { RxCross2 } from "react-icons/rx";
 
 // Currency Data
 import Currencies from "../../../../JSON/Currencies.json";
+import useAuth from "../../../../Hooks/useAuth";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
-const AddNewJobModal = () => {
+const AddNewJobModal = ({ CompanyData }) => {
+  const { user, loading } = useAuth();
+
+  const axiosPublic = useAxiosPublic();
+
   const [newFieldValues, setNewFieldValues] = useState({});
 
   // RHF Setup
-  const { watch, register, control, handleSubmit, setValue, reset } = useForm({
+  const {
+    watch,
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    reset,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       title: "",
       category: "",
@@ -39,15 +54,7 @@ const AddNewJobModal = () => {
       benefits: [""],
       perks: [""],
       skills: [""],
-      company: {
-        name: "",
-        logo: "",
-        website: "",
-        description: "",
-        location: "",
-        size: "",
-        industry: "",
-      },
+
       application: {
         applyEmail: "",
         applyUrl: "",
@@ -99,8 +106,30 @@ const AddNewJobModal = () => {
     setValue(key, !current);
   };
 
+  const company = {
+    name: CompanyData?.name || "",
+    logo: CompanyData?.logo || "",
+    website: CompanyData?.website || "",
+    description: CompanyData?.overview || "",
+    location: CompanyData?.headquarters
+      ? `${CompanyData.headquarters.address || ""} ${
+          CompanyData.headquarters.city || ""
+        } ${CompanyData.headquarters.state || ""} ${
+          CompanyData.headquarters.country || ""
+        }`.trim()
+      : "",
+    size: CompanyData?.size || "",
+    industry: CompanyData?.industry || "",
+  };
+
   const onSubmit = (data) => {
-    console.log("Form Data Submitted:", data);
+    const payload = {
+      ...data,
+      company,
+      poster: user?.email,
+      postedAt: new Date(),
+    };
+
     reset();
     document.getElementById("Add_New_Job_Modal").close();
   };
@@ -131,10 +160,15 @@ const AddNewJobModal = () => {
           </label>
           <input
             id="title"
-            {...register("title", { required: true })}
+            {...register("title", { required: "Job title is required" })}
             placeholder="e.g., Backend Developer (Node.js)"
-            className="input input-bordered w-full bg-white text-black border-black"
+            className={`input input-bordered w-full bg-white text-black border ${
+              errors.title ? "border-red-500" : "border-black"
+            }`}
           />
+          {errors.title && (
+            <p className="text-sm text-red-600 mt-1">{errors.title.message}</p>
+          )}
         </div>
 
         {/* Basic Job Info */}
@@ -142,25 +176,36 @@ const AddNewJobModal = () => {
           {/* Category */}
           <div className="flex flex-col">
             <label className="font-medium text-sm mb-1" htmlFor="category">
-              Job Category
+              Job Category<span className="text-red-500">*</span>
             </label>
             <input
               id="category"
-              {...register("category")}
+              {...register("category", {
+                required: "Job category is required",
+              })}
               placeholder="e.g., Software Development"
-              className="input input-bordered w-full bg-white text-black border-black"
+              className={`input input-bordered w-full bg-white text-black border ${
+                errors.category ? "border-red-500" : "border-black"
+              }`}
             />
+            {errors.category && (
+              <p className="text-sm text-red-600 mt-1">
+                {errors.category.message}
+              </p>
+            )}
           </div>
 
           {/* Job Type */}
           <div className="flex flex-col">
             <label className="font-medium text-sm mb-1" htmlFor="type">
-              Job Type
+              Job Type<span className="text-red-500">*</span>
             </label>
             <select
               id="type"
-              {...register("type")}
-              className="select select-bordered w-full bg-white text-black border-black"
+              {...register("type", { required: "Job type is required" })}
+              className={`select select-bordered w-full bg-white text-black border ${
+                errors.type ? "border-red-500" : "border-black"
+              }`}
               defaultValue=""
             >
               <option value="" disabled>
@@ -182,91 +227,116 @@ const AddNewJobModal = () => {
                 Volunteer – Unpaid contribution or experience
               </option>
             </select>
+            {errors.type && (
+              <p className="text-sm text-red-600 mt-1">{errors.type.message}</p>
+            )}
           </div>
 
           {/* Level */}
           <div className="flex flex-col">
             <label className="font-medium text-sm mb-1" htmlFor="level">
-              Experience Level
+              Experience Level<span className="text-red-500">*</span>
             </label>
             <select
               id="level"
-              {...register("level")}
-              className="select select-bordered w-full bg-white text-black border-black"
+              {...register("level", {
+                required: "Experience level is required",
+              })}
+              className={`select select-bordered w-full bg-white text-black border ${
+                errors.level ? "border-red-500" : "border-black"
+              }`}
               defaultValue=""
             >
               <option value="" disabled>
                 Select level
               </option>
               <option value="Internship">
-                Internship – Ideal for students or entry-level applicants
+                Internship – Ideal for students
               </option>
-              <option value="Entry">
-                Entry-Level – 0 to 1 year of experience
-              </option>
-              <option value="Junior">
-                Junior – 1 to 2 years of experience
-              </option>
-              <option value="Mid">
-                Mid-Level – 2 to 5 years of experience
-              </option>
-              <option value="Senior">
-                Senior – 5 to 8 years of experience
-              </option>
-              <option value="Lead">
-                Lead – 8+ years with team leadership responsibilities
-              </option>
-              <option value="Manager">
-                Manager – Responsible for team/project management
-              </option>
-              <option value="Director">
-                Director – Strategic leadership and multi-team oversight
-              </option>
-              <option value="Executive">
-                Executive (VP, CTO, etc.) – High-level decision maker
-              </option>
+              <option value="Entry">Entry-Level – 0 to 1 year</option>
+              <option value="Junior">Junior – 1 to 2 years</option>
+              <option value="Mid">Mid-Level – 2 to 5 years</option>
+              <option value="Senior">Senior – 5 to 8 years</option>
+              <option value="Lead">Lead – 8+ years + leadership</option>
+              <option value="Manager">Manager – Team/project management</option>
+              <option value="Director">Director – Strategic oversight</option>
+              <option value="Executive">Executive – VP, CTO, etc.</option>
             </select>
+            {errors.level && (
+              <p className="text-sm text-red-600 mt-1">
+                {errors.level.message}
+              </p>
+            )}
           </div>
 
           {/* Experience */}
           <div className="flex flex-col">
             <label className="font-medium text-sm mb-1" htmlFor="experience">
-              Experience Required
+              Experience Required<span className="text-red-500">*</span>
             </label>
             <input
               id="experience"
-              {...register("experience")}
+              {...register("experience", {
+                required: "Experience field is required",
+              })}
               placeholder="e.g., 3+ years"
-              className="input input-bordered w-full bg-white text-black border-black"
+              className={`input input-bordered w-full bg-white text-black border ${
+                errors.experience ? "border-red-500" : "border-black"
+              }`}
             />
+            {errors.experience && (
+              <p className="text-sm text-red-600 mt-1">
+                {errors.experience.message}
+              </p>
+            )}
           </div>
 
           {/* Location */}
           <div className="flex flex-col">
             <label className="font-medium text-sm mb-1" htmlFor="location">
-              Location
+              Location<span className="text-red-500">*</span>
             </label>
             <input
               id="location"
-              {...register("location")}
+              {...register("location", { required: "Location is required" })}
               placeholder="e.g., Bangalore, India"
-              className="input input-bordered w-full bg-white text-black border-black"
+              className={`input input-bordered w-full bg-white text-black border ${
+                errors.location ? "border-red-500" : "border-black"
+              }`}
             />
+            {errors.location && (
+              <p className="text-sm text-red-600 mt-1">
+                {errors.location.message}
+              </p>
+            )}
           </div>
         </div>
 
         {/* Job Description */}
         <div className="flex flex-col">
           <label className="font-medium text-sm mb-1" htmlFor="description">
-            Job Description
+            Job Description<span className="text-red-500">*</span>
           </label>
           <textarea
             id="description"
-            {...register("description")}
+            {...register("description", {
+              required: "Job description is required",
+              minLength: {
+                value: 20,
+                message: "Description should be at least 20 characters long",
+              },
+            })}
             placeholder="Provide a clear and concise job description..."
-            className="textarea textarea-bordered w-full bg-white text-black border-black"
+            className={`textarea textarea-bordered w-full bg-white text-black border ${
+              errors.description ? "border-red-500" : "border-black"
+            }`}
             rows={5}
           />
+          {errors.description && (
+            <p className="text-sm text-red-600 mt-1">
+              {errors.description.message}
+            </p>
+          )}
         </div>
 
         {/* fieldsConfig for responsibilities, requirements, niceToHave, benefits, perks, skills */}
@@ -336,11 +406,12 @@ const AddNewJobModal = () => {
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-gray-700">
             Work Arrangement (select one):
+            <span className="text-red-500">*</span>
           </label>
 
           <div className="flex flex-wrap gap-4">
             {["remote", "hybrid", "onsite"].map((mode) => {
-              const isSelected = watch(mode); // RHF-managed state
+              const isSelected = watch(mode);
 
               return (
                 <button
@@ -358,13 +429,31 @@ const AddNewJobModal = () => {
               );
             })}
           </div>
+
+          {/* Hidden validation trigger field */}
+          <input
+            type="hidden"
+            {...register("workMode", {
+              validate: () => {
+                const values = getValues(["remote", "hybrid", "onsite"]);
+                return (
+                  values.includes(true) || "Please select a work arrangement"
+                );
+              },
+            })}
+          />
+          {errors.workMode && (
+            <p className="text-sm text-red-600 mt-1">
+              {errors.workMode.message}
+            </p>
+          )}
         </div>
 
         {/* Salary Range */}
         <div className="flex flex-col gap-2">
           {/* Title */}
           <label className="text-sm font-medium text-gray-700">
-            Salary Range
+            Salary Range<span className="text-red-500">*</span>
           </label>
 
           {/* Divider */}
@@ -379,10 +468,23 @@ const AddNewJobModal = () => {
               </label>
               <input
                 type="number"
-                {...register("salaryRange.min")}
+                {...register("salaryRange.min", {
+                  required: "Minimum salary is required",
+                  min: {
+                    value: 0,
+                    message: "Minimum must be at least 0",
+                  },
+                })}
                 placeholder="e.g. 30000"
-                className="input input-bordered w-full bg-white text-black border-black"
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors?.salaryRange?.min ? "border-red-500" : "border-black"
+                }`}
               />
+              {errors?.salaryRange?.min && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.salaryRange.min.message}
+                </p>
+              )}
             </div>
 
             {/* Maximum Salary */}
@@ -392,10 +494,26 @@ const AddNewJobModal = () => {
               </label>
               <input
                 type="number"
-                {...register("salaryRange.max")}
+                {...register("salaryRange.max", {
+                  required: "Maximum salary is required",
+                  validate: (value) => {
+                    const min = Number(watch("salaryRange.min"));
+                    if (value && min && Number(value) < min) {
+                      return "Maximum must be greater than or equal to minimum";
+                    }
+                    return true;
+                  },
+                })}
                 placeholder="e.g. 60000"
-                className="input input-bordered w-full bg-white text-black border-black"
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors?.salaryRange?.max ? "border-red-500" : "border-black"
+                }`}
               />
+              {errors?.salaryRange?.max && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.salaryRange.max.message}
+                </p>
+              )}
             </div>
 
             {/* Currency */}
@@ -404,8 +522,14 @@ const AddNewJobModal = () => {
                 Currency
               </label>
               <select
-                {...register("salaryRange.currency")}
-                className="input input-bordered w-full bg-white text-black border-black"
+                {...register("salaryRange.currency", {
+                  required: "Currency selection is required",
+                })}
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors?.salaryRange?.currency
+                    ? "border-red-500"
+                    : "border-black"
+                }`}
               >
                 <option value="">Select Currency</option>
                 {Currencies.map((currency) => (
@@ -414,6 +538,11 @@ const AddNewJobModal = () => {
                   </option>
                 ))}
               </select>
+              {errors?.salaryRange?.currency && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.salaryRange.currency.message}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -437,89 +566,6 @@ const AddNewJobModal = () => {
             <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full" />
           </label>
         </div>
-
-        {/* Company Info */}
-        <>
-          {/* Title */}
-          <h4 className="font-semibold mt-4">Company Info</h4>
-
-          {/* Divider */}
-          <div className="bg-blue-700 p-[1px] mb-4" />
-
-          {/* Company Information */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Company Name */}
-            <div className="flex flex-col">
-              <label htmlFor="companyName" className="font-medium text-sm mb-1">
-                Company Name
-              </label>
-              <input
-                id="companyName"
-                {...register("company.name")}
-                placeholder="Company Name"
-                className="input input-bordered w-full bg-white text-black border-black"
-              />
-            </div>
-
-            {/* Company Logo */}
-            <div className="flex flex-col">
-              <label htmlFor="companyLogo" className="font-medium text-sm mb-1">
-                Logo URL
-              </label>
-              <input
-                id="companyLogo"
-                {...register("company.logo")}
-                placeholder="Logo URL"
-                className="input input-bordered w-full bg-white text-black border-black"
-              />
-            </div>
-
-            {/* Website URL */}
-            <div className="flex flex-col">
-              <label
-                htmlFor="companyWebsite"
-                className="font-medium text-sm mb-1"
-              >
-                Website URL
-              </label>
-              <input
-                id="companyWebsite"
-                {...register("company.website")}
-                placeholder="Website URL"
-                className="input input-bordered w-full bg-white text-black border-black"
-              />
-            </div>
-
-            {/* Company Size */}
-            <div className="flex flex-col">
-              <label htmlFor="companySize" className="font-medium text-sm mb-1">
-                Company Size
-              </label>
-              <input
-                id="companySize"
-                {...register("company.size")}
-                placeholder="Company Size"
-                className="input input-bordered w-full bg-white text-black border-black"
-              />
-            </div>
-          </div>
-
-          {/* Company Description */}
-          <div className="flex flex-col mt-4">
-            <label
-              htmlFor="companyDescription"
-              className="font-medium text-sm mb-1"
-            >
-              Company Description
-            </label>
-            <textarea
-              id="companyDescription"
-              {...register("company.description")}
-              placeholder="Company Description"
-              className="textarea textarea-bordered w-full bg-white text-black border-black"
-            />
-          </div>
-        </>
 
         {/* Application Info */}
         <>
@@ -561,14 +607,31 @@ const AddNewJobModal = () => {
               htmlFor="applicationDeadline"
               className="font-medium text-sm mb-1"
             >
-              Application Deadline
+              Application Deadline<span className="text-red-500">*</span>
             </label>
             <input
               id="applicationDeadline"
-              type="datetime-local"
-              {...register("application.applicationDeadline")}
-              className="input input-bordered w-full bg-white text-black border-black"
+              type="date"
+              {...register("application.applicationDeadline", {
+                required: "Application deadline is required",
+                validate: (value) => {
+                  if (new Date(value) < new Date()) {
+                    return "Deadline must be in the future";
+                  }
+                  return true;
+                },
+              })}
+              className={`input input-bordered w-full bg-white text-black border ${
+                errors?.application?.applicationDeadline
+                  ? "border-red-500"
+                  : "border-black"
+              }`}
             />
+            {errors?.application?.applicationDeadline && (
+              <p className="text-sm text-red-600 mt-1">
+                {errors.application.applicationDeadline.message}
+              </p>
+            )}
           </div>
         </>
 

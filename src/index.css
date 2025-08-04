@@ -34,3 +34,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
   /* Inverts white to black */
 }
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) saturate(100%);
+  cursor: pointer;
+}

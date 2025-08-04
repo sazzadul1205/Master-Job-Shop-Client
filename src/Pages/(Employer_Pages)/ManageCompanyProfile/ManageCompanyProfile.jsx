@@ -1,5 +1,6 @@
 // Packages
 import { useQuery } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 
 // Icons
 import {
@@ -27,6 +28,8 @@ import Error from "../../../Shared/Error/Error";
 // Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useAuth from "../../../Hooks/useAuth";
+
+// Modals
 import ViewCompanyProfileModal from "./ViewCompanyProfileModal/ViewCompanyProfileModal";
 
 const ManageCompanyProfile = () => {
@@ -51,6 +54,54 @@ const ManageCompanyProfile = () => {
   // Loading / Error UI
   if (CompanyIsLoading || loading) return <Loading />;
   if (CompanyError) return <Error />;
+
+  // Inside ManageCompanyProfile component, add this function:
+  const handleDeleteCompanyProfile = async () => {
+    const { value: textInput } = await Swal.fire({
+      title: "Delete Account?",
+      text: "This action is irreversible. Type 'Delete My Account' to confirm.",
+      input: "text",
+      inputPlaceholder: "Delete My Account",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+      inputValidator: (value) => {
+        if (value !== "Delete My Account") {
+          return "You must type 'Delete My Account' exactly to confirm.";
+        }
+      },
+      reverseButtons: true,
+    });
+
+    if (!textInput) return; // Cancelled
+
+    try {
+      Swal.showLoading();
+
+      // Call your delete API, replace the endpoint accordingly
+      await axiosPublic.delete(`/Company/${company._id}`);
+
+      Swal.fire({
+        icon: "success",
+        title: "Account Deleted",
+        text: "Your account has been deleted successfully.",
+        timer: 3000,
+        showConfirmButton: false,
+      });
+
+      CompanyRefetch();
+      // Optionally, logout or redirect user after deletion
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Deletion Failed",
+        text:
+          error?.response?.data?.message ||
+          error.message ||
+          "Failed to delete your account. Please try again.",
+      });
+    }
+  };
 
   // If no company data, show a placeholder card
   if (!CompanyData || Object.keys(CompanyData).length === 0) {
@@ -226,11 +277,12 @@ const ManageCompanyProfile = () => {
             {/* Locations */}
             <p className="text-sm text-gray-700 leading-relaxed">
               {/* Address */}
-              {company.headquarters.address || "Address"}
+              {company.headquarters?.address || "Address"}
               <br />
               {/* City & Country */}
-              {company.headquarters.city || "City"},{" "}
-              {company.headquarters.country || "Country"}
+              {(company.headquarters?.city || "City") +
+                ", " +
+                (company.headquarters?.country || "Country")}
             </p>
           </div>
         </div>
@@ -327,6 +379,18 @@ const ManageCompanyProfile = () => {
           ) : (
             <p className="text-gray-500 italic">No tags available</p>
           )}
+        </div>
+
+        <div className="text-black bg-white shadow-md rounded-xl p-5">
+          <h4 className="text-red-700 font-semibold mb-3">
+            Delete Company Profile
+          </h4>
+          <button
+            onClick={handleDeleteCompanyProfile}
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded shadow-md transition-colors duration-300 cursor-pointer"
+          >
+            Delete My Company Profile
+          </button>
         </div>
       </div>
 

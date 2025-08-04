@@ -133,8 +133,6 @@ const SignUpDetails = () => {
       description: "No description provided.",
     };
 
-    console.log(Payload);
-
     // Post the data to the server
     try {
       await axiosPublic.post("/Users", Payload);

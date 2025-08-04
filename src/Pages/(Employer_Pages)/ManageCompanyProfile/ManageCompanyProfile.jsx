@@ -31,19 +31,18 @@ const ManageCompanyProfile = () => {
     data: CompanyData,
     isLoading: CompanyIsLoading,
     error: CompanyError,
+    refetch: CompanyRefetch,
   } = useQuery({
     queryKey: ["CompanyData"],
     queryFn: () =>
       axiosPublic.get(`/Company?email=${user?.email}`).then((res) => res.data),
   });
 
+  const company = CompanyData || {};
+
   // Loading / Error UI
   if (CompanyIsLoading || loading) return <Loading />;
   if (CompanyError) return <Error />;
-
-  console.log(CompanyData);
-
-  const company = CompanyData[0] || {};
 
   // If no company data, show a placeholder card
   if (!CompanyData || Object.keys(CompanyData).length === 0) {
@@ -76,7 +75,7 @@ const ManageCompanyProfile = () => {
 
         {/* Add Company Profile Modal */}
         <dialog id="Add_Company_Profile_Modal" className="modal">
-          <AddCompanyProfileModal />
+          <AddCompanyProfileModal CompanyRefetch={CompanyRefetch} />
         </dialog>
       </div>
     );

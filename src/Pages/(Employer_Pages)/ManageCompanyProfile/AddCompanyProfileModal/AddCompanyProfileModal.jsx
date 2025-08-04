@@ -2,6 +2,8 @@ import { useState } from "react";
 
 // Packages
 import { useFieldArray, useForm } from "react-hook-form";
+import PropTypes from "prop-types";
+import Swal from "sweetalert2";
 
 // Icons
 import { RxCross2 } from "react-icons/rx";
@@ -9,7 +11,8 @@ import { ImCross } from "react-icons/im";
 
 // Components
 import CompanyProfileLogoUpload from "./CompanyProfileLogoUpload/CompanyProfileLogoUpload";
-import Swal from "sweetalert2";
+
+// Hooks
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
@@ -17,98 +20,114 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
 
-const AddCompanyProfileModal = () => {
+const AddCompanyProfileModal = ({ CompanyRefetch }) => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
 
+  // Logo States
   const [preview, setPreview] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
+
+  // Loading State
   const [loading, setLoading] = useState(null);
+
+  // Tag States
   const [newFieldValues, setNewFieldValues] = useState({ tags: "" });
 
+  // Error State
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Form Handling
   const {
     watch,
+    reset,
     control,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
+  // Field Array Handling
   const { fields, append, remove } = useFieldArray({
     control,
     name: "tags",
   });
 
+  // Form Submission
   const onSubmit = async (data) => {
-    // Set loading to true when submission starts
+    // Loading & Error Message Reinstate
     setLoading(true);
+    setErrorMessage("");
 
+    // Image Upload URL
     let uploadedImageUrl = null;
 
-    // Image upload logic
-    if (preview) {
-      const formData = new FormData();
-      formData.append("image", preview);
-      try {
+    // Image Upload
+    try {
+      if (profileImage) {
+        const formData = new FormData();
+        formData.append("image", profileImage);
+
         const res = await axiosPublic.post(Image_Hosting_API, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         });
-        // Get image URL
+
         uploadedImageUrl = res.data.data.display_url;
-      } catch (error) {
-        // Stop loading on error
-        setLoading(false);
-        console.log(error);
-
-        // Error Message
-        Swal.fire({
-          icon: "error",
-          title: "Image Upload Failed",
-          text: `Failed to upload the image. ${
-            error?.response?.data?.message ||
-            error.message ||
-            "Please try again."
-          }`,
-        });
-        return;
       }
+
+      // formatted Data Payload
+      const formattedData = {
+        name: data.name,
+        tagline: data.tagline,
+        founded: Number(data.founded) || null,
+        size: data.size,
+        industry: data.industry,
+        overview: data.overview,
+        tags: data.tags.map((t) => t.trim()).filter((t) => t !== ""),
+        logo: uploadedImageUrl || "",
+        website: data.website,
+        headquarters: {
+          city: data.headquarters?.city || "",
+          state: data.headquarters?.state || "",
+          country: data.headquarters?.country || "",
+          address: data.headquarters?.address || "",
+        },
+        contact: {
+          email: data.contact?.email || "",
+          phone: data.contact?.phone || "",
+        },
+        socialLinks: {
+          linkedin: data.socialLinks?.linkedin || "",
+        },
+        email: user?.email,
+        createdAt: new Date().toISOString(),
+      };
+
+      // POST Request
+      await axiosPublic.post("/Company", formattedData);
+
+      // Success Message
+      Swal.fire({
+        icon: "success",
+        title: "Profile Created",
+        text: "Your company profile was saved successfully.",
+        confirmButtonColor: "#2563eb",
+      }).then(() => {
+        // Close Modal
+        document.getElementById("Add_Company_Profile_Modal").close();
+        reset();
+        CompanyRefetch();
+        setPreview(null);
+        setErrorMessage("");
+        setProfileImage(null);
+        setNewFieldValues({ tags: "" });
+      });
+    } catch (error) {
+      setErrorMessage("Failed to save company profile.");
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-
-    // Construct final payload
-    const formattedData = {
-      name: data.name,
-      tagline: data.tagline,
-      founded: Number(data.founded) || null,
-      size: data.size,
-      industry: data.industry,
-      overview: data.overview,
-      tags: data.tags.map((t) => t.value),
-      logo: uploadedImageUrl || "",
-
-      website: data.website,
-
-      headquarters: {
-        city: data.headquarters?.city || "",
-        state: data.headquarters?.state || "",
-        country: data.headquarters?.country || "",
-        address: data.headquarters?.address || "",
-      },
-
-      contact: {
-        email: data.contact?.email || "",
-        phone: data.contact?.phone || "",
-      },
-
-      socialLinks: {
-        linkedin: data.socialLinks?.linkedin || "",
-      },
-
-      email: user?.email,
-      createdAt: new Date().toISOString(),
-    };
-
-    console.log("Submitted Company Profile:", formattedData);
   };
 
   return (
@@ -116,9 +135,15 @@ const AddCompanyProfileModal = () => {
       {/* Close Button */}
       <button
         type="button"
-        onClick={() =>
-          document.getElementById("Add_Company_Profile_Modal").close()
-        }
+        onClick={() => {
+          document.getElementById("Add_Company_Profile_Modal").close();
+          reset();
+          setPreview(null);
+          CompanyRefetch();
+          setErrorMessage("");
+          setProfileImage(null);
+          setNewFieldValues({ tags: "" });
+        }}
         className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
       >
         <ImCross className="text-xl" />
@@ -132,18 +157,30 @@ const AddCompanyProfileModal = () => {
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-4" />
 
+      {/* Alert Messages */}
+      {errorMessage && (
+        <div className="bg-red-100 text-red-800 font-medium border border-red-400 px-4 py-2 rounded mb-4 text-center">
+          {errorMessage}
+        </div>
+      )}
+
       {/* Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Basic information */}
         <div className="flex w-full gap-1">
           <div className="w-1/3 py-2 px-5">
+            {/* Logo Title */}
             <p className="font-medium text-center text-sm mb-1">Company Logo</p>
 
+            {/* Logo Upload Container */}
             <CompanyProfileLogoUpload
               preview={preview}
               setPreview={setPreview}
+              setProfileImage={setProfileImage}
             />
           </div>
+
+          {/* Initial Information */}
           <div className="w-2/3 space-y-3 py-2">
             {/* Company Name */}
             <div>
@@ -169,8 +206,10 @@ const AddCompanyProfileModal = () => {
             </div>
           </div>
         </div>
+
         {/* Basic Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Founded Year */}
           <div>
             <label className="font-medium text-sm mb-1">Founded Year</label>
             <input
@@ -180,6 +219,8 @@ const AddCompanyProfileModal = () => {
               placeholder="e.g. 2015"
             />
           </div>
+
+          {/* Company Size */}
           <div>
             <label className="font-medium text-sm mb-1">Company Size</label>
             <input
@@ -189,6 +230,8 @@ const AddCompanyProfileModal = () => {
               placeholder="e.g. 101-250 employees"
             />
           </div>
+
+          {/* Industries */}
           <div>
             <label className="font-medium text-sm mb-1">Industry</label>
             <input
@@ -199,6 +242,7 @@ const AddCompanyProfileModal = () => {
             />
           </div>
         </div>
+
         {/* Headquarters */}
         <div>
           {/* Title */}
@@ -262,6 +306,7 @@ const AddCompanyProfileModal = () => {
             </div>
           </div>
         </div>
+
         {/* Contact */}
         <div>
           {/* Title */}
@@ -325,6 +370,7 @@ const AddCompanyProfileModal = () => {
             </div>
           </div>
         </div>
+        
         {/* Overview */}
         <div>
           <label className="font-medium text-sm mb-1">Company Overview</label>
@@ -397,16 +443,23 @@ const AddCompanyProfileModal = () => {
         </div>
 
         {/* Submit Button */}
-
         <button
           type="submit"
-          className="bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow hover:shadow-xl cursor-pointer"
+          disabled={loading}
+          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow ${
+            loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+          }`}
         >
-          Save Profile
+          {loading ? "Saving..." : "Save Profile"}
         </button>
       </form>
     </div>
   );
+};
+
+// Prop Vallation
+AddCompanyProfileModal.propTypes = {
+  CompanyRefetch: PropTypes.func.isRequired,
 };
 
 export default AddCompanyProfileModal;

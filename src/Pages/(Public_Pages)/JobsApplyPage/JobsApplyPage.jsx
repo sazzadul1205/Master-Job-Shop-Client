@@ -453,7 +453,7 @@ const JobsApplyPage = () => {
                 text="View Application"
                 clickEvent={() => {
                   setShowAlreadyAppliedModal(false);
-                  navigate(`/JobApplications`);
+                  navigate(`/MyJobApplications`);
                 }}
                 bgColor="blue"
                 textColor="text-white"

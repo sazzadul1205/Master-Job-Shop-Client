@@ -120,7 +120,7 @@ const SignUpDetails = () => {
     }
 
     // Prepare form data for submission
-    const creationTime = new Date().toISOString().slice(0, 19); // "YYYY-MM-DDTHH:mm:ss"
+    const creationTime = new Date().toISOString().slice(0, 19);
 
     // Payload
     const Payload = {
@@ -152,27 +152,27 @@ const SignUpDetails = () => {
     }
   };
 
-  // Handle loading and error states
-  if (UserExistsCheckIsLoading) {
-    return <Loading />;
-  }
-
-  if (UserExistsCheckError) {
-    return <Error />;
-  }
+  // Loading / Error UI States
+  if (UserExistsCheckIsLoading) return <Loading />;
+  if (UserExistsCheckError) return <Error />;
 
   // If user already exists
   if (UserExistCheck?.exists) {
     return (
       <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-bl from-blue-400 to-blue-600">
+        {/* Heading */}
         <div className="text-center text-2xl font-bold text-red-500 mb-6">
           You already have an account.
         </div>
+
+        {/* Message */}
         <div className="text-center mb-6">
           <p className="text-lg text-gray-700">
             To modify your information, go to your profile update page.
           </p>
         </div>
+
+        {/* Button */}
         <button
           onClick={() => navigate("/User/UserSettings?tab=Settings_Info")}
           className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
@@ -184,15 +184,16 @@ const SignUpDetails = () => {
   }
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-100">
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-blue-400 to-blue-600">
       {/* Login card container */}
-      <div className="w-full max-w-4xl rounded-2xl shadow-md px-3 py-10 md:px-10 md:py-10 space-y-3 bg-linear-to-bl from-blue-500/80 to-blue-100/80">
+      <div className="w-full max-w-5xl rounded-2xl shadow-md px-3 py-10 md:px-10 md:py-10 space-y-3 bg-linear-to-bl from-blue-500/80 to-blue-100/80">
         {/* Heading section */}
-        <h4 className="text-3xl playfair font-bold text-center text-white">
+        <h4 className="text-3xl playfair font-bold text-center text-black">
           Details
         </h4>
 
-        <div className="p-[2px] w-full bg-white" />
+        {/* Divider */}
+        <div className="p-[1px] w-full bg-black" />
 
         {/* Forms */}
         <form onSubmit={handleSubmit(confirmAndSubmit)}>
@@ -267,7 +268,7 @@ const SignUpDetails = () => {
               py="py-3"
               className="playfair"
               cursorStyle="cursor-pointer"
-              borderRadius="rounded-xl text-xl"
+              borderRadius="rounded-xl"
               disabled={loading}
             />
           </div>

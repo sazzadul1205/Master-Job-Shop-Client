@@ -20,7 +20,8 @@ import { ImCross } from "react-icons/im";
 import { FaInfo } from "react-icons/fa";
 
 // Assets
-import JobApplication from "../../../assets/Navbar/Member/JobApplication.png";
+import JobApplication from "../../../assets/EmployerLayout/formWhite.png";
+import DefaultCompanyLogo from "../../../assets/DefaultCompanyLogo.jpg";
 
 // Modal
 import JobDetailsModal from "../../(Public_Pages)/Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
@@ -161,21 +162,25 @@ const MyJobApplications = () => {
       </div>
 
       {/* Job Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
         {mergedData.length > 0 ? (
           mergedData.map(({ job, appliedAt, _id }) => (
             <article
               key={_id}
-              className="bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between p-6 min-h-[400px]"
+              className="bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between p-6 min-h-[400px]"
             >
               {/* Company Logo & Job Title */}
               <div className="flex items-center gap-4 mb-4">
                 {job?.company?.logo ? (
                   <img
-                    src={job.company.logo}
+                    src={job.company.logo || DefaultCompanyLogo}
                     alt={`${job.company.name} logo`}
-                    className="w-12 h-12 object-contain rounded"
+                    className="w-12 h-12 object-contain rounded-full"
                     loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = DefaultCompanyLogo;
+                    }}
                   />
                 ) : (
                   <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-400 font-bold text-xl">
@@ -233,9 +238,17 @@ const MyJobApplications = () => {
                   <dt className="font-semibold">Application Deadline:</dt>
                   <dd>
                     {job?.application?.applicationDeadline
-                      ? new Date(
-                          job.application.applicationDeadline
-                        ).toLocaleDateString()
+                      ? (() => {
+                          const date = new Date(
+                            job.application.applicationDeadline
+                          );
+                          const month = date.toLocaleDateString("en-US", {
+                            month: "short",
+                          }); // Jan
+                          const day = date.getDate(); // 2
+                          const year = date.getFullYear(); // 2098
+                          return `${month}, ${day} ${year}`;
+                        })()
                       : "N/A"}
                   </dd>
                 </div>
@@ -287,7 +300,7 @@ const MyJobApplications = () => {
                 <button
                   id={`job-btn-${job._id}`}
                   data-tooltip-content="View Application"
-                  className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                  className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition cursor-pointer hover:shadow-2xl"
                   onClick={() => {
                     setSelectedApplicationID(_id);
                     document
@@ -312,7 +325,7 @@ const MyJobApplications = () => {
                 <button
                   id={`job-btn-cross-${job._id}`}
                   data-tooltip-content="Delete Application"
-                  className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                  className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md transition cursor-pointer hover:shadow-2xl"
                   onClick={() => handleDeleteApplication(_id)}
                   aria-label="Delete Application"
                 >
@@ -328,7 +341,7 @@ const MyJobApplications = () => {
                 <button
                   id={`job-details-btn-${job._id}`}
                   data-tooltip-content="View Job Details"
-                  className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                  className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md transition cursor-pointer hover:shadow-2xl"
                   onClick={() => {
                     setSelectedJobID(job._id);
                     document.getElementById("Jobs_Details_Modal").showModal();

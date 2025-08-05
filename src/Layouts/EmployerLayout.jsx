@@ -188,26 +188,37 @@ const EmployerLayout = () => {
                 onMouseEnter={() => setHoveredPath(path)}
                 onMouseLeave={() => setHoveredPath(null)}
               >
-                <NavLink
-                  to={path}
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 text-lg font-semibold px-2 py-3 text-black hover:text-blue-700 ${
-                      isActive ? "text-blue-700 ml-3" : ""
-                    }`
-                  }
-                >
-                  {icon ? (
-                    icon
-                  ) : (
-                    <NavLinkImage
-                      path={path}
-                      label={label}
-                      assets={assets}
-                      activeAssets={activeAssets}
-                      hoveredPath={hoveredPath}
-                    />
+                <NavLink to={path}>
+                  {({ isActive }) => (
+                    <div
+                      className={`group relative flex flex-col items-start gap-1 text-lg font-semibold px-2 py-3 mx-2 ${
+                        isActive
+                          ? "text-blue-700"
+                          : "text-black hover:text-blue-700"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {icon ? (
+                          icon
+                        ) : (
+                          <NavLinkImage
+                            path={path}
+                            label={label}
+                            assets={assets}
+                            activeAssets={activeAssets}
+                            hoveredPath={hoveredPath}
+                          />
+                        )}
+                        {label}
+                      </div>
+
+                      <span
+                        className={`block h-[2px] bg-blue-700 transition-all duration-500 ${
+                          isActive ? "w-full" : "w-0 group-hover:w-full"
+                        }`}
+                      />
+                    </div>
                   )}
-                  {label}
                 </NavLink>
               </li>
             ))}

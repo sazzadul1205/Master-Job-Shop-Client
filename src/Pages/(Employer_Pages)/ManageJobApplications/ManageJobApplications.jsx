@@ -308,24 +308,33 @@ const ManageJobApplications = () => {
                     {/* Applicants Table - Body */}
                     <tbody className="divide-y divide-gray-200">
                       {paginatedApplicants.map((applicant, idx) => (
-                        <tr key={applicant._id} className="hover:bg-gray-50">
+                        <tr
+                          key={applicant._id}
+                          className={`${
+                            applicant.status === "Rejected"
+                              ? "bg-red-50"
+                              : "hover:bg-gray-50"
+                          }`}
+                        >
                           {/* Applicant Number */}
-                          <td className="px-4 py-3 font-medium">
+                          <td className="px-4 py-3 font-medium whitespace-nowrap">
                             {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
                           </td>
 
                           {/* Basic Information */}
-                          <td className="px-4 py-3 flex items-center gap-3">
-                            {/* Images */}
-                            <img
-                              src={applicant.profileImage}
-                              alt={applicant.name}
-                              className="w-9 h-9 rounded-full object-cover border border-gray-300"
-                            />
-                            {/* Name */}
-                            <span className="font-medium">
-                              {applicant.name}
-                            </span>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              {/* Image */}
+                              <img
+                                src={applicant.profileImage}
+                                alt={applicant.name}
+                                className="w-9 h-9 rounded-full object-cover border border-gray-300"
+                              />
+                              {/* Name */}
+                              <span className="font-medium">
+                                {applicant.name}
+                              </span>
+                            </div>
                           </td>
 
                           {/* Email */}
@@ -339,7 +348,7 @@ const ManageJobApplications = () => {
                           </td>
 
                           {/* Applied At */}
-                          <td className="px-4 py-3">
+                          <td className="px-4 py-3 whitespace-nowrap">
                             {new Date(applicant.appliedAt).toLocaleDateString(
                               "en-US",
                               {
@@ -351,7 +360,7 @@ const ManageJobApplications = () => {
                           </td>
 
                           {/* Resume Download */}
-                          <td className="px-4 py-3">
+                          <td className="px-4 py-3 whitespace-nowrap">
                             <a
                               href={applicant.resumeUrl}
                               target="_blank"
@@ -363,43 +372,55 @@ const ManageJobApplications = () => {
                           </td>
 
                           {/* Buttons */}
-                          <td className="px-4 py-3 flex justify-end items-center gap-2">
-                            {/* View Buttons */}
-                            <button
-                              onClick={() => {
-                                setSelectedApplicationID(applicant?._id);
-                                document
-                                  .getElementById("View_Application_Modal")
-                                  .showModal();
-                              }}
-                              className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
-                            >
-                              <FaEye />
-                              View
-                            </button>
+                          <>
+                            {applicant.status === "Rejected" ? (
+                              <td className="px-4 py-3 w-[200px]">
+                                <div className="flex justify-center items-center h-full">
+                                  <p className="text-red-600 font-semibold text-center">
+                                    Applicant Rejected
+                                  </p>
+                                </div>
+                              </td>
+                            ) : (
+                              <td className="px-4 py-3 flex justify-end items-center gap-2 whitespace-nowrap flex-shrink-0">
+                                {/* View Button */}
+                                <button
+                                  onClick={() => {
+                                    setSelectedApplicationID(applicant?._id);
+                                    document
+                                      .getElementById("View_Application_Modal")
+                                      .showModal();
+                                  }}
+                                  className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
+                                >
+                                  <FaEye />
+                                  View
+                                </button>
 
-                            {/* Reject Buttons */}
-                            <button
-                              onClick={() => {
-                                handleRejectApplicant(applicant._id);
-                              }}
-                              className="flex items-center gap-2 px-3 py-1.5 font-medium text-red-500 hover:text-white border border-red-500 hover:bg-red-500 rounded transition cursor-pointer"
-                            >
-                              <ImCross />
-                              Reject
-                            </button>
+                                {/* Reject Button */}
+                                <button
+                                  onClick={() => {
+                                    handleRejectApplicant(applicant._id);
+                                  }}
+                                  className="flex items-center gap-2 px-3 py-1.5 font-medium text-red-500 hover:text-white border border-red-500 hover:bg-red-500 rounded transition cursor-pointer"
+                                >
+                                  <ImCross />
+                                  Reject
+                                </button>
 
-                            {/* Accept Buttons */}
-                            <button
-                              onClick={() =>
-                                console.log(`Accepted : ${applicant._id}`)
-                              }
-                              className="flex items-center gap-2 px-3 py-1.5 font-medium text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded transition cursor-pointer"
-                            >
-                              <FaCheck />
-                              Accept
-                            </button>
-                          </td>
+                                {/* Accept Button */}
+                                <button
+                                  onClick={() =>
+                                    console.log(`Accepted : ${applicant._id}`)
+                                  }
+                                  className="flex items-center gap-2 px-3 py-1.5 font-medium text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded transition cursor-pointer"
+                                >
+                                  <FaCheck />
+                                  Accept
+                                </button>
+                              </td>
+                            )}
+                          </>
                         </tr>
                       ))}
                     </tbody>

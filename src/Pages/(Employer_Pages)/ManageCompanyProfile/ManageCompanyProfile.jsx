@@ -141,9 +141,9 @@ const ManageCompanyProfile = () => {
   }
 
   return (
-    <div className="p-6">
+    <>
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center py-3 px-5 ">
         {/* Title */}
         <h3 className="text-blue-700 font-bold text-2xl flex items-center gap-2">
           <FaBuilding className="text-blue-700" /> Manage My Company Profile
@@ -175,10 +175,10 @@ const ManageCompanyProfile = () => {
       </div>
 
       {/* Divider */}
-      <div className="py-[1px] w-full bg-blue-700 my-3 mb-6" />
+      <div className="py-[1px] w-full bg-blue-700 my-1" />
 
       {/* Company Details */}
-      <div className="space-y-6">
+      <div className="space-y-6 py-6 px-20">
         {/* Company Overview */}
         <div className="bg-white text-black shadow-md rounded-xl p-6 space-y-4">
           {/* Basic Info */}
@@ -403,7 +403,7 @@ const ManageCompanyProfile = () => {
       <dialog id="View_Company_Profile_Modal" className="modal">
         <ViewCompanyProfileModal company={company} />
       </dialog>
-    </div>
+    </>
   );
 };
 

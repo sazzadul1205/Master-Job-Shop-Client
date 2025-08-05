@@ -12,12 +12,13 @@ import JobCard from "../../../Shared/JobCard/JobCard";
 import { useState } from "react";
 import JobDetailsModal from "../../(Public_Pages)/Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
 import EditJobModal from "./EditJobModal/EditJobModal";
+import { MdWork } from "react-icons/md";
 
 const ManageJobs = () => {
   const { user, loading } = useAuth();
-
   const axiosPublic = useAxiosPublic();
 
+  // State Management
   const [selectedJobID, setSelectedJobID] = useState(null);
   const [selectedJobData, setSelectedJobData] = useState(null);
 
@@ -63,7 +64,9 @@ const ManageJobs = () => {
       {/* Header Section */}
       <div className="flex justify-between items-center py-3 px-5 ">
         {/* Title */}
-        <h3 className="text-blue-700 font-bold text-2xl ">Manage My Jobs</h3>
+        <h3 className="text-blue-700 font-bold text-2xl flex items-center gap-2">
+          <MdWork className="text-blue-700" /> Manage Jobs
+        </h3>
 
         {/* Add New Job Button */}
         <button
@@ -78,7 +81,7 @@ const ManageJobs = () => {
       </div>
 
       {/* Divider */}
-      <div className="p-[1px] bg-blue-500 mx-5" />
+      <div className="py-[1px] w-full bg-blue-700 my-1" />
 
       {/* Display Jobs */}
       <div className="py-6 px-20">

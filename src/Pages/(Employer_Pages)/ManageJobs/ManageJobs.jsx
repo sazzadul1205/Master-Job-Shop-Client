@@ -88,16 +88,20 @@ const ManageJobs = () => {
               <div key={job._id}>
                 <JobCard
                   job={job}
+                  poster={true}
+                  refetch={refetch}
                   setSelectedJobID={setSelectedJobID}
                   setSelectedJobData={setSelectedJobData}
-                  poster={true}
                 />
               </div>
             ))}
           </div>
         ) : (
           <div className="text-center text-black text-2xl font-medium bg-white/10 rounded p-6">
-            <p>No job postings available at the moment.</p>
+            {/* Title */}
+            <h3>No job postings available at the moment.</h3>
+
+            {/* Content */}
             <p className="text-lg text-gray-800 mt-2">
               You haven&apos;t published any job listings yet. Post a new
               opportunity to start attracting qualified candidates.
@@ -132,6 +136,7 @@ const ManageJobs = () => {
       {/* Jobs Modal */}
       <dialog id="Jobs_Details_Modal" className="modal">
         <JobDetailsModal
+          poster={true}
           selectedJobID={selectedJobID}
           setSelectedJobID={setSelectedJobID}
         />

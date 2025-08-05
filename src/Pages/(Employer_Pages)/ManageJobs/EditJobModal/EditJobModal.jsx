@@ -18,12 +18,15 @@ import Currencies from "../../../../JSON/Currencies.json";
 const EditJobModal = ({ selectedJobData, refetch }) => {
   const axiosPublic = useAxiosPublic();
 
+  // State Management
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [newFieldValues, setNewFieldValues] = useState({});
 
+  // input refs
   const inputRefs = useRef({});
 
+  // RHF Setup
   const {
     watch,
     register,
@@ -35,6 +38,7 @@ const EditJobModal = ({ selectedJobData, refetch }) => {
     formState: { errors },
   } = useForm({});
 
+  // Field Arrays
   const responsibilities = useFieldArray({ control, name: "responsibilities" });
   const requirements = useFieldArray({ control, name: "requirements" });
   const niceToHave = useFieldArray({ control, name: "niceToHave" });
@@ -42,6 +46,7 @@ const EditJobModal = ({ selectedJobData, refetch }) => {
   const skills = useFieldArray({ control, name: "skills" });
   const perks = useFieldArray({ control, name: "perks" });
 
+  // Combine field arrays for easier management
   const fieldArrays = {
     responsibilities,
     requirements,
@@ -51,6 +56,7 @@ const EditJobModal = ({ selectedJobData, refetch }) => {
     skills,
   };
 
+  // Fields to be dynamically rendered
   const fieldsConfig = [
     "responsibilities",
     "requirements",
@@ -60,6 +66,7 @@ const EditJobModal = ({ selectedJobData, refetch }) => {
     "skills",
   ];
 
+  // Updated toggleValue logic using RHF only (no useState)
   const toggleValue = (key) => {
     setValue("remote", false);
     setValue("hybrid", false);
@@ -70,6 +77,7 @@ const EditJobModal = ({ selectedJobData, refetch }) => {
 
   // Prefill the form when data is passed
   useEffect(() => {
+    // Destructure Data
     if (selectedJobData?._id) {
       const {
         title,
@@ -96,6 +104,7 @@ const EditJobModal = ({ selectedJobData, refetch }) => {
         company,
       } = selectedJobData;
 
+      // Reset Form
       reset({
         title,
         category,
@@ -125,8 +134,10 @@ const EditJobModal = ({ selectedJobData, refetch }) => {
 
   // On Submit Handler
   const onSubmit = async (data) => {
+    // Return if no data is passed
     if (!selectedJobData?._id) return;
 
+    // Set Loading
     setIsLoading(true);
 
     try {
@@ -135,6 +146,7 @@ const EditJobModal = ({ selectedJobData, refetch }) => {
         data
       );
 
+      // Handle Success
       if (response?.data?.modifiedCount > 0 || response?.data?.acknowledged) {
         Swal.fire({
           icon: "success",
@@ -167,6 +179,8 @@ const EditJobModal = ({ selectedJobData, refetch }) => {
       setIsLoading(false);
     }
   };
+
+  
   return (
     <div className="modal-box min-w-3xl relative bg-white rounded-lg shadow-xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto">
       {/* Close Button */}

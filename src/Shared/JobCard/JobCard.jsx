@@ -10,6 +10,8 @@ import CommonButton from "../CommonButton/CommonButton";
 import DefaultCompanyLogo from "../../assets/DefaultCompanyLogo.jpg";
 import { MdEdit } from "react-icons/md";
 import { FaEye, FaRegTrashAlt } from "react-icons/fa";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import Swal from "sweetalert2";
 
 // Salary Format
 const formatSalary = (min, max, currency) => {
@@ -30,7 +32,60 @@ const calculateDaysAgo = (isoString) => {
     : `${daysDiff} day${daysDiff > 1 ? "s" : ""} ago`;
 };
 
-const JobCard = ({ job, setSelectedJobID, setSelectedJobData, poster }) => {
+const JobCard = ({
+  job,
+  poster,
+  refetch,
+  setSelectedJobID,
+  setSelectedJobData,
+}) => {
+  const axiosPublic = useAxiosPublic();
+
+  // Handle Delete Job
+  const handleDeleteJob = async (jobId) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This job will be permanently deleted.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axiosPublic.delete(`/Jobs/${jobId}`);
+        Swal.fire({
+          title: "Deleted!",
+          text: "The job has been removed.",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+          position: "center",
+        });
+        refetch?.();
+      } catch (error) {
+        console.log(error);
+
+        Swal.fire({
+          title: "Error",
+          text: "Failed to delete job. Please try again.",
+          icon: "error",
+        });
+      }
+    } else {
+      Swal.fire({
+        title: "Cancelled",
+        text: "The job is safe.",
+        icon: "info",
+        timer: 1500,
+        showConfirmButton: false,
+        position: "center",
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm hover:shadow-2xl p-6 bg-linear-to-bl from-white to-gray-100 transition duration-200 h-[350px] overflow-hidden">
       {/* Top: Company Logo and Info */}
@@ -133,11 +188,7 @@ const JobCard = ({ job, setSelectedJobID, setSelectedJobData, poster }) => {
             <button
               title="Delete Job"
               className="flex items-center gap-2 text-red-600 hover:text-white border border-red-600 hover:bg-red-600 px-5 py-1 rounded font-semibold transition-colors duration-300 cursor-pointer"
-              onClick={() => {
-                // Trigger your delete handler here
-                document.getElementById("Delete_Job_Modal")?.showModal();
-                setSelectedJobID(job?._id);
-              }}
+              onClick={() => handleDeleteJob(job?._id)}
             >
               <FaRegTrashAlt /> Delete
             </button>
@@ -188,8 +239,10 @@ const JobCard = ({ job, setSelectedJobID, setSelectedJobData, poster }) => {
 };
 
 // Prop Validation
+// Prop Validation
 JobCard.propTypes = {
   job: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,
     level: PropTypes.string,
@@ -197,27 +250,32 @@ JobCard.propTypes = {
     experience: PropTypes.string,
     postedAt: PropTypes.string,
     isNegotiable: PropTypes.bool,
+    description: PropTypes.string,
+
     salaryRange: PropTypes.shape({
       min: PropTypes.number,
       max: PropTypes.number,
       currency: PropTypes.string,
     }),
+
     remote: PropTypes.bool,
     hybrid: PropTypes.bool,
     onsite: PropTypes.bool,
-    description: PropTypes.string,
+
     company: PropTypes.shape({
       name: PropTypes.string.isRequired,
       logo: PropTypes.string,
     }),
+
     application: PropTypes.shape({
       applyUrl: PropTypes.string,
     }),
-    _id: PropTypes.string.isRequired,
   }).isRequired,
+
+  poster: PropTypes.bool,
+  refetch: PropTypes.func,
   setSelectedJobID: PropTypes.func.isRequired,
   setSelectedJobData: PropTypes.func.isRequired,
-  poster: PropTypes.bool,
 };
 
 export default JobCard;

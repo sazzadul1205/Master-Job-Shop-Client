@@ -4,14 +4,20 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 
-import { FaChevronDown } from "react-icons/fa";
+import { FaCheck, FaChevronDown, FaEye, FaRegTrashAlt } from "react-icons/fa";
 
 // Assets
 import formUp from "../../../assets/EmployerLayout/formUp.png";
+import { useState } from "react";
+import { ImCross } from "react-icons/im";
+import { MdDone } from "react-icons/md";
 
 const ManageJobApplications = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
+
+  // State Extended Management
+  const [expandedJobId, setExpandedJobId] = useState(null);
 
   // 1. Fetch Jobs Posted by the Current User
   const {
@@ -93,7 +99,7 @@ const ManageJobApplications = () => {
       <div className="py-[1px] w-full bg-blue-700 my-1" />
 
       <div className="px-4 pt-4 space-y-6">
-        {JobsWithApplicants?.map((job) => (
+        {JobsWithApplicants?.map((job, index) => (
           <div
             key={job._id}
             className="w-full border border-gray-200 rounded-xl p-6 bg-white shadow hover:shadow-lg transition duration-300"
@@ -101,7 +107,8 @@ const ManageJobApplications = () => {
             {/* Header: Title & Category */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
               {/* Title */}
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="flex items-center text-xl font-semibold text-gray-900">
+                # 0{index + 1}. {"  "}
                 {job.title}
               </h2>
 
@@ -166,19 +173,114 @@ const ManageJobApplications = () => {
             </div>
 
             {/* Divider */}
-            <hr className="border-gray-200 mb-4" />
+            <hr className="border-gray-200" />
 
             {/* Footer: Applicants & Button */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div className="text-sm font-medium text-gray-700">
-                Applicants:{" "}
-                <span className="text-gray-900">{job.Applicants.length}</span>
+            {expandedJobId === job._id ? (
+              // If expanded: show dummy Applicants section
+              <div className="overflow-x-auto rounded-lg shadow border border-gray-200">
+                <table className="min-w-full bg-white text-sm text-gray-800">
+                  <thead className="bg-gray-100 border-b text-gray-900 text-left">
+                    <tr>
+                      <th className="px-4 py-3">#</th>
+                      <th className="px-4 py-3">Applicant</th>
+                      <th className="px-4 py-3">Email</th>
+                      <th className="px-4 py-3">Phone</th>
+                      <th className="px-4 py-3">Applied On</th>
+                      <th className="px-4 py-3">Resume</th>
+                      <th className="px-4 py-3 text-center justify-end">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {job.Applicants?.map((applicant, index) => (
+                      <tr key={applicant._id} className="hover:bg-gray-50">
+                        {/* Index */}
+                        <td className="px-4 py-3 font-medium">{index + 1}</td>
+
+                        {/* Applicant Info */}
+                        <td className="px-4 py-3 flex items-center gap-3">
+                          <img
+                            src={applicant.profileImage}
+                            alt={applicant.name}
+                            className="w-9 h-9 rounded-full object-cover border border-gray-300"
+                          />
+                          <span className="font-medium">{applicant.name}</span>
+                        </td>
+
+                        {/* Email */}
+                        <td className="px-4 py-3">{applicant.email}</td>
+
+                        {/* Phone */}
+                        <td className="px-4 py-3">
+                          {applicant.phone.startsWith("+")
+                            ? applicant.phone
+                            : `+${applicant.phone}`}
+                        </td>
+
+                        {/* Applied Date */}
+                        <td className="px-4 py-3">
+                          {new Date(applicant.appliedAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </td>
+
+                        {/* Resume Download */}
+                        <td className="px-4 py-3">
+                          <a
+                            href={applicant.resumeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            Download
+                          </a>
+                        </td>
+
+                        {/* Action */}
+                        <td className="px-4 py-3 flex justify-end items-center gap-2">
+                          <button className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition-colors duration-300 cursor-pointer">
+                            <FaEye />
+                            View
+                          </button>
+                          <button className="flex items-center gap-2 px-3 py-1.5 font-medium text-red-500 hover:text-white border border-red-500 hover:bg-red-500 rounded transition-colors duration-300 cursor-pointer">
+                            <ImCross />
+                            Reject
+                          </button>
+                          <button className="flex items-center gap-2 px-3 py-1.5 font-medium text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded transition-colors duration-300 cursor-pointer">
+                            <FaCheck />
+                            Reject
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <button className="flex items-center gap-1 text-sm text-blue-600 hover:underline transition">
-                <FaChevronDown className="text-base" />
-                View Applicants
-              </button>
-            </div>
+            ) : (
+              // If not expanded: show original footer
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4">
+                <div className="text-sm font-medium text-gray-700">
+                  Applicants:{" "}
+                  <span className="text-gray-900">
+                    0{job.Applicants.length}
+                  </span>
+                </div>
+                <button
+                  onClick={() => setExpandedJobId(job._id)}
+                  className="flex items-center gap-1 text-sm text-blue-600 hover:underline transition cursor-pointer"
+                >
+                  <FaChevronDown className="text-base" />
+                  View Applicants
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>

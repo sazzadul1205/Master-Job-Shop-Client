@@ -72,6 +72,7 @@ const MyJobApplications = () => {
     enabled: !!user?.email && uniqueJobIds.length > 0,
   });
 
+  // Set Applications List
   useEffect(() => {
     if (JobApplicationsData.length > 0) {
       setApplicationsList(JobApplicationsData);
@@ -360,13 +361,18 @@ const MyJobApplications = () => {
           ))
         ) : (
           <div className="text-center col-span-full mt-24 px-6 max-w-xl mx-auto">
+            {/* Title */}
             <p className="text-2xl font-medium text-white mb-3">
               You haven’t applied to any jobs yet.
             </p>
+
+            {/* Content */}
             <p className="text-gray-200 font-semibold text-lg mb-5">
               Explore the available job openings and take the first step toward
               your next opportunity.
             </p>
+
+            {/* Button */}
             <Link
               to="/jobs"
               className="inline-block bg-linear-to-bl hover:bg-linear-to-tr from-white to-gray-200 text-black font-semibold py-3 px-10 shadow-lg hover:shadow-xl rounded transition"

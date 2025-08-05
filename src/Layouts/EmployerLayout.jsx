@@ -1,7 +1,8 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 // Packages
+import PropTypes from "prop-types";
 import { useQuery } from "@tanstack/react-query";
 
 // Icons
@@ -9,12 +10,16 @@ import { FaBuilding, FaPowerOff } from "react-icons/fa";
 import { MdDashboardCustomize, MdWork, MdAssignment } from "react-icons/md";
 
 // Hooks
-import useAxiosPublic from "../Hooks/useAxiosPublic";
 import useAuth from "../Hooks/useAuth";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 // Shared
-import Loading from "../Shared/Loading/Loading";
 import Error from "../Shared/Error/Error";
+import Loading from "../Shared/Loading/Loading";
+
+// Assets
+import form from "../assets/EmployerLayout/form.png";
+import formUp from "../assets/EmployerLayout/formUp.png";
 
 const navItems = [
   {
@@ -28,6 +33,12 @@ const navItems = [
     icon: <MdWork />,
   },
   {
+    label: "Manage Job Applications",
+    path: "/Employer/JobApplications",
+    assets: form,
+    activeAssets: formUp,
+  },
+  {
     label: "Applications",
     path: "/Employer/Applications",
     icon: <MdAssignment />,
@@ -39,6 +50,32 @@ const navItems = [
   },
 ];
 
+const NavLinkImage = ({ path, label, assets, activeAssets, hoveredPath }) => {
+  return (
+    <NavLink to={path} className="inline-block">
+      {({ isActive }) => {
+        const isHoveredOrActive = hoveredPath === path || isActive;
+        return (
+          <img
+            src={isHoveredOrActive ? activeAssets || assets : assets}
+            alt={label}
+            className="w-5 h-5"
+          />
+        );
+      }}
+    </NavLink>
+  );
+};
+
+// Prop Validation
+NavLinkImage.propTypes = {
+  path: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  assets: PropTypes.string.isRequired,
+  activeAssets: PropTypes.string,
+  hoveredPath: PropTypes.string,
+};
+
 const EmployerLayout = () => {
   const { user, loading, logOut } = useAuth();
   const axiosPublic = useAxiosPublic();
@@ -48,6 +85,9 @@ const EmployerLayout = () => {
 
   // State for logout loading
   const [logoutLoading, setLogoutLoading] = useState(false);
+
+  // Track hovered item to toggle asset
+  const [hoveredPath, setHoveredPath] = useState(null);
 
   // Fetch employer document if logged in
   const {
@@ -61,7 +101,7 @@ const EmployerLayout = () => {
 
       try {
         const res = await axiosPublic.get(`/Employers?email=${user?.email}`);
-        return res.data; // ✅ Directly return the document, not an array
+        return res.data;
       } catch (error) {
         if (error.response?.status === 404) return null;
         throw error;
@@ -106,12 +146,12 @@ const EmployerLayout = () => {
           />
 
           {/* Employer Name */}
-          <h3 className="text-black text-lg///// font-semibold">
+          <h3 className="text-black text-lg font-semibold">
             {EmployerData?.EmployerName}
           </h3>
         </div>
 
-        {/* center  Side */}
+        {/* center Side */}
         <div className="flex items-center h-full gap-2">
           <p className="text-xl font-semibold playfair text-black">
             Master Job Shop
@@ -140,28 +180,42 @@ const EmployerLayout = () => {
       {/* Content & Sidebar */}
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-1/7 shadow-2xl min-h-screen bg-white border-t border-gray-400">
+        <aside className="w-1/6 shadow-2xl min-h-screen bg-white border-t border-gray-400">
           <ul className="text-center">
-            {navItems.map(({ label, path, icon }) => (
-              <li key={path}>
+            {navItems.map(({ label, path, icon, assets, activeAssets }) => (
+              <li
+                key={path}
+                onMouseEnter={() => setHoveredPath(path)}
+                onMouseLeave={() => setHoveredPath(null)}
+              >
                 <NavLink
                   to={path}
                   className={({ isActive }) =>
-                    `flex items-center gap-2 text-lg font-semibold px-4 py-3 text-black hover:text-blue-700 ${
+                    `flex items-center gap-2 text-lg font-semibold px-2 py-3 text-black hover:text-blue-700 ${
                       isActive ? "text-blue-700 ml-3" : ""
                     }`
                   }
                 >
-                  {icon}
+                  {icon ? (
+                    icon
+                  ) : (
+                    <NavLinkImage
+                      path={path}
+                      label={label}
+                      assets={assets}
+                      activeAssets={activeAssets}
+                      hoveredPath={hoveredPath}
+                    />
+                  )}
                   {label}
                 </NavLink>
               </li>
             ))}
           </ul>
-        </div>
+        </aside>
 
         {/* Content */}
-        <div className="w-6/7">
+        <div className="w-5/6">
           <Outlet />
         </div>
       </div>

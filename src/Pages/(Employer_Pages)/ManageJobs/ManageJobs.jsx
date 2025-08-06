@@ -1,18 +1,25 @@
+import { useState } from "react";
+
+// Packages
+import { useQuery } from "@tanstack/react-query";
+
 // Icons
 import { FaPlus } from "react-icons/fa";
+import { MdWork } from "react-icons/md";
 
-// Modal
-import AddNewJobModal from "./AddNewJobModal/AddNewJobModal";
+// Shared
+import Error from "../../../Shared/Error/Error";
+import Loading from "../../../Shared/Loading/Loading";
+import JobCard from "../../../Shared/JobCard/JobCard";
+
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
-import Loading from "../../../Shared/Loading/Loading";
-import Error from "../../../Shared/Error/Error";
-import JobCard from "../../../Shared/JobCard/JobCard";
-import { useState } from "react";
-import JobDetailsModal from "../../(Public_Pages)/Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
+
+// Modal
 import EditJobModal from "./EditJobModal/EditJobModal";
-import { MdWork } from "react-icons/md";
+import AddNewJobModal from "./AddNewJobModal/AddNewJobModal";
+import JobDetailsModal from "../../(Public_Pages)/Home/FeaturedJobs/JobDetailsModal/JobDetailsModal";
 
 const ManageJobs = () => {
   const { user, loading } = useAuth();

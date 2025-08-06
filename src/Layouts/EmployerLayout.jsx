@@ -65,6 +65,7 @@ const navItems = [
   },
 ];
 
+// Nav Link Image Component
 const NavLinkImage = ({ path, label, assets, activeAssets, hoveredPath }) => {
   return (
     <NavLink to={path} className="inline-block">

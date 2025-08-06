@@ -86,6 +86,7 @@ import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
 import BecomeMentor from "./Pages/BecomeMentor/BecomeMentor";
 
 // Employer Pages
+import ManageGigs from "./Pages/(Employer_Pages)/ManageGigs/ManageGigs";
 import ManageJobs from "./Pages/(Employer_Pages)/ManageJobs/ManageJobs";
 import EmployerDashboard from "./Pages/(Employer_Pages)/EmployerDashboard/EmployerDashboard";
 import ManageCompanyProfile from "./Pages/(Employer_Pages)/ManageCompanyProfile/ManageCompanyProfile";
@@ -263,6 +264,12 @@ createRoot(document.getElementById("root")).render(
                 element={<EmployerDashboard />}
               />
 
+              {/* Company Profile */}
+              <Route
+                path="/Employer/CompanyProfile"
+                element={<ManageCompanyProfile />}
+              />
+
               {/* Employer Jobs */}
               <Route path="/Employer/Jobs" element={<ManageJobs />} />
 
@@ -272,11 +279,8 @@ createRoot(document.getElementById("root")).render(
                 element={<ManageJobApplications />}
               />
 
-              {/* Company Profile */}
-              <Route
-                path="/Employer/CompanyProfile"
-                element={<ManageCompanyProfile />}
-              />
+              {/* Employer Jobs */}
+              <Route path="/Employer/Gigs" element={<ManageGigs />} />
             </Route>
           </Routes>
         </BrowserRouter>

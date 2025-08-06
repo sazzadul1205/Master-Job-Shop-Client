@@ -177,6 +177,7 @@ const ViewApplicantInterviewModal = ({
                 type="datetime-local"
                 {...register("interviewTime")}
                 className="w-full border px-3 py-2 rounded"
+                min={new Date().toISOString().slice(0, 16)}
               />
             ) : (
               <p className="font-medium">{formattedInterviewTime}</p>

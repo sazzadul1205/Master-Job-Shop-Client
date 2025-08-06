@@ -177,13 +177,22 @@ const ManageJobApplications = () => {
           // Pagination
           const currentPage = pageStates[job._id] || 1;
 
-          // Calculating Total Pages
-          const totalPages = Math.ceil(job.Applicants.length / ITEMS_PER_PAGE);
+          const sortedApplicants = [...job.Applicants].sort((a, b) => {
+            const getOrder = (status) => {
+              if (status === "Accepted") return 0;
+              if (status === "Rejected") return 2;
+              return 1;
+            };
+            return getOrder(a.status) - getOrder(b.status);
+          });
 
-          // Calculate Pagination Applications
-          const paginatedApplicants = job.Applicants.slice(
+          const paginatedApplicants = sortedApplicants.slice(
             (currentPage - 1) * ITEMS_PER_PAGE,
             currentPage * ITEMS_PER_PAGE
+          );
+
+          const totalPages = Math.ceil(
+            sortedApplicants.length / ITEMS_PER_PAGE
           );
 
           return (
@@ -264,9 +273,46 @@ const ManageJobApplications = () => {
               {/* Applicants Section */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4">
                 {/* Applicants Number */}
-                <div className="text-sm font-medium text-gray-700">
-                  Applicants:{" "}
-                  <span className="text-gray-900">{job.Applicants.length}</span>
+                <div className="flex text-sm font-medium text-gray-700 gap-4">
+                  <p>
+                    Applicants:{" "}
+                    <span className="text-gray-900">
+                      {job.Applicants.length}
+                    </span>
+                  </p>
+                  {job.Applicants.filter((app) => app.status === "Accepted")
+                    .length > 0 && (
+                    <>
+                      {" | "}
+                      <p>
+                        Accepted:{" "}
+                        <span className="text-green-600 font-semibold">
+                          {
+                            job.Applicants.filter(
+                              (app) => app.status === "Accepted"
+                            ).length
+                          }
+                        </span>
+                      </p>
+                    </>
+                  )}
+
+                  {job.Applicants.filter((app) => app.status === "Rejected")
+                    .length > 0 && (
+                    <>
+                      {" | "}
+                      <p>
+                        Rejected:{" "}
+                        <span className="text-red-600 font-semibold">
+                          {
+                            job.Applicants.filter(
+                              (app) => app.status === "Rejected"
+                            ).length
+                          }
+                        </span>
+                      </p>
+                    </>
+                  )}
                 </div>
 
                 {/* Open / Close Applicants Table Button */}
@@ -319,13 +365,26 @@ const ManageJobApplications = () => {
 
                     {/* Applicants Table - Body */}
                     <tbody className="divide-y divide-gray-200">
-                      {paginatedApplicants.map((applicant, idx) => {
-                        const interviewDate = new Date(
-                          applicant?.interview?.interviewTime
-                        );
+                      {[
+                        // Sort paginatedApplicants: Accepted first (0), others middle (1), Rejected last (2)
+                        ...[...paginatedApplicants].sort((a, b) => {
+                          const getOrder = (status) => {
+                            if (status === "Accepted") return 0;
+                            if (status === "Rejected") return 2;
+                            return 1; // everything else goes in the middle
+                          };
+                          return getOrder(a.status) - getOrder(b.status);
+                        }),
+                      ].map((applicant, idx) => {
+                        const interviewDate = applicant?.interview
+                          ?.interviewTime
+                          ? new Date(applicant.interview.interviewTime)
+                          : null;
                         const now = new Date();
 
-                        const timeLeftMs = interviewDate - now;
+                        const timeLeftMs = interviewDate
+                          ? interviewDate - now
+                          : 0;
                         const msInMinute = 1000 * 60;
                         const msInHour = msInMinute * 60;
                         const msInDay = msInHour * 24;
@@ -333,7 +392,7 @@ const ManageJobApplications = () => {
 
                         let timeLeft = "";
 
-                        if (timeLeftMs <= 0) {
+                        if (!interviewDate || timeLeftMs <= 0) {
                           timeLeft = "Interview time passed";
                         } else {
                           const months = Math.floor(timeLeftMs / msInMonth);
@@ -353,17 +412,19 @@ const ManageJobApplications = () => {
                             (hours > 0 ? `${hours}h ` : "") +
                             (minutes > 0 ? `${minutes}m` : "");
 
-                          // If all zero, show "less than a minute left"
                           if (!timeLeft.trim())
                             timeLeft = "Less than a minute left";
                         }
-
                         return (
                           <tr
                             key={applicant._id}
                             className={`${
                               applicant.status === "Rejected"
                                 ? "bg-red-50"
+                                : applicant.status === "Accepted" &&
+                                  interviewDate &&
+                                  interviewDate < now
+                                ? "bg-gray-100"
                                 : applicant.status === "Accepted"
                                 ? "bg-green-50"
                                 : "hover:bg-gray-50"
@@ -441,14 +502,25 @@ const ManageJobApplications = () => {
                                   <div className="flex justify-center items-center h-full">
                                     <div className="flex flex-col items-center space-y-1">
                                       {/* Title */}
-                                      <p className="text-green-600 font-semibold">
-                                        Applicant Accepted
-                                      </p>
+                                      {interviewDate && interviewDate < now ? (
+                                        <></>
+                                      ) : (
+                                        <p className="text-green-600 font-semibold">
+                                          Applicant Accepted
+                                        </p>
+                                      )}
 
-                                      {/* Time Left */}
-                                      <p className="text-gray-600 text-sm flex items-center gap-1">
-                                        <FaRegClock /> {timeLeft}
-                                      </p>
+                                      {/* Interview Status */}
+                                      {interviewDate && interviewDate < now ? (
+                                        <p className="text-gray-500 text-sm flex items-center gap-1 font-medium">
+                                          <FaRegClock />
+                                          Interview Time Passed
+                                        </p>
+                                      ) : (
+                                        <p className="text-gray-600 text-sm flex items-center gap-1">
+                                          <FaRegClock /> {timeLeft}
+                                        </p>
+                                      )}
 
                                       {/* Buttons */}
                                       <div className="flex gap-5 items-center">

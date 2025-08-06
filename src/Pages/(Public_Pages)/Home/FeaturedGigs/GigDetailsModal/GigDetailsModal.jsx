@@ -1,14 +1,21 @@
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+
+// Package
 import PropTypes from "prop-types";
+import { useQuery } from "@tanstack/react-query";
+
+// Icons
 import { ImCross } from "react-icons/im";
 
+// Assets
+import DefaultUserLogo from "../../../../../assets/DefaultUserLogo.jpg";
+
+// Shared
 import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
 
+// Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
-
-import DefaultUserLogo from "../../../../../assets/DefaultUserLogo.jpg";
 
 // Format ISO date string to "dd MMM yyyy"
 const formatDate = (iso) =>

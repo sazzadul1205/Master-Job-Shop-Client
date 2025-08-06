@@ -1,16 +1,26 @@
+import { useState } from "react";
+
+// Packages
+import { useQuery } from "@tanstack/react-query";
+
 // Icons
 import { FaPlus } from "react-icons/fa";
 
 // Assets
 import GigBlue from "../../../assets/EmployerLayout/Gig/GigBlue.png";
-import AddNewGigModal from "./AddNewGigModal/AddNewGigModal";
+
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
+
+// Shared
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 import GigCard from "../../../Shared/GigCard/GigCard";
-import { useState } from "react";
+
+// Modals
+import EditGigModal from "./EditGigModal/EditGigModal";
+import AddNewGigModal from "./AddNewGigModal/AddNewGigModal";
 import GigDetailsModal from "../../(Public_Pages)/Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
 
 const ManageGigs = () => {
@@ -132,7 +142,12 @@ const ManageGigs = () => {
         <AddNewGigModal CompanyData={company} refetch={refetch} />
       </dialog>
 
-      {/* Gig Modal */}
+      {/* Edit Gig Modals */}
+      <dialog id="Edit_Gig_Modal" className="modal">
+        <EditGigModal selectedGigData={selectedGigData} refetch={refetch} />
+      </dialog>
+
+      {/* Gig Details Modal */}
       <dialog id="Gig_Details_Modal" className="modal">
         <GigDetailsModal
           poster={true}

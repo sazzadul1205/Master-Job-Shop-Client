@@ -143,7 +143,7 @@ const ManageJobs = () => {
         <EditJobModal selectedJobData={selectedJobData} refetch={refetch} />
       </dialog>
 
-      {/* Jobs Modal */}
+      {/* Jobs Details Modal */}
       <dialog id="Jobs_Details_Modal" className="modal">
         <JobDetailsModal
           poster={true}

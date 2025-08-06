@@ -1,13 +1,17 @@
 import { Link } from "react-router-dom";
+
+// Packages
 import PropTypes from "prop-types";
+
+// Icons
+import { MdEdit } from "react-icons/md";
+import { FaEye, FaRegTrashAlt } from "react-icons/fa";
 
 // Common Button
 import CommonButton from "../CommonButton/CommonButton";
 
 // Assess
 import DefaultUserLogo from "../../assets/DefaultUserLogo.jpg";
-import { MdEdit } from "react-icons/md";
-import { FaEye, FaRegTrashAlt } from "react-icons/fa";
 
 // Format budget display
 const formatBudget = (min, max, currency) => {
@@ -34,6 +38,7 @@ const GigCard = ({
   setSelectedGigID,
   setSelectedGigData,
 }) => {
+  refetch();
   return (
     <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm p-6 bg-linear-to-bl from-white to-gray-100 hover:shadow-md transition duration-200 min-h-[250px]">
       {/* Poster Info */}
@@ -143,7 +148,26 @@ const GigCard = ({
 };
 
 GigCard.propTypes = {
-  gig: PropTypes.object.isRequired,
+  gig: PropTypes.shape({
+    _id: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    postedBy: PropTypes.shape({
+      profileImage: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    title: PropTypes.string,
+    category: PropTypes.string,
+    subCategory: PropTypes.string,
+    budget: PropTypes.shape({
+      min: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      max: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      currency: PropTypes.string,
+      isNegotiable: PropTypes.bool,
+    }),
+    postedAt: PropTypes.string,
+  }).isRequired,
+  poster: PropTypes.bool,
+  refetch: PropTypes.func,
+  setSelectedGigData: PropTypes.func,
   setSelectedGigID: PropTypes.func.isRequired,
 };
 

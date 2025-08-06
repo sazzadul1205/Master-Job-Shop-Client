@@ -28,6 +28,7 @@ import Loading from "../../../Shared/Loading/Loading";
 
 // Modal
 import MyJobApplicationModal from "../../(Member_Pages)/MyJobApplications/MyJobApplicationModal/MyJobApplicationModal";
+import AcceptJobApplicationModal from "./AcceptJobApplicationModal/AcceptJobApplicationModal";
 
 const ManageJobApplications = () => {
   const { user, loading } = useAuth();
@@ -410,9 +411,12 @@ const ManageJobApplications = () => {
 
                                 {/* Accept Button */}
                                 <button
-                                  onClick={() =>
-                                    console.log(`Accepted : ${applicant._id}`)
-                                  }
+                                  onClick={() => {
+                                    setSelectedApplicationID(applicant?._id);
+                                    document
+                                      .getElementById("Accepted_Application_Modal")
+                                      .showModal();
+                                  }}
                                   className="flex items-center gap-2 px-3 py-1.5 font-medium text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded transition cursor-pointer"
                                 >
                                   <FaCheck />
@@ -476,6 +480,14 @@ const ManageJobApplications = () => {
       {/* View Application Modal */}
       <dialog id="View_Application_Modal" className="modal">
         <MyJobApplicationModal
+          selectedApplicationID={selectedApplicationID}
+          setSelectedApplicationID={setSelectedApplicationID}
+        />
+      </dialog>
+
+      {/* View Application Modal */}
+      <dialog id="Accepted_Application_Modal" className="modal">
+        <AcceptJobApplicationModal
           selectedApplicationID={selectedApplicationID}
           setSelectedApplicationID={setSelectedApplicationID}
         />

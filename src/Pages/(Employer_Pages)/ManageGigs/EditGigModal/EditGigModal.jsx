@@ -13,13 +13,10 @@ import { RxCross2 } from "react-icons/rx";
 import Currencies from "../../../../JSON/Currencies.json";
 
 // Hooks
-import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 const EditGigModal = ({ selectedGigData, refetch }) => {
   const axiosPublic = useAxiosPublic();
-
-  console.log(selectedGigData);
 
   // New Field Values State
   const [newFieldValues, setNewFieldValues] = useState({});
@@ -66,7 +63,7 @@ const EditGigModal = ({ selectedGigData, refetch }) => {
 
   // Effect: If no attachments, always append one empty
   useEffect(() => {
-    if (attachments.length === 0) {
+    if (attachments?.length === 0) {
       append({ url: "", type: "", label: "" });
     }
   }, [attachments, append]);
@@ -117,7 +114,50 @@ const EditGigModal = ({ selectedGigData, refetch }) => {
 
   // On Submit Handler
   const onSubmit = async (data) => {
-    console.log(data);
+    if (!selectedGigData?._id) return; // No gig selected, exit
+
+    setIsLoading(true);
+    setErrorMessage(""); // Clear previous errors
+
+    try {
+      const response = await axiosPublic.put(
+        `/Gigs/${selectedGigData._id}`,
+        data
+      );
+
+      // Check backend response message or status for success
+      if (response.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "Gig Updated",
+          text:
+            response.data.message || "Your Gig has been updated successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+
+        refetch?.();
+        document.getElementById("Edit_Gig_Modal")?.close();
+      } else {
+        // If status is not 200, but still returned
+        Swal.fire({
+          icon: "info",
+          title: "Update Status",
+          text: response.data.message || "No changes were made.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating Gig:", error);
+      setErrorMessage(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to update Gig. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -678,11 +718,47 @@ const EditGigModal = ({ selectedGigData, refetch }) => {
           }`}
           disabled={isLoading}
         >
-          {isLoading ? "Posting..." : "Post Gig"}
+          {isLoading ? "Updating..." : "Update Gig"}
         </button>
       </form>
     </div>
   );
+};
+
+// Prop Validation
+EditGigModal.propTypes = {
+  selectedGigData: PropTypes.shape({
+    _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    title: PropTypes.string,
+    description: PropTypes.string,
+    category: PropTypes.string,
+    subCategory: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.string),
+    deliveryDeadline: PropTypes.string,
+    requiredSkills: PropTypes.arrayOf(PropTypes.string),
+    attachments: PropTypes.arrayOf(
+      PropTypes.shape({
+        url: PropTypes.string,
+        type: PropTypes.string,
+        label: PropTypes.string,
+      })
+    ),
+    isRemote: PropTypes.bool,
+    location: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    budget: PropTypes.shape({
+      type: PropTypes.string,
+      min: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      max: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      currency: PropTypes.string,
+      isNegotiable: PropTypes.bool,
+    }),
+    communication: PropTypes.shape({
+      preferredMethod: PropTypes.string,
+      allowCalls: PropTypes.bool,
+    }),
+    extraNotes: PropTypes.string,
+  }),
+  refetch: PropTypes.func,
 };
 
 export default EditGigModal;

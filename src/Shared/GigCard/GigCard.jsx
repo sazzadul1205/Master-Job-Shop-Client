@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 // Packages
 import PropTypes from "prop-types";
+import Swal from "sweetalert2";
 
 // Icons
 import { MdEdit } from "react-icons/md";
@@ -12,6 +13,9 @@ import CommonButton from "../CommonButton/CommonButton";
 
 // Assess
 import DefaultUserLogo from "../../assets/DefaultUserLogo.jpg";
+
+// Hooks
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
 
 // Format budget display
 const formatBudget = (min, max, currency) => {
@@ -38,9 +42,55 @@ const GigCard = ({
   setSelectedGigID,
   setSelectedGigData,
 }) => {
-  refetch();
+  const axiosPublic = useAxiosPublic();
+
+  // Handle Delete Gig
+  const handleDeleteGig = async (gigId) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This Gig will be permanently deleted.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axiosPublic.delete(`/Gigs/${gigId}`);
+        Swal.fire({
+          title: "Deleted!",
+          text: "The Gig has been removed.",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+          position: "center",
+        });
+        refetch?.();
+      } catch (error) {
+        console.log(error);
+
+        Swal.fire({
+          title: "Error",
+          text: "Failed to delete Gig. Please try again.",
+          icon: "error",
+        });
+      }
+    } else {
+      Swal.fire({
+        title: "Cancelled",
+        text: "The Gig is safe.",
+        icon: "info",
+        timer: 1500,
+        showConfirmButton: false,
+        position: "center",
+      });
+    }
+  };
+
   return (
-    <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm p-6 bg-linear-to-bl from-white to-gray-100 hover:shadow-md transition duration-200 min-h-[250px]">
+    <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm p-6 bg-linear-to-bl from-white to-gray-100 hover:shadow-2xl transition duration-200 min-h-[250px]">
       {/* Poster Info */}
       <div className="flex items-center gap-2 mb-4">
         <img
@@ -99,7 +149,7 @@ const GigCard = ({
           <button
             title="Delete Gig"
             className="flex items-center gap-2 text-red-600 hover:text-white border border-red-600 hover:bg-red-600 px-5 py-1 rounded font-semibold transition-colors duration-300 cursor-pointer"
-            // onClick={() => handleDeleteGig(gig?._id)}
+            onClick={() => handleDeleteGig(gig?._id)}
           >
             <FaRegTrashAlt /> Delete
           </button>

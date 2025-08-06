@@ -112,7 +112,7 @@ const ManageJobs = () => {
             <h3>No job postings available at the moment.</h3>
 
             {/* Content */}
-            <p className="text-lg text-gray-800 mt-2">
+            <p className="text-lg text-gray-800 mt-2 w-3xl mx-auto">
               You haven&apos;t published any job listings yet. Post a new
               opportunity to start attracting qualified candidates.
             </p>

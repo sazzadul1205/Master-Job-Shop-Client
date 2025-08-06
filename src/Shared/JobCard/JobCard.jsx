@@ -239,7 +239,6 @@ const JobCard = ({
 };
 
 // Prop Validation
-// Prop Validation
 JobCard.propTypes = {
   job: PropTypes.shape({
     _id: PropTypes.string.isRequired,

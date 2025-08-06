@@ -10,10 +10,10 @@ import { FaSearch, FaTimes } from "react-icons/fa";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Shared
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
+import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 import GigCard from "../../../Shared/GigCard/GigCard";
-import Error from "../../../Shared/Error/Error";
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
 
 // Modals
 import GigDetailsModal from "../Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";

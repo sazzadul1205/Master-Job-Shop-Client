@@ -108,6 +108,7 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
     setIsLoading(true);
     setErrorMessage("");
 
+    // Payload
     const payload = {
       ...data,
       postedBy,

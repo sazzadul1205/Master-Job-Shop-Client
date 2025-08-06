@@ -30,6 +30,7 @@ import Loading from "../../../Shared/Loading/Loading";
 // Modal
 import AcceptJobApplicationModal from "./AcceptJobApplicationModal/AcceptJobApplicationModal";
 import MyJobApplicationModal from "../../(Member_Pages)/MyJobApplications/MyJobApplicationModal/MyJobApplicationModal";
+import ViewApplicantInterviewModal from "./ViewApplicantInterviewModal/ViewApplicantInterviewModal";
 
 const ManageJobApplications = () => {
   const { user, loading } = useAuth();
@@ -451,6 +452,7 @@ const ManageJobApplications = () => {
 
                                       {/* Buttons */}
                                       <div className="flex gap-5 items-center">
+                                        {/* View Applicant Button */}
                                         <button
                                           onClick={() => {
                                             setSelectedApplicationID(
@@ -467,7 +469,21 @@ const ManageJobApplications = () => {
                                           <FaEye />
                                           View Application
                                         </button>
-                                        <button className="flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline cursor-pointer">
+
+                                        {/* View Applicant Interview Button */}
+                                        <button
+                                          onClick={() => {
+                                            setSelectedApplicationID(
+                                              applicant?._id
+                                            );
+                                            document
+                                              .getElementById(
+                                                "View_Interview_Modal"
+                                              )
+                                              .showModal();
+                                          }}
+                                          className="flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline cursor-pointer"
+                                        >
                                           <FaEye />
                                           View Interview
                                         </button>
@@ -587,6 +603,15 @@ const ManageJobApplications = () => {
       {/* View Application Modal */}
       <dialog id="Accepted_Application_Modal" className="modal">
         <AcceptJobApplicationModal
+          refetch={refetch}
+          selectedApplicationID={selectedApplicationID}
+          setSelectedApplicationID={setSelectedApplicationID}
+        />
+      </dialog>
+
+      {/* View Interview Modal */}
+      <dialog id="View_Interview_Modal" className="modal">
+        <ViewApplicantInterviewModal
           refetch={refetch}
           selectedApplicationID={selectedApplicationID}
           setSelectedApplicationID={setSelectedApplicationID}

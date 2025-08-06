@@ -12,6 +12,7 @@ import { ImCross } from "react-icons/im";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 const AcceptJobApplicationModal = ({
+  refetch,
   selectedApplicationID,
   setSelectedApplicationID,
 }) => {
@@ -19,6 +20,7 @@ const AcceptJobApplicationModal = ({
 
   // Error Message
   const [errorMessage, setErrorMessage] = useState("");
+  const [confirming, setConfirming] = useState(false);
 
   // Form Control
   const {
@@ -31,34 +33,18 @@ const AcceptJobApplicationModal = ({
   // Submit Form
   const onSubmit = async (data) => {
     setErrorMessage("");
-
-    // Confirm action before submitting
-    const { isConfirmed } = await Swal.fire({
-      title: "Are you sure?",
-      text: "You are about to accept this application and notify the applicant.",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#16a34a",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Accept",
-      cancelButtonText: "Cancel",
-    });
-
-    // If user cancels, return early
-    if (!isConfirmed) return;
+    setConfirming(false);
 
     // Prepare payload
     const payload = {
       status: "Accepted",
-      interview: {},
+      interview: {
+        interviewTime: data.interviewTime,
+        platform: data.platform,
+        notes: data.notes,
+        mode: data.mode,
+      },
     };
-
-    // Input Data Entry
-    if (data.interviewTime)
-      payload.interview.interviewTime = data.interviewTime;
-    if (data.mode) payload.interview.mode = data.mode;
-    if (data.platform) payload.interview.platform = data.platform;
-    if (data.notes) payload.interview.notes = data.notes;
 
     try {
       // Accepted Applicant API
@@ -77,8 +63,9 @@ const AcceptJobApplicationModal = ({
           showConfirmButton: false,
         });
 
-        // Reset Form
+        // Reset Form and Close Modal
         reset();
+        refetch();
         setSelectedApplicationID("");
         document.getElementById("Accepted_Application_Modal").close();
       } else {
@@ -119,9 +106,39 @@ const AcceptJobApplicationModal = ({
         </div>
       )}
 
+      {/* Confirming Messages */}
+      {confirming && (
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded mb-4 text-center">
+          <p className="font-medium mb-2">
+            Are you sure you want to accept this application and notify the
+            applicant?
+          </p>
+          <div className="flex justify-center space-x-4">
+            <button
+              type="button"
+              onClick={handleSubmit(onSubmit)}
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 w-[180px] rounded cursor-pointer"
+            >
+              Yes, Confirm
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirming(false)}
+              className="bg-red-500 hover:bg-red-400 text-white font-semibold px-4 py-2 w-[180px] rounded cursor-pointer"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Form */}
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={(e) => {
+          e.preventDefault();
+          setErrorMessage("");
+          setConfirming(true);
+        }}
         className="space-y-5 w-full max-w-md mx-auto"
       >
         {/* Interview Date & Time */}
@@ -204,7 +221,7 @@ const AcceptJobApplicationModal = ({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded transition duration-200 disabled:opacity-50"
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded transition duration-200 disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting ? "Submitting..." : "Accept & Notify Applicant"}
           </button>
@@ -214,8 +231,9 @@ const AcceptJobApplicationModal = ({
   );
 };
 
-// Prop Vallation
+// Prop Validation
 AcceptJobApplicationModal.propTypes = {
+  refetch: PropTypes.func.isRequired,
   selectedApplicationID: PropTypes.string.isRequired,
   setSelectedApplicationID: PropTypes.func.isRequired,
 };

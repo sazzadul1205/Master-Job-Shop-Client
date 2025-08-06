@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 // Packages
-import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import { useQuery } from "@tanstack/react-query";
 
 // Icons
 import {
@@ -12,6 +12,7 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaEye,
+  FaRegClock,
 } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 
@@ -27,8 +28,8 @@ import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 
 // Modal
-import MyJobApplicationModal from "../../(Member_Pages)/MyJobApplications/MyJobApplicationModal/MyJobApplicationModal";
 import AcceptJobApplicationModal from "./AcceptJobApplicationModal/AcceptJobApplicationModal";
+import MyJobApplicationModal from "../../(Member_Pages)/MyJobApplications/MyJobApplicationModal/MyJobApplicationModal";
 
 const ManageJobApplications = () => {
   const { user, loading } = useAuth();
@@ -51,6 +52,7 @@ const ManageJobApplications = () => {
     data: JobsData,
     isLoading: JobsIsLoading,
     error: JobsError,
+    refetch: JobsRefetch,
   } = useQuery({
     queryKey: ["JobsData", user?.email],
     queryFn: () =>
@@ -66,6 +68,7 @@ const ManageJobApplications = () => {
     data: JobApplicationsData,
     isLoading: ApplicationsLoading,
     error: ApplicationsError,
+    refetch: ApplicationsRefetch,
   } = useQuery({
     queryKey: ["JobApplicationsData", jobIds],
     queryFn: () => {
@@ -83,6 +86,12 @@ const ManageJobApplications = () => {
       JobApplicationsData?.filter((app) => app.jobId === job._id) || [];
     return { ...job, Applicants: applicants };
   });
+
+  // Refetching Data
+  const refetch = () => {
+    JobsRefetch();
+    ApplicationsRefetch();
+  };
 
   // Loading / Error UI Handling
   if (ApplicationsLoading || JobsIsLoading || loading) return <Loading />;
@@ -130,6 +139,7 @@ const ManageJobApplications = () => {
         showConfirmButton: false,
         timerProgressBar: true,
       });
+      refetch();
 
       // Optionally trigger refresh or state update here
     } catch (error) {
@@ -308,125 +318,214 @@ const ManageJobApplications = () => {
 
                     {/* Applicants Table - Body */}
                     <tbody className="divide-y divide-gray-200">
-                      {paginatedApplicants.map((applicant, idx) => (
-                        <tr
-                          key={applicant._id}
-                          className={`${
-                            applicant.status === "Rejected"
-                              ? "bg-red-50"
-                              : "hover:bg-gray-50"
-                          }`}
-                        >
-                          {/* Applicant Number */}
-                          <td className="px-4 py-3 font-medium whitespace-nowrap">
-                            {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
-                          </td>
+                      {paginatedApplicants.map((applicant, idx) => {
+                        const interviewDate = new Date(
+                          applicant?.interview?.interviewTime
+                        );
+                        const now = new Date();
 
-                          {/* Basic Information */}
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-3">
-                              {/* Image */}
-                              <img
-                                src={applicant.profileImage}
-                                alt={applicant.name}
-                                className="w-9 h-9 rounded-full object-cover border border-gray-300"
-                              />
-                              {/* Name */}
-                              <span className="font-medium">
-                                {applicant.name}
-                              </span>
-                            </div>
-                          </td>
+                        const timeLeftMs = interviewDate - now;
+                        const msInMinute = 1000 * 60;
+                        const msInHour = msInMinute * 60;
+                        const msInDay = msInHour * 24;
+                        const msInMonth = msInDay * 30; // approximate month
 
-                          {/* Email */}
-                          <td className="px-4 py-3">{applicant.email}</td>
+                        let timeLeft = "";
 
-                          {/* Phone */}
-                          <td className="px-4 py-3">
-                            {applicant.phone.startsWith("+")
-                              ? applicant.phone
-                              : `+${applicant.phone}`}
-                          </td>
+                        if (timeLeftMs <= 0) {
+                          timeLeft = "Interview time passed";
+                        } else {
+                          const months = Math.floor(timeLeftMs / msInMonth);
+                          const days = Math.floor(
+                            (timeLeftMs % msInMonth) / msInDay
+                          );
+                          const hours = Math.floor(
+                            (timeLeftMs % msInDay) / msInHour
+                          );
+                          const minutes = Math.floor(
+                            (timeLeftMs % msInHour) / msInMinute
+                          );
 
-                          {/* Applied At */}
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            {new Date(applicant.appliedAt).toLocaleDateString(
-                              "en-US",
-                              {
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric",
-                              }
-                            )}
-                          </td>
+                          timeLeft =
+                            (months > 0 ? `${months}mo ` : "") +
+                            (days > 0 ? `${days}d ` : "") +
+                            (hours > 0 ? `${hours}h ` : "") +
+                            (minutes > 0 ? `${minutes}m` : "");
 
-                          {/* Resume Download */}
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            <a
-                              href={applicant.resumeUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:underline"
-                            >
-                              Download
-                            </a>
-                          </td>
+                          // If all zero, show "less than a minute left"
+                          if (!timeLeft.trim())
+                            timeLeft = "Less than a minute left";
+                        }
 
-                          {/* Buttons */}
-                          <>
-                            {applicant.status === "Rejected" ? (
-                              <td className="px-4 py-3 w-[200px]">
-                                <div className="flex justify-center items-center h-full">
-                                  <p className="text-red-600 font-semibold text-center">
-                                    Applicant Rejected
-                                  </p>
-                                </div>
-                              </td>
-                            ) : (
-                              <td className="px-4 py-3 flex justify-end items-center gap-2 whitespace-nowrap flex-shrink-0">
-                                {/* View Button */}
-                                <button
-                                  onClick={() => {
-                                    setSelectedApplicationID(applicant?._id);
-                                    document
-                                      .getElementById("View_Application_Modal")
-                                      .showModal();
-                                  }}
-                                  className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
-                                >
-                                  <FaEye />
-                                  View
-                                </button>
+                        return (
+                          <tr
+                            key={applicant._id}
+                            className={`${
+                              applicant.status === "Rejected"
+                                ? "bg-red-50"
+                                : applicant.status === "Accepted"
+                                ? "bg-green-50"
+                                : "hover:bg-gray-50"
+                            }`}
+                          >
+                            {/* Applicant Number */}
+                            <td className="px-4 py-3 font-medium whitespace-nowrap ">
+                              {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1} .
+                            </td>
 
-                                {/* Reject Button */}
-                                <button
-                                  onClick={() => {
-                                    handleRejectApplicant(applicant._id);
-                                  }}
-                                  className="flex items-center gap-2 px-3 py-1.5 font-medium text-red-500 hover:text-white border border-red-500 hover:bg-red-500 rounded transition cursor-pointer"
-                                >
-                                  <ImCross />
-                                  Reject
-                                </button>
+                            {/* Basic Information */}
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-3">
+                                {/* Image */}
+                                <img
+                                  src={applicant.profileImage}
+                                  alt={applicant.name}
+                                  className="w-9 h-9 rounded-full object-cover border border-gray-300"
+                                />
+                                {/* Name */}
+                                <span className="font-medium">
+                                  {applicant.name}
+                                </span>
+                              </div>
+                            </td>
 
-                                {/* Accept Button */}
-                                <button
-                                  onClick={() => {
-                                    setSelectedApplicationID(applicant?._id);
-                                    document
-                                      .getElementById("Accepted_Application_Modal")
-                                      .showModal();
-                                  }}
-                                  className="flex items-center gap-2 px-3 py-1.5 font-medium text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded transition cursor-pointer"
-                                >
-                                  <FaCheck />
-                                  Accept
-                                </button>
-                              </td>
-                            )}
-                          </>
-                        </tr>
-                      ))}
+                            {/* Email */}
+                            <td className="px-4 py-3">{applicant.email}</td>
+
+                            {/* Phone */}
+                            <td className="px-4 py-3">
+                              {applicant.phone.startsWith("+")
+                                ? applicant.phone
+                                : `+${applicant.phone}`}
+                            </td>
+
+                            {/* Applied At */}
+                            <td className="px-4 py-3 whitespace-nowrap">
+                              {new Date(applicant.appliedAt).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}
+                            </td>
+
+                            {/* Resume Download */}
+                            <td className="px-4 py-3 whitespace-nowrap">
+                              <a
+                                href={applicant.resumeUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline"
+                              >
+                                Download
+                              </a>
+                            </td>
+
+                            {/* Buttons */}
+                            <>
+                              {applicant.status === "Rejected" ? (
+                                // Rejected Status
+                                <td className="px-4 py-3 w-[200px]">
+                                  <div className="flex justify-center items-center h-full">
+                                    <p className="text-red-600 font-semibold text-center">
+                                      Applicant Rejected
+                                    </p>
+                                  </div>
+                                </td>
+                              ) : applicant.status === "Accepted" ? (
+                                // Accepted Status
+                                <td className="px-4 py-3 w-[300px]">
+                                  <div className="flex justify-center items-center h-full">
+                                    <div className="flex flex-col items-center space-y-1">
+                                      {/* Title */}
+                                      <p className="text-green-600 font-semibold">
+                                        Applicant Accepted
+                                      </p>
+
+                                      {/* Time Left */}
+                                      <p className="text-gray-600 text-sm flex items-center gap-1">
+                                        <FaRegClock /> {timeLeft}
+                                      </p>
+
+                                      {/* Buttons */}
+                                      <div className="flex gap-5 items-center">
+                                        <button
+                                          onClick={() => {
+                                            setSelectedApplicationID(
+                                              applicant?._id
+                                            );
+                                            document
+                                              .getElementById(
+                                                "View_Application_Modal"
+                                              )
+                                              .showModal();
+                                          }}
+                                          className="flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline cursor-pointer"
+                                        >
+                                          <FaEye />
+                                          View Application
+                                        </button>
+                                        <button className="flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline cursor-pointer">
+                                          <FaEye />
+                                          View Interview
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                              ) : (
+                                // Pending Status
+                                <td className="px-4 py-3 flex justify-end items-center gap-2 whitespace-nowrap flex-shrink-0">
+                                  {/* View Button */}
+                                  <button
+                                    onClick={() => {
+                                      setSelectedApplicationID(applicant?._id);
+                                      document
+                                        .getElementById(
+                                          "View_Application_Modal"
+                                        )
+                                        .showModal();
+                                    }}
+                                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
+                                  >
+                                    <FaEye />
+                                    View
+                                  </button>
+
+                                  {/* Reject Button */}
+                                  <button
+                                    onClick={() => {
+                                      handleRejectApplicant(applicant._id);
+                                    }}
+                                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-red-500 hover:text-white border border-red-500 hover:bg-red-500 rounded transition cursor-pointer"
+                                  >
+                                    <ImCross />
+                                    Reject
+                                  </button>
+
+                                  {/* Accept Button */}
+                                  <button
+                                    onClick={() => {
+                                      setSelectedApplicationID(applicant?._id);
+                                      document
+                                        .getElementById(
+                                          "Accepted_Application_Modal"
+                                        )
+                                        .showModal();
+                                    }}
+                                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded transition cursor-pointer"
+                                  >
+                                    <FaCheck />
+                                    Accept
+                                  </button>
+                                </td>
+                              )}
+                            </>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -488,6 +587,7 @@ const ManageJobApplications = () => {
       {/* View Application Modal */}
       <dialog id="Accepted_Application_Modal" className="modal">
         <AcceptJobApplicationModal
+          refetch={refetch}
           selectedApplicationID={selectedApplicationID}
           setSelectedApplicationID={setSelectedApplicationID}
         />

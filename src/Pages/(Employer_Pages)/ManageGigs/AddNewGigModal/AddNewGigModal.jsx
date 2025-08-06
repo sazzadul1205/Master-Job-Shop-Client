@@ -19,12 +19,9 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
 
   const {
     watch,
-    register,
     control,
+    register,
     handleSubmit,
-    setValue,
-    getValues,
-    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -75,8 +72,6 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
   //
   const fieldsConfig = ["tags", "requiredSkills"];
 
-  console.log(CompanyData);
-
   const postedBy = {
     email: CompanyData.email,
     name: CompanyData.name,
@@ -99,6 +94,7 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
       status: "open",
       postedAt: new Date(),
     };
+
     console.log(payload);
   };
   return (
@@ -145,6 +141,7 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
           )}
         </div>
 
+        {/* Category and Subcategory */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Category */}
           <div className="flex flex-col">
@@ -303,6 +300,7 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
           )}
         </div>
 
+        {/* Remote Option */}
         <>
           {/* Remote Option Toggle */}
           <div className="flex items-center gap-3">
@@ -356,6 +354,7 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
           )}
         </>
 
+        {/* Budget */}
         <>
           {/* Title */}
           <h4 className="font-semibold mt-4">Budget Info</h4>
@@ -576,79 +575,114 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
         </div>
 
         {/* Attachments Section */}
-        <div className="mb-6">
-          <label className="block font-semibold text-sm mb-2">
-            Attachments
-          </label>
+        <div className="mb-6 ">
+          <label className="font-medium text-sm mb-2 block">Attachments</label>
 
-          {fields.map((item, index) => (
-            <div
-              key={item.id}
-              className="flex gap-3 mb-4 items-center border border-gray-300 rounded p-3"
-            >
-              {/* URL */}
-              <input
-                type="text"
-                placeholder="URL"
-                {...register(`attachments.${index}.url`, {
-                  required: "URL is required",
-                  pattern: {
-                    value: /^(https?:\/\/)?([\w.-]+)+(:\d+)?(\/[\w.-]*)*\/?$/,
-                    message: "Invalid URL",
-                  },
-                })}
-                className={`input input-bordered w-1/3 ${
-                  errors.attachments?.[index]?.url ? "border-red-500" : ""
-                }`}
-              />
+          <div className="border border-gray-400">
+            {fields.map((item, index) => (
+              <div key={item.id} className="flex items-center rounded p-3">
+                {/* URL */}
+                <div className="flex flex-col w-[300px] mr-1">
+                  <label className="font-medium text-sm mb-1">URL</label>
+                  <input
+                    type="text"
+                    placeholder="https://example.com/file.png"
+                    {...register(`attachments.${index}.url`, {
+                      required: "URL is required",
+                      pattern: {
+                        value:
+                          /^(https?:\/\/)?([\w.-]+)+(:\d+)?(\/[\w.-]*)*\/?$/,
+                        message: "Invalid URL",
+                      },
+                    })}
+                    className={`input input-bordered bg-white border ${
+                      errors.attachments?.[index]?.url
+                        ? "border-red-500"
+                        : "border-black"
+                    }`}
+                  />
+                  {errors.attachments?.[index]?.url && (
+                    <span className="text-sm text-red-600">
+                      {errors.attachments[index].url.message}
+                    </span>
+                  )}
+                </div>
 
-              {/* Type */}
-              <select
-                {...register(`attachments.${index}.type`, {
-                  required: "Type is required",
-                })}
-                className={`input input-bordered w-1/6 ${
-                  errors.attachments?.[index]?.type ? "border-red-500" : ""
-                }`}
-              >
-                <option value="">Select type</option>
-                <option value="image">Image</option>
-                <option value="document">Document</option>
-                <option value="video">Video</option>
-                <option value="other">Other</option>
-              </select>
+                {/* Label */}
+                <div className="flex flex-col w-[300px] mr-1">
+                  <label className="font-medium text-sm mb-1">Label</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Wireframe"
+                    {...register(`attachments.${index}.label`, {
+                      required: "Label is required",
+                    })}
+                    className={`input input-bordered bg-white border ${
+                      errors.attachments?.[index]?.label
+                        ? "border-red-500"
+                        : "border-black"
+                    }`}
+                  />
+                  {errors.attachments?.[index]?.label && (
+                    <span className="text-sm text-red-600">
+                      {errors.attachments[index].label.message}
+                    </span>
+                  )}
+                </div>
 
-              {/* Label */}
-              <input
-                type="text"
-                placeholder="Label"
-                {...register(`attachments.${index}.label`, {
-                  required: "Label is required",
-                })}
-                className={`input input-bordered w-1/3 ${
-                  errors.attachments?.[index]?.label ? "border-red-500" : ""
-                }`}
-              />
+                {/* Type */}
+                <div className="flex flex-col w-[100px] mr-1">
+                  <label className="font-medium text-sm mb-1">Type</label>
+                  <select
+                    {...register(`attachments.${index}.type`, {
+                      required: "Type is required",
+                    })}
+                    className={`input input-bordered bg-white border ${
+                      errors.attachments?.[index]?.type
+                        ? "border-red-500"
+                        : "border-black"
+                    }`}
+                  >
+                    <option value="">Select type</option>
+                    <option value="image">Image</option>
+                    <option value="document">Document</option>
+                    <option value="video">Video</option>
+                    <option value="other">Other</option>
+                  </select>
+                  {errors.attachments?.[index]?.type && (
+                    <span className="text-sm text-red-600">
+                      {errors.attachments[index].type.message}
+                    </span>
+                  )}
+                </div>
 
-              {/* Remove Button */}
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                className="text-red-600 font-bold text-xl px-2 py-1 hover:text-red-800"
-              >
-                &times;
-              </button>
-            </div>
-          ))}
+                {/* Remove Button */}
+                <button
+                  className="flex items-center justify-center text-red-600 border border-red-600 hover:bg-red-600 hover:text-white font-bold mt-6 w-[40px] h-[40px] rounded cursor-pointer transition-colors duration-300"
+                  type="button"
+                  onClick={() => {
+                    remove(index);
+                    if (fields.length === 1) {
+                      append({ url: "", type: "", label: "" });
+                    }
+                  }}
+                >
+                  <ImCross />
+                </button>
+              </div>
+            ))}
+          </div>
 
           {/* Add Attachment Button */}
-          <button
-            type="button"
-            onClick={() => append({ url: "", type: "", label: "" })}
-            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Add Attachment
-          </button>
+          <div className="flex justify-end mt-1">
+            <button
+              type="button"
+              onClick={() => append({ url: "", type: "", label: "" })}
+              className="px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 cursor-pointer transition"
+            >
+              Add Attachment
+            </button>
+          </div>
         </div>
 
         {/* Submit Button */}

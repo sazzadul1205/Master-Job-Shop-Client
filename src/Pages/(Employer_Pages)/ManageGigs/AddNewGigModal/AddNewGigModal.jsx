@@ -1,12 +1,25 @@
 import { useEffect, useRef, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+
+// Packages
+import Swal from "sweetalert2";
+import PropTypes from "prop-types";
+import { useForm, useFieldArray } from "react-hook-form";
+
+// Icons
 import { ImCross } from "react-icons/im";
 import { RxCross2 } from "react-icons/rx";
 
 // Currency Data
 import Currencies from "../../../../JSON/Currencies.json";
 
+// Hooks
+import useAuth from "../../../../Hooks/useAuth";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+
 const AddNewGigModal = ({ CompanyData, refetch }) => {
+  const { user } = useAuth();
+  const axiosPublic = useAxiosPublic();
+
   // New Field Values State
   const [newFieldValues, setNewFieldValues] = useState({});
 
@@ -17,8 +30,10 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
   // inside your component:
   const inputRefs = useRef({});
 
+  // RHF Setup
   const {
     watch,
+    reset,
     control,
     register,
     handleSubmit,
@@ -50,30 +65,32 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
     },
   });
 
-  // Watch isRemote value
+  // Watch Values
   const isRemote = watch("isRemote");
-  // Watch attachments to check length dynamically
   const attachments = watch("attachments");
 
   // Field Arrays
-  const requiredSkills = useFieldArray({ control, name: "requiredSkills" });
   const tags = useFieldArray({ control, name: "tags" });
+  const requiredSkills = useFieldArray({ control, name: "requiredSkills" });
 
+  // useFieldArray for attachments
   const { fields, append, remove } = useFieldArray({
     control,
     name: "attachments",
   });
 
+  // Combine field arrays for easier management
   const fieldArrays = {
     tags,
     requiredSkills,
   };
 
-  //
+  // Fields to be dynamically rendered
   const fieldsConfig = ["tags", "requiredSkills"];
 
+  // Posted By Data
   const postedBy = {
-    email: CompanyData.email,
+    email: user.email,
     name: CompanyData.name,
     profileImage: CompanyData.logo,
     rating: CompanyData.rating || 0,
@@ -88,6 +105,9 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
 
   // On Submit Handler
   const onSubmit = async (data) => {
+    setIsLoading(true);
+    setErrorMessage("");
+
     const payload = {
       ...data,
       postedBy,
@@ -95,8 +115,39 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
       postedAt: new Date(),
     };
 
-    console.log(payload);
+    try {
+      // POST Request
+      const res = await axiosPublic.post("/Gigs", payload);
+
+      // Success Message
+      if (res?.status === 201 || res?.data?.insertedId) {
+        Swal.fire({
+          icon: "success",
+          title: "Gig Posted",
+          text: "Your Gig has been posted successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+
+        reset();
+        refetch();
+        setErrorMessage("");
+        document.getElementById("Add_New_Gig_Modal")?.close();
+      } else {
+        throw new Error("Unexpected response from server");
+      }
+    } catch (err) {
+      console.error("Gigs post failed:", err);
+
+      setErrorMessage(
+        err.response?.data?.message ||
+          "Failed to post Gigs. Please try again later."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <div className="modal-box min-w-3xl relative bg-white rounded-lg shadow-xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto">
       {/* Close Button */}
@@ -587,25 +638,9 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
                   <input
                     type="text"
                     placeholder="https://example.com/file.png"
-                    {...register(`attachments.${index}.url`, {
-                      required: "URL is required",
-                      pattern: {
-                        value:
-                          /^(https?:\/\/)?([\w.-]+)+(:\d+)?(\/[\w.-]*)*\/?$/,
-                        message: "Invalid URL",
-                      },
-                    })}
-                    className={`input input-bordered bg-white border ${
-                      errors.attachments?.[index]?.url
-                        ? "border-red-500"
-                        : "border-black"
-                    }`}
+                    {...register(`attachments.${index}.url`)}
+                    className={`input input-bordered bg-white border border-black`}
                   />
-                  {errors.attachments?.[index]?.url && (
-                    <span className="text-sm text-red-600">
-                      {errors.attachments[index].url.message}
-                    </span>
-                  )}
                 </div>
 
                 {/* Label */}
@@ -614,34 +649,17 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
                   <input
                     type="text"
                     placeholder="e.g. Wireframe"
-                    {...register(`attachments.${index}.label`, {
-                      required: "Label is required",
-                    })}
-                    className={`input input-bordered bg-white border ${
-                      errors.attachments?.[index]?.label
-                        ? "border-red-500"
-                        : "border-black"
-                    }`}
+                    {...register(`attachments.${index}.label`)}
+                    className={`input input-bordered bg-white border border-black`}
                   />
-                  {errors.attachments?.[index]?.label && (
-                    <span className="text-sm text-red-600">
-                      {errors.attachments[index].label.message}
-                    </span>
-                  )}
                 </div>
 
                 {/* Type */}
                 <div className="flex flex-col w-[100px] mr-1">
                   <label className="font-medium text-sm mb-1">Type</label>
                   <select
-                    {...register(`attachments.${index}.type`, {
-                      required: "Type is required",
-                    })}
-                    className={`input input-bordered bg-white border ${
-                      errors.attachments?.[index]?.type
-                        ? "border-red-500"
-                        : "border-black"
-                    }`}
+                    {...register(`attachments.${index}.type`)}
+                    className={`input input-bordered bg-white border border-black`}
                   >
                     <option value="">Select type</option>
                     <option value="image">Image</option>
@@ -649,11 +667,6 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
                     <option value="video">Video</option>
                     <option value="other">Other</option>
                   </select>
-                  {errors.attachments?.[index]?.type && (
-                    <span className="text-sm text-red-600">
-                      {errors.attachments[index].type.message}
-                    </span>
-                  )}
                 </div>
 
                 {/* Remove Button */}
@@ -698,6 +711,17 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
       </form>
     </div>
   );
+};
+
+// Prop Vallation
+AddNewGigModal.propTypes = {
+  CompanyData: PropTypes.shape({
+    logo: PropTypes.string,
+    rating: PropTypes.number,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+  }).isRequired,
+  refetch: PropTypes.func.isRequired,
 };
 
 export default AddNewGigModal;

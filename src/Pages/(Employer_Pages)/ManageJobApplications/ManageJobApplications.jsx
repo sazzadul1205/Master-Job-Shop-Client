@@ -172,7 +172,7 @@ const ManageJobApplications = () => {
       <div className="py-[1px] w-full bg-blue-700 my-1" />
 
       {/* Jobs Container */}
-      <div className="px-4 pt-4 space-y-6">
+      <div className="px-4 pt-4 space-y-3">
         {JobsWithApplicants?.map((job, index) => {
           // Pagination
           const currentPage = pageStates[job._id] || 1;
@@ -198,7 +198,7 @@ const ManageJobApplications = () => {
           return (
             <div
               key={job._id}
-              className="w-full border border-gray-200 rounded-xl p-6 bg-white shadow hover:shadow-lg transition duration-300"
+              className="w-full border border-gray-200 rounded p-6 bg-white shadow hover:shadow-lg transition duration-300"
             >
               {/* Header */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
@@ -345,7 +345,7 @@ const ManageJobApplications = () => {
                 }`}
               >
                 {/* Applicants Container */}
-                <div className="overflow-x-auto rounded-lg shadow border border-gray-200 bg-white">
+                <div className="overflow-x-auto rounded shadow border border-gray-200 bg-white">
                   {/* Applicants Table */}
                   <table className="min-w-full bg-white text-sm text-gray-800">
                     {/* Applicants Table - Header */}

@@ -20,7 +20,7 @@ import { FaInfo } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 
 // Assets
-import GigBids from "../../../assets/Navbar/Member/GigBids.png";
+import GigBids from "../../../assets/EmployerLayout/Bid/BidWhite.png";
 
 // Modals
 import MyGigBidsModal from "./MyGigBidsModal/MyGigBidsModal";
@@ -156,7 +156,7 @@ const MyGigBids = () => {
       </div>
 
       {/* Bids Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
         {mergedData.length > 0 ? (
           mergedData.map((item) => {
             const bidedAgo = formatDistanceToNow(new Date(item.submittedAt), {

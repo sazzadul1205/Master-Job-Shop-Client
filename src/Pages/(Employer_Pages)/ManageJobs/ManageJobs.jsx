@@ -84,9 +84,9 @@ const ManageJobs = () => {
       <div className="py-[1px] w-full bg-blue-700 my-1" />
 
       {/* Display Jobs */}
-      <div className="py-6 px-20">
+      <div className="py-3 px-5">
         {JobsData.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
             {JobsData.map((job) => (
               <div key={job._id}>
                 <JobCard

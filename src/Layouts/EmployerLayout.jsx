@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 
 // Icons
 import { FaBuilding, FaPowerOff } from "react-icons/fa";
-import { MdDashboardCustomize, MdWork, MdAssignment } from "react-icons/md";
+import { MdDashboardCustomize, MdWork } from "react-icons/md";
 
 // Hooks
 import useAuth from "../Hooks/useAuth";
@@ -21,11 +21,24 @@ import Loading from "../Shared/Loading/Loading";
 import form from "../assets/EmployerLayout/form.png";
 import formUp from "../assets/EmployerLayout/formUp.png";
 
+// Assets - Gig
+import Gig from "../assets/EmployerLayout/Gig/Gig.png";
+import GigBlue from "../assets/EmployerLayout/Gig/GigBlue.png";
+
+// Assets - Bid
+import Bid from "../assets/EmployerLayout/Bid/Bid.png";
+import BidBlue from "../assets/EmployerLayout/Bid/BidBlue.png";
+
 const navItems = [
   {
     label: "Dashboard",
     path: "/Employer/Dashboard",
     icon: <MdDashboardCustomize />,
+  },
+  {
+    label: "Company Profile",
+    path: "/Employer/CompanyProfile",
+    icon: <FaBuilding />,
   },
   {
     label: "Manage Jobs",
@@ -39,14 +52,16 @@ const navItems = [
     activeAssets: formUp,
   },
   {
-    label: "Applications",
-    path: "/Employer/Applications",
-    icon: <MdAssignment />,
+    label: "Manage Gigs",
+    path: "/Employer/Gigs",
+    assets: Gig,
+    activeAssets: GigBlue,
   },
   {
-    label: "Company Profile",
-    path: "/Employer/CompanyProfile",
-    icon: <FaBuilding />,
+    label: "Manage Gig Bids",
+    path: "/Employer/GigBids",
+    assets: Bid,
+    activeAssets: BidBlue,
   },
 ];
 

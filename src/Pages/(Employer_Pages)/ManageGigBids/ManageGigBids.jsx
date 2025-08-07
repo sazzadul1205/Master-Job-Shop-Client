@@ -15,6 +15,7 @@ import {
 import { useState } from "react";
 import { ImCross } from "react-icons/im";
 import MyGigBidsModal from "../../(Member_Pages)/MyGigBids/MyGigBidsModal/MyGigBidsModal";
+import Swal from "sweetalert2";
 
 const ManageGigBids = () => {
   const { user, loading } = useAuth();
@@ -75,7 +76,58 @@ const ManageGigBids = () => {
   if (GigBidsLoading || GigsIsLoading || loading) return <Loading />;
   if (GigBidsError || GigsError) return <Error />;
 
-  console.log("Gigs With Bids :", GigsWithBids);
+  // Handle Reject Applications
+  const handleRejectBid = async (applicantId) => {
+    try {
+      const { isConfirmed } = await Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to Reject this applicant?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, Reject",
+        cancelButtonText: "Cancel",
+        reverseButtons: true,
+        focusCancel: true,
+      });
+
+      if (!isConfirmed) return;
+
+      const response = await axiosPublic.put(`/GigBids/Status/${applicantId}`, {
+        status: "Rejected",
+      });
+
+      if (response.status !== 200) {
+        console.error("Failed to reject applicant:", response.statusText);
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: "Failed to Reject applicant. Please try again.",
+          confirmButtonText: "Ok",
+        });
+        return;
+      }
+
+      await Swal.fire({
+        icon: "success",
+        title: "Rejected",
+        text: "Applicant has been Rejected.",
+        timer: 1500,
+        showConfirmButton: false,
+        timerProgressBar: true,
+      });
+      refetch();
+
+      // Optionally trigger refresh or state update here
+    } catch (error) {
+      console.error("Error Rejected applicant:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Failed",
+        text: "Something went wrong. Please try again.",
+        confirmButtonText: "Ok",
+      });
+    }
+  };
 
   return (
     <>
@@ -353,7 +405,7 @@ const ManageGigBids = () => {
                               {/* Reject Button */}
                               <button
                                 onClick={() => {
-                                  //   handleRejectApplicant(applicant._id);
+                                  handleRejectBid(applicant._id);
                                 }}
                                 className="flex items-center gap-2 px-3 py-1.5 font-medium text-red-500 hover:text-white border border-red-500 hover:bg-red-500 rounded transition cursor-pointer"
                               >

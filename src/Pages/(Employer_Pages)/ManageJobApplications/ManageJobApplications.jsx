@@ -203,7 +203,7 @@ const ManageJobApplications = () => {
               {/* Header */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
                 {/* Title */}
-                <h2 className="flex items-center text-xl font-semibold text-gray-900">
+                <h2 className="flex items-center text-lg font-semibold text-gray-900">
                   # 0{index + 1}. {job.title}
                 </h2>
 
@@ -388,7 +388,7 @@ const ManageJobApplications = () => {
                         const msInMinute = 1000 * 60;
                         const msInHour = msInMinute * 60;
                         const msInDay = msInHour * 24;
-                        const msInMonth = msInDay * 30; // approximate month
+                        const msInMonth = msInDay * 30;
 
                         let timeLeft = "";
 
@@ -415,6 +415,7 @@ const ManageJobApplications = () => {
                           if (!timeLeft.trim())
                             timeLeft = "Less than a minute left";
                         }
+
                         return (
                           <tr
                             key={applicant._id}

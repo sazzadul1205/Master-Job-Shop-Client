@@ -13,11 +13,11 @@ import { MdDashboardCustomize, MdWork } from "react-icons/md";
 import useAuth from "../Hooks/useAuth";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
 
-// Shared
+// Shared Components
 import Error from "../Shared/Error/Error";
 import Loading from "../Shared/Loading/Loading";
 
-// Assets
+// Assets - Job
 import form from "../assets/EmployerLayout/form.png";
 import formUp from "../assets/EmployerLayout/formUp.png";
 
@@ -29,6 +29,7 @@ import GigBlue from "../assets/EmployerLayout/Gig/GigBlue.png";
 import Bid from "../assets/EmployerLayout/Bid/Bid.png";
 import BidBlue from "../assets/EmployerLayout/Bid/BidBlue.png";
 
+// Navigation items
 const navItems = [
   {
     label: "Dashboard",
@@ -65,47 +66,46 @@ const navItems = [
   },
 ];
 
-// Nav Link Image Component
-const NavLinkImage = ({ path, label, assets, activeAssets, hoveredPath }) => {
+// Component for rendering image-based nav items
+const NavLinkImage = ({
+  label,
+  assets,
+  activeAssets,
+  hoveredPath,
+  isActive,
+  path,
+}) => {
+  const isHoveredOrActive = hoveredPath === path || isActive;
   return (
-    <NavLink to={path} className="inline-block">
-      {({ isActive }) => {
-        const isHoveredOrActive = hoveredPath === path || isActive;
-        return (
-          <img
-            src={isHoveredOrActive ? activeAssets || assets : assets}
-            alt={label}
-            className="w-5 h-5"
-          />
-        );
-      }}
-    </NavLink>
+    <img
+      src={isHoveredOrActive ? activeAssets || assets : assets}
+      alt={label}
+      className="w-5 h-5"
+    />
   );
 };
 
-// Prop Validation
+// Prop types for NavLinkImage
 NavLinkImage.propTypes = {
   path: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   assets: PropTypes.string.isRequired,
   activeAssets: PropTypes.string,
   hoveredPath: PropTypes.string,
+  isActive: PropTypes.bool,
 };
 
+// Main Employer Layout Component
 const EmployerLayout = () => {
   const { user, loading, logOut } = useAuth();
   const axiosPublic = useAxiosPublic();
-
-  // Navigate hook for redirection
   const navigate = useNavigate();
 
-  // State for logout loading
+  // State variables [ logoutLoading , hoveredPath ]
   const [logoutLoading, setLogoutLoading] = useState(false);
-
-  // Track hovered item to toggle asset
   const [hoveredPath, setHoveredPath] = useState(null);
 
-  // Fetch employer document if logged in
+  // Fetch Employer data using user email
   const {
     data: EmployerData,
     isLoading: EmployerDataIsLoading,
@@ -114,7 +114,6 @@ const EmployerLayout = () => {
     queryKey: ["EmployerData"],
     queryFn: async () => {
       if (!user) return null;
-
       try {
         const res = await axiosPublic.get(`/Employers?email=${user?.email}`);
         return res.data;
@@ -128,11 +127,11 @@ const EmployerLayout = () => {
     staleTime: 10000,
   });
 
-  // Loading / Error UI Handling
+  // Handle loading & error states
   if (EmployerDataIsLoading || loading) return <Loading />;
   if (EmployerDataError) return <Error />;
 
-  // Handle logout
+  // Logout handler
   const handleLogout = async () => {
     setLogoutLoading(true);
     try {
@@ -146,12 +145,12 @@ const EmployerLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-bl from-blue-100 to-white ">
-      {/* Top Bar */}
+    <div className="min-h-screen bg-linear-to-bl from-blue-100 to-white">
+      {/* Top Navigation Bar */}
       <div className="flex justify-between items-center bg-white shadow-2xl w-full px-5 py-3">
-        {/* Left Side */}
+        {/* Profile section */}
         <div className="flex items-center gap-2">
-          {/* Avatar Image */}
+          {/* User Avatar */}
           <img
             src={
               EmployerData?.profileImage ||
@@ -167,7 +166,7 @@ const EmployerLayout = () => {
           </h3>
         </div>
 
-        {/* center Side */}
+        {/* Site Title */}
         <div className="flex items-center h-full gap-2">
           <p className="text-xl font-semibold playfair text-black">
             Master Job Shop
@@ -177,7 +176,7 @@ const EmployerLayout = () => {
           </p>
         </div>
 
-        {/* Right Side */}
+        {/* Logout Button */}
         <button
           onClick={handleLogout}
           disabled={logoutLoading}
@@ -193,9 +192,9 @@ const EmployerLayout = () => {
         </button>
       </div>
 
-      {/* Content & Sidebar */}
+      {/* Sidebar & Main Content */}
       <div className="flex">
-        {/* Sidebar */}
+        {/* Sidebar Navigation */}
         <aside className="w-1/6 shadow-2xl min-h-screen bg-white border-t border-gray-400">
           <ul className="text-center">
             {navItems.map(({ label, path, icon, assets, activeAssets }) => (
@@ -223,11 +222,11 @@ const EmployerLayout = () => {
                             assets={assets}
                             activeAssets={activeAssets}
                             hoveredPath={hoveredPath}
+                            isActive={isActive}
                           />
                         )}
                         {label}
                       </div>
-
                       <span
                         className={`block h-[2px] bg-blue-700 transition-all duration-500 ${
                           isActive ? "w-full" : "w-0 group-hover:w-full"
@@ -241,7 +240,7 @@ const EmployerLayout = () => {
           </ul>
         </aside>
 
-        {/* Content */}
+        {/* Dynamic Main Content Area */}
         <div className="w-5/6">
           <Outlet />
         </div>

@@ -66,7 +66,7 @@ const MyGigBids = () => {
     queryFn: () =>
       axiosPublic.get(`/Gigs?gigIds=${uniqueGigIds.join(",")}`).then((res) => {
         const data = res.data;
-        return Array.isArray(data) ? data : [data]; // normalize to array
+        return Array.isArray(data) ? data : [data]; 
       }),
     enabled: !!user?.email && uniqueGigIds.length > 0,
   });

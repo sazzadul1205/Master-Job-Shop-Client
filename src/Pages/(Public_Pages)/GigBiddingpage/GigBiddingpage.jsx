@@ -108,11 +108,12 @@ const GigBiddingPage = () => {
 
       // Create bid data object
       const bidData = {
-        name: UsersData.name,
+        name: UsersData?.fullName || UsersData?.name,
         phone: UsersData.phone,
         email: UsersData.email,
         gigId: SelectedGigData._id,
         coverLetter: data.coverLetter,
+        profileImage: UsersData.profileImage,
         submittedAt: new Date().toISOString(),
         bidAmount: parseFloat(data.bidAmount),
         deliveryDays: parseInt(data.deliveryDays),
@@ -203,7 +204,7 @@ const GigBiddingPage = () => {
         <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">
               Submit Your Bid for: {SelectedGigData.title}
             </h1>
             <p className="text-sm text-gray-600">Posted by: {posterName}</p>
@@ -358,7 +359,7 @@ const GigBiddingPage = () => {
                 text="View Bids"
                 clickEvent={() => {
                   setShowAlreadyBidedModal(false);
-                  navigate(`/GigBids`);
+                  navigate(`/MyGigBids`);
                 }}
                 bgColor="blue"
                 textColor="text-white"

@@ -156,7 +156,7 @@ const MyGigBids = () => {
       </div>
 
       {/* Bids Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 my-3">
         {mergedData.length > 0 ? (
           mergedData.map((item) => {
             const bidedAgo = formatDistanceToNow(new Date(item.submittedAt), {
@@ -235,26 +235,42 @@ const MyGigBids = () => {
                   </div>
 
                   {/* Remote or Not */}
-                  <div>
-                    <dt className="font-semibold text-gray-800">Remote</dt>
-                    <dd className="mt-1">
-                      {item.gig?.isRemote ? "Yes" : "No"}
+                  <div className="flex items-center gap-2">
+                    <dt className="font-semibold text-gray-800">Remote : </dt>
+                    <dd>
+                      <span
+                        className={`px-3 py-1 rounded text-xs font-medium ${
+                          item.gig?.isRemote
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {item.gig?.isRemote ? "Yes" : "No"}
+                      </span>
                     </dd>
                   </div>
 
                   {/* Tags */}
                   <div className="col-span-2">
                     <dt className="font-semibold text-gray-800">Tags</dt>
-                    <dd className="mt-1 flex flex-wrap gap-2">
+                    <dd className="mt-1 flex flex-wrap gap-2 items-center">
                       {item.gig?.tags?.length > 0 ? (
-                        item.gig.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium"
-                          >
-                            {tag}
-                          </span>
-                        ))
+                        <>
+                          {item.gig.tags.slice(0, 5).map((tag) => (
+                            <span
+                              key={tag}
+                              className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+
+                          {item.gig.tags.length > 5 && (
+                            <span className="text-gray-600 text-xs font-medium">
+                              +{item.gig.tags.length - 5} more
+                            </span>
+                          )}
+                        </>
                       ) : (
                         <span className="text-gray-500">No tags</span>
                       )}

@@ -11,11 +11,13 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaEye,
+  FaRegClock,
 } from "react-icons/fa";
 import { useState } from "react";
 import { ImCross } from "react-icons/im";
 import MyGigBidsModal from "../../(Member_Pages)/MyGigBids/MyGigBidsModal/MyGigBidsModal";
 import Swal from "sweetalert2";
+import AcceptGigBidsModal from "./AcceptGigBidsModal/AcceptGigBidsModal";
 
 const ManageGigBids = () => {
   const { user, loading } = useAuth();
@@ -387,48 +389,127 @@ const ManageGigBids = () => {
                             </td>
 
                             {/* // Pending Status */}
-                            <td className="px-4 py-3 flex justify-end items-center gap-2 whitespace-nowrap flex-shrink-0">
-                              {/* View Button */}
-                              <button
-                                onClick={() => {
-                                  setSelectedBidID(applicant?._id);
-                                  document
-                                    .getElementById("View_Gig_Bids_Modal")
-                                    .showModal();
-                                }}
-                                className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
-                              >
-                                <FaEye />
-                                View
-                              </button>
+                            <>
+                              {applicant.status === "Rejected" ? (
+                                // Rejected Status
+                                <td className="px-4 py-3 w-[200px]">
+                                  <div className="flex justify-center items-center h-full">
+                                    <p className="text-red-600 font-semibold text-center">
+                                      Bid Rejected
+                                    </p>
+                                  </div>
+                                </td>
+                              ) : applicant.status === "Accepted" ? (
+                                // Accepted Status
+                                <td className="px-4 py-3 w-[300px]">
+                                  <div className="flex justify-center items-center h-full">
+                                    <div className="flex flex-col items-center space-y-1">
+                                      {/* Title */}
+                                      {interviewDate && interviewDate < now ? (
+                                        <></>
+                                      ) : (
+                                        <p className="text-green-600 font-semibold">
+                                          Bid Accepted
+                                        </p>
+                                      )}
 
-                              {/* Reject Button */}
-                              <button
-                                onClick={() => {
-                                  handleRejectBid(applicant._id);
-                                }}
-                                className="flex items-center gap-2 px-3 py-1.5 font-medium text-red-500 hover:text-white border border-red-500 hover:bg-red-500 rounded transition cursor-pointer"
-                              >
-                                <ImCross />
-                                Reject
-                              </button>
+                                      {/* Interview Status */}
+                                      {interviewDate && interviewDate < now ? (
+                                        <p className="text-gray-500 text-sm flex items-center gap-1 font-medium">
+                                          <FaRegClock />
+                                          Interview Time Passed
+                                        </p>
+                                      ) : (
+                                        <p className="text-gray-600 text-sm flex items-center gap-1">
+                                          <FaRegClock /> {timeLeft}
+                                        </p>
+                                      )}
 
-                              {/* Accept Button */}
-                              <button
-                                onClick={() => {
-                                  //   setSelectedApplicationID(applicant?._id);
-                                  document
-                                    .getElementById(
-                                      "Accepted_Application_Modal"
-                                    )
-                                    .showModal();
-                                }}
-                                className="flex items-center gap-2 px-3 py-1.5 font-medium text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded transition cursor-pointer"
-                              >
-                                <FaCheck />
-                                Accept
-                              </button>
-                            </td>
+                                      {/* Buttons */}
+                                      <div className="flex gap-5 items-center">
+                                        {/* View Applicant Button */}
+                                        <button
+                                          onClick={() => {
+                                            // setSelectedApplicationID(
+                                            //   applicant?._id
+                                            // );
+                                            document
+                                              .getElementById(
+                                                "View_Application_Modal"
+                                              )
+                                              .showModal();
+                                          }}
+                                          className="flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline cursor-pointer"
+                                        >
+                                          <FaEye />
+                                          View Application
+                                        </button>
+
+                                        {/* View Applicant Interview Button */}
+                                        <button
+                                          onClick={() => {
+                                            // setSelectedApplicationID(
+                                            //   applicant?._id
+                                            // );
+                                            document
+                                              .getElementById(
+                                                "View_Interview_Modal"
+                                              )
+                                              .showModal();
+                                          }}
+                                          className="flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline cursor-pointer"
+                                        >
+                                          <FaEye />
+                                          View Interview
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                              ) : (
+                                // Pending Status
+                                <td className="px-4 py-3 flex justify-end items-center gap-2 whitespace-nowrap flex-shrink-0">
+                                  {/* View Button */}
+                                  <button
+                                    onClick={() => {
+                                      setSelectedBidID(applicant?._id);
+                                      document
+                                        .getElementById("View_Gig_Bids_Modal")
+                                        .showModal();
+                                    }}
+                                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
+                                  >
+                                    <FaEye />
+                                    View
+                                  </button>
+
+                                  {/* Reject Button */}
+                                  <button
+                                    onClick={() => {
+                                      handleRejectBid(applicant._id);
+                                    }}
+                                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-red-500 hover:text-white border border-red-500 hover:bg-red-500 rounded transition cursor-pointer"
+                                  >
+                                    <ImCross />
+                                    Reject
+                                  </button>
+
+                                  {/* Accept Button */}
+                                  <button
+                                    onClick={() => {
+                                      setSelectedBidID(applicant?._id);
+                                      document
+                                        .getElementById("Accepted_Bid_Modal")
+                                        .showModal();
+                                    }}
+                                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded transition cursor-pointer"
+                                  >
+                                    <FaCheck />
+                                    Accept
+                                  </button>
+                                </td>
+                              )}
+                            </>
                           </tr>
                         );
                       })}
@@ -485,6 +566,15 @@ const ManageGigBids = () => {
       {/* View Bids Modal */}
       <dialog id="View_Gig_Bids_Modal" className="modal">
         <MyGigBidsModal
+          refetch={refetch}
+          selectedBidID={selectedBidID}
+          setSelectedBidID={setSelectedBidID}
+        />
+      </dialog>
+
+      {/* Accepted Bid Modal */}
+      <dialog id="Accepted_Bid_Modal" className="modal">
+        <AcceptGigBidsModal
           refetch={refetch}
           selectedBidID={selectedBidID}
           setSelectedBidID={setSelectedBidID}

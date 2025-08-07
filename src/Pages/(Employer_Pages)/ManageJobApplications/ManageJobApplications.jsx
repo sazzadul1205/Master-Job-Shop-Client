@@ -673,7 +673,7 @@ const ManageJobApplications = () => {
         />
       </dialog>
 
-      {/* View Application Modal */}
+      {/* Accepted Application Modal */}
       <dialog id="Accepted_Application_Modal" className="modal">
         <AcceptJobApplicationModal
           refetch={refetch}

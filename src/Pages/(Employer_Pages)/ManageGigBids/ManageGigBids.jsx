@@ -18,6 +18,7 @@ import { ImCross } from "react-icons/im";
 import MyGigBidsModal from "../../(Member_Pages)/MyGigBids/MyGigBidsModal/MyGigBidsModal";
 import Swal from "sweetalert2";
 import AcceptGigBidsModal from "./AcceptGigBidsModal/AcceptGigBidsModal";
+import ViewBidInterviewModal from "./ViewBidInterviewModal/ViewBidInterviewModal";
 
 const ManageGigBids = () => {
   const { user, loading } = useAuth();
@@ -147,14 +148,24 @@ const ManageGigBids = () => {
       {/* Jobs Container */}
       <div className="px-4 pt-4 space-y-3">
         {GigsWithBids?.map((gig, index) => {
-          const currentPage = pageStates[gig._id] ?? 1;
-          const start = (currentPage - 1) * ITEMS_PER_PAGE;
-          const end = start + ITEMS_PER_PAGE;
+          // Pagination
+          const currentPage = pageStates[gig._id] || 1;
 
-          const paginatedBids = gig.Bids.slice(start, end);
+          const sortedBids = [...gig.Bids].sort((a, b) => {
+            const getOrder = (status) => {
+              if (status === "Accepted") return 0;
+              if (status === "Rejected") return 2;
+              return 1;
+            };
+            return getOrder(a.status) - getOrder(b.status);
+          });
 
-          const totalPages = Math.ceil(gig.Bids.length / ITEMS_PER_PAGE);
+          const paginatedBids = sortedBids.slice(
+            (currentPage - 1) * ITEMS_PER_PAGE,
+            currentPage * ITEMS_PER_PAGE
+          );
 
+          const totalPages = Math.ceil(sortedBids.length / ITEMS_PER_PAGE);
           return (
             <div
               key={gig._id}
@@ -337,7 +348,17 @@ const ManageGigBids = () => {
                         return (
                           <tr
                             key={applicant._id}
-                            className={`${"hover:bg-gray-50"}`}
+                            className={`${
+                              applicant.status === "Rejected"
+                                ? "bg-red-50"
+                                : applicant.status === "Accepted" &&
+                                  interviewDate &&
+                                  interviewDate < now
+                                ? "bg-gray-100"
+                                : applicant.status === "Accepted"
+                                ? "bg-green-50"
+                                : "hover:bg-gray-50"
+                            }`}
                           >
                             {/* Email */}
                             <td className="px-4 py-2">
@@ -427,33 +448,29 @@ const ManageGigBids = () => {
 
                                       {/* Buttons */}
                                       <div className="flex gap-5 items-center">
-                                        {/* View Applicant Button */}
+                                        {/* View Bid Button */}
                                         <button
                                           onClick={() => {
-                                            // setSelectedApplicationID(
-                                            //   applicant?._id
-                                            // );
+                                            setSelectedBidID(applicant?._id);
                                             document
                                               .getElementById(
-                                                "View_Application_Modal"
+                                                "View_Gig_Bids_Modal"
                                               )
                                               .showModal();
                                           }}
                                           className="flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline cursor-pointer"
                                         >
                                           <FaEye />
-                                          View Application
+                                          View Bid
                                         </button>
 
-                                        {/* View Applicant Interview Button */}
+                                        {/* View Bid Interview Button */}
                                         <button
                                           onClick={() => {
-                                            // setSelectedApplicationID(
-                                            //   applicant?._id
-                                            // );
+                                            setSelectedBidID(applicant?._id);
                                             document
                                               .getElementById(
-                                                "View_Interview_Modal"
+                                                "View_Bid_Interview_Modal"
                                               )
                                               .showModal();
                                           }}
@@ -575,6 +592,15 @@ const ManageGigBids = () => {
       {/* Accepted Bid Modal */}
       <dialog id="Accepted_Bid_Modal" className="modal">
         <AcceptGigBidsModal
+          refetch={refetch}
+          selectedBidID={selectedBidID}
+          setSelectedBidID={setSelectedBidID}
+        />
+      </dialog>
+
+      {/* View Bid Interview Modal */}
+      <dialog id="View_Bid_Interview_Modal" className="modal">
+        <ViewBidInterviewModal
           refetch={refetch}
           selectedBidID={selectedBidID}
           setSelectedBidID={setSelectedBidID}

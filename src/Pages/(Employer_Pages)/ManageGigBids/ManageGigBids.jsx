@@ -244,6 +244,38 @@ const ManageGigBids = () => {
                       {gig.Bids?.length || 0}
                     </span>
                   </p>
+
+                  {gig?.Bids.filter((app) => app.status === "Accepted").length >
+                    0 && (
+                    <>
+                      {" | "}
+                      <p>
+                        Accepted:{" "}
+                        <span className="text-green-600 font-semibold">
+                          {
+                            gig?.Bids.filter((app) => app.status === "Accepted")
+                              .length
+                          }
+                        </span>
+                      </p>
+                    </>
+                  )}
+
+                  {gig?.Bids.filter((app) => app.status === "Rejected").length >
+                    0 && (
+                    <>
+                      {" | "}
+                      <p>
+                        Rejected:{" "}
+                        <span className="text-red-600 font-semibold">
+                          {
+                            gig?.Bids.filter((app) => app.status === "Rejected")
+                              .length
+                          }
+                        </span>
+                      </p>
+                    </>
+                  )}
                 </div>
 
                 {/* Open / Close Applicants Table Button */}

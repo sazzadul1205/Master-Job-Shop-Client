@@ -106,7 +106,7 @@ const ManageCompanyProfile = () => {
   // If no company data, show a placeholder card
   if (!CompanyData || Object.keys(CompanyData).length === 0) {
     return (
-      <div className="min-h-[60vh]  flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center">
         {/* Placeholder Card */}
         <div className="bg-white shadow-lg rounded-xl p-8 max-w-xl text-center space-y-4 border">
           {/* Title */}
@@ -178,7 +178,7 @@ const ManageCompanyProfile = () => {
       <div className="py-[1px] w-full bg-blue-700 my-1" />
 
       {/* Company Details */}
-      <div className="space-y-6 py-6 px-20">
+      <div className="space-y-6 py-6 px-5">
         {/* Company Overview */}
         <div className="bg-white text-black shadow-md rounded-xl p-6 space-y-4">
           {/* Basic Info */}

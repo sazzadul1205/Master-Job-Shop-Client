@@ -79,20 +79,20 @@ import DeletedUser from "./Pages/DeletedUser/DeletedUser";
 // Public User Profile
 import PublicUserProfile from "./Pages/(Public_Pages)/PublicUserProfile/PublicUserProfile";
 
-// Become Employer Page
-import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
-
-// Become Mentor Page
+// Become Employer & Mentor
 import BecomeMentor from "./Pages/BecomeMentor/BecomeMentor";
+import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
 
 // Employer Pages
 import ManageGigs from "./Pages/(Employer_Pages)/ManageGigs/ManageGigs";
 import ManageJobs from "./Pages/(Employer_Pages)/ManageJobs/ManageJobs";
+import ManageEvents from "./Pages/(Employer_Pages)/ManageEvents/ManageEvents";
 import ManageGigBids from "./Pages/(Employer_Pages)/ManageGigBids/ManageGigBids";
 import ManageInternship from "./Pages/(Employer_Pages)/ManageInternship/ManageInternship";
 import EmployerDashboard from "./Pages/(Employer_Pages)/EmployerDashboard/EmployerDashboard";
 import ManageCompanyProfile from "./Pages/(Employer_Pages)/ManageCompanyProfile/ManageCompanyProfile";
 import ManageJobApplications from "./Pages/(Employer_Pages)/ManageJobApplications/ManageJobApplications";
+import ManageEventApplications from "./Pages/(Employer_Pages)/ManageEventApplications/ManageEventApplications";
 import ManageInternshipApplications from "./Pages/(Employer_Pages)/ManageInternshipApplications/ManageInternshipApplications";
 
 const queryClient = new QueryClient();
@@ -298,6 +298,15 @@ createRoot(document.getElementById("root")).render(
               <Route
                 path="/Employer/InternshipApplications"
                 element={<ManageInternshipApplications />}
+              />
+
+              {/* Employer Events */}
+              <Route path="/Employer/Events" element={<ManageEvents />} />
+
+              {/* Employer Event Application */}
+              <Route
+                path="/Employer/EventApplications"
+                element={<ManageEventApplications />}
               />
             </Route>
           </Routes>

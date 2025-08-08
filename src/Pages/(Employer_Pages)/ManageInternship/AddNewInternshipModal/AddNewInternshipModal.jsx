@@ -1,0 +1,637 @@
+import { useRef, useState } from "react";
+
+// Packages
+import Swal from "sweetalert2";
+import PropTypes from "prop-types";
+import { useForm, useFieldArray } from "react-hook-form";
+
+// Icons
+import { ImCross } from "react-icons/im";
+import { RxCross2 } from "react-icons/rx";
+
+// Currency Data
+import Currencies from "../../../../JSON/Currencies.json";
+
+// Hooks
+import useAuth from "../../../../Hooks/useAuth";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+
+const AddNewInternshipModal = ({ CompanyData, refetch }) => {
+  const { user } = useAuth();
+  const axiosPublic = useAxiosPublic();
+
+  // New Field Values State
+  const [newFieldValues, setNewFieldValues] = useState({});
+
+  // Posting States
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // inside your component:
+  const inputRefs = useRef({});
+
+  // RHF Setup
+  const {
+    watch,
+    reset,
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      title: "",
+      description: "",
+      category: "",
+      subCategory: "",
+      tags: [],
+      deliveryDeadline: "",
+      requiredSkills: [],
+      attachments: [],
+      isRemote: false,
+      location: "",
+      budget: {
+        type: "fixed",
+        min: "",
+        max: "",
+        currency: "USD",
+        isNegotiable: false,
+      },
+      communication: {
+        preferredMethod: "Email",
+        allowCalls: false,
+      },
+      extraNotes: "",
+    },
+  });
+
+  // Watch Values
+  const isRemote = watch("isRemote");
+
+  // Field Arrays
+  const tags = useFieldArray({ control, name: "tags" });
+  const requiredSkills = useFieldArray({ control, name: "requiredSkills" });
+
+  // Combine field arrays for easier management
+  const fieldArrays = {
+    tags,
+    requiredSkills,
+  };
+
+  // Fields to be dynamically rendered
+  const fieldsConfig = ["tags", "requiredSkills"];
+
+  // Posted By Data
+  const postedBy = {
+    email: user.email,
+    name: CompanyData.name,
+    profileImage: CompanyData.logo,
+    rating: CompanyData.rating || 0,
+  };
+
+  // On Submit Handler
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    setErrorMessage("");
+
+    // Payload
+    const payload = {
+      ...data,
+      postedBy,
+      status: "open",
+      postedAt: new Date(),
+    };
+
+    try {
+      // POST Request
+      const res = await axiosPublic.post("/Internship", payload);
+
+      // Success Message
+      if (res?.status === 201 || res?.data?.insertedId) {
+        Swal.fire({
+          icon: "success",
+          title: "Internship Posted",
+          text: "Your Internship has been posted successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+
+        reset();
+        refetch();
+        setErrorMessage("");
+        document.getElementById("Add_New_Internship_Modal")?.close();
+      } else {
+        throw new Error("Unexpected response from server");
+      }
+    } catch (err) {
+      console.error("Internship post failed:", err);
+
+      setErrorMessage(
+        err.response?.data?.message ||
+          "Failed to post Internship. Please try again later."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div
+      id="Add_New_Internship_Modal"
+      className="modal-box min-w-3xl relative bg-white rounded-lg shadow-xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
+    >
+      {/* Close Button */}
+      <button
+        type="button"
+        onClick={() =>
+          document.getElementById("Add_New_Internship_Modal").close()
+        }
+        className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+      >
+        <ImCross className="text-xl" />
+      </button>
+
+      {/* Modal Title */}
+      <h3 className="font-bold text-xl text-center mb-4">Add New Internship</h3>
+
+      {/* Divider */}
+      <div className="p-[1px] bg-blue-500 mb-4" />
+
+      {/* Alert Messages */}
+      {errorMessage && (
+        <div className="bg-red-100 text-red-800 font-medium border border-red-400 px-4 py-2 rounded mb-4 text-center">
+          {errorMessage}
+        </div>
+      )}
+
+      {/* Form Section */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Job Title */}
+        <div className="flex flex-col">
+          <label className="font-medium text-sm mb-1" htmlFor="title">
+            Job Title<span className="text-red-500">*</span>
+          </label>
+          <input
+            id="title"
+            {...register("title", { required: "Job title is required" })}
+            placeholder="e.g., Optimize Website Performance"
+            className={`input input-bordered w-full bg-white text-black border ${
+              errors.title ? "border-red-500" : "border-black"
+            }`}
+          />
+          {errors.title && (
+            <p className="text-sm text-red-600 mt-1">{errors.title.message}</p>
+          )}
+        </div>
+
+        {/* Category and Subcategory */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Category */}
+          <div className="flex flex-col">
+            <label className="font-medium text-sm mb-1" htmlFor="category">
+              Category<span className="text-red-500">*</span>
+            </label>
+            <input
+              id="category"
+              {...register("category", { required: "Category is required" })}
+              placeholder="e.g., Graphic Design"
+              className={`input input-bordered w-full bg-white text-black border ${
+                errors.category ? "border-red-500" : "border-black"
+              }`}
+            />
+            {errors.category && (
+              <p className="text-sm text-red-600 mt-1">
+                {errors.category.message}
+              </p>
+            )}
+          </div>
+
+          {/* Subcategory */}
+          <div className="flex flex-col">
+            <label className="font-medium text-sm mb-1" htmlFor="subCategory">
+              Subcategory<span className="text-red-500">*</span>
+            </label>
+            <input
+              id="subCategory"
+              {...register("subCategory", {
+                required: "Subcategory is required",
+              })}
+              placeholder="e.g., Logo Design"
+              className={`input input-bordered w-full bg-white text-black border ${
+                errors.subCategory ? "border-red-500" : "border-black"
+              }`}
+            />
+            {errors.subCategory && (
+              <p className="text-sm text-red-600 mt-1">
+                {errors.subCategory.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="flex flex-col">
+          <label className="font-medium text-sm mb-1" htmlFor="description">
+            Description<span className="text-red-500">*</span>
+          </label>
+          <textarea
+            id="description"
+            rows={4}
+            {...register("description", {
+              required: "Description is required",
+            })}
+            placeholder="Describe the job in detail..."
+            className={`textarea textarea-bordered w-full bg-white text-black border ${
+              errors.description ? "border-red-500" : "border-black"
+            }`}
+          />
+          {errors.description && (
+            <p className="text-sm text-red-600 mt-1">
+              {errors.description.message}
+            </p>
+          )}
+        </div>
+
+        {/* fieldsConfig for tags, requiredSkills */}
+        {fieldsConfig.map((field) => (
+          <div key={field} className="mb-6">
+            {/* Label */}
+            <label
+              htmlFor={`${field}-input`}
+              className="block font-semibold text-sm mb-2 capitalize"
+            >
+              {field.replace(/([A-Z])/g, " $1")}
+            </label>
+
+            {/* Tag Display */}
+            <div className="flex flex-wrap gap-2 rounded border border-gray-700 mb-3 px-2 py-2">
+              {fieldArrays[field].fields.length > 0 ? (
+                fieldArrays[field].fields.map((item, index) => (
+                  <div
+                    key={item.id}
+                    onClick={() => fieldArrays[field].remove(index)}
+                    className="flex items-center border border-blue-700 font-semibold text-blue-800 gap-2 px-3 py-1 rounded cursor-pointer hover:bg-blue-100 transition-all duration-200 text-sm "
+                  >
+                    {watch(`${field}.${index}`) || `${field} #${index + 1}`}{" "}
+                    <RxCross2 />
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 italic text-sm px-5 py-2">
+                  No {field} added yet.
+                </p>
+              )}
+            </div>
+
+            {/* Add Field Input */}
+            <div className="flex justify-end gap-2">
+              <input
+                id={`${field}-input`}
+                type="text"
+                value={newFieldValues[field] || ""}
+                onChange={(e) =>
+                  setNewFieldValues((prev) => ({
+                    ...prev,
+                    [field]: e.target.value,
+                  }))
+                }
+                placeholder={`Add new ${field}`}
+                className="input input-bordered bg-white text-black border-black w-2/3"
+                ref={(el) => (inputRefs.current[field] = el)}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const value = newFieldValues[field]?.trim();
+                  if (value) {
+                    fieldArrays[field].append(value);
+                    setNewFieldValues((prev) => ({ ...prev, [field]: "" }));
+
+                    // Focus back to input after adding
+                    inputRefs.current[field]?.focus();
+                  }
+                }}
+                className="flex items-center gap-2 border-2 border-blue-600 font-semibold text-blue-600 rounded shadow-xl px-5 py-1 cursor-pointer hover:bg-blue-600 hover:text-white transition-colors duration-500"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {/* Delivery Deadline */}
+        <div className="flex flex-col">
+          <label className="font-medium text-sm mb-1">Delivery Deadline</label>
+          <input
+            type="datetime-local"
+            {...register("deliveryDeadline", {
+              required: "Delivery deadline is required",
+            })}
+            className={`input input-bordered w-full bg-white text-black border ${
+              errors.deliveryDeadline ? "border-red-500" : "border-black"
+            }`}
+            min={new Date().toISOString().slice(0, 16)}
+          />
+          {errors.deliveryDeadline && (
+            <p className="text-sm text-red-600 mt-1">
+              {errors.deliveryDeadline.message}
+            </p>
+          )}
+        </div>
+
+        {/* Remote Option */}
+        <>
+          {/* Remote Option Toggle */}
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="isRemote"
+              className="text-sm font-medium text-gray-700"
+            >
+              This job can be done remotely
+            </label>
+
+            <label className="relative inline-block w-11 h-6 cursor-pointer">
+              <input
+                type="checkbox"
+                id="isRemote"
+                {...register("isRemote")}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-700 transition-all duration-300" />
+              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full" />
+            </label>
+          </div>
+
+          {/* Location - only show if NOT remote */}
+          {!isRemote && (
+            <div className="flex flex-col">
+              <label className="font-medium text-sm mb-1" htmlFor="location">
+                Location
+                {!isRemote && <span className="text-red-500">*</span>}
+              </label>
+              <input
+                id="location"
+                {...register("location", {
+                  validate: (value) => {
+                    if (!isRemote && (!value || value.trim() === "")) {
+                      return "Location is required";
+                    }
+                    return true;
+                  },
+                })}
+                placeholder="e.g., Bangalore, India"
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors.location ? "border-red-500" : "border-black"
+                }`}
+              />
+              {errors.location && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.location.message}
+                </p>
+              )}
+            </div>
+          )}
+        </>
+
+        {/* Budget */}
+        <>
+          {/* Title */}
+          <h4 className="font-semibold mt-4">Budget Info</h4>
+
+          {/* Divider */}
+          <div className="bg-blue-700 p-[1px] mb-4" />
+
+          {/* Budget */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Minimum Salary  */}
+            <div className="flex flex-col">
+              <label className="text-sm font-semibold text-black mb-1">
+                Minimum <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                {...register("budget.min", {
+                  required: "Minimum salary is required",
+                  min: {
+                    value: 0,
+                    message: "Minimum must be at least 0",
+                  },
+                })}
+                placeholder="e.g. 30000"
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors?.budget?.min ? "border-red-500" : "border-black"
+                }`}
+              />
+              {errors?.budget?.min && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.budget.min.message}
+                </p>
+              )}
+            </div>
+
+            {/* Maximum Salary */}
+            <div className="flex flex-col">
+              <label className="text-sm font-semibold text-black mb-1">
+                Maximum <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                {...register("budget.max", {
+                  required: "Maximum salary is required",
+                  validate: (value) => {
+                    const min = Number(watch("budget.min"));
+                    if (value && min && Number(value) < min) {
+                      return "Maximum must be greater than or equal to minimum";
+                    }
+                    return true;
+                  },
+                })}
+                placeholder="e.g. 60000"
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors?.budget?.max ? "border-red-500" : "border-black"
+                }`}
+              />
+              {errors?.budget?.max && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.budget.max.message}
+                </p>
+              )}
+            </div>
+
+            {/* Budget Type */}
+            <div className="flex flex-col">
+              <label htmlFor="budget-type" className="font-medium text-sm mb-1">
+                Budget Type <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="budget-type"
+                {...register("budget.type", {
+                  required: "Budget type is required",
+                })}
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors.communication?.preferredMethod
+                    ? "border-red-500"
+                    : "border-black"
+                } cursor-pointer`}
+              >
+                <option value="">Select Budget Type</option>
+                <option value="fixed">Fixed</option>
+                <option value="hourly">Hourly</option>
+              </select>
+              {errors?.budget?.type && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.budget.type.message}
+                </p>
+              )}
+            </div>
+
+            {/* Currency */}
+            <div className="flex flex-col">
+              <label className="text-sm font-semibold text-black mb-1">
+                Currency <span className="text-red-500">*</span>
+              </label>
+              <select
+                {...register("budget.currency", {
+                  required: "Currency selection is required",
+                })}
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors.communication?.preferredMethod
+                    ? "border-red-500"
+                    : "border-black"
+                } cursor-pointer`}
+              >
+                <option value="">Select Currency</option>
+                {Currencies.map((currency) => (
+                  <option key={currency.code} value={currency.code}>
+                    {currency.code} – {currency.name}
+                  </option>
+                ))}
+              </select>
+              {errors?.salaryRange?.currency && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.salaryRange.currency.message}
+                </p>
+              )}
+            </div>
+
+            {/* Negotiable Toggle */}
+            <div className="flex items-center gap-3">
+              <label className="relative inline-block w-11 h-6 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="negotiable"
+                  {...register("budget.isNegotiable")}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-700 transition-all duration-300"></div>
+                <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full"></div>
+              </label>
+              <label
+                htmlFor="negotiable"
+                className="text-sm font-medium text-gray-700"
+              >
+                Negotiable
+              </label>
+            </div>
+          </div>
+        </>
+
+        {/* Communication */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Preferred Method */}
+          <div>
+            <label
+              className="font-medium text-sm mb-1"
+              htmlFor="preferredMethod"
+            >
+              Preferred Method <span className="text-red-500">*</span>
+            </label>
+            <select
+              id="preferredMethod"
+              {...register("communication.preferredMethod", {
+                required: "Please select a communication method",
+              })}
+              className={`input input-bordered w-full bg-white text-black border ${
+                errors.communication?.preferredMethod
+                  ? "border-red-500"
+                  : "border-black"
+              } cursor-pointer`}
+            >
+              <option value="">Select one</option>
+              <option value="Chat">Chat</option>
+              <option value="Call">Call</option>
+              <option value="Email">Email</option>
+              <option value="Video Call">Video Call</option>
+              <option value="Messaging App">
+                Messaging App (e.g., WhatsApp, Slack)
+              </option>
+              <option value="In-Person">In-Person</option>
+            </select>
+            {errors.communication?.preferredMethod && (
+              <p className="text-sm text-red-600 mt-1">
+                {errors.communication.preferredMethod.message}
+              </p>
+            )}
+          </div>
+
+          {/* Allow Calls Toggle */}
+          <div className="flex items-center gap-3 mt-6">
+            <label
+              htmlFor="allowCalls"
+              className="text-sm font-medium text-gray-700"
+            >
+              Allow Calls
+            </label>
+            <label className="relative inline-block w-11 h-6 cursor-pointer">
+              <input
+                type="checkbox"
+                id="allowCalls"
+                {...register("communication.allowCalls")}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-700 transition-all duration-300" />
+              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full" />
+            </label>
+          </div>
+        </div>
+
+        {/* Extra Notes */}
+        <div className="flex flex-col">
+          <label className="font-medium text-sm mb-1" htmlFor="extraNotes">
+            Extra Notes
+          </label>
+          <textarea
+            id="extraNotes"
+            rows={3}
+            {...register("extraNotes")}
+            placeholder="Additional instructions or details..."
+            className="textarea textarea-bordered w-full bg-white text-black border border-black"
+          />
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className={`bg-blue-700 text-white font-semibold py-2 w-full cursor-pointer rounded shadow-lg transition-colors duration-300 mt-6 ${
+            isLoading ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-800"
+          }`}
+          disabled={isLoading}
+        >
+          {isLoading ? "Posting..." : "Post Internship"}
+        </button>
+      </form>
+    </div>
+  );
+};
+
+// Prop Validation
+AddNewInternshipModal.propTypes = {
+  CompanyData: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    logo: PropTypes.string,
+    rating: PropTypes.number,
+  }).isRequired,
+  refetch: PropTypes.func.isRequired,
+};
+
+export default AddNewInternshipModal;

@@ -92,6 +92,7 @@ import ManageGigBids from "./Pages/(Employer_Pages)/ManageGigBids/ManageGigBids"
 import EmployerDashboard from "./Pages/(Employer_Pages)/EmployerDashboard/EmployerDashboard";
 import ManageCompanyProfile from "./Pages/(Employer_Pages)/ManageCompanyProfile/ManageCompanyProfile";
 import ManageJobApplications from "./Pages/(Employer_Pages)/ManageJobApplications/ManageJobApplications";
+import ManageInternship from "./Pages/(Employer_Pages)/ManageInternship/ManageInternship";
 
 const queryClient = new QueryClient();
 
@@ -285,6 +286,12 @@ createRoot(document.getElementById("root")).render(
 
               {/* Employer Gig Bids */}
               <Route path="/Employer/GigBids" element={<ManageGigBids />} />
+
+              {/* Employer Internship */}
+              <Route
+                path="/Employer/Internship"
+                element={<ManageInternship />}
+              />
             </Route>
           </Routes>
         </BrowserRouter>

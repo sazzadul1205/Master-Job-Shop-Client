@@ -98,8 +98,6 @@ const InternshipApplyPage = () => {
     reset,
   } = useForm();
 
-  console.log(UsersData);
-
   // Submit handler
   const onSubmit = async (data) => {
     // Check if user is logged in
@@ -132,7 +130,7 @@ const InternshipApplyPage = () => {
         ...data,
         internshipId: internshipId,
         name: UsersData?.name || UsersData?.fullName,
-        icons: UsersData?.icons,
+        profileImage: UsersData?.profileImage,
         email: UsersData?.email,
         phone: UsersData?.phone,
         resumeUrl: res.data.url,
@@ -250,22 +248,6 @@ const InternshipApplyPage = () => {
 
           {/* Application Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Full Name */}
-            <div>
-              <label className="block font-semibold mb-1">Full Name</label>
-              <input
-                type="text"
-                defaultValue={UsersData?.name || ""}
-                {...register("fullName", { required: "Full name is required" })}
-                className="w-full border px-4 py-2 rounded-md"
-              />
-              {errors.fullName && (
-                <p className="text-red-500 text-sm">
-                  {errors.fullName.message}
-                </p>
-              )}
-            </div>
-
             {/* Location (optional) */}
             <div>
               <label className="block font-semibold mb-1">

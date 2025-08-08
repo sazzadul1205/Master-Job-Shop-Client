@@ -29,8 +29,8 @@ import Loading from "../../../Shared/Loading/Loading";
 
 // Modal
 import AcceptJobApplicationModal from "./AcceptJobApplicationModal/AcceptJobApplicationModal";
-import MyJobApplicationModal from "../../(Member_Pages)/MyJobApplications/MyJobApplicationModal/MyJobApplicationModal";
 import ViewApplicantInterviewModal from "./ViewApplicantInterviewModal/ViewApplicantInterviewModal";
+import MyJobApplicationModal from "../../(Member_Pages)/MyJobApplications/MyJobApplicationModal/MyJobApplicationModal";
 
 const ManageJobApplications = () => {
   const { user, loading } = useAuth();
@@ -56,8 +56,13 @@ const ManageJobApplications = () => {
     refetch: JobsRefetch,
   } = useQuery({
     queryKey: ["JobsData", user?.email],
-    queryFn: () =>
-      axiosPublic.get(`/Jobs?postedBy=${user?.email}`).then((res) => res.data),
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/Jobs?postedBy=${user?.email}`);
+      const data = res.data;
+      if (Array.isArray(data)) return data;
+      if (data && typeof data === "object") return [data]; // wrap single object in array
+      return [];
+    },
     enabled: !!user?.email,
   });
 

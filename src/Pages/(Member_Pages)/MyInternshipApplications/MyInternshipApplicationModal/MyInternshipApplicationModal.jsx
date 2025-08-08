@@ -42,7 +42,10 @@ const MyInternshipApplicationModal = ({
   if (error) return <Error />;
 
   return (
-    <div className="modal-box bg-white rounded-xl shadow-lg p-0 max-w-3xl w-full">
+    <div
+      id="View_Internship_Applications_Modal"
+      className="modal-box bg-white rounded-xl shadow-lg p-0 max-w-3xl w-full"
+    >
       {/* Header */}
       <div className="flex justify-between items-center border-b px-6 py-4 bg-gray-50">
         <h3 className="text-xl font-semibold text-gray-800">
@@ -66,7 +69,7 @@ const MyInternshipApplicationModal = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
             <p className="font-medium text-gray-600">Full Name</p>
-            <p className="text-gray-800">{application?.fullName || "N/A"}</p>
+            <p className="text-gray-800">{application?.name || "N/A"}</p>
           </div>
 
           <div>

@@ -316,7 +316,7 @@ const Internship = () => {
       <div className="py-6 px-4 md:px-20">
         {filteredInternship.length > 0 ? (
           // Display internship cards
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             {filteredInternship.map((internship) => (
               <InternshipCard
                 key={internship._id}

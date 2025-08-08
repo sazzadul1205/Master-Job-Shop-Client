@@ -1,9 +1,11 @@
+import { useState } from "react";
+
+// Icons
+import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
-import Bid from "../../../assets/EmployerLayout/Bid/BidBlue.png";
-import useAuth from "../../../Hooks/useAuth";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import Error from "../../../Shared/Error/Error";
-import Loading from "../../../Shared/Loading/Loading";
+
+//Icons
+import { ImCross } from "react-icons/im";
 import {
   FaAngleLeft,
   FaAngleRight,
@@ -13,12 +15,23 @@ import {
   FaEye,
   FaRegClock,
 } from "react-icons/fa";
-import { useState } from "react";
-import { ImCross } from "react-icons/im";
-import MyGigBidsModal from "../../(Member_Pages)/MyGigBids/MyGigBidsModal/MyGigBidsModal";
-import Swal from "sweetalert2";
+
+// Assets
+import Bid from "../../../assets/EmployerLayout/Bid/BidBlue.png";
+
+// Shared
+import Error from "../../../Shared/Error/Error";
+import Loading from "../../../Shared/Loading/Loading";
+
+// Hooks
+
+import useAuth from "../../../Hooks/useAuth";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Modals
 import AcceptGigBidsModal from "./AcceptGigBidsModal/AcceptGigBidsModal";
 import ViewBidInterviewModal from "./ViewBidInterviewModal/ViewBidInterviewModal";
+import MyGigBidsModal from "../../(Member_Pages)/MyGigBids/MyGigBidsModal/MyGigBidsModal";
 
 const ManageGigBids = () => {
   const { user, loading } = useAuth();

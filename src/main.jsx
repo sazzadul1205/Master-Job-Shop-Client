@@ -89,10 +89,11 @@ import BecomeMentor from "./Pages/BecomeMentor/BecomeMentor";
 import ManageGigs from "./Pages/(Employer_Pages)/ManageGigs/ManageGigs";
 import ManageJobs from "./Pages/(Employer_Pages)/ManageJobs/ManageJobs";
 import ManageGigBids from "./Pages/(Employer_Pages)/ManageGigBids/ManageGigBids";
+import ManageInternship from "./Pages/(Employer_Pages)/ManageInternship/ManageInternship";
 import EmployerDashboard from "./Pages/(Employer_Pages)/EmployerDashboard/EmployerDashboard";
 import ManageCompanyProfile from "./Pages/(Employer_Pages)/ManageCompanyProfile/ManageCompanyProfile";
 import ManageJobApplications from "./Pages/(Employer_Pages)/ManageJobApplications/ManageJobApplications";
-import ManageInternship from "./Pages/(Employer_Pages)/ManageInternship/ManageInternship";
+import ManageInternshipApplications from "./Pages/(Employer_Pages)/ManageInternshipApplications/ManageInternshipApplications";
 
 const queryClient = new QueryClient();
 
@@ -291,6 +292,12 @@ createRoot(document.getElementById("root")).render(
               <Route
                 path="/Employer/Internship"
                 element={<ManageInternship />}
+              />
+
+              {/* Employer Internship Application */}
+              <Route
+                path="/Employer/InternshipApplications"
+                element={<ManageInternshipApplications />}
               />
             </Route>
           </Routes>

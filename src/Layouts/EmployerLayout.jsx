@@ -80,7 +80,7 @@ const navItems = [
   },
   {
     label: "Manage Internship Applications",
-    path: "/Employer/Internship Applications",
+    path: "/Employer/InternshipApplications",
     assets: InternshipApplication,
     activeAssets: InternshipApplicationBlue,
   },

@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 // Packages
+import { formatDistanceToNow, format } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
-import { formatDistanceToNow } from "date-fns";
 import { Tooltip } from "react-tooltip";
 import Swal from "sweetalert2";
 
@@ -15,20 +16,20 @@ import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
 
 // Assets & Icons
-import InternshipApplication from "../../../assets/Navbar/Member/InternshipApplication.png";
+import InternshipApplicationWhite from "../../../assets/EmployerLayout/InternshipApplication/InternshipApplicationWhite.png";
+
 import { ImCross } from "react-icons/im";
-import { FaInfo } from "react-icons/fa";
+import { FaInfo, FaFilePdf, FaExternalLinkAlt } from "react-icons/fa";
 
 // Modals
-import InternshipDetailsModal from "../../(Public_Pages)/Home/FeaturedInternships/InternshipDetailsModal/InternshipDetailsModal";
 import MyInternshipApplicationModal from "./MyInternshipApplicationModal/MyInternshipApplicationModal";
-import { Link } from "react-router-dom";
+import InternshipDetailsModal from "../../(Public_Pages)/Home/FeaturedInternships/InternshipDetailsModal/InternshipDetailsModal";
 
 const MyInternshipApplications = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
-  // Select Internship ID
+  // UI & State
   const [applicationList, setApplicationList] = useState([]);
   const [selectedApplicationID, setSelectedApplicationID] = useState(null);
   const [selectedInternshipID, setSelectedInternshipID] = useState(null);
@@ -48,11 +49,10 @@ const MyInternshipApplications = () => {
     enabled: !!user?.email,
   });
 
-  // Step 2: Extract unique gigIds
-  const internshipIds = InternshipApplicationsData.map(
-    (app) => app.internshipId
-  );
-  const uniqueInternshipIds = [...new Set(internshipIds)];
+  // Extract unique internship IDs
+  const uniqueInternshipIds = [
+    ...new Set(InternshipApplicationsData.map((app) => app.internshipId)),
+  ];
 
   // Fetch internships data
   const {
@@ -69,7 +69,6 @@ const MyInternshipApplications = () => {
     enabled: !!user?.email && uniqueInternshipIds.length > 0,
   });
 
-  // Set application list
   useEffect(() => {
     if (InternshipApplicationsData.length > 0) {
       setApplicationList(InternshipApplicationsData);
@@ -93,21 +92,17 @@ const MyInternshipApplications = () => {
         const res = await axiosPublic.delete(`/InternshipApplications/${id}`);
 
         if (res.status === 200) {
-          // Optimistically update state
-          setApplicationList((prev) =>
-            prev.filter((internship) => internship._id !== id)
-          );
+          setApplicationList((prev) => prev.filter((app) => app._id !== id));
 
           Swal.fire({
             icon: "success",
             title: "Deleted!",
-            text: "The Internship has been successfully removed.",
+            text: "The Internship Application has been successfully removed.",
             timer: 1800,
             timerProgressBar: true,
             showConfirmButton: false,
           });
 
-          // Silent refetch
           await refetchInternshipApplications({ throwOnError: false });
           await InternshipsRefetch({ throwOnError: false });
         } else {
@@ -127,12 +122,11 @@ const MyInternshipApplications = () => {
     }
   };
 
-  // UI Error / Loading
   if (loading || InternshipApplicationsIsLoading || InternshipsIsLoading)
     return <Loading />;
   if (InternshipApplicationsError || InternshipsError) return <Error />;
 
-  // Merge application with internship
+  // Merge applications with internship data
   const mergedData = applicationList
     .map((application) => {
       const internship = InternshipsData.find(
@@ -147,20 +141,17 @@ const MyInternshipApplications = () => {
 
   return (
     <section className="px-4 md:px-12 min-h-screen">
-      {/* Title */}
       <h3 className="text-3xl font-bold text-white text-center pb-2">
         My Internship Applications
       </h3>
 
-      {/* Divider */}
       <div className="flex items-center justify-center gap-4 my-5">
         <span className="w-3 h-3 bg-white rounded-full"></span>
         <div className="flex-grow h-[2px] bg-white opacity-70"></div>
         <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
-      {/* Application Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
         {mergedData.length > 0 ? (
           mergedData.map((item, index) => (
             <div
@@ -186,8 +177,8 @@ const MyInternshipApplications = () => {
               <div className="mb-3 text-sm text-gray-600">
                 Budget:{" "}
                 <span className="font-medium text-gray-800">
-                  ${item.internship.budget.min} - ${item.internship.budget.max}{" "}
                   {item.internship.budget.currency}
+                  {item.internship.budget.min} - {item.internship.budget.max}
                 </span>
                 {item.internship.budget.isNegotiable && (
                   <span className="text-green-600 text-xs ml-1">
@@ -196,15 +187,15 @@ const MyInternshipApplications = () => {
                 )}
               </div>
 
-              {/* Poster */}
+              {/* Posted By */}
               <div className="mb-3 text-sm text-gray-600">
                 Posted by:{" "}
                 <span className="font-medium">
                   {item.internship.postedBy.name}
                 </span>
                 <div className="text-xs text-gray-500">
-                  {item.internship.postedBy.jobsPosted} jobs | ⭐{" "}
-                  {item.internship.postedBy.rating}
+                  {item.internship.postedBy.jobsPosted ?? 0} jobs | ⭐{" "}
+                  {item.internship.postedBy.rating ?? "N/A"}
                 </div>
               </div>
 
@@ -220,10 +211,32 @@ const MyInternshipApplications = () => {
                   {item.internship.isRemote ? "Remote" : "On-site"}
                 </span>
                 <span className="text-xs text-gray-500">
+                  Applied{" "}
                   {formatDistanceToNow(new Date(item.appliedAt), {
                     addSuffix: true,
                   })}
                 </span>
+              </div>
+
+              {/* Start Date */}
+              <div className="mb-3 text-sm text-gray-600">
+                Start Date:{" "}
+                <span className="font-medium">
+                  {format(new Date(item.startDate), "PPP")}
+                </span>
+              </div>
+
+              {/* Resume */}
+              <div className="mb-3 flex items-center gap-2 text-blue-600">
+                <FaFilePdf />
+                <a
+                  href={item.resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-blue-800 flex items-center gap-1"
+                >
+                  View Resume <FaExternalLinkAlt className="text-xs" />
+                </a>
               </div>
 
               {/* Actions */}
@@ -241,7 +254,7 @@ const MyInternshipApplications = () => {
                   className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
                 >
                   <img
-                    src={InternshipApplication}
+                    src={InternshipApplicationWhite}
                     alt="Application"
                     className="w-5"
                   />
@@ -253,14 +266,14 @@ const MyInternshipApplications = () => {
                 />
 
                 {/* Delete */}
-                <div
+                <button
                   id={`delete-internship-${item._id}`}
                   data-tooltip-content="Cancel Internship"
                   onClick={() => handleDeleteInternship(item._id)}
-                  className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                  className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition"
                 >
                   <ImCross />
-                </div>
+                </button>
                 <Tooltip
                   anchorSelect={`#delete-internship-${item._id}`}
                   place="top"
@@ -268,7 +281,7 @@ const MyInternshipApplications = () => {
                 />
 
                 {/* View Details */}
-                <div
+                <button
                   id={`internship-details-btn-${item._id}`}
                   data-tooltip-content="View Internship Details"
                   onClick={() => {
@@ -277,10 +290,10 @@ const MyInternshipApplications = () => {
                       .getElementById("Internship_Details_Modal")
                       .showModal();
                   }}
-                  className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                  className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition"
                 >
                   <FaInfo />
-                </div>
+                </button>
                 <Tooltip
                   anchorSelect={`#internship-details-btn-${item._id}`}
                   place="top"
@@ -299,8 +312,8 @@ const MyInternshipApplications = () => {
               and apply to get started.
             </p>
             <Link
-              href="/Internships"
-              className="inline-block bg-linear-to-bl hover:bg-linear-to-tr from-white to-gray-200 text-black font-semibold py-3 px-10 shadow-lg hover:shadow-xl rounded transition"
+              to="/Internships"
+              className="inline-block bg-gradient-to-br from-white to-gray-200 text-black font-semibold py-3 px-10 shadow-lg hover:shadow-xl rounded transition"
             >
               Explore Internships
             </Link>
@@ -309,7 +322,6 @@ const MyInternshipApplications = () => {
       </div>
 
       {/* Modals */}
-      {/* View Application Modal */}
       <dialog id="View_Internship_Applications_Modal" className="modal">
         <MyInternshipApplicationModal
           selectedApplicationID={selectedApplicationID}
@@ -317,7 +329,6 @@ const MyInternshipApplications = () => {
         />
       </dialog>
 
-      {/* Internship Details Modal */}
       <dialog id="Internship_Details_Modal" className="modal">
         <InternshipDetailsModal
           selectedInternshipID={selectedInternshipID}

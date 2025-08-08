@@ -98,6 +98,8 @@ const InternshipApplyPage = () => {
     reset,
   } = useForm();
 
+  console.log(UsersData);
+
   // Submit handler
   const onSubmit = async (data) => {
     // Check if user is logged in
@@ -129,6 +131,8 @@ const InternshipApplyPage = () => {
       const applicationData = {
         ...data,
         internshipId: internshipId,
+        name: UsersData?.name || UsersData?.fullName,
+        icons: UsersData?.icons,
         email: UsersData?.email,
         phone: UsersData?.phone,
         resumeUrl: res.data.url,
@@ -497,7 +501,7 @@ const InternshipApplyPage = () => {
                 text="View Application"
                 clickEvent={() => {
                   setShowAlreadyAppliedModal(false);
-                  navigate(`/InternshipApplications`);
+                  navigate(`/MyInternshipApplications`);
                 }}
                 bgColor="blue"
                 textColor="text-white"

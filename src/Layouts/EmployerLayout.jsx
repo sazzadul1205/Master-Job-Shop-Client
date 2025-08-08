@@ -29,6 +29,14 @@ import GigBlue from "../assets/EmployerLayout/Gig/GigBlue.png";
 import Bid from "../assets/EmployerLayout/Bid/Bid.png";
 import BidBlue from "../assets/EmployerLayout/Bid/BidBlue.png";
 
+// Assets - Internship
+import Internship from "../assets/EmployerLayout/Internship/Internship.png";
+import InternshipBlue from "../assets/EmployerLayout/Internship/InternshipBlue.png";
+
+// Assets - InternshipApplication
+import InternshipApplication from "../assets/EmployerLayout/InternshipApplication/InternshipApplication.png";
+import InternshipApplicationBlue from "../assets/EmployerLayout/InternshipApplication/InternshipApplicationBlue.png";
+
 // Navigation items
 const navItems = [
   {
@@ -63,6 +71,18 @@ const navItems = [
     path: "/Employer/GigBids",
     assets: Bid,
     activeAssets: BidBlue,
+  },
+  {
+    label: "Manage Internship",
+    path: "/Employer/Internship",
+    assets: Internship,
+    activeAssets: InternshipBlue,
+  },
+  {
+    label: "Manage Internship Applications",
+    path: "/Employer/Internship Applications",
+    assets: InternshipApplication,
+    activeAssets: InternshipApplicationBlue,
   },
 ];
 
@@ -206,7 +226,7 @@ const EmployerLayout = () => {
                 <NavLink to={path}>
                   {({ isActive }) => (
                     <div
-                      className={`group relative flex flex-col items-start gap-1 text-lg font-semibold px-2 py-3 mx-2 ${
+                      className={`group relative flex flex-col items-start gap-1 text-base font-semibold px-2 py-3 mx-2 ${
                         isActive
                           ? "text-blue-700"
                           : "text-black hover:text-blue-700"

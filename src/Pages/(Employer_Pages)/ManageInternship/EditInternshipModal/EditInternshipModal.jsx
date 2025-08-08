@@ -148,22 +148,20 @@ const EditInternshipModal = ({ refetch, selectedInternshipData }) => {
 
   return (
     <div
-      id="Add_New_Internship_Modal"
+      id="Edit_Internship_Modal"
       className="modal-box min-w-3xl relative bg-white rounded-lg shadow-xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
     >
       {/* Close Button */}
       <button
         type="button"
-        onClick={() =>
-          document.getElementById("Add_New_Internship_Modal").close()
-        }
+        onClick={() => document.getElementById("Edit_Internship_Modal").close()}
         className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
       >
         <ImCross className="text-xl" />
       </button>
 
       {/* Modal Title */}
-      <h3 className="font-bold text-xl text-center mb-4">Add New Internship</h3>
+      <h3 className="font-bold text-xl text-center mb-4">Edit Internship</h3>
 
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-4" />

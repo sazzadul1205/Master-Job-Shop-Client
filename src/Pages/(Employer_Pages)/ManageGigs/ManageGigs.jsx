@@ -39,8 +39,13 @@ const ManageGigs = () => {
     refetch: GigsRefetch,
   } = useQuery({
     queryKey: ["GigsData"],
-    queryFn: () =>
-      axiosPublic.get(`/Gigs?postedBy=${user?.email}`).then((res) => res.data),
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/Gigs?postedBy=${user?.email}`);
+      const data = res.data;
+      if (Array.isArray(data)) return data;
+      if (data && typeof data === "object") return [data]; // wrap single object in array
+      return [];
+    },
   });
 
   // Company Data

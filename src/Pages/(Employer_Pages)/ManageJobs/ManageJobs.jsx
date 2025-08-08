@@ -37,8 +37,13 @@ const ManageJobs = () => {
     refetch: JobsRefetch,
   } = useQuery({
     queryKey: ["JobsData"],
-    queryFn: () =>
-      axiosPublic.get(`/Jobs?postedBy=${user?.email}`).then((res) => res.data),
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/Jobs?postedBy=${user?.email}`);
+      const data = res.data;
+      if (Array.isArray(data)) return data;
+      if (data && typeof data === "object") return [data]; // wrap single object in array
+      return [];
+    },
   });
 
   // Company Data

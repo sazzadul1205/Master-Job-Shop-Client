@@ -180,7 +180,6 @@ const EditJobModal = ({ selectedJobData, refetch }) => {
     }
   };
 
-  
   return (
     <div className="modal-box min-w-3xl relative bg-white rounded-lg shadow-xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto">
       {/* Close Button */}
@@ -193,7 +192,7 @@ const EditJobModal = ({ selectedJobData, refetch }) => {
       </button>
 
       {/* Modal Title */}
-      <h3 className="font-bold text-xl text-center mb-4">Add New Job</h3>
+      <h3 className="font-bold text-xl text-center mb-4">Edit Job</h3>
 
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-4" />

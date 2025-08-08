@@ -172,7 +172,7 @@ const EditGigModal = ({ selectedGigData, refetch }) => {
       </button>
 
       {/* Modal Title */}
-      <h3 className="font-bold text-xl text-center mb-4">Add New Gig</h3>
+      <h3 className="font-bold text-xl text-center mb-4">Edit Gig</h3>
 
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-4" />

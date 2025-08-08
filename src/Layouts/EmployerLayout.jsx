@@ -37,6 +37,14 @@ import InternshipBlue from "../assets/EmployerLayout/Internship/InternshipBlue.p
 import InternshipApplication from "../assets/EmployerLayout/InternshipApplication/InternshipApplication.png";
 import InternshipApplicationBlue from "../assets/EmployerLayout/InternshipApplication/InternshipApplicationBlue.png";
 
+// Assets - Events
+import Events from "../assets/EmployerLayout/Events/Events.png";
+import EventsBlue from "../assets/EmployerLayout/Events/EventsBlue.png";
+
+// Assets - EventApplication
+import EventApplication from "../assets/EmployerLayout/EventApplication/EventApplication.png";
+import EventApplicationBlue from "../assets/EmployerLayout/EventApplication/EventApplicationBlue.png";
+
 // Navigation items
 const navItems = [
   {
@@ -83,6 +91,18 @@ const navItems = [
     path: "/Employer/InternshipApplications",
     assets: InternshipApplication,
     activeAssets: InternshipApplicationBlue,
+  },
+  {
+    label: "Manage Events",
+    path: "/Employer/Events",
+    assets: Events,
+    activeAssets: EventsBlue,
+  },
+  {
+    label: "Manage Event Applications",
+    path: "/Employer/EventApplications",
+    assets: EventApplication,
+    activeAssets: EventApplicationBlue,
   },
 ];
 

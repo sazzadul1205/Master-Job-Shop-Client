@@ -26,9 +26,11 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 // Shared
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
-import MyInternshipApplicationModal from "../../(Member_Pages)/MyInternshipApplications/MyInternshipApplicationModal/MyInternshipApplicationModal";
-import AcceptInternshipApplicationModal from "./AcceptInternshipApplicationModal/AcceptInternshipApplicationModal";
+
+// Modals
 import ViewInternshipApplicationModal from "./ViewInternshipApplicationModal/ViewInternshipApplicationModal";
+import AcceptInternshipApplicationModal from "./AcceptInternshipApplicationModal/AcceptInternshipApplicationModal";
+import MyInternshipApplicationModal from "../../(Member_Pages)/MyInternshipApplications/MyInternshipApplicationModal/MyInternshipApplicationModal";
 
 const ManageInternshipApplications = () => {
   const { user, loading } = useAuth();

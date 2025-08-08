@@ -69,8 +69,6 @@ const ManageInternship = () => {
     CompanyRefetch();
   };
 
-  console.log(InternshipData);
-
   // Loading / Error UI
   if (CompanyIsLoading || InternshipIsLoading || loading) return <Loading />;
   if (CompanyError || InternshipError) return <Error />;

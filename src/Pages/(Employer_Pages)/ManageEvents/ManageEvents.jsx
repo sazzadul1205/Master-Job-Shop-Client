@@ -22,6 +22,9 @@ import AddNewEventModal from "./AddNewEventModal/AddNewEventModal";
 import EventCard from "../../../Shared/EventCard/EventCard";
 import EditEventModal from "./EditEventModal/EditEventModal";
 
+import EventDetailsModal from "../../(Public_Pages)/Home/FeaturedEvents/EventDetailsModal/EventDetailsModal";
+
+
 const ManageEvents = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
@@ -72,7 +75,7 @@ const ManageEvents = () => {
   if (CompanyIsLoading || EventsIsLoading || loading) return <Loading />;
   if (CompanyError || EventsError) return <Error />;
 
-  console.log(EventsData);
+  console.log(EventsData[0]);
 
   return (
     <>
@@ -155,6 +158,14 @@ const ManageEvents = () => {
         <EditEventModal
           refetch={refetch}
           selectedEventData={selectedEventData}
+        />
+      </dialog>
+
+      {/* Event Modal */}
+      <dialog id="Event_Details_Modal" className="modal">
+        <EventDetailsModal
+          selectedEventID={selectedEventID}
+          setSelectedEventID={setSelectedEventID}
         />
       </dialog>
     </>

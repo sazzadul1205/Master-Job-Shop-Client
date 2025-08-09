@@ -17,6 +17,7 @@ import CommonButton from "../CommonButton/CommonButton";
 // Hooks
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 
+// Format Date
 const formatDate = (isoDate) => {
   const date = new Date(isoDate);
   return date.toLocaleDateString("en-GB", {
@@ -26,6 +27,7 @@ const formatDate = (isoDate) => {
   });
 };
 
+// Calculate days ago
 const calculateDaysAgo = (isoDate) => {
   const posted = new Date(isoDate);
   const now = new Date();
@@ -122,16 +124,48 @@ const EventCard = ({
 
       {/* Location & Date & Price row */}
       <div className="flex flex-wrap gap-6 text-sm text-gray-700 mb-4">
-        <div>
-          <span className="font-semibold">Location:</span>{" "}
-          {event?.location?.city && event?.location?.country
-            ? `${event.location.city}, ${event.location.country}`
-            : "Not specified"}
+        {/* Location */}
+        {/* Location / Online Link */}
+        <div className="flex items-center gap-1">
+          <span className="font-semibold">
+            {event?.format === "Online" ? "Live Link:" : "Location:"}
+          </span>{" "}
+          {event?.format === "Online" ? (
+            event?.liveLink ? (
+              <a
+                href={event.liveLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline hover:text-blue-800"
+              >
+                {event.liveLink}
+              </a>
+            ) : (
+              <span className="text-gray-500 italic">Not available</span>
+            )
+          ) : event?.location?.city || event?.location?.country ? (
+            <>
+              {event?.location?.venue && (
+                <span className="text-gray-700">{event.location.venue}, </span>
+              )}
+              <span className="text-gray-700">
+                {[event?.location?.city, event?.location?.country]
+                  .filter(Boolean)
+                  .join(", ")}
+              </span>
+            </>
+          ) : (
+            <span className="text-gray-500 italic">Not specified</span>
+          )}
         </div>
+
+        {/* Start Date */}
         <div>
           <span className="font-semibold">Starts:</span>{" "}
           {event?.startDate ? formatDate(event.startDate) : "TBD"}
         </div>
+
+        {/* Entry Fee */}
         <div>
           <span className="font-semibold">Entry Fee:</span>{" "}
           {event?.price?.isFree

@@ -1,56 +1,71 @@
 import PropTypes from "prop-types";
-
-// Packages
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-
-// Assess
+import { ImCross } from "react-icons/im";
+import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 import DefaultCompanyLogo from "../../../../../assets/DefaultCompanyLogo.jpg";
 
-// Icons
-import { ImCross } from "react-icons/im";
-
-// Shared
+// Shared Components
 import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
 import CommonButton from "../../../../../Shared/CommonButton/CommonButton";
 
-// Hooks
-import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
+// Helpers
+const formatDateTime = (dateStr) => {
+  const date = new Date(dateStr);
 
-// Format Date
-const formatDate = (date) =>
-  new Date(date).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12;
+  hours = hours === 0 ? 12 : hours; // convert 0 to 12 for 12-hour clock
+
+  return `${
+    months[date.getMonth()]
+  }, ${date.getDate()}, ${date.getFullYear()} ${hours}:${minutes} ${ampm}`;
+};
 
 const EventDetailsModal = ({ selectedEventID, setSelectedEventID }) => {
   const axiosPublic = useAxiosPublic();
 
-  // Fetching Selected Event Data
   const {
-    data: SelectedEventData,
-    isLoading: SelectedEventIsLoading,
-    error: SelectedEventError,
+    data: event,
+    isLoading,
+    error,
   } = useQuery({
     queryKey: ["SelectedEventData", selectedEventID],
     queryFn: () =>
       axiosPublic.get(`/Events?id=${selectedEventID}`).then((res) => res.data),
-    enabled: !!selectedEventID, // Only run when selectedEventID is truthy
+    enabled: !!selectedEventID,
   });
 
-  // Loading
-  if (SelectedEventIsLoading)
+  const handleClose = () => {
+    setSelectedEventID("");
+    document.getElementById("Event_Details_Modal")?.close();
+  };
+
+  // Loading State
+  if (isLoading)
     return (
-      <div className="min-w-5xl max-h-[90vh]">
-        {/* Close Button */}
+      <div className="min-w-5xl max-h-[90vh] relative">
         <div
-          onClick={() => {
-            setSelectedEventID("");
-            document.getElementById("Event_Details_Modal")?.close();
-          }}
+          onClick={handleClose}
           className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
         >
           <ImCross className="text-xl text-black hover:text-red-500" />
@@ -59,16 +74,12 @@ const EventDetailsModal = ({ selectedEventID, setSelectedEventID }) => {
       </div>
     );
 
-  // Error
-  if (SelectedEventError)
+  // Error State
+  if (error)
     return (
-      <div className="min-w-5xl max-h-[90vh]">
-        {/* Close Button */}
+      <div className="min-w-5xl max-h-[90vh] relative">
         <div
-          onClick={() => {
-            setSelectedEventID("");
-            document.getElementById("Event_Details_Modal")?.close();
-          }}
+          onClick={handleClose}
           className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
         >
           <ImCross className="text-xl text-black hover:text-red-500" />
@@ -77,143 +88,262 @@ const EventDetailsModal = ({ selectedEventID, setSelectedEventID }) => {
       </div>
     );
 
-  // No Data Fetched
-  if (!SelectedEventData) return null;
+  if (!event) return null;
 
   return (
-    <div className="modal-box min-w-5xl relative bg-white rounded-xl shadow-lg w-full mx-auto overflow-y-auto max-h-[90vh] p-6">
+    <div
+      id="Event_Details_Modal"
+      className="modal-box min-w-5xl relative bg-white rounded-xl shadow-lg w-full mx-auto overflow-y-auto max-h-[90vh] p-6 text-black"
+    >
+      {/* Close Button */}
       <div
-        onClick={() => {
-          setSelectedEventID("");
-          document.getElementById("Event_Details_Modal")?.close();
-        }}
+        onClick={handleClose}
         className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
       >
         <ImCross className="text-xl text-black hover:text-red-500" />
       </div>
 
-      {/* Title */}
-      <h2 className="text-2xl font-bold text-black mb-4">
-        {SelectedEventData?.title}
-      </h2>
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-6">
+        <img
+          src={event?.organizer?.logo || DefaultCompanyLogo}
+          alt={event?.organizer?.name}
+          className="w-16 h-16 rounded-full object-cover border"
+        />
+        <div>
+          <h2 className="text-2xl font-bold">{event?.title}</h2>
+          <p className="text-gray-500">
+            {event?.category} - {event?.subCategory}
+          </p>
+          <p className="text-sm text-gray-400">
+            Posted on {formatDateTime(event?.publishedAt)}
+          </p>
+        </div>
+      </div>
+
+      {/* Banner */}
+      {event?.media?.banner && (
+        <img
+          src={event.media.banner}
+          alt="Event Banner"
+          className="w-full rounded-lg mb-4"
+        />
+      )}
 
       {/* Description */}
-      <p className="text-gray-600 mb-4">{SelectedEventData?.description}</p>
-
-      {/* Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm text-gray-700">
-        <p>
-          <strong>Category:</strong> {SelectedEventData?.category} ›{" "}
-          {SelectedEventData?.subCategory}
-        </p>
-        <p>
-          <strong>Type:</strong> {SelectedEventData?.type} (
-          {SelectedEventData?.format})
-        </p>
-        <p>
-          <strong>Dates:</strong> {formatDate(SelectedEventData?.startDate)} –{" "}
-          {formatDate(SelectedEventData?.endDate)}
-        </p>
-        <p>
-          <strong>Capacity:</strong> {SelectedEventData?.capacity} attendees
-        </p>
-        <p>
-          <strong>Location:</strong> {SelectedEventData?.location?.venue},{" "}
-          {SelectedEventData?.location?.city}
-        </p>
-        <p>
-          <strong>Price:</strong>{" "}
-          {SelectedEventData?.price?.isFree
-            ? "Free"
-            : `${SelectedEventData?.price?.currency} ${SelectedEventData?.price?.standard}`}
-        </p>
-      </div>
+      <section className="mb-6">
+        <h3 className="text-lg font-semibold mb-2">Description</h3>
+        <p className="text-gray-700">{event?.description}</p>
+      </section>
 
       {/* Tags */}
-      <div>
-        <h4 className="font-semibold text-gray-700 pb-1">Tags</h4>
-        <div className="flex flex-wrap gap-2">
-          {SelectedEventData?.tags.map((tag, i) => (
-            <span
-              key={i}
-              className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs"
-            >
-              # {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Schedules */}
-      <div className="py-6">
-        <p className="font-semibold text-gray-800 mb-1">Schedule:</p>
-        {SelectedEventData?.schedule?.map((day, idx) => (
-          <div key={idx} className="mb-2">
-            <p className="text-sm font-medium text-gray-700 mb-1">
-              {formatDate(day.day)}
-            </p>
-            <ul className="text-sm list-disc ml-4 text-gray-600">
-              {day.sessions?.map((session, i) => (
-                <li key={i}>
-                  <strong>{session.title}</strong> by{" "}
-                  {session.speaker || session.speakers?.join(", ")} (
-                  {session.startTime}–{session.endTime})
-                </li>
-              ))}
-            </ul>
+      {event?.tags?.length > 0 && (
+        <section className="py-4 border-t border-gray-300">
+          <h3 className="text-lg font-semibold mb-2">Tags</h3>
+          <div className="flex flex-wrap gap-2">
+            {event.tags.map((tag, idx) => (
+              <span
+                key={idx}
+                className="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
-        ))}
-      </div>
+        </section>
+      )}
 
-      {/* Speakers */}
-      <div className="py-6">
-        <p className="font-semibold mb-2 text-black">Speakers:</p>
-        <ul className="text-sm text-gray-700 list-disc ml-4">
-          {SelectedEventData?.speakers?.map((spk, idx) => (
-            <li key={idx}>
-              <strong>{spk.name}</strong>: {spk.topic} – {spk.bio}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Organizers */}
-      <div className="mb-6">
-        <p className="font-semibold mb-2 text-black">Organizer:</p>
-        <div className="flex items-center gap-3">
-          <img
-            src={SelectedEventData?.organizer?.logo || DefaultCompanyLogo}
-            alt="Organizer"
-            className="w-12 h-12 rounded-full object-cover"
-            onError={(e) => {
-              e.target.onerror = null; // Prevent infinite loop
-              e.target.src = DefaultCompanyLogo;
+      {/* Audience */}
+      {event?.audience?.length > 0 && (
+        <section className="py-4 border-t border-gray-300">
+          <h3 className="text-lg font-semibold mb-2">Audience</h3>
+          <ul
+            className="list-disc pl-5 text-gray-700"
+            style={{
+              columnCount: 2, // 3 columns for example, adjust as needed
+              columnGap: "1.5rem",
             }}
-          />
+          >
+            {event.audience.map((item, idx) => (
+              <li key={idx} className="mb-1">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-          <div>
-            <p className="font-semibold text-gray-800">
-              {SelectedEventData?.organizer.name}
+      {/* Location */}
+      <section className="py-4 border-t border-gray-300">
+        <h3 className="text-lg font-semibold mb-2">Location</h3>
+
+        {event?.format === "Online" ? (
+          event?.liveLink ? (
+            <a
+              href={event.liveLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline"
+            >
+              Join Online Event
+            </a>
+          ) : (
+            <p className="text-gray-500">Online event link not available.</p>
+          )
+        ) : (
+          <>
+            <p>{event?.location?.venue}</p>
+            <p>{event?.location?.address}</p>
+            <p>
+              {event?.location?.city}, {event?.location?.country}
             </p>
-            <p className="text-sm text-gray-600">
-              {SelectedEventData?.organizer.bio}
-            </p>
-            <p className="text-xs text-gray-500">
-              Contact: {SelectedEventData?.organizer.contactEmail}
-            </p>
+            {event?.location?.googleMapLink && (
+              <a
+                href={event.location.googleMapLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline text-sm"
+              >
+                View on Google Maps
+              </a>
+            )}
+          </>
+        )}
+      </section>
+
+      {/* Dates */}
+      <section className="py-4 border-t border-gray-300">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex items-center gap-3">
+            <h3 className="font-semibold">Event Start Date : </h3>
+            <p>{formatDateTime(event?.startDate)}</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <h3 className="font-semibold">Event End Date : </h3>
+            <p>{formatDateTime(event?.endDate)}</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="mb-4">
-        <p className="text-sm text-gray-700">
-          <strong>Extra Notes:</strong> {SelectedEventData?.extraNotes}
+      {/* Pricing */}
+      <section className="py-4 border-t border-gray-300">
+        <div className="flex items-center gap-3">
+          {/* Title */}
+          <h3 className="font-semibold">Price Per Ticket :</h3>
+
+          {/* If free or Price */}
+          {event?.price?.isFree ? (
+            <p className="text-green-600 font-semibold">Free</p>
+          ) : (
+            <p>
+              {event?.price?.standard} {event?.price?.currency}
+            </p>
+          )}
+        </div>
+      </section>
+
+      {/* Registration */}
+      <section className="py-4 border-t border-gray-300">
+        <h3 className="text-lg font-semibold mb-2">Registration</h3>
+        <p>
+          <strong>Opens:</strong>{" "}
+          {formatDateTime(event?.registration?.openDate)}
         </p>
-      </div>
+        <p>
+          <strong>Closes:</strong>{" "}
+          {formatDateTime(event?.registration?.closeDate)}
+        </p>
+        <p>
+          <strong>Max Tickets per Person:</strong>{" "}
+          {event?.registration?.maxTicketsPerPerson}
+        </p>
+        <p>
+          <strong>Requires Approval:</strong>{" "}
+          {event?.registration?.requiresApproval ? "Yes" : "No"}
+        </p>
+        {event?.registration?.registrationUrl && (
+          <a
+            href={event.registration.registrationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline"
+          >
+            Registration Link
+          </a>
+        )}
+      </section>
+
+      {/* Organizer */}
+      <section className="mb-6">
+        <h3 className="text-lg font-semibold mb-2">Organizer</h3>
+        <p>{event?.organizer?.name}</p>
+        <p>Email: {event?.organizer?.contactEmail}</p>
+        <p>Phone: {event?.organizer?.contactPhone}</p>
+        {event?.organizer?.website && (
+          <a
+            href={event.organizer.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline"
+          >
+            Visit Website
+          </a>
+        )}
+      </section>
+
+      {/* Schedule */}
+      {event?.schedule?.length > 0 && (
+        <section className="mb-6">
+          <h3 className="text-lg font-semibold mb-2">Schedule</h3>
+          <ul className="space-y-3">
+            {event.schedule.map((item, idx) => (
+              <li key={idx} className="border-b pb-2">
+                <p className="font-semibold">{item.title}</p>
+                {item.speaker && (
+                  <p className="text-sm text-gray-500">
+                    Speaker: {item.speaker}
+                  </p>
+                )}
+                <p className="text-sm">
+                  {formatDateTime(item.startTime)} -{" "}
+                  {formatDateTime(item.endTime)}
+                </p>
+                <p className="text-gray-700">{item.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Sponsors */}
+      {event?.sponsors?.length > 0 && (
+        <section className="mb-6">
+          <h3 className="text-lg font-semibold mb-2">Sponsors</h3>
+          <ul className="space-y-2">
+            {event.sponsors.map((sponsor, idx) => (
+              <li key={idx}>
+                <p>
+                  <strong>{sponsor.tier}:</strong> {sponsor.name}
+                </p>
+                {sponsor.website && (
+                  <a
+                    href={sponsor.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline text-sm"
+                  >
+                    Visit Website
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* Action Area */}
-      <div className="flex justify-between items-center mt-6">
-        <Link to={`/Events/Apply/${SelectedEventData?._id}`}>
+      <div className="flex justify-end mt-6">
+        <Link to={`/Events/Apply/${event?._id}`}>
           <CommonButton
             text="Register"
             textColor="text-white"
@@ -224,18 +354,14 @@ const EventDetailsModal = ({ selectedEventID, setSelectedEventID }) => {
             className="text-sm font-medium"
           />
         </Link>
-        <p className="text-xs text-gray-400">
-          Posted on:{" "}
-          {new Date(SelectedEventData?.publishedAt).toLocaleDateString()}
-        </p>
       </div>
     </div>
   );
 };
 
-// Prop Validation
 EventDetailsModal.propTypes = {
   selectedEventID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   setSelectedEventID: PropTypes.func.isRequired,
 };
+
 export default EventDetailsModal;

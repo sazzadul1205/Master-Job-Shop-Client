@@ -21,6 +21,7 @@ import useAuth from "../../../Hooks/useAuth";
 // Modal
 import EventDetailsModal from "../Home/FeaturedEvents/EventDetailsModal/EventDetailsModal";
 
+
 function formatCustomDate(dateString) {
   const d = new Date(dateString);
   const options = {

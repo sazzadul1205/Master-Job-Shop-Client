@@ -177,8 +177,10 @@ const ManageInternshipApplications = () => {
           Manage Internship Applications
         </h3>
       </div>
+
       {/* Divider */}
       <div className="py-[1px] w-full bg-blue-700 my-1" />
+      
       {/* Internship Container */}
       <div className="px-4 pt-4 space-y-3">
         {InternshipWithApplicants?.map((internship, index) => {

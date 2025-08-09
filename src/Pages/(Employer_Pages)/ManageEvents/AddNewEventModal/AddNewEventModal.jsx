@@ -35,15 +35,13 @@ const AddNewEventModal = ({ CompanyData, refetch }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [previewImage, setPreviewImage] = useState(null);
 
-  // Load State
-  const [loading, setLoading] = useState(false);
-
   // inside your component:
   const inputRefs = useRef({});
 
   // RHF setup
   const {
     watch,
+    reset,
     control,
     register,
     handleSubmit,
@@ -66,6 +64,21 @@ const AddNewEventModal = ({ CompanyData, refetch }) => {
       liveLink: "",
       type: "",
       format: "",
+      extraNotes: "",
+      startDate: "",
+      endDate: "",
+      price: {
+        isFree: false,
+        standard: "",
+        currency: "",
+      },
+      registration: {
+        openDate: "",
+        closeDate: "",
+        maxTicketsPerPerson: "",
+        registrationUrl: "",
+        requiresApproval: false,
+      },
       organizer: {
         name: "",
         logo: "",
@@ -78,6 +91,23 @@ const AddNewEventModal = ({ CompanyData, refetch }) => {
         banner: "",
         promoVideo: "",
       },
+      schedule: [
+        {
+          title: "",
+          speaker: "",
+          endTime: "",
+          startTime: "",
+          description: "",
+        },
+      ],
+      sponsors: [
+        {
+          tier: "",
+          name: "",
+          website: "",
+          contactEmail: "",
+        },
+      ],
       postedBy: "",
       publishedAt: "",
       lastUpdated: "",
@@ -158,63 +188,82 @@ const AddNewEventModal = ({ CompanyData, refetch }) => {
 
   // On Submit Handler
   const onSubmit = async (data) => {
-    // Validate that an image has been selected
-    if (!previewImage) {
-      Swal.fire("Error", "Blog image is required.", "error");
-      return;
-    }
+    setErrorMessage("");
+    setIsLoading(true);
 
-    // Set loading state true to indicate processing
-    setLoading(true);
+    try {
+      // Require image check
+      if (!previewImage) {
+        throw new Error("Event image is required.");
+      }
 
-    let uploadedImageUrl = null;
+      let uploadedImageUrl = null;
 
-    // Upload the image if previewImage is present (base64 string)
-    if (previewImage) {
-      const formData = new FormData();
-      // Append only base64 string (strip out data:image/*;base64, prefix)
-      formData.append("image", previewImage.split(",")[1]);
+      // Image upload
+      if (previewImage) {
+        const formData = new FormData();
+        formData.append("image", previewImage.split(",")[1]);
 
-      try {
-        // POST request to image hosting API
         const res = await axiosPublic.post(Image_Hosting_API, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        // Extract uploaded image URL from response
         uploadedImageUrl = res?.data?.data?.display_url;
-
         if (!uploadedImageUrl) {
-          throw new Error("Image upload succeeded but URL is missing.");
+          throw new Error("Image upload succeeded but no URL returned.");
         }
-      } catch (error) {
-        // Show error alert on image upload failure and stop submission
-        Swal.fire({
-          icon: "error",
-          title: "Image Upload Failed",
-          text: `Failed to upload the image. ${
-            error?.response?.data?.message ||
-            error.message ||
-            "Please try again."
-          }`,
-        });
-        setLoading(false);
-        return;
       }
-    }
 
-    const payload = {
-      ...data,
-      media: {
-        ...data.media,
-        banner: uploadedImageUrl,
-      },
-      organizer,
-      postedBy: user.email,
-      publishedAt: new Date().toISOString(),
-      lastUpdated: new Date().toISOString(),
-    };
-    console.log("Submitted Data:", payload);
+      // Payload
+      const payload = {
+        ...data,
+        media: {
+          ...data.media,
+          banner: uploadedImageUrl,
+        },
+        organizer,
+        postedBy: user.email,
+        publishedAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
+      };
+
+      // API POST
+      const response = await axiosPublic.post("/events", payload);
+
+      // Success check
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error("Failed to create event.");
+      }
+
+      // Success alert
+      Swal.fire({
+        icon: "success",
+        title: "Event Created",
+        text: "Your event has been successfully created.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      // Reset everything
+      reset();
+      refetch();
+      setPreviewImage(null);
+      setNewFieldValues({});
+      document.getElementById("Add_New_Event_Modal").close();
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err.message ||
+        "Something went wrong. Please try again.";
+      setErrorMessage(message);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -225,7 +274,13 @@ const AddNewEventModal = ({ CompanyData, refetch }) => {
       {/* Close Button */}
       <button
         type="button"
-        onClick={() => document.getElementById("Add_New_Event_Modal").close()}
+        onClick={() => {
+          reset();
+          refetch();
+          setPreviewImage(null);
+          setNewFieldValues({});
+          document.getElementById("Add_New_Event_Modal").close();
+        }}
         className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
       >
         <ImCross className="text-xl" />
@@ -544,6 +599,281 @@ const AddNewEventModal = ({ CompanyData, refetch }) => {
           </div>
         )}
 
+        {/* Extra Notes */}
+        <div className="flex flex-col">
+          <label className="font-medium text-sm mb-1" htmlFor="extraNotes">
+            Extra Notes
+          </label>
+          <textarea
+            id="extraNotes"
+            rows={5}
+            {...register("extraNotes")}
+            placeholder="Additional instructions or details..."
+            className="textarea textarea-bordered w-full bg-white text-black border border-black"
+          />
+        </div>
+
+        {/* Time Slots */}
+        <div>
+          {/* Title */}
+          <h3 className="font-bold mb-2">Time</h3>
+
+          {/* Divider */}
+          <div className="bg-blue-700 p-[1px] mb-4" />
+
+          {/* Dates */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {["startDate", "endDate"].map((field) => {
+              const labelText = field
+                .replace(/([A-Z])/g, " $1")
+                .replace(/^./, (str) => str.toUpperCase());
+
+              return (
+                <div className="flex flex-col" key={field}>
+                  <label className="font-medium text-sm mb-1" htmlFor={field}>
+                    {labelText} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id={field}
+                    type="datetime-local"
+                    {...register(field, {
+                      required: `${labelText} is required`,
+                    })}
+                    className={`input input-bordered w-full bg-white text-black border ${
+                      errors[field] ? "border-red-500" : "border-black"
+                    }`}
+                  />
+                  {errors[field] && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors[field]?.message}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Price */}
+        <div>
+          {/* Is Free Toggle */}
+          <div className="flex items-center gap-3 pb-3">
+            <label
+              htmlFor="price.isFree"
+              className="text-sm font-medium text-gray-700"
+            >
+              Event is Free
+            </label>
+            <label className="relative inline-block w-11 h-6 cursor-pointer">
+              <input
+                type="checkbox"
+                id="price.isFree"
+                {...register("price.isFree")}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-700 transition-all duration-300"></div>
+              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full"></div>
+            </label>
+          </div>
+
+          {/* Price Standard & Currency */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Price Standard */}
+            <div className="flex flex-col">
+              <label
+                className="font-medium text-sm mb-1"
+                htmlFor="price.standard"
+              >
+                Price Standard
+              </label>
+              <input
+                id="price.standard"
+                {...register("price.standard")}
+                placeholder="Enter standard price"
+                className={`input input-bordered w-full bg-white text-black border border-black ${
+                  isFree ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
+                disabled={isFree}
+              />
+            </div>
+
+            {/* Price Currency */}
+            <div className="flex flex-col">
+              <label className="text-sm font-semibold text-black mb-1">
+                Currency <span className="text-red-500">*</span>
+              </label>
+              <select
+                {...register("price.currency", {
+                  required: "Currency selection is required",
+                })}
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors.price?.currency ? "border-red-500" : "border-black"
+                } cursor-pointer`}
+                disabled={isFree}
+              >
+                <option value="">Select Currency</option>
+                {Currencies.map((currency) => (
+                  <option key={currency.code} value={currency.code}>
+                    {currency.code} – {currency.name}
+                  </option>
+                ))}
+              </select>
+              {errors?.price?.currency && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.price.currency.message}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Registration */}
+        <div>
+          {/* Title */}
+          <h3 className="font-bold mb-2">Registration</h3>
+
+          {/* Divider */}
+          <div className="bg-blue-700 p-[1px] mb-4" />
+
+          {/* Registration */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Registration Open Date */}
+            <div className="flex flex-col">
+              <label
+                className="font-medium text-sm mb-1"
+                htmlFor="registration.openDate"
+              >
+                Registration Open Date<span className="text-red-500">*</span>
+              </label>
+              <input
+                id="registration.openDate"
+                type="datetime-local"
+                {...register("registration.openDate", {
+                  required: "Open date is required",
+                })}
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors.registration?.openDate
+                    ? "border-red-500"
+                    : "border-black"
+                }`}
+              />
+              {errors.registration?.openDate && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.registration.openDate.message}
+                </p>
+              )}
+            </div>
+
+            {/* Registration Close Date */}
+            <div className="flex flex-col">
+              <label
+                className="font-medium text-sm mb-1"
+                htmlFor="registration.closeDate"
+              >
+                Registration Close Date<span className="text-red-500">*</span>
+              </label>
+              <input
+                id="registration.closeDate"
+                type="datetime-local"
+                {...register("registration.closeDate", {
+                  required: "Close date is required",
+                })}
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors.registration?.closeDate
+                    ? "border-red-500"
+                    : "border-black"
+                }`}
+              />
+              {errors.registration?.closeDate && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.registration.closeDate.message}
+                </p>
+              )}
+            </div>
+
+            {/* Max Tickets Per Person */}
+            <div className="flex flex-col">
+              <label
+                className="font-medium text-sm mb-1"
+                htmlFor="registration.maxTicketsPerPerson"
+              >
+                Max Tickets Per Person<span className="text-red-500">*</span>
+              </label>
+              <input
+                id="registration.maxTicketsPerPerson"
+                type="number"
+                min={1}
+                {...register("registration.maxTicketsPerPerson", {
+                  required: "Max tickets per person is required",
+                  min: { value: 1, message: "Minimum is 1" },
+                })}
+                placeholder="Enter maximum tickets per person"
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors.registration?.maxTicketsPerPerson
+                    ? "border-red-500"
+                    : "border-black"
+                }`}
+              />
+              {errors.registration?.maxTicketsPerPerson && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.registration.maxTicketsPerPerson.message}
+                </p>
+              )}
+            </div>
+
+            {/* Registration URL */}
+            <div className="flex flex-col">
+              <label
+                className="font-medium text-sm mb-1"
+                htmlFor="registration.registrationUrl"
+              >
+                Registration URL<span className="text-red-500">*</span>
+              </label>
+              <input
+                id="registration.registrationUrl"
+                type="url"
+                {...register("registration.registrationUrl", {
+                  required: "Registration URL is required",
+                  pattern: {
+                    message: "Enter a valid URL",
+                  },
+                })}
+                placeholder="https://example.com/register"
+                className={`input input-bordered w-full bg-white text-black border ${
+                  errors.registration?.registrationUrl
+                    ? "border-red-500"
+                    : "border-black"
+                }`}
+              />
+              {errors.registration?.registrationUrl && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.registration.registrationUrl.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Requires Approval Toggle */}
+          <div className="flex items-center gap-3 pb-3 pt-3">
+            <label
+              htmlFor="registration.requiresApproval"
+              className="text-sm font-medium text-gray-700"
+            >
+              Requires Approval
+            </label>
+            <label className="relative inline-block w-11 h-6 cursor-pointer">
+              <input
+                type="checkbox"
+                id="registration.requiresApproval"
+                {...register("registration.requiresApproval")}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-700 transition-all duration-300"></div>
+              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full"></div>
+            </label>
+          </div>
+        </div>
+
         {/* Promo Video */}
         <div className="flex flex-col">
           <label
@@ -568,6 +898,310 @@ const AddNewEventModal = ({ CompanyData, refetch }) => {
           )}
         </div>
 
+        {/* Schedule */}
+        <div>
+          {/* Title */}
+          <h3 className="font-bold mb-2">Event Schedule</h3>
+
+          {/* Divider */}
+          <div className="bg-blue-700 p-[1px] mb-4" />
+
+          {/* Schedule Field */}
+          {fieldsSchedule.map((field, index) => (
+            <div
+              key={field.id}
+              className="border border-gray-300 rounded p-4 mb-1 relative"
+            >
+              {/* Remove button & Index */}
+              <div className="flex items-center justify-between">
+                {/* Index */}
+                <p>{index + 1}.</p>
+
+                {/* Remove button */}
+                <button
+                  type="button"
+                  onClick={() => removeSchedule(index)}
+                  className="text-black hover:text-red-500 transition-colors duration-300 cursor-pointer"
+                  title="Remove session"
+                >
+                  <ImCross />
+                </button>
+              </div>
+
+              {/* Session Title */}
+              <div className="flex flex-col mb-3">
+                <label
+                  className="text-sm font-semibold text-black mb-1"
+                  htmlFor={`schedule.${index}.title`}
+                >
+                  Session Title<span className="text-red-500">*</span>
+                </label>
+                <input
+                  id={`schedule.${index}.title`}
+                  {...register(`schedule.${index}.title`, {
+                    required: "Session title is required",
+                  })}
+                  className={`input input-bordered w-full bg-white text-black border ${
+                    errors.schedule?.[index]?.title
+                      ? "border-red-500"
+                      : "border-black"
+                  }`}
+                  placeholder="Session title"
+                />
+                {errors.schedule?.[index]?.title && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.schedule[index].title.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Time Slots */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Start Time */}
+                <div className="flex flex-col mb-3">
+                  <label
+                    className="text-sm font-semibold text-black mb-1"
+                    htmlFor={`schedule.${index}.startTime`}
+                  >
+                    Start Time<span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="datetime-local"
+                    id={`schedule.${index}.startTime`}
+                    {...register(`schedule.${index}.startTime`, {
+                      required: "Start time is required",
+                    })}
+                    className={`input input-bordered w-full bg-white text-black border ${
+                      errors.schedule?.[index]?.startTime
+                        ? "border-red-500"
+                        : "border-black"
+                    }`}
+                  />
+                  {errors.schedule?.[index]?.startTime && (
+                    <p className="text-red-600 text-sm mt-1">
+                      {errors.schedule[index].startTime.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* End Time */}
+                <div className="flex flex-col mb-3">
+                  <label
+                    className="text-sm font-semibold text-black mb-1"
+                    htmlFor={`schedule.${index}.endTime`}
+                  >
+                    End Time<span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="datetime-local"
+                    id={`schedule.${index}.endTime`}
+                    {...register(`schedule.${index}.endTime`, {
+                      required: "End time is required",
+                    })}
+                    className={`input input-bordered w-full bg-white text-black border ${
+                      errors.schedule?.[index]?.endTime
+                        ? "border-red-500"
+                        : "border-black"
+                    }`}
+                  />
+                  {errors.schedule?.[index]?.endTime && (
+                    <p className="text-red-600 text-sm mt-1">
+                      {errors.schedule[index].endTime.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="flex flex-col mb-3">
+                <label
+                  className="text-sm font-semibold text-black mb-1"
+                  htmlFor={`schedule.${index}.description`}
+                >
+                  Description
+                </label>
+                <textarea
+                  id={`schedule.${index}.description`}
+                  {...register(`schedule.${index}.description`)}
+                  placeholder="Session description"
+                  className="textarea textarea-bordered w-full bg-white text-black border-black"
+                  rows={3}
+                />
+              </div>
+
+              {/* Speaker */}
+              <div className="flex flex-col mb-3">
+                <label
+                  className="text-sm font-semibold text-black mb-1"
+                  htmlFor={`schedule.${index}.speaker`}
+                >
+                  Speaker
+                </label>
+                <input
+                  id={`schedule.${index}.speaker`}
+                  {...register(`schedule.${index}.speaker`)}
+                  placeholder="Speaker name"
+                  className="input input-bordered w-full bg-white text-black border border-black"
+                />
+              </div>
+            </div>
+          ))}
+
+          {/* Add Session Button */}
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() =>
+                appendSchedule({
+                  title: "",
+                  speaker: "",
+                  endTime: "",
+                  startTime: "",
+                  description: "",
+                })
+              }
+              className="bg-blue-600 hover:bg-blue-800 text-white font-semibold px-5 py-2 cursor-pointer"
+            >
+              + Add Session
+            </button>
+          </div>
+        </div>
+
+        {/* Sponsors */}
+        <div>
+          {/* Title */}
+          <h3 className="font-bold mb-2">Sponsors</h3>
+
+          {/* Divider */}
+          <div className="bg-blue-700 p-[1px] mb-4" />
+
+          {/* Sponsors Fields */}
+          {fieldsSponsors.map((field, index) => (
+            <div
+              key={field.id}
+              className="border border-gray-300 rounded p-4 mb-1 relative"
+            >
+              {/* Remove button & Index */}
+              <div className="flex items-center justify-between">
+                {/* Index */}
+                <p className="font-semibold">{index + 1}.</p>
+
+                {/* Remove button */}
+                <button
+                  type="button"
+                  onClick={() => removeSponsors(index)}
+                  className="text-black hover:text-red-500 transition-colors duration-300 cursor-pointer"
+                  title="Remove sponsor"
+                >
+                  <ImCross />
+                </button>
+              </div>
+
+              {/* Sponsor */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Sponsor Name */}
+                <div className="flex flex-col mb-3">
+                  <label
+                    className="text-sm font-semibold text-black mb-1"
+                    htmlFor={`sponsors.${index}.name`}
+                  >
+                    Sponsor Name<span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id={`sponsors.${index}.name`}
+                    {...register(`sponsors.${index}.name`, {
+                      required: "Sponsor name is required",
+                    })}
+                    className={`input input-bordered w-full bg-white text-black border ${
+                      errors.sponsors?.[index]?.name
+                        ? "border-red-500"
+                        : "border-black"
+                    }`}
+                    placeholder="Sponsor Name"
+                  />
+                  {errors.sponsors?.[index]?.name && (
+                    <p className="text-red-600 text-sm mt-1">
+                      {errors.sponsors[index].name.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Website */}
+                <div className="flex flex-col mb-3">
+                  <label
+                    className="text-sm font-semibold text-black mb-1"
+                    htmlFor={`sponsors.${index}.website`}
+                  >
+                    Website
+                  </label>
+                  <input
+                    id={`sponsors.${index}.website`}
+                    type="url"
+                    {...register(`sponsors.${index}.website`)}
+                    className="input input-bordered w-full bg-white text-black border border-black"
+                    placeholder="https://sponsorwebsite.com"
+                  />
+                </div>
+
+                {/* Tier */}
+                <div className="flex flex-col mb-3">
+                  <label
+                    className="text-sm font-semibold text-black mb-1"
+                    htmlFor={`sponsors.${index}.tier`}
+                  >
+                    Tier
+                  </label>
+                  <select
+                    id={`sponsors.${index}.tier`}
+                    {...register(`sponsors.${index}.tier`)}
+                    className="select select-bordered w-full bg-white text-black border border-black"
+                  >
+                    <option value="">Select tier</option>
+                    <option value="Gold">Gold</option>
+                    <option value="Silver">Silver</option>
+                    <option value="Bronze">Bronze</option>
+                  </select>
+                </div>
+
+                {/* Contact Email */}
+                <div className="flex flex-col mb-3">
+                  <label
+                    className="text-sm font-semibold text-black mb-1"
+                    htmlFor={`sponsors.${index}.contactEmail`}
+                  >
+                    Contact Email
+                  </label>
+                  <input
+                    id={`sponsors.${index}.contactEmail`}
+                    type="email"
+                    {...register(`sponsors.${index}.contactEmail`)}
+                    className="input input-bordered w-full bg-white text-black border border-black"
+                    placeholder="email@sponsor.com"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Add Sponsor Button */}
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() =>
+                appendSponsors({
+                  name: "",
+                  website: "",
+                  tier: "",
+                  contactEmail: "",
+                })
+              }
+              className="bg-blue-600 hover:bg-blue-800 text-white font-semibold px-5 py-2 cursor-pointer"
+            >
+              + Add Sponsor
+            </button>
+          </div>
+        </div>
+
         {/* Submit Button */}
         <button
           type="submit"
@@ -583,8 +1217,19 @@ const AddNewEventModal = ({ CompanyData, refetch }) => {
   );
 };
 
+// Prop Validation
 AddNewEventModal.propTypes = {
-  refetch: PropTypes.func,
+  CompanyData: PropTypes.shape({
+    name: PropTypes.string,
+    logo: PropTypes.string,
+    bio: PropTypes.string,
+    contact: PropTypes.shape({
+      email: PropTypes.string,
+      phone: PropTypes.string,
+    }),
+    website: PropTypes.string,
+  }),
+  refetch: PropTypes.func.isRequired,
 };
 
 export default AddNewEventModal;

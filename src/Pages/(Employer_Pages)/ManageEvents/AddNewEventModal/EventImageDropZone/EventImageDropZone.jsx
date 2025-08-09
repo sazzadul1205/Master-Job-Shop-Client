@@ -85,11 +85,11 @@ const EventImageDropZone = ({ previewImage, setPreviewImage }) => {
         />
 
         {previewImage ? (
-          <div className="relative group w-full flex justify-center p-0">
+          <div className="relative group w-full flex justify-center p-0 h-[300px] overflow-hidden">
             <img
               src={previewImage}
               alt="Preview"
-              className="h-[500px] object-contain"
+              className="max-h-full max-w-full object-contain"
             />
             <div className="absolute inset-0 flex items-center justify-center bg-gray-500/20 opacity-10 group-hover:opacity-100 transition-opacity duration-500">
               <div className="bg-gray-200 p-4 border-2 border-dashed border-gray-500 rounded-full">

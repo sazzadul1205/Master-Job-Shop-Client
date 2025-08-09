@@ -58,7 +58,7 @@ const EventCard = ({
 
     if (result.isConfirmed) {
       try {
-        await axiosPublic.delete(`/Event/${eventId}`);
+        await axiosPublic.delete(`/Events/${eventId}`);
         Swal.fire({
           title: "Deleted!",
           text: "The Event has been removed.",

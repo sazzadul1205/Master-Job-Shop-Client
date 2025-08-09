@@ -16,14 +16,12 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 // Shared
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
-
-// Modal
-import AddNewEventModal from "./AddNewEventModal/AddNewEventModal";
 import EventCard from "../../../Shared/EventCard/EventCard";
+
+// Modals
 import EditEventModal from "./EditEventModal/EditEventModal";
-
+import AddNewEventModal from "./AddNewEventModal/AddNewEventModal";
 import EventDetailsModal from "../../(Public_Pages)/Home/FeaturedEvents/EventDetailsModal/EventDetailsModal";
-
 
 const ManageEvents = () => {
   const { user, loading } = useAuth();
@@ -74,8 +72,6 @@ const ManageEvents = () => {
   // Loading / Error UI
   if (CompanyIsLoading || EventsIsLoading || loading) return <Loading />;
   if (CompanyError || EventsError) return <Error />;
-
-  console.log(EventsData[0]);
 
   return (
     <>

@@ -1,11 +1,17 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
+
+// Icons
 import { ImCross } from "react-icons/im";
+
+// Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 import DefaultCompanyLogo from "../../../../../assets/DefaultCompanyLogo.jpg";
 
-// Shared Components
+// Shared
 import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
 import CommonButton from "../../../../../Shared/CommonButton/CommonButton";
@@ -361,7 +367,6 @@ const EventDetailsModal = ({ selectedEventID, setSelectedEventID }) => {
       )}
 
       {/* Sponsors */}
-      {/* Sponsors */}
       {event?.sponsors?.length > 0 && (
         <section className="py-6 border-t border-gray-300">
           <h3 className="text-lg font-semibold mb-6">Sponsors</h3>
@@ -409,6 +414,7 @@ const EventDetailsModal = ({ selectedEventID, setSelectedEventID }) => {
   );
 };
 
+// Prop Validation
 EventDetailsModal.propTypes = {
   selectedEventID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   setSelectedEventID: PropTypes.func.isRequired,

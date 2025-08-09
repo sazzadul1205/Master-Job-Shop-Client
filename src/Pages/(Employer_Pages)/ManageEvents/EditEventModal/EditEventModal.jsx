@@ -14,10 +14,9 @@ import Currencies from "../../../../JSON/Currencies.json";
 
 // Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import EventImageDropZone from "../AddNewEventModal/EventImageDropZone/EventImageDropZone";
 
-// Components
-// import EventImageDropZone from "./EventImageDropZone/EventImageDropZone";
+// Component
+import EventImageDropZone from "../AddNewEventModal/EventImageDropZone/EventImageDropZone";
 
 // Image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;

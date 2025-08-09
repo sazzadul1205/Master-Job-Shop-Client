@@ -244,71 +244,116 @@ const EventDetailsModal = ({ selectedEventID, setSelectedEventID }) => {
 
       {/* Registration */}
       <section className="py-4 border-t border-gray-300">
+        {/* Title */}
         <h3 className="text-lg font-semibold mb-2">Registration</h3>
-        <p>
-          <strong>Opens:</strong>{" "}
-          {formatDateTime(event?.registration?.openDate)}
-        </p>
-        <p>
-          <strong>Closes:</strong>{" "}
-          {formatDateTime(event?.registration?.closeDate)}
-        </p>
-        <p>
-          <strong>Max Tickets per Person:</strong>{" "}
-          {event?.registration?.maxTicketsPerPerson}
-        </p>
-        <p>
-          <strong>Requires Approval:</strong>{" "}
-          {event?.registration?.requiresApproval ? "Yes" : "No"}
-        </p>
-        {event?.registration?.registrationUrl && (
-          <a
-            href={event.registration.registrationUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 underline"
-          >
-            Registration Link
-          </a>
-        )}
+
+        {/* Registration Content */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Opens */}
+          <p>
+            <strong>Registration Opens:</strong>{" "}
+            {formatDateTime(event?.registration?.openDate)}
+          </p>
+
+          {/* Closes */}
+          <p>
+            <strong>Registration Closes:</strong>{" "}
+            {formatDateTime(event?.registration?.closeDate)}
+          </p>
+
+          {/* Tickets Per Person */}
+          <p>
+            <strong>Max Tickets per Person:</strong>{" "}
+            {event?.registration?.maxTicketsPerPerson}{" "}
+            {event?.registration?.maxTicketsPerPerson === "1" ||
+            event?.registration?.maxTicketsPerPerson === 1
+              ? "Person"
+              : "Persons"}
+          </p>
+
+          {/* Requires Approval */}
+          <p>
+            <strong>Requires Approval:</strong>{" "}
+            {event?.registration?.requiresApproval ? "Yes" : "No"}
+          </p>
+        </div>
+
+        {/* Registration Link */}
+        <div className="mt-2">
+          {event?.registration?.registrationUrl && (
+            <a
+              href={event.registration.registrationUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline"
+            >
+              Registration Link
+            </a>
+          )}
+        </div>
       </section>
 
       {/* Organizer */}
-      <section className="mb-6">
+      <section className="py-4 border-t border-gray-300">
         <h3 className="text-lg font-semibold mb-2">Organizer</h3>
-        <p>{event?.organizer?.name}</p>
-        <p>Email: {event?.organizer?.contactEmail}</p>
-        <p>Phone: {event?.organizer?.contactPhone}</p>
-        {event?.organizer?.website && (
-          <a
-            href={event.organizer.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 underline"
-          >
-            Visit Website
-          </a>
-        )}
+        <div className="flex items-center gap-4 mb-3">
+          <img
+            src={event?.organizer?.logo || DefaultCompanyLogo}
+            alt={event?.organizer?.name || "Organizer Logo"}
+            className="w-16 h-16 rounded-full object-cover border"
+          />
+          <div>
+            <p className="font-semibold text-lg">{event?.organizer?.name}</p>
+            <p className="text-sm text-gray-600">
+              Email: {event?.organizer?.contactEmail}
+            </p>
+            <p className="text-sm text-gray-600">
+              Phone: {event?.organizer?.contactPhone}
+            </p>
+            {event?.organizer?.website && (
+              <a
+                href={event.organizer.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline text-sm"
+              >
+                Visit Website
+              </a>
+            )}
+          </div>
+        </div>
       </section>
 
       {/* Schedule */}
       {event?.schedule?.length > 0 && (
-        <section className="mb-6">
+        <section className="py-4 border-t border-gray-300">
           <h3 className="text-lg font-semibold mb-2">Schedule</h3>
-          <ul className="space-y-3">
+          <ul className="space-y-6">
             {event.schedule.map((item, idx) => (
-              <li key={idx} className="border-b pb-2">
-                <p className="font-semibold">{item.title}</p>
+              <li
+                key={idx}
+                className="border-b border-gray-300 pb-4 last:border-b-0"
+                style={{ scrollMarginTop: "100px" }}
+              >
+                <div className="flex justify-between items-center mb-1">
+                  <h4 className="font-semibold text-lg text-gray-900">
+                    {idx + 1}. {item.title}
+                  </h4>
+                  <span className="text-sm text-gray-500 font-mono whitespace-nowrap">
+                    {formatDateTime(item.startTime)} -{" "}
+                    {formatDateTime(item.endTime)}
+                  </span>
+                </div>
+
                 {item.speaker && (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm italic text-gray-600 mb-2">
                     Speaker: {item.speaker}
                   </p>
                 )}
-                <p className="text-sm">
-                  {formatDateTime(item.startTime)} -{" "}
-                  {formatDateTime(item.endTime)}
+
+                <p className="text-gray-700 leading-relaxed">
+                  {item.description}
                 </p>
-                <p className="text-gray-700">{item.description}</p>
               </li>
             ))}
           </ul>
@@ -316,28 +361,33 @@ const EventDetailsModal = ({ selectedEventID, setSelectedEventID }) => {
       )}
 
       {/* Sponsors */}
+      {/* Sponsors */}
       {event?.sponsors?.length > 0 && (
-        <section className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Sponsors</h3>
-          <ul className="space-y-2">
+        <section className="py-6 border-t border-gray-300">
+          <h3 className="text-lg font-semibold mb-6">Sponsors</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {event.sponsors.map((sponsor, idx) => (
-              <li key={idx}>
-                <p>
-                  <strong>{sponsor.tier}:</strong> {sponsor.name}
+              <div
+                key={idx}
+                className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-white"
+              >
+                <p className="font-semibold text-gray-900 mb-2">
+                  {sponsor.tier} Sponsor
                 </p>
+                <p className="mb-4">{sponsor.name}</p>
                 {sponsor.website && (
                   <a
                     href={sponsor.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-500 underline text-sm"
+                    className="text-blue-600 underline text-sm hover:text-blue-800"
                   >
                     Visit Website
                   </a>
                 )}
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </section>
       )}
 

@@ -15,9 +15,15 @@ import Currencies from "../../../../JSON/Currencies.json";
 // Hooks
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+
+// Components
 import EventImageDropZone from "./EventImageDropZone/EventImageDropZone";
 
-const AddNewEventModal = () => {
+// Image hosting API
+const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
+
+const AddNewEventModal = ({ CompanyData, refetch }) => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
 
@@ -28,6 +34,9 @@ const AddNewEventModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [previewImage, setPreviewImage] = useState(null);
+
+  // Load State
+  const [loading, setLoading] = useState(false);
 
   // inside your component:
   const inputRefs = useRef({});
@@ -42,41 +51,21 @@ const AddNewEventModal = () => {
   } = useForm({
     defaultValues: {
       title: "",
-      description: "",
       category: "",
       subCategory: "",
-      tags: [],
-      type: "",
-      format: "",
-      status: "",
-      extraNotes: "",
+      description: "",
+      tags: [""],
+      audience: [""],
       location: {
         venue: "",
         address: "",
         city: "",
         country: "",
-        latitude: "",
-        longitude: "",
+        googleMapLink: "",
       },
-      startDate: "",
-      endDate: "",
-      timezone: "",
-      schedule: [],
-      audience: [],
-      capacity: "",
-      price: {
-        currency: "",
-        standard: "",
-        earlyBird: "",
-        isFree: false,
-      },
-      registration: {
-        openDate: "",
-        closeDate: "",
-        maxTicketsPerPerson: "",
-        requiresApproval: false,
-        registrationUrl: "",
-      },
+      liveLink: "",
+      type: "",
+      format: "",
       organizer: {
         name: "",
         logo: "",
@@ -85,13 +74,11 @@ const AddNewEventModal = () => {
         contactPhone: "",
         website: "",
       },
-      speakers: [],
-      sponsors: [],
       media: {
         banner: "",
-        gallery: [],
         promoVideo: "",
       },
+      postedBy: "",
       publishedAt: "",
       lastUpdated: "",
     },
@@ -159,9 +146,75 @@ const AddNewEventModal = () => {
     }
   }, [fieldsSponsors, appendSponsors]);
 
+  // Create Organizer Payload
+  const organizer = {
+    name: CompanyData?.name,
+    logo: CompanyData?.logo,
+    bio: CompanyData?.bio,
+    contactEmail: CompanyData?.contact?.email,
+    contactPhone: CompanyData?.contact?.phone,
+    website: CompanyData?.website,
+  };
+
   // On Submit Handler
   const onSubmit = async (data) => {
-    console.log("Submitted Data:", data);
+    // Validate that an image has been selected
+    if (!previewImage) {
+      Swal.fire("Error", "Blog image is required.", "error");
+      return;
+    }
+
+    // Set loading state true to indicate processing
+    setLoading(true);
+
+    let uploadedImageUrl = null;
+
+    // Upload the image if previewImage is present (base64 string)
+    if (previewImage) {
+      const formData = new FormData();
+      // Append only base64 string (strip out data:image/*;base64, prefix)
+      formData.append("image", previewImage.split(",")[1]);
+
+      try {
+        // POST request to image hosting API
+        const res = await axiosPublic.post(Image_Hosting_API, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        // Extract uploaded image URL from response
+        uploadedImageUrl = res?.data?.data?.display_url;
+
+        if (!uploadedImageUrl) {
+          throw new Error("Image upload succeeded but URL is missing.");
+        }
+      } catch (error) {
+        // Show error alert on image upload failure and stop submission
+        Swal.fire({
+          icon: "error",
+          title: "Image Upload Failed",
+          text: `Failed to upload the image. ${
+            error?.response?.data?.message ||
+            error.message ||
+            "Please try again."
+          }`,
+        });
+        setLoading(false);
+        return;
+      }
+    }
+
+    const payload = {
+      ...data,
+      media: {
+        ...data.media,
+        banner: uploadedImageUrl,
+      },
+      organizer,
+      postedBy: user.email,
+      publishedAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+    };
+    console.log("Submitted Data:", payload);
   };
 
   return (
@@ -491,350 +544,7 @@ const AddNewEventModal = () => {
           </div>
         )}
 
-        {/* Extra Notes */}
-        <div className="flex flex-col">
-          <label className="font-medium text-sm mb-1" htmlFor="extraNotes">
-            Extra Notes
-          </label>
-          <textarea
-            id="extraNotes"
-            rows={3}
-            {...register("extraNotes")}
-            placeholder="Additional instructions or details..."
-            className="textarea textarea-bordered w-full bg-white text-black border border-black"
-          />
-        </div>
-
-        {/* Time Slots */}
-        <div>
-          {/* Title */}
-          <h3 className="font-bold mb-2">Time</h3>
-
-          {/* Divider */}
-          <div className="bg-blue-700 p-[1px] mb-4" />
-
-          {/* Dates */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {["startDate", "endDate"].map((field) => {
-              const labelText = field
-                .replace(/([A-Z])/g, " $1")
-                .replace(/^./, (str) => str.toUpperCase());
-
-              return (
-                <div className="flex flex-col" key={field}>
-                  <label className="font-medium text-sm mb-1" htmlFor={field}>
-                    {labelText} <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id={field}
-                    type="datetime-local"
-                    {...register(field, {
-                      required: `${labelText} is required`,
-                    })}
-                    className={`input input-bordered w-full bg-white text-black border ${
-                      errors[field] ? "border-red-500" : "border-black"
-                    }`}
-                  />
-                  {errors[field] && (
-                    <p className="text-sm text-red-600 mt-1">
-                      {errors[field]?.message}
-                    </p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Timezone */}
-        <div className="flex flex-col">
-          <label className="font-medium text-sm mb-1" htmlFor="timezone">
-            Timezone
-          </label>
-          <input
-            id="timezone"
-            {...register("timezone")}
-            placeholder="e.g., Asia/Dhaka"
-            className="input input-bordered w-full bg-white text-black border border-black"
-          />
-        </div>
-
-        {/* Capacity */}
-        <div className="flex flex-col">
-          <label className="font-medium text-sm mb-1" htmlFor="capacity">
-            Capacity <span className="text-red-500">*</span>
-          </label>
-          <input
-            id="capacity"
-            {...register("capacity", {
-              required: "Event Capacity is required",
-            })}
-            type="number"
-            min="1"
-            max="10000"
-            placeholder="200"
-            className={`input input-bordered w-full bg-white text-black border ${
-              errors.capacity ? "border-red-500" : "border-black"
-            }`}
-          />
-          {errors.capacity && (
-            <p className="text-sm text-red-600 mt-1">
-              {errors.capacity.message}
-            </p>
-          )}
-        </div>
-
-        {/* Price */}
-        <div>
-          {/* Is Free Toggle */}
-          <div className="flex items-center gap-3 pb-3">
-            <label
-              htmlFor="price.isFree"
-              className="text-sm font-medium text-gray-700"
-            >
-              Event is Free
-            </label>
-            <label className="relative inline-block w-11 h-6 cursor-pointer">
-              <input
-                type="checkbox"
-                id="price.isFree"
-                {...register("price.isFree")}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-700 transition-all duration-300"></div>
-              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full"></div>
-            </label>
-          </div>
-
-          {/* Price Standard & Currency */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Price Standard */}
-            <div className="flex flex-col">
-              <label
-                className="font-medium text-sm mb-1"
-                htmlFor="price.standard"
-              >
-                Price Standard
-              </label>
-              <input
-                id="price.standard"
-                {...register("price.standard")}
-                placeholder="Enter standard price"
-                className={`input input-bordered w-full bg-white text-black border border-black ${
-                  isFree ? "bg-gray-100 cursor-not-allowed" : ""
-                }`}
-                disabled={isFree}
-              />
-            </div>
-
-            {/* Price Currency */}
-            <div className="flex flex-col">
-              <label className="text-sm font-semibold text-black mb-1">
-                Currency <span className="text-red-500">*</span>
-              </label>
-              <select
-                {...register("price.currency", {
-                  required: "Currency selection is required",
-                })}
-                className={`input input-bordered w-full bg-white text-black border ${
-                  errors.price?.currency ? "border-red-500" : "border-black"
-                } cursor-pointer`}
-                disabled={isFree}
-              >
-                <option value="">Select Currency</option>
-                {Currencies.map((currency) => (
-                  <option key={currency.code} value={currency.code}>
-                    {currency.code} – {currency.name}
-                  </option>
-                ))}
-              </select>
-              {errors?.price?.currency && (
-                <p className="text-sm text-red-600 mt-1">
-                  {errors.price.currency.message}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Registration */}
-        <div>
-          {/* Title */}
-          <h3 className="font-bold mb-2">Registration</h3>
-
-          {/* Divider */}
-          <div className="bg-blue-700 p-[1px] mb-4" />
-
-          {/* Registration */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Registration Open Date */}
-            <div className="flex flex-col">
-              <label
-                className="font-medium text-sm mb-1"
-                htmlFor="registration.openDate"
-              >
-                Registration Open Date<span className="text-red-500">*</span>
-              </label>
-              <input
-                id="registration.openDate"
-                type="datetime-local"
-                {...register("registration.openDate", {
-                  required: "Open date is required",
-                })}
-                className={`input input-bordered w-full bg-white text-black border ${
-                  errors.registration?.openDate
-                    ? "border-red-500"
-                    : "border-black"
-                }`}
-              />
-              {errors.registration?.openDate && (
-                <p className="text-sm text-red-600 mt-1">
-                  {errors.registration.openDate.message}
-                </p>
-              )}
-            </div>
-
-            {/* Registration Close Date */}
-            <div className="flex flex-col">
-              <label
-                className="font-medium text-sm mb-1"
-                htmlFor="registration.closeDate"
-              >
-                Registration Close Date<span className="text-red-500">*</span>
-              </label>
-              <input
-                id="registration.closeDate"
-                type="datetime-local"
-                {...register("registration.closeDate", {
-                  required: "Close date is required",
-                })}
-                className={`input input-bordered w-full bg-white text-black border ${
-                  errors.registration?.closeDate
-                    ? "border-red-500"
-                    : "border-black"
-                }`}
-              />
-              {errors.registration?.closeDate && (
-                <p className="text-sm text-red-600 mt-1">
-                  {errors.registration.closeDate.message}
-                </p>
-              )}
-            </div>
-
-            {/* Max Tickets Per Person */}
-            <div className="flex flex-col">
-              <label
-                className="font-medium text-sm mb-1"
-                htmlFor="registration.maxTicketsPerPerson"
-              >
-                Max Tickets Per Person<span className="text-red-500">*</span>
-              </label>
-              <input
-                id="registration.maxTicketsPerPerson"
-                type="number"
-                min={1}
-                {...register("registration.maxTicketsPerPerson", {
-                  required: "Max tickets per person is required",
-                  min: { value: 1, message: "Minimum is 1" },
-                })}
-                placeholder="Enter maximum tickets per person"
-                className={`input input-bordered w-full bg-white text-black border ${
-                  errors.registration?.maxTicketsPerPerson
-                    ? "border-red-500"
-                    : "border-black"
-                }`}
-              />
-              {errors.registration?.maxTicketsPerPerson && (
-                <p className="text-sm text-red-600 mt-1">
-                  {errors.registration.maxTicketsPerPerson.message}
-                </p>
-              )}
-            </div>
-
-            {/* Registration URL */}
-            <div className="flex flex-col">
-              <label
-                className="font-medium text-sm mb-1"
-                htmlFor="registration.registrationUrl"
-              >
-                Registration URL<span className="text-red-500">*</span>
-              </label>
-              <input
-                id="registration.registrationUrl"
-                type="url"
-                {...register("registration.registrationUrl", {
-                  required: "Registration URL is required",
-                  pattern: {
-                    message: "Enter a valid URL",
-                  },
-                })}
-                placeholder="https://example.com/register"
-                className={`input input-bordered w-full bg-white text-black border ${
-                  errors.registration?.registrationUrl
-                    ? "border-red-500"
-                    : "border-black"
-                }`}
-              />
-              {errors.registration?.registrationUrl && (
-                <p className="text-sm text-red-600 mt-1">
-                  {errors.registration.registrationUrl.message}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Requires Approval Toggle */}
-          <div className="flex items-center gap-3 pb-3 pt-3">
-            <label
-              htmlFor="registration.requiresApproval"
-              className="text-sm font-medium text-gray-700"
-            >
-              Requires Approval
-            </label>
-            <label className="relative inline-block w-11 h-6 cursor-pointer">
-              <input
-                type="checkbox"
-                id="registration.requiresApproval"
-                {...register("registration.requiresApproval")}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-700 transition-all duration-300"></div>
-              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-full"></div>
-            </label>
-          </div>
-        </div>
-
-        {/* Registration URL */}
-        <div className="flex flex-col">
-          <label
-            className="font-medium text-sm mb-1"
-            htmlFor="registration.registrationUrl"
-          >
-            Registration URL<span className="text-red-500">*</span>
-          </label>
-          <input
-            id="registration.registrationUrl"
-            {...register("registration.registrationUrl", {
-              required: "Registration URL is required",
-              pattern: {
-                message: "Enter a valid URL",
-              },
-            })}
-            placeholder="https://..."
-            className={`input input-bordered w-full bg-white text-black border ${
-              errors?.registration?.registrationUrl
-                ? "border-red-500"
-                : "border-black"
-            }`}
-          />
-          {errors?.registration?.registrationUrl && (
-            <p className="text-sm text-red-600 mt-1">
-              {errors.registration.registrationUrl.message}
-            </p>
-          )}
-        </div>
-
-        {/* Title */}
+        {/* Promo Video */}
         <div className="flex flex-col">
           <label
             className="font-medium text-sm mb-1"
@@ -856,310 +566,6 @@ const AddNewEventModal = () => {
               {errors?.media?.promoVideo.message}
             </p>
           )}
-        </div>
-
-        {/* Schedule */}
-        <div>
-          {/* Title */}
-          <h3 className="font-bold mb-2">Event Schedule</h3>
-
-          {/* Divider */}
-          <div className="bg-blue-700 p-[1px] mb-4" />
-
-          {/* Schedule Field */}
-          {fieldsSchedule.map((field, index) => (
-            <div
-              key={field.id}
-              className="border border-gray-300 rounded p-4 mb-1 relative"
-            >
-              {/* Remove button & Index */}
-              <div className="flex items-center justify-between">
-                {/* Index */}
-                <p>{index + 1}.</p>
-
-                {/* Remove button */}
-                <button
-                  type="button"
-                  onClick={() => removeSchedule(index)}
-                  className="text-black hover:text-red-500 transition-colors duration-300 cursor-pointer"
-                  title="Remove session"
-                >
-                  <ImCross />
-                </button>
-              </div>
-
-              {/* Session Title */}
-              <div className="flex flex-col mb-3">
-                <label
-                  className="text-sm font-semibold text-black mb-1"
-                  htmlFor={`schedule.${index}.title`}
-                >
-                  Session Title<span className="text-red-500">*</span>
-                </label>
-                <input
-                  id={`schedule.${index}.title`}
-                  {...register(`schedule.${index}.title`, {
-                    required: "Session title is required",
-                  })}
-                  className={`input input-bordered w-full bg-white text-black border ${
-                    errors.schedule?.[index]?.title
-                      ? "border-red-500"
-                      : "border-black"
-                  }`}
-                  placeholder="Session title"
-                />
-                {errors.schedule?.[index]?.title && (
-                  <p className="text-red-600 text-sm mt-1">
-                    {errors.schedule[index].title.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Time Slots */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Start Time */}
-                <div className="flex flex-col mb-3">
-                  <label
-                    className="text-sm font-semibold text-black mb-1"
-                    htmlFor={`schedule.${index}.startTime`}
-                  >
-                    Start Time<span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="datetime-local"
-                    id={`schedule.${index}.startTime`}
-                    {...register(`schedule.${index}.startTime`, {
-                      required: "Start time is required",
-                    })}
-                    className={`input input-bordered w-full bg-white text-black border ${
-                      errors.schedule?.[index]?.startTime
-                        ? "border-red-500"
-                        : "border-black"
-                    }`}
-                  />
-                  {errors.schedule?.[index]?.startTime && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.schedule[index].startTime.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* End Time */}
-                <div className="flex flex-col mb-3">
-                  <label
-                    className="text-sm font-semibold text-black mb-1"
-                    htmlFor={`schedule.${index}.endTime`}
-                  >
-                    End Time<span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="datetime-local"
-                    id={`schedule.${index}.endTime`}
-                    {...register(`schedule.${index}.endTime`, {
-                      required: "End time is required",
-                    })}
-                    className={`input input-bordered w-full bg-white text-black border ${
-                      errors.schedule?.[index]?.endTime
-                        ? "border-red-500"
-                        : "border-black"
-                    }`}
-                  />
-                  {errors.schedule?.[index]?.endTime && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.schedule[index].endTime.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="flex flex-col mb-3">
-                <label
-                  className="text-sm font-semibold text-black mb-1"
-                  htmlFor={`schedule.${index}.description`}
-                >
-                  Description
-                </label>
-                <textarea
-                  id={`schedule.${index}.description`}
-                  {...register(`schedule.${index}.description`)}
-                  placeholder="Session description"
-                  className="textarea textarea-bordered w-full bg-white text-black border-black"
-                  rows={3}
-                />
-              </div>
-
-              {/* Speaker */}
-              <div className="flex flex-col mb-3">
-                <label
-                  className="text-sm font-semibold text-black mb-1"
-                  htmlFor={`schedule.${index}.speaker`}
-                >
-                  Speaker
-                </label>
-                <input
-                  id={`schedule.${index}.speaker`}
-                  {...register(`schedule.${index}.speaker`)}
-                  placeholder="Speaker name"
-                  className="input input-bordered w-full bg-white text-black border border-black"
-                />
-              </div>
-            </div>
-          ))}
-
-          {/* Add Session Button */}
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={() =>
-                appendSchedule({
-                  title: "",
-                  speaker: "",
-                  endTime: "",
-                  startTime: "",
-                  description: "",
-                })
-              }
-              className="bg-blue-600 hover:bg-blue-800 text-white font-semibold px-5 py-2 cursor-pointer"
-            >
-              + Add Session
-            </button>
-          </div>
-        </div>
-
-        {/* Sponsors */}
-        <div>
-          {/* Title */}
-          <h3 className="font-bold mb-2">Sponsors</h3>
-
-          {/* Divider */}
-          <div className="bg-blue-700 p-[1px] mb-4" />
-
-          {/* Sponsors Fields */}
-          {fieldsSponsors.map((field, index) => (
-            <div
-              key={field.id}
-              className="border border-gray-300 rounded p-4 mb-1 relative"
-            >
-              {/* Remove button & Index */}
-              <div className="flex items-center justify-between">
-                {/* Index */}
-                <p className="font-semibold">{index + 1}.</p>
-
-                {/* Remove button */}
-                <button
-                  type="button"
-                  onClick={() => removeSponsors(index)}
-                  className="text-black hover:text-red-500 transition-colors duration-300 cursor-pointer"
-                  title="Remove sponsor"
-                >
-                  <ImCross />
-                </button>
-              </div>
-
-              {/* Sponsor */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Sponsor Name */}
-                <div className="flex flex-col mb-3">
-                  <label
-                    className="text-sm font-semibold text-black mb-1"
-                    htmlFor={`sponsors.${index}.name`}
-                  >
-                    Sponsor Name<span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id={`sponsors.${index}.name`}
-                    {...register(`sponsors.${index}.name`, {
-                      required: "Sponsor name is required",
-                    })}
-                    className={`input input-bordered w-full bg-white text-black border ${
-                      errors.sponsors?.[index]?.name
-                        ? "border-red-500"
-                        : "border-black"
-                    }`}
-                    placeholder="Sponsor Name"
-                  />
-                  {errors.sponsors?.[index]?.name && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.sponsors[index].name.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Website */}
-                <div className="flex flex-col mb-3">
-                  <label
-                    className="text-sm font-semibold text-black mb-1"
-                    htmlFor={`sponsors.${index}.website`}
-                  >
-                    Website
-                  </label>
-                  <input
-                    id={`sponsors.${index}.website`}
-                    type="url"
-                    {...register(`sponsors.${index}.website`)}
-                    className="input input-bordered w-full bg-white text-black border border-black"
-                    placeholder="https://sponsorwebsite.com"
-                  />
-                </div>
-
-                {/* Tier */}
-                <div className="flex flex-col mb-3">
-                  <label
-                    className="text-sm font-semibold text-black mb-1"
-                    htmlFor={`sponsors.${index}.tier`}
-                  >
-                    Tier
-                  </label>
-                  <select
-                    id={`sponsors.${index}.tier`}
-                    {...register(`sponsors.${index}.tier`)}
-                    className="select select-bordered w-full bg-white text-black border border-black"
-                  >
-                    <option value="">Select tier</option>
-                    <option value="Gold">Gold</option>
-                    <option value="Silver">Silver</option>
-                    <option value="Bronze">Bronze</option>
-                  </select>
-                </div>
-
-                {/* Contact Email */}
-                <div className="flex flex-col mb-3">
-                  <label
-                    className="text-sm font-semibold text-black mb-1"
-                    htmlFor={`sponsors.${index}.contactEmail`}
-                  >
-                    Contact Email
-                  </label>
-                  <input
-                    id={`sponsors.${index}.contactEmail`}
-                    type="email"
-                    {...register(`sponsors.${index}.contactEmail`)}
-                    className="input input-bordered w-full bg-white text-black border border-black"
-                    placeholder="email@sponsor.com"
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* Add Sponsor Button */}
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={() =>
-                appendSponsors({
-                  name: "",
-                  website: "",
-                  tier: "",
-                  contactEmail: "",
-                })
-              }
-              className="bg-blue-600 hover:bg-blue-800 text-white font-semibold px-5 py-2 cursor-pointer"
-            >
-              + Add Sponsor
-            </button>
-          </div>
         </div>
 
         {/* Submit Button */}

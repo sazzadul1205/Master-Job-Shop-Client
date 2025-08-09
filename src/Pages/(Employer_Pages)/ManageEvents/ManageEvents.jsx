@@ -67,7 +67,6 @@ const ManageEvents = () => {
     CompanyRefetch();
   };
 
-  //   console.log(EventsData);
 
   // Loading / Error UI
   if (CompanyIsLoading || loading) return <Loading />;

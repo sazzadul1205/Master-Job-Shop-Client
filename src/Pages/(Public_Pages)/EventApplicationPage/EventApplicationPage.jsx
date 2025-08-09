@@ -21,6 +21,21 @@ import useAuth from "../../../Hooks/useAuth";
 // Modal
 import EventDetailsModal from "../Home/FeaturedEvents/EventDetailsModal/EventDetailsModal";
 
+function formatCustomDate(dateString) {
+  const d = new Date(dateString);
+  const options = {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  };
+  const formatted = d.toLocaleString("en-US", options);
+  const [monthDay, year, time] = formatted.split(", ");
+  return `${monthDay.replace(" ", ", ")} ${year} ${time}`;
+}
+
 const EventApplicationPage = () => {
   const axiosPublic = useAxiosPublic();
   const { user, loading } = useAuth();
@@ -32,6 +47,11 @@ const EventApplicationPage = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedEventID, setSelectedEventID] = useState(null);
   const [showAlreadyAppliedModal, setShowAlreadyAppliedModal] = useState(false);
+  // State for registration status modals
+  const [showRegistrationNotOpenModal, setShowRegistrationNotOpenModal] =
+    useState(false);
+  const [showRegistrationEndedModal, setShowRegistrationEndedModal] =
+    useState(false);
 
   // Fetch selected Event
   const {
@@ -90,6 +110,21 @@ const EventApplicationPage = () => {
     }
   }, [CheckIfApplied, CheckIfAppliedIsLoading]);
 
+  // Somewhere in your logic, check registration window and trigger modals:
+  useEffect(() => {
+    if (!SelectedEventData) return;
+
+    const now = new Date();
+    const openDate = new Date(SelectedEventData.registration.openDate);
+    const closeDate = new Date(SelectedEventData.registration.closeDate);
+
+    if (now < openDate) {
+      setShowRegistrationNotOpenModal(true);
+    } else if (now > closeDate) {
+      setShowRegistrationEndedModal(true);
+    }
+  }, [SelectedEventData]);
+
   // React Hook Form
   const {
     register,
@@ -112,9 +147,11 @@ const EventApplicationPage = () => {
       // Create application data
       const applicationData = {
         ...data,
+        name: UsersData.name || UsersData.fullName,
         eventId: eventId,
         email: UsersData?.email,
         phone: UsersData?.phone,
+        profileImage: UsersData?.profileImage,
         appliedAt: new Date().toISOString(),
       };
 
@@ -232,130 +269,136 @@ const EventApplicationPage = () => {
 
           {/* Application Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Full Name */}
+            {/* Number of Attendees */}
             <div>
-              <label className="block font-semibold mb-1" htmlFor="name">
-                Full Name <span className="text-red-600">*</span>
+              <label className="block font-semibold mb-1" htmlFor="attendees">
+                Number of Attendees
               </label>
               <input
-                id="name"
-                type="text"
-                {...register("name", {
-                  required: "Full Name is required",
-                  minLength: {
-                    value: 3,
-                    message: "Name must be at least 3 characters",
+                id="attendees"
+                type="number"
+                min={1}
+                max={
+                  Number(SelectedEventData.registration.maxTicketsPerPerson) ||
+                  2
+                }
+                {...register("attendees", {
+                  required: "Please specify number of attendees",
+                  min: { value: 1, message: "Minimum 1 attendee required" },
+                  max: {
+                    value:
+                      Number(
+                        SelectedEventData.registration.maxTicketsPerPerson
+                      ) || 2,
+                    message: `Maximum ${SelectedEventData.registration.maxTicketsPerPerson} attendees allowed`,
                   },
                 })}
-                defaultValue={UsersData?.name || ""}
+                defaultValue={1}
                 className="w-full border px-4 py-2 rounded-md"
               />
-              {errors.name && (
-                <p className="text-red-500 text-sm">{errors.name.message}</p>
+              {errors.attendees && (
+                <p className="text-red-500 text-sm">
+                  {errors.attendees.message}
+                </p>
               )}
             </div>
 
-            {/* Number of Attendees & Attendance Type */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block font-semibold mb-1" htmlFor="attendees">
-                  Number of Attendees
-                </label>
-                <input
-                  id="attendees"
-                  type="number"
-                  min="1"
-                  max="10"
-                  {...register("attendees", {
-                    min: { value: 1, message: "Minimum 1 attendee required" },
-                    max: { value: 10, message: "Maximum 10 attendees allowed" },
-                  })}
-                  defaultValue={1}
-                  className="w-full border px-4 py-2 rounded-md"
-                />
-                {errors.attendees && (
-                  <p className="text-red-500 text-sm">
-                    {errors.attendees.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  className="block font-semibold mb-1"
-                  htmlFor="attendanceType"
-                >
-                  Attendance Type <span className="text-red-600">*</span>
-                </label>
-                <select
-                  id="attendanceType"
-                  {...register("attendanceType", {
-                    required: "Please select attendance type",
-                  })}
-                  defaultValue=""
-                  className="w-full border px-4 py-2 rounded-md"
-                >
-                  <option value="" disabled>
-                    Select attendance type
-                  </option>
-                  <option value="in-person">In-Person</option>
-                  <option value="virtual">Virtual</option>
-                </select>
-                {errors.attendanceType && (
-                  <p className="text-red-500 text-sm">
-                    {errors.attendanceType.message}
-                  </p>
-                )}
-              </div>
+            {/* Payment Type */}
+            <div>
+              <label className="block font-semibold mb-1" htmlFor="paymentType">
+                Payment Type
+              </label>
+              <select
+                id="paymentType"
+                {...register("paymentType", {
+                  required: "Please select a payment type",
+                })}
+                defaultValue=""
+                className="w-full border px-4 py-2 rounded-md"
+              >
+                <option value="" disabled>
+                  Select Payment Type
+                </option>
+                <option value="Cash">Cash</option>
+                <option value="Mobile Banking">Mobile Banking</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Other">Other</option>
+              </select>
+              {errors.paymentType && (
+                <p className="text-red-500 text-sm">
+                  {errors.paymentType.message}
+                </p>
+              )}
             </div>
 
-            {/* Special Requirements */}
+            {/* Receipt Number */}
             <div>
               <label
                 className="block font-semibold mb-1"
-                htmlFor="specialRequirements"
+                htmlFor="receiptNumber"
               >
-                Special Requirements
+                Receipt Number
               </label>
-              <textarea
-                id="specialRequirements"
-                rows="4"
-                {...register("specialRequirements")}
-                placeholder="Dietary restrictions, accessibility needs, etc."
+              <input
+                id="receiptNumber"
+                type="text"
+                {...register("receiptNumber", {
+                  required: "Receipt number is required",
+                  minLength: {
+                    value: 3,
+                    message: "Receipt number is too short",
+                  },
+                })}
                 className="w-full border px-4 py-2 rounded-md"
               />
+              {errors.receiptNumber && (
+                <p className="text-red-500 text-sm">
+                  {errors.receiptNumber.message}
+                </p>
+              )}
             </div>
 
-            {/* Agreement */}
-            <div className="flex items-center gap-3">
-              <input
-                id="agreeTerms"
-                type="checkbox"
-                {...register("agreeTerms", {
-                  required: "You must agree before submitting",
-                })}
-                className="w-5 h-5 rounded border-gray-300 cursor-pointer"
-              />
-              <label
-                htmlFor="agreeTerms"
-                className="select-none cursor-pointer"
-              >
-                I agree to the{" "}
-                <a
-                  href="/terms"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-blue-600 underline"
+            {/* Motivation (Optional, if approval required) */}
+            {SelectedEventData.registration.requiresApproval && (
+              <div>
+                <label
+                  className="block font-semibold mb-1"
+                  htmlFor="motivation"
                 >
-                  terms & conditions
-                </a>
-                .
-              </label>
-            </div>
-            {errors.agreeTerms && (
-              <p className="text-red-500 text-sm">
-                {errors.agreeTerms.message}
-              </p>
+                  Why do you want to attend? (Optional)
+                </label>
+                <textarea
+                  id="motivation"
+                  rows={4}
+                  {...register("motivation")}
+                  className="w-full border px-4 py-2 rounded-md"
+                  placeholder="Briefly explain your interest"
+                />
+              </div>
+            )}
+
+            {/* Agree to Terms (extraNotes) */}
+            {SelectedEventData.extraNotes && (
+              <div>
+                <label className="block mb-2 font-semibold">
+                  <input
+                    type="checkbox"
+                    {...register("agreeToTerms", {
+                      required: "You must agree to the terms to apply",
+                    })}
+                    className="mr-2"
+                  />
+                  I have read and agree to the event terms.
+                </label>
+                <p className="text-gray-600 whitespace-pre-wrap text-sm mb-4">
+                  {SelectedEventData.extraNotes}
+                </p>
+                {errors.agreeToTerms && (
+                  <p className="text-red-500 text-sm">
+                    {errors.agreeToTerms.message}
+                  </p>
+                )}
+              </div>
             )}
 
             {/* Submit Button */}
@@ -460,6 +503,64 @@ const EventApplicationPage = () => {
                 clickEvent={() => {
                   setShowAlreadyAppliedModal(false);
                   navigate(-1); // Go back
+                }}
+                bgColor="gray"
+                textColor="text-white"
+                px="px-6"
+                py="py-2"
+                borderRadius="rounded"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Registration Not Open Yet Modal */}
+      {showRegistrationNotOpenModal && (
+        <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+            <h3 className="text-lg font-bold text-black mb-2">
+              Registration Not Open Yet
+            </h3>
+            <p className="text-black font-semibold mb-4">
+              Registration for this event opens on{" "}
+              {formatCustomDate(SelectedEventData.registration.closeDate)}
+            </p>
+            <div className="flex justify-end">
+              <CommonButton
+                text="Back"
+                clickEvent={() => {
+                  setShowRegistrationNotOpenModal(false);
+                  navigate(-1);
+                }}
+                bgColor="gray"
+                textColor="text-white"
+                px="px-6"
+                py="py-2"
+                borderRadius="rounded"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Registration Ended Modal */}
+      {showRegistrationEndedModal && (
+        <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+            <h3 className="text-lg font-bold text-black mb-2">
+              Registration Ended
+            </h3>
+            <p className="text-black font-semibold mb-4">
+              Registration for this event closed on{" "}
+              {formatCustomDate(SelectedEventData.registration.closeDate)}
+            </p>
+            <div className="flex justify-end">
+              <CommonButton
+                text="Back"
+                clickEvent={() => {
+                  setShowRegistrationEndedModal(false);
+                  navigate(-1);
                 }}
                 bgColor="gray"
                 textColor="text-white"

@@ -222,7 +222,7 @@ const EventCard = ({
         </div>
       ) : (
         <div className="flex justify-between items-center pt-2 mt-auto">
-          <Link to={`/Event/Apply/${event?._id}`}>
+          <Link to={`/Events/Apply/${event?._id}`}>
             <CommonButton
               text="Bid Now"
               textColor="text-white"

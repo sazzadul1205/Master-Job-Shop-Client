@@ -1,11 +1,121 @@
-import React from "react";
 import { FaCheck, FaEye } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import Swal from "sweetalert2";
+import PropTypes from "prop-types";
 
 const EventApplicantTable = ({
+  refetch,
   paginatedApplicants,
   setSelectedApplicationID,
 }) => {
+  const axiosPublic = useAxiosPublic();
+
+  // Handle Reject Applications
+  const handleRejectApplicant = async (applicantId) => {
+    try {
+      const { isConfirmed } = await Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to reject this applicant?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, reject",
+        cancelButtonText: "Cancel",
+        reverseButtons: true,
+        focusCancel: true,
+      });
+
+      if (!isConfirmed) return;
+
+      const response = await axiosPublic.patch(
+        `/EventApplications/Status/Reject/${applicantId}`
+      );
+
+      if (response.status !== 200) {
+        console.error("Failed to reject applicant:", response.statusText);
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: "Failed to reject applicant. Please try again.",
+          confirmButtonText: "Ok",
+        });
+        return;
+      }
+
+      await Swal.fire({
+        icon: "success",
+        title: "Rejected",
+        text: "Applicant has been rejected.",
+        timer: 1500,
+        showConfirmButton: false,
+        timerProgressBar: true,
+      });
+      refetch();
+
+      // Optionally trigger refresh or state update here
+    } catch (error) {
+      console.error("Error rejecting applicant:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Failed",
+        text: "Something went wrong. Please try again.",
+        confirmButtonText: "Ok",
+      });
+    }
+  };
+  // Handle Accept Applications
+  const handleAcceptApplicant = async (applicantId) => {
+    try {
+      const { isConfirmed } = await Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to Accept this applicant?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, Accept",
+        cancelButtonText: "Cancel",
+        reverseButtons: true,
+        focusCancel: true,
+      });
+
+      if (!isConfirmed) return;
+
+      const response = await axiosPublic.patch(
+        `/EventApplications/Status/Accept/${applicantId}`
+      );
+
+      if (response.status !== 200) {
+        console.error("Failed to Accept applicant:", response.statusText);
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: "Failed to Accept applicant. Please try again.",
+          confirmButtonText: "Ok",
+        });
+        return;
+      }
+
+      await Swal.fire({
+        icon: "success",
+        title: "Accepted",
+        text: "Applicant has been Accepted.",
+        timer: 1500,
+        showConfirmButton: false,
+        timerProgressBar: true,
+      });
+      refetch();
+
+      // Optionally trigger refresh or state update here
+    } catch (error) {
+      console.error("Error Accepting applicant:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Failed",
+        text: "Something went wrong. Please try again.",
+        confirmButtonText: "Ok",
+      });
+    }
+  };
+
   return (
     <div className="overflow-x-auto rounded shadow border border-gray-200 bg-white">
       <table className="min-w-full bg-white text-sm text-gray-800">
@@ -17,7 +127,7 @@ const EventApplicantTable = ({
             <th className="px-4 py-3">Phone</th>
             <th className="px-4 py-3">Attendees</th>
             <th className="px-4 py-3">Applied At</th>
-            <th className="px-4 py-3">Actions</th>
+            <th className="px-4 py-3 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -25,7 +135,13 @@ const EventApplicantTable = ({
             paginatedApplicants.map((applicant, index) => (
               <tr
                 key={applicant._id}
-                className="border-b border-gray-200 hover:bg-gray-50"
+                className={`${
+                  applicant.status === "Rejected"
+                    ? "bg-red-50"
+                    : applicant.status === "Accepted"
+                    ? "bg-green-50"
+                    : "hover:bg-gray-50"
+                }`}
               >
                 {/* Index */}
                 <td className="px-4 py-3 text-center">{index + 1}</td>
@@ -79,44 +195,75 @@ const EventApplicantTable = ({
 
                 {/* Actions */}
                 <td className="px-4 py-3 flex justify-end items-center gap-2 whitespace-nowrap flex-shrink-0">
-                  {/* View Button */}
-                  <button
-                    onClick={() => {
-                      setSelectedApplicationID(applicant?._id);
-                      document
-                        .getElementById("View_Internship_Applications_Modal")
-                        .showModal();
-                    }}
-                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
-                  >
-                    <FaEye />
-                    View
-                  </button>
+                  {applicant.status === "Accepted" ? (
+                    <div className="w-[300px] flex justify-center items-center gap-3">
+                      <span className="text-green-600 font-semibold">
+                        Accepted
+                      </span>
+                      {/* View Button */}
+                      <button
+                        onClick={() => {
+                          setSelectedApplicationID(applicant?._id);
+                          document
+                            .getElementById(
+                              "View_Internship_Applications_Modal"
+                            )
+                            .showModal();
+                        }}
+                        className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
+                      >
+                        <FaEye />
+                        View
+                      </button>
+                    </div>
+                  ) : applicant.status === "Rejected" ? (
+                    // Rejected Status
+                    <div className="w-[300px] flex justify-center items-center h-full">
+                      <p className="text-red-600 font-semibold text-center">
+                        Applicant Rejected
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="w-[300px] flex justify-center items-center gap-2">
+                      {/* View Button */}
+                      <button
+                        onClick={() => {
+                          setSelectedApplicationID(applicant?._id);
+                          document
+                            .getElementById(
+                              "View_Internship_Applications_Modal"
+                            )
+                            .showModal();
+                        }}
+                        className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
+                      >
+                        <FaEye />
+                        View
+                      </button>
 
-                  {/* Reject Button */}
-                  <button
-                    onClick={() => {
-                      handleRejectApplicant(applicant._id);
-                    }}
-                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-red-500 hover:text-white border border-red-500 hover:bg-red-500 rounded transition cursor-pointer"
-                  >
-                    <ImCross />
-                    Reject
-                  </button>
+                      {/* Reject Button */}
+                      <button
+                        onClick={() => {
+                          handleRejectApplicant(applicant?._id);
+                        }}
+                        className="flex items-center gap-2 px-3 py-1.5 font-medium text-red-500 hover:text-white border border-red-500 hover:bg-red-500 rounded transition cursor-pointer"
+                      >
+                        <ImCross />
+                        Reject
+                      </button>
 
-                  {/* Accept Button */}
-                  <button
-                    onClick={() => {
-                      setSelectedApplicationID(applicant?._id);
-                      document
-                        .getElementById("Accepted_Application_Modal")
-                        .showModal();
-                    }}
-                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded transition cursor-pointer"
-                  >
-                    <FaCheck />
-                    Accept
-                  </button>
+                      {/* Accept Button */}
+                      <button
+                        onClick={() => {
+                          handleAcceptApplicant(applicant?._id);
+                        }}
+                        className="flex items-center gap-2 px-3 py-1.5 font-medium text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded transition cursor-pointer"
+                      >
+                        <FaCheck />
+                        Accept
+                      </button>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))
@@ -134,6 +281,28 @@ const EventApplicantTable = ({
       </table>
     </div>
   );
+};
+
+// Prop Validation
+EventApplicantTable.propTypes = {
+  refetch: PropTypes.func.isRequired,
+  paginatedApplicants: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      status: PropTypes.string,
+      profileImage: PropTypes.string,
+      fullName: PropTypes.string,
+      name: PropTypes.string,
+      email: PropTypes.string,
+      phone: PropTypes.string,
+      attendees: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      appliedAt: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.instanceOf(Date),
+      ]).isRequired,
+    })
+  ).isRequired,
+  setSelectedApplicationID: PropTypes.func.isRequired,
 };
 
 export default EventApplicantTable;

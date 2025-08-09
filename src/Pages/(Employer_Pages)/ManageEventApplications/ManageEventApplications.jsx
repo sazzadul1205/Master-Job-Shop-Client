@@ -1,20 +1,15 @@
 import { useState } from "react";
 
 // Packages
-import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
 
 // Icons
 import {
   FaAngleLeft,
   FaAngleRight,
-  FaCheck,
   FaChevronDown,
   FaChevronUp,
-  FaEye,
-  FaRegClock,
 } from "react-icons/fa";
-import { ImCross } from "react-icons/im";
 
 // Assets
 import EventApplicationBlue from "../../../assets/EmployerLayout/EventApplication/EventApplicationBlue.png";
@@ -27,6 +22,7 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 import EventApplicantTable from "./EventApplicantTable/EventApplicantTable";
+import PropTypes from "prop-types";
 
 const ManageEventApplications = () => {
   const { user, loading } = useAuth();
@@ -98,62 +94,6 @@ const ManageEventApplications = () => {
   if (EventIsLoading || EventApplicationsLoading || loading) return <Loading />;
   if (EventError || EventApplicationsError) return <Error />;
 
-  // Handle Reject Applications
-  const handleRejectApplicant = async (applicantId) => {
-    try {
-      const { isConfirmed } = await Swal.fire({
-        title: "Are you sure?",
-        text: "Do you want to reject this applicant?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, reject",
-        cancelButtonText: "Cancel",
-        reverseButtons: true,
-        focusCancel: true,
-      });
-
-      if (!isConfirmed) return;
-
-      const response = await axiosPublic.put(
-        `/EventApplications/Status/${applicantId}`,
-        {
-          status: "Rejected",
-        }
-      );
-
-      if (response.status !== 200) {
-        console.error("Failed to reject applicant:", response.statusText);
-        Swal.fire({
-          icon: "error",
-          title: "Failed",
-          text: "Failed to reject applicant. Please try again.",
-          confirmButtonText: "Ok",
-        });
-        return;
-      }
-
-      await Swal.fire({
-        icon: "success",
-        title: "Rejected",
-        text: "Applicant has been rejected.",
-        timer: 1500,
-        showConfirmButton: false,
-        timerProgressBar: true,
-      });
-      refetch();
-
-      // Optionally trigger refresh or state update here
-    } catch (error) {
-      console.error("Error rejecting applicant:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Failed",
-        text: "Something went wrong. Please try again.",
-        confirmButtonText: "Ok",
-      });
-    }
-  };
-
   return (
     <>
       {/* Header */}
@@ -179,9 +119,10 @@ const ManageEventApplications = () => {
 
           const sortedApplicants = [...event.Applicants].sort((a, b) => {
             const getOrder = (status) => {
-              if (status === "Accepted") return 0;
+              if (!status) return 0; // No status first
+              if (status === "Accepted") return 1;
               if (status === "Rejected") return 2;
-              return 1;
+              return 3; // Any other status last, just in case
             };
             return getOrder(a.status) - getOrder(b.status);
           });
@@ -282,12 +223,48 @@ const ManageEventApplications = () => {
 
               {/* Applicants Section */}
               <div className="flex justify-between items-center pt-4 text-sm font-medium text-gray-700">
-                <p>
-                  Applicants:{" "}
-                  <span className="text-gray-900">
-                    {event.Applicants?.length || 0}
-                  </span>
-                </p>
+                {/* Applicants Number */}
+                <div className="flex text-sm font-medium text-gray-700 gap-4">
+                  <p>
+                    Applicants:{" "}
+                    <span className="text-gray-900">
+                      {event.Applicants.length}
+                    </span>
+                  </p>
+                  {event.Applicants.filter((app) => app.status === "Accepted")
+                    .length > 0 && (
+                    <>
+                      {" | "}
+                      <p>
+                        Accepted:{" "}
+                        <span className="text-green-600 font-semibold">
+                          {
+                            event.Applicants.filter(
+                              (app) => app.status === "Accepted"
+                            ).length
+                          }
+                        </span>
+                      </p>
+                    </>
+                  )}
+
+                  {event.Applicants.filter((app) => app.status === "Rejected")
+                    .length > 0 && (
+                    <>
+                      {" | "}
+                      <p>
+                        Rejected:{" "}
+                        <span className="text-red-600 font-semibold">
+                          {
+                            event.Applicants.filter(
+                              (app) => app.status === "Rejected"
+                            ).length
+                          }
+                        </span>
+                      </p>
+                    </>
+                  )}
+                </div>
                 <button
                   onClick={() =>
                     expandedEventId === event._id
@@ -318,7 +295,9 @@ const ManageEventApplications = () => {
               >
                 {/* Applicants Table */}
                 <EventApplicantTable
+                  refetch={refetch}
                   paginatedApplicants={paginatedApplicants}
+                  selectedApplicationID={selectedApplicationID}
                   setSelectedApplicationID={setSelectedApplicationID}
                 />
 
@@ -370,4 +349,25 @@ const ManageEventApplications = () => {
   );
 };
 
+// Prop Validation
+EventApplicantTable.propTypes = {
+  refetch: PropTypes.func.isRequired,
+  paginatedApplicants: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      status: PropTypes.string,
+      profileImage: PropTypes.string,
+      fullName: PropTypes.string,
+      name: PropTypes.string,
+      email: PropTypes.string,
+      phone: PropTypes.string,
+      attendees: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      appliedAt: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.instanceOf(Date),
+      ]).isRequired,
+    })
+  ).isRequired,
+  setSelectedApplicationID: PropTypes.func.isRequired,
+};
 export default ManageEventApplications;

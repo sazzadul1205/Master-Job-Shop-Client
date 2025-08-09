@@ -20,6 +20,7 @@ import Loading from "../../../Shared/Loading/Loading";
 // Modal
 import AddNewEventModal from "./AddNewEventModal/AddNewEventModal";
 import EventCard from "../../../Shared/EventCard/EventCard";
+import EditEventModal from "./EditEventModal/EditEventModal";
 
 const ManageEvents = () => {
   const { user, loading } = useAuth();
@@ -147,6 +148,14 @@ const ManageEvents = () => {
       {/* Add New Event Modals */}
       <dialog id="Add_New_Event_Modal" className="modal">
         <AddNewEventModal CompanyData={company} refetch={refetch} />
+      </dialog>
+
+      {/* Edit Event Modals */}
+      <dialog id="Edit_Event_Modal" className="modal">
+        <EditEventModal
+          refetch={refetch}
+          selectedEventData={selectedEventData}
+        />
       </dialog>
     </>
   );

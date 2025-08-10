@@ -23,8 +23,9 @@ import { MdEdit } from "react-icons/md";
 import DefaultUserLogo from "../../../assets/DefaultUserLogo.jpg";
 
 // Modals
-import AddEmployerProfileModal from "./AddEmployerProfileModal.jsx/AddEmployerProfileModal";
+import AddEmployerProfileModal from "./AddEmployerProfileModal/AddEmployerProfileModal";
 import EditEmployerProfileModal from "./EditEmployerProfileModal/EditEmployerProfileModal";
+import ViewEmployerProfileModal from "./ViewEmployerProfileModal/ViewEmployerProfileModal";
 
 // Shared
 import Loading from "../../../Shared/Loading/Loading";
@@ -79,7 +80,7 @@ const ManageEmployerProfile = () => {
 
     try {
       Swal.showLoading();
-      await axiosPublic.delete(`/Employer/${employer._id}`);
+      await axiosPublic.delete(`/Employers/${employer._id}`);
 
       Swal.fire({
         icon: "success",
@@ -397,7 +398,7 @@ const ManageEmployerProfile = () => {
 
       {/* View Modal */}
       <dialog id="View_Employer_Profile_Modal" className="modal">
-        {/* <ViewEmployerProfileModal employer={employer} /> */}
+        <ViewEmployerProfileModal employer={employer} />
       </dialog>
     </>
   );

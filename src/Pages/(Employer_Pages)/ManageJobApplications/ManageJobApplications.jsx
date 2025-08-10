@@ -1,20 +1,15 @@
 import { useState } from "react";
 
 // Packages
-import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
 
 // Icons
 import {
   FaAngleLeft,
-  FaAngleRight,
-  FaCheck,
-  FaChevronDown,
   FaChevronUp,
-  FaEye,
-  FaRegClock,
+  FaAngleRight,
+  FaChevronDown,
 } from "react-icons/fa";
-import { ImCross } from "react-icons/im";
 
 // Assets
 import formUp from "../../../assets/EmployerLayout/formUp.png";
@@ -26,6 +21,9 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 // Shared
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
+
+// Component - Table
+import JobApplicantTable from "./JobApplicantTable/JobApplicantTable";
 
 // Modal
 import AcceptJobApplicationModal from "./AcceptJobApplicationModal/AcceptJobApplicationModal";
@@ -103,62 +101,6 @@ const ManageJobApplications = () => {
   if (ApplicationsLoading || JobsIsLoading || loading) return <Loading />;
   if (ApplicationsError || JobsError) return <Error />;
 
-  // Handle Reject Applications
-  const handleRejectApplicant = async (applicantId) => {
-    try {
-      const { isConfirmed } = await Swal.fire({
-        title: "Are you sure?",
-        text: "Do you want to reject this applicant?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, reject",
-        cancelButtonText: "Cancel",
-        reverseButtons: true,
-        focusCancel: true,
-      });
-
-      if (!isConfirmed) return;
-
-      const response = await axiosPublic.put(
-        `/JobApplications/Status/${applicantId}`,
-        {
-          status: "Rejected",
-        }
-      );
-
-      if (response.status !== 200) {
-        console.error("Failed to reject applicant:", response.statusText);
-        Swal.fire({
-          icon: "error",
-          title: "Failed",
-          text: "Failed to reject applicant. Please try again.",
-          confirmButtonText: "Ok",
-        });
-        return;
-      }
-
-      await Swal.fire({
-        icon: "success",
-        title: "Rejected",
-        text: "Applicant has been rejected.",
-        timer: 1500,
-        showConfirmButton: false,
-        timerProgressBar: true,
-      });
-      refetch();
-
-      // Optionally trigger refresh or state update here
-    } catch (error) {
-      console.error("Error rejecting applicant:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Failed",
-        text: "Something went wrong. Please try again.",
-        confirmButtonText: "Ok",
-      });
-    }
-  };
-
   return (
     <>
       {/* Header */}
@@ -179,23 +121,32 @@ const ManageJobApplications = () => {
       {/* Jobs Container */}
       <div className="px-4 pt-4 space-y-3">
         {JobsWithApplicants?.map((job, index) => {
-          // Pagination
+          // Get the current page number for this job from the pageStates object
+          // If there’s no entry yet, default to page 1
           const currentPage = pageStates[job._id] || 1;
 
+          // Sort the job's applicants by their status
+          // Order: No status first → Accepted → Rejected → Everything else
           const sortedApplicants = [...job.Applicants].sort((a, b) => {
+            // Helper function to assign a numeric "rank" to each status
             const getOrder = (status) => {
-              if (status === "Accepted") return 0;
-              if (status === "Rejected") return 2;
-              return 1;
+              if (!status) return 0; // No status → highest priority
+              if (status === "Accepted") return 1; // Accepted comes second
+              if (status === "Rejected") return 2; // Rejected comes last
+              return 3; // Any other status after that
             };
+
+            // Compare two applicants based on their status order
             return getOrder(a.status) - getOrder(b.status);
           });
 
+          // Slice the sorted list to get only the applicants for the current page
           const paginatedApplicants = sortedApplicants.slice(
-            (currentPage - 1) * ITEMS_PER_PAGE,
-            currentPage * ITEMS_PER_PAGE
+            (currentPage - 1) * ITEMS_PER_PAGE, // Start index
+            currentPage * ITEMS_PER_PAGE // End index (exclusive)
           );
 
+          // Calculate the total number of pages based on the number of applicants
           const totalPages = Math.ceil(
             sortedApplicants.length / ITEMS_PER_PAGE
           );
@@ -350,279 +301,13 @@ const ManageJobApplications = () => {
                 }`}
               >
                 {/* Applicants Container */}
-                <div className="overflow-x-auto rounded shadow border border-gray-200 bg-white">
-                  {/* Applicants Table */}
-                  <table className="min-w-full bg-white text-sm text-gray-800">
-                    {/* Applicants Table - Header */}
-                    <thead className="bg-gray-100 border-b text-gray-900 text-left">
-                      <tr>
-                        <th className="px-4 py-3">#</th>
-                        <th className="px-4 py-3">Applicant</th>
-                        <th className="px-4 py-3">Email</th>
-                        <th className="px-4 py-3">Phone</th>
-                        <th className="px-4 py-3">Applied On</th>
-                        <th className="px-4 py-3">Resume</th>
-                        <th className="px-4 py-3 text-center justify-end">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-
-                    {/* Applicants Table - Body */}
-                    <tbody className="divide-y divide-gray-200">
-                      {[
-                        // Sort paginatedApplicants: Accepted first (0), others middle (1), Rejected last (2)
-                        ...[...paginatedApplicants].sort((a, b) => {
-                          const getOrder = (status) => {
-                            if (status === "Accepted") return 0;
-                            if (status === "Rejected") return 2;
-                            return 1; // everything else goes in the middle
-                          };
-                          return getOrder(a.status) - getOrder(b.status);
-                        }),
-                      ].map((applicant, idx) => {
-                        const interviewDate = applicant?.interview
-                          ?.interviewTime
-                          ? new Date(applicant.interview.interviewTime)
-                          : null;
-                        const now = new Date();
-
-                        const timeLeftMs = interviewDate
-                          ? interviewDate - now
-                          : 0;
-                        const msInMinute = 1000 * 60;
-                        const msInHour = msInMinute * 60;
-                        const msInDay = msInHour * 24;
-                        const msInMonth = msInDay * 30;
-
-                        let timeLeft = "";
-
-                        if (!interviewDate || timeLeftMs <= 0) {
-                          timeLeft = "Interview time passed";
-                        } else {
-                          const months = Math.floor(timeLeftMs / msInMonth);
-                          const days = Math.floor(
-                            (timeLeftMs % msInMonth) / msInDay
-                          );
-                          const hours = Math.floor(
-                            (timeLeftMs % msInDay) / msInHour
-                          );
-                          const minutes = Math.floor(
-                            (timeLeftMs % msInHour) / msInMinute
-                          );
-
-                          timeLeft =
-                            (months > 0 ? `${months}mo ` : "") +
-                            (days > 0 ? `${days}d ` : "") +
-                            (hours > 0 ? `${hours}h ` : "") +
-                            (minutes > 0 ? `${minutes}m` : "");
-
-                          if (!timeLeft.trim())
-                            timeLeft = "Less than a minute left";
-                        }
-
-                        return (
-                          <tr
-                            key={applicant._id}
-                            className={`${
-                              applicant.status === "Rejected"
-                                ? "bg-red-50"
-                                : applicant.status === "Accepted" &&
-                                  interviewDate &&
-                                  interviewDate < now
-                                ? "bg-gray-100"
-                                : applicant.status === "Accepted"
-                                ? "bg-green-50"
-                                : "hover:bg-gray-50"
-                            }`}
-                          >
-                            {/* Applicant Number */}
-                            <td className="px-4 py-3 font-medium whitespace-nowrap ">
-                              {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1} .
-                            </td>
-
-                            {/* Basic Information */}
-                            <td className="px-4 py-3">
-                              <div className="flex items-center gap-3">
-                                {/* Image */}
-                                <img
-                                  src={applicant.profileImage}
-                                  alt={applicant.name}
-                                  className="w-9 h-9 rounded-full object-cover border border-gray-300"
-                                />
-                                {/* Name */}
-                                <span className="font-medium">
-                                  {applicant.name}
-                                </span>
-                              </div>
-                            </td>
-
-                            {/* Email */}
-                            <td className="px-4 py-3">{applicant.email}</td>
-
-                            {/* Phone */}
-                            <td className="px-4 py-3">
-                              {applicant.phone.startsWith("+")
-                                ? applicant.phone
-                                : `+${applicant.phone}`}
-                            </td>
-
-                            {/* Applied At */}
-                            <td className="px-4 py-3 whitespace-nowrap">
-                              {new Date(applicant.appliedAt).toLocaleDateString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                }
-                              )}
-                            </td>
-
-                            {/* Resume Download */}
-                            <td className="px-4 py-3 whitespace-nowrap">
-                              <a
-                                href={applicant.resumeUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:underline"
-                              >
-                                Download
-                              </a>
-                            </td>
-
-                            {/* Buttons */}
-                            <>
-                              {applicant.status === "Rejected" ? (
-                                // Rejected Status
-                                <td className="px-4 py-3 w-[200px]">
-                                  <div className="flex justify-center items-center h-full">
-                                    <p className="text-red-600 font-semibold text-center">
-                                      Applicant Rejected
-                                    </p>
-                                  </div>
-                                </td>
-                              ) : applicant.status === "Accepted" ? (
-                                // Accepted Status
-                                <td className="px-4 py-3 w-[300px]">
-                                  <div className="flex justify-center items-center h-full">
-                                    <div className="flex flex-col items-center space-y-1">
-                                      {/* Title */}
-                                      {interviewDate && interviewDate < now ? (
-                                        <></>
-                                      ) : (
-                                        <p className="text-green-600 font-semibold">
-                                          Applicant Accepted
-                                        </p>
-                                      )}
-
-                                      {/* Interview Status */}
-                                      {interviewDate && interviewDate < now ? (
-                                        <p className="text-gray-500 text-sm flex items-center gap-1 font-medium">
-                                          <FaRegClock />
-                                          Interview Time Passed
-                                        </p>
-                                      ) : (
-                                        <p className="text-gray-600 text-sm flex items-center gap-1">
-                                          <FaRegClock /> {timeLeft}
-                                        </p>
-                                      )}
-
-                                      {/* Buttons */}
-                                      <div className="flex gap-5 items-center">
-                                        {/* View Applicant Button */}
-                                        <button
-                                          onClick={() => {
-                                            setSelectedApplicationID(
-                                              applicant?._id
-                                            );
-                                            document
-                                              .getElementById(
-                                                "View_Application_Modal"
-                                              )
-                                              .showModal();
-                                          }}
-                                          className="flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline cursor-pointer"
-                                        >
-                                          <FaEye />
-                                          View Application
-                                        </button>
-
-                                        {/* View Applicant Interview Button */}
-                                        <button
-                                          onClick={() => {
-                                            setSelectedApplicationID(
-                                              applicant?._id
-                                            );
-                                            document
-                                              .getElementById(
-                                                "View_Interview_Modal"
-                                              )
-                                              .showModal();
-                                          }}
-                                          className="flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline cursor-pointer"
-                                        >
-                                          <FaEye />
-                                          View Interview
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                              ) : (
-                                // Pending Status
-                                <td className="px-4 py-3 flex justify-end items-center gap-2 whitespace-nowrap flex-shrink-0">
-                                  {/* View Button */}
-                                  <button
-                                    onClick={() => {
-                                      setSelectedApplicationID(applicant?._id);
-                                      document
-                                        .getElementById(
-                                          "View_Application_Modal"
-                                        )
-                                        .showModal();
-                                    }}
-                                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
-                                  >
-                                    <FaEye />
-                                    View
-                                  </button>
-
-                                  {/* Reject Button */}
-                                  <button
-                                    onClick={() => {
-                                      handleRejectApplicant(applicant._id);
-                                    }}
-                                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-red-500 hover:text-white border border-red-500 hover:bg-red-500 rounded transition cursor-pointer"
-                                  >
-                                    <ImCross />
-                                    Reject
-                                  </button>
-
-                                  {/* Accept Button */}
-                                  <button
-                                    onClick={() => {
-                                      setSelectedApplicationID(applicant?._id);
-                                      document
-                                        .getElementById(
-                                          "Accepted_Application_Modal"
-                                        )
-                                        .showModal();
-                                    }}
-                                    className="flex items-center gap-2 px-3 py-1.5 font-medium text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded transition cursor-pointer"
-                                  >
-                                    <FaCheck />
-                                    Accept
-                                  </button>
-                                </td>
-                              )}
-                            </>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                <JobApplicantTable
+                  refetch={refetch}
+                  currentPage={currentPage}
+                  ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+                  paginatedApplicants={paginatedApplicants}
+                  setSelectedApplicationID={setSelectedApplicationID}
+                />
 
                 {/* Pagination Controls */}
                 {job.Applicants.length > ITEMS_PER_PAGE && (

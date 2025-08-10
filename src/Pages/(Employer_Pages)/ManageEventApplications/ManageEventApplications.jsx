@@ -312,6 +312,8 @@ const ManageEventApplications = () => {
                 {/* Applicants Table */}
                 <EventApplicantTable
                   refetch={refetch}
+                  currentPage={currentPage}
+                  ITEMS_PER_PAGE={ITEMS_PER_PAGE}
                   paginatedApplicants={paginatedApplicants}
                   selectedApplicationID={selectedApplicationID}
                   setSelectedApplicationID={setSelectedApplicationID}

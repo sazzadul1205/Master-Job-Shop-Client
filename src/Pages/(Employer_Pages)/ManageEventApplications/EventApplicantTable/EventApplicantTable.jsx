@@ -1,11 +1,18 @@
-import { FaCheck, FaEye } from "react-icons/fa";
-import { ImCross } from "react-icons/im";
-import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+// Package
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 
+// Icons
+import { FaCheck, FaEye } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
+
+// Hooks
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+
 const EventApplicantTable = ({
   refetch,
+  currentPage,
+  ITEMS_PER_PAGE,
   paginatedApplicants,
   setSelectedApplicationID,
 }) => {
@@ -63,6 +70,7 @@ const EventApplicantTable = ({
       });
     }
   };
+
   // Handle Accept Applications
   const handleAcceptApplicant = async (applicantId) => {
     try {
@@ -133,10 +141,10 @@ const EventApplicantTable = ({
           </tr>
         </thead>
 
-        {/* Table-Body */}
+        {/* Table - Body */}
         <tbody>
           {paginatedApplicants?.length > 0 ? (
-            paginatedApplicants.map((applicant, index) => (
+            paginatedApplicants.map((applicant, idx) => (
               <tr
                 key={applicant._id}
                 className={`${
@@ -148,7 +156,9 @@ const EventApplicantTable = ({
                 }`}
               >
                 {/* Index */}
-                <td className="px-4 py-3 text-center">{index + 1}</td>
+                <td className="px-4 py-3 text-center">
+                  {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1} .
+                </td>
 
                 {/* Basic Information */}
                 <td className="px-4 py-3">
@@ -287,14 +297,16 @@ const EventApplicantTable = ({
 // Prop Validation
 EventApplicantTable.propTypes = {
   refetch: PropTypes.func.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  ITEMS_PER_PAGE: PropTypes.number.isRequired,
   paginatedApplicants: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
-      status: PropTypes.string,
+      status: PropTypes.oneOf(["Accepted", "Rejected", "Pending"]).isRequired,
       profileImage: PropTypes.string,
       fullName: PropTypes.string,
       name: PropTypes.string,
-      email: PropTypes.string,
+      email: PropTypes.string.isRequired,
       phone: PropTypes.string,
       attendees: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       appliedAt: PropTypes.oneOfType([

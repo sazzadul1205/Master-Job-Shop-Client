@@ -43,7 +43,7 @@ const ManageGigs = () => {
       const res = await axiosPublic.get(`/Gigs?postedBy=${user?.email}`);
       const data = res.data;
       if (Array.isArray(data)) return data;
-      if (data && typeof data === "object") return [data]; // wrap single object in array
+      if (data && typeof data === "object") return [data];
       return [];
     },
   });

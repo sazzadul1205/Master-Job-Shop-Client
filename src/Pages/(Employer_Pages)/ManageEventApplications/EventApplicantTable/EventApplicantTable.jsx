@@ -206,7 +206,7 @@ const EventApplicantTable = ({
                           setSelectedApplicationID(applicant?._id);
                           document
                             .getElementById(
-                              "View_Internship_Applications_Modal"
+                              "View_Event_Applications_Modal"
                             )
                             .showModal();
                         }}
@@ -231,7 +231,7 @@ const EventApplicantTable = ({
                           setSelectedApplicationID(applicant?._id);
                           document
                             .getElementById(
-                              "View_Internship_Applications_Modal"
+                              "View_Event_Applications_Modal"
                             )
                             .showModal();
                         }}

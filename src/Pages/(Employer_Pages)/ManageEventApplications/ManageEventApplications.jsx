@@ -23,6 +23,7 @@ import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 import EventApplicantTable from "./EventApplicantTable/EventApplicantTable";
 import PropTypes from "prop-types";
+import MyEventApplicationModal from "./MyEventApplicationModal/MyEventApplicationModal";
 
 const ManageEventApplications = () => {
   const { user, loading } = useAuth();
@@ -345,6 +346,15 @@ const ManageEventApplications = () => {
           );
         })}
       </div>
+
+      {/* Modal */}
+      {/* View Application Modal */}
+      <dialog id="View_Event_Applications_Modal" className="modal">
+        <MyEventApplicationModal
+          selectedApplicationID={selectedApplicationID}
+          setSelectedApplicationID={setSelectedApplicationID}
+        />
+      </dialog>
     </>
   );
 };

@@ -118,7 +118,9 @@ const EventApplicantTable = ({
 
   return (
     <div className="overflow-x-auto rounded shadow border border-gray-200 bg-white">
+      {/* Table */}
       <table className="min-w-full bg-white text-sm text-gray-800">
+        {/* Table - Header */}
         <thead>
           <tr className="bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
             <th className="px-4 py-3">#</th>
@@ -130,6 +132,8 @@ const EventApplicantTable = ({
             <th className="px-4 py-3 text-center">Actions</th>
           </tr>
         </thead>
+
+        {/* Table-Body */}
         <tbody>
           {paginatedApplicants?.length > 0 ? (
             paginatedApplicants.map((applicant, index) => (
@@ -205,9 +209,7 @@ const EventApplicantTable = ({
                         onClick={() => {
                           setSelectedApplicationID(applicant?._id);
                           document
-                            .getElementById(
-                              "View_Event_Applications_Modal"
-                            )
+                            .getElementById("View_Event_Applications_Modal")
                             .showModal();
                         }}
                         className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
@@ -230,9 +232,7 @@ const EventApplicantTable = ({
                         onClick={() => {
                           setSelectedApplicationID(applicant?._id);
                           document
-                            .getElementById(
-                              "View_Event_Applications_Modal"
-                            )
+                            .getElementById("View_Event_Applications_Modal")
                             .showModal();
                         }}
                         className="flex items-center gap-2 px-3 py-1.5 font-medium text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 rounded transition cursor-pointer"
@@ -268,6 +268,7 @@ const EventApplicantTable = ({
               </tr>
             ))
           ) : (
+            // Fallback Row
             <tr>
               <td
                 colSpan="9"

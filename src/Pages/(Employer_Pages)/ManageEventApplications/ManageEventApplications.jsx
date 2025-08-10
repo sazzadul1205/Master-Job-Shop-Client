@@ -2,6 +2,7 @@ import { useState } from "react";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
+import PropTypes from "prop-types";
 
 // Icons
 import {
@@ -21,8 +22,11 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 // Shared
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
+
+// Component - Table
 import EventApplicantTable from "./EventApplicantTable/EventApplicantTable";
-import PropTypes from "prop-types";
+
+// Modal
 import MyEventApplicationModal from "./MyEventApplicationModal/MyEventApplicationModal";
 
 const ManageEventApplications = () => {
@@ -53,7 +57,7 @@ const ManageEventApplications = () => {
       const res = await axiosPublic.get(`/Events?postedBy=${user?.email}`);
       const data = res.data;
       if (Array.isArray(data)) return data;
-      if (data && typeof data === "object") return [data]; // wrap single object in array
+      if (data && typeof data === "object") return [data];
       return [];
     },
   });
@@ -100,11 +104,13 @@ const ManageEventApplications = () => {
       {/* Header */}
       <div className="flex justify-between items-center py-3 px-5">
         <h3 className="text-blue-700 font-bold text-2xl flex items-center gap-2">
+          {/* Icon */}
           <img
             src={EventApplicationBlue}
             alt="Manage Job Applicant Icons"
             className="w-6 h-6"
           />
+          {/* Title */}
           Manage Event Applications
         </h3>
       </div>
@@ -118,6 +124,7 @@ const ManageEventApplications = () => {
           // Pagination
           const currentPage = pageStates[event._id] || 1;
 
+          // Sort applicants by status
           const sortedApplicants = [...event.Applicants].sort((a, b) => {
             const getOrder = (status) => {
               if (!status) return 0; // No status first
@@ -128,11 +135,13 @@ const ManageEventApplications = () => {
             return getOrder(a.status) - getOrder(b.status);
           });
 
+          // Apply pagination
           const paginatedApplicants = sortedApplicants.slice(
             (currentPage - 1) * ITEMS_PER_PAGE,
             currentPage * ITEMS_PER_PAGE
           );
 
+          // Calculate total pages
           const totalPages = Math.ceil(
             sortedApplicants.length / ITEMS_PER_PAGE
           );
@@ -226,12 +235,15 @@ const ManageEventApplications = () => {
               <div className="flex justify-between items-center pt-4 text-sm font-medium text-gray-700">
                 {/* Applicants Number */}
                 <div className="flex text-sm font-medium text-gray-700 gap-4">
+                  {/* Total Applicants  */}
                   <p>
                     Applicants:{" "}
                     <span className="text-gray-900">
                       {event.Applicants.length}
                     </span>
                   </p>
+
+                  {/* Accepted Applicants */}
                   {event.Applicants.filter((app) => app.status === "Accepted")
                     .length > 0 && (
                     <>
@@ -249,6 +261,7 @@ const ManageEventApplications = () => {
                     </>
                   )}
 
+                  {/* Rejected Applicants */}
                   {event.Applicants.filter((app) => app.status === "Rejected")
                     .length > 0 && (
                     <>
@@ -266,6 +279,8 @@ const ManageEventApplications = () => {
                     </>
                   )}
                 </div>
+
+                {/* Open / Close Applicants Table Button */}
                 <button
                   onClick={() =>
                     expandedEventId === event._id

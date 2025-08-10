@@ -143,7 +143,7 @@ const ManageCompanyProfile = () => {
   return (
     <>
       {/* Header */}
-      <div className="flex justify-between items-center py-3 px-5 ">
+      <div className="flex justify-between items-center py-2 px-5 ">
         {/* Title */}
         <h3 className="text-blue-700 font-bold text-2xl flex items-center gap-2">
           <FaBuilding className="text-blue-700" /> Manage My Company Profile
@@ -178,7 +178,7 @@ const ManageCompanyProfile = () => {
       <div className="py-[1px] w-full bg-blue-700 my-1" />
 
       {/* Company Details */}
-      <div className="space-y-6 py-6 px-5">
+      <div className="space-y-6 py-3 px-5">
         {/* Company Overview */}
         <div className="bg-white text-black shadow-md rounded-xl p-6 space-y-4">
           {/* Basic Info */}

@@ -45,6 +45,10 @@ import EventsBlue from "../assets/EmployerLayout/Events/EventsBlue.png";
 import EventApplication from "../assets/EmployerLayout/EventApplication/EventApplication.png";
 import EventApplicationBlue from "../assets/EmployerLayout/EventApplication/EventApplicationBlue.png";
 
+// Assets - Employer
+import Employer from "../assets/EmployerLayout/Employer/Employer.png";
+import EmployerBlue from "../assets/EmployerLayout/Employer/EmployerBlue.png";
+
 // Navigation items
 const navItems = [
   {
@@ -56,6 +60,12 @@ const navItems = [
     label: "Company Profile",
     path: "/Employer/CompanyProfile",
     icon: <FaBuilding />,
+  },
+  {
+    label: "Manage Employer Profile",
+    path: "/Employer/EmployerProfile",
+    assets: Employer,
+    activeAssets: EmployerBlue,
   },
   {
     label: "Manage Jobs",

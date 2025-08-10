@@ -91,6 +91,7 @@ import ManageGigBids from "./Pages/(Employer_Pages)/ManageGigBids/ManageGigBids"
 import ManageInternship from "./Pages/(Employer_Pages)/ManageInternship/ManageInternship";
 import EmployerDashboard from "./Pages/(Employer_Pages)/EmployerDashboard/EmployerDashboard";
 import ManageCompanyProfile from "./Pages/(Employer_Pages)/ManageCompanyProfile/ManageCompanyProfile";
+import ManageEmployerProfile from "./Pages/(Employer_Pages)/ManageEmployerProfile/ManageEmployerProfile";
 import ManageJobApplications from "./Pages/(Employer_Pages)/ManageJobApplications/ManageJobApplications";
 import ManageEventApplications from "./Pages/(Employer_Pages)/ManageEventApplications/ManageEventApplications";
 import ManageInternshipApplications from "./Pages/(Employer_Pages)/ManageInternshipApplications/ManageInternshipApplications";
@@ -271,6 +272,12 @@ createRoot(document.getElementById("root")).render(
               <Route
                 path="/Employer/CompanyProfile"
                 element={<ManageCompanyProfile />}
+              />
+
+              {/* Company Profile */}
+              <Route
+                path="/Employer/EmployerProfile"
+                element={<ManageEmployerProfile />}
               />
 
               {/* Employer Jobs */}

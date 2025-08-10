@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-// Import Packages
+// Packages
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
@@ -15,20 +15,16 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 
-// import Phone
+// Phone Input
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
 // Selection Field
 import { GenderSelectField } from "./GenderSelectField/GenderSelectField";
 
-// Common Button
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
-
-// Image Cropping Modal
+// Image Cropper
 import ImageCropper from "./ImageCropper/ImageCropper";
 
-// Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
 
@@ -37,12 +33,10 @@ const SignUpDetails = () => {
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
 
-  // State hooks for form data and image
   const [profileImage, setProfileImage] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Query to check if the user already exists
   const {
     data: UserExistCheck,
     isLoading: UserExistsCheckIsLoading,
@@ -55,7 +49,6 @@ const SignUpDetails = () => {
         .then((res) => res.data),
   });
 
-  // React Hook Form setup
   const {
     register,
     handleSubmit,
@@ -63,7 +56,6 @@ const SignUpDetails = () => {
     control,
   } = useForm();
 
-  // Confirm before creating the account
   const confirmAndSubmit = async (data) => {
     const confirmation = await Swal.fire({
       title: "Are you sure?",
@@ -74,42 +66,30 @@ const SignUpDetails = () => {
       cancelButtonText: "Cancel",
     });
 
-    if (!confirmation.isConfirmed) {
-      return; // If the user cancels, stop the process
-    }
+    if (!confirmation.isConfirmed) return;
 
-    // Proceed with account creation if confirmed
     onSubmit(data);
   };
 
-  // Handle form submission
   const onSubmit = async (data) => {
-    // Set loading to true when submission starts
     setLoading(true);
 
     let uploadedImageUrl = null;
 
-    // Image upload logic
     if (profileImage) {
       const formData = new FormData();
       formData.append("image", profileImage);
       try {
         const res = await axiosPublic.post(Image_Hosting_API, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         });
-        // Get image URL
         uploadedImageUrl = res.data.data.display_url;
       } catch (error) {
-        // Stop loading on error
         setLoading(false);
-
-        // Error Message
         Swal.fire({
           icon: "error",
           title: "Image Upload Failed",
-          text: `Failed to upload the image. ${
+          text: `Failed to upload image. ${
             error?.response?.data?.message ||
             error.message ||
             "Please try again."
@@ -119,10 +99,8 @@ const SignUpDetails = () => {
       }
     }
 
-    // Prepare form data for submission
     const creationTime = new Date().toISOString().slice(0, 19);
 
-    // Payload
     const Payload = {
       email: user?.email,
       phone: phoneNumber,
@@ -133,7 +111,6 @@ const SignUpDetails = () => {
       description: "No description provided.",
     };
 
-    // Post the data to the server
     try {
       await axiosPublic.post("/Users", Payload);
       setLoading(false);
@@ -152,30 +129,21 @@ const SignUpDetails = () => {
     }
   };
 
-  // Loading / Error UI States
   if (UserExistsCheckIsLoading) return <Loading />;
   if (UserExistsCheckError) return <Error />;
 
-  // If user already exists
   if (UserExistCheck?.exists) {
     return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-bl from-blue-400 to-blue-600">
-        {/* Heading */}
+      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-bl from-blue-400 to-blue-600 px-4">
         <div className="text-center text-2xl font-bold text-red-500 mb-6">
           You already have an account.
         </div>
-
-        {/* Message */}
-        <div className="text-center mb-6">
-          <p className="text-lg text-gray-700">
-            To modify your information, go to your profile update page.
-          </p>
-        </div>
-
-        {/* Button */}
+        <p className="text-center mb-6 text-gray-700 text-lg">
+          To modify your information, go to your profile update page.
+        </p>
         <button
           onClick={() => navigate("/User/UserSettings?tab=Settings_Info")}
-          className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-400 transition duration-300"
+          className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition duration-300"
         >
           Go to Profile Update
         </button>
@@ -184,29 +152,20 @@ const SignUpDetails = () => {
   }
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-blue-400 to-blue-600">
-      {/* Login card container */}
-      <div className="w-full max-w-5xl rounded-2xl shadow-md px-3 py-10 md:px-10 md:py-10 space-y-3 bg-linear-to-bl from-blue-500/80 to-blue-100/80">
-        {/* Heading section */}
-        <h4 className="text-3xl playfair font-bold text-center text-black">
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-blue-400 to-blue-600 px-4">
+      <div className="w-full max-w-5xl rounded-2xl bg-white bg-opacity-90 shadow-lg p-8">
+        <h4 className="text-3xl font-playfair font-bold text-center text-black mb-4">
           Details
         </h4>
 
-        {/* Divider */}
-        <div className="p-[1px] w-full bg-black" />
+        <div className="h-[1px] bg-black mb-8" />
 
-        {/* Forms */}
-        <form onSubmit={handleSubmit(confirmAndSubmit)}>
-          {/* Content */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-10 items-center">
-            {/* Left Side Data */}
-            <div className="space-y-4">
-              {/* Title */}
+        <form onSubmit={handleSubmit(confirmAndSubmit)} noValidate>
+          <div className="flex ">
+            <div className="space-y-6 w-2/5">
               <h3 className="text-black text-center font-semibold text-xl">
                 Trainer Profile
               </h3>
-
-              {/* Cropper Component */}
               <ImageCropper
                 onImageCropped={setProfileImage}
                 register={register}
@@ -214,8 +173,7 @@ const SignUpDetails = () => {
               />
             </div>
 
-            {/* Right Side Data */}
-            <div className="space-y-4">
+            <div className="w-3/5 space-y-6  border-l border-gray-300 px-2">
               <InputField
                 label="Full Name"
                 placeholder="John Doe"
@@ -226,15 +184,15 @@ const SignUpDetails = () => {
               />
 
               <div>
-                <label className="block text-black playfair font-semibold text-lg">
+                <label className="block text-black font-playfair font-semibold text-lg mb-2">
                   Phone
                 </label>
                 <PhoneInput
                   country={"bd"}
                   value={phoneNumber}
                   onChange={setPhoneNumber}
-                  inputClass="!w-full !bg-white !text-black !rounded-lg !shadow-lg "
-                  inputStyle={{ width: "100%", height: "40px" }}
+                  inputClass="!w-full !bg-white !text-black !rounded-lg !shadow-md"
+                  inputStyle={{ width: "100%", height: "44px" }}
                 />
               </div>
 
@@ -246,6 +204,7 @@ const SignUpDetails = () => {
                 name="dob"
                 type="date"
               />
+
               <GenderSelectField
                 register={register}
                 errors={errors}
@@ -254,23 +213,16 @@ const SignUpDetails = () => {
             </div>
           </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-end">
-            <CommonButton
-              type="none"
-              text="Create Account"
-              isLoading={loading}
-              loadingText="Submitting..."
-              textColor="text-blue-600"
-              bgColor="white"
-              width="[300px]"
-              px="px-5"
-              py="py-3"
-              className="playfair"
-              cursorStyle="cursor-pointer"
-              borderRadius="rounded-xl"
+          <div className="flex justify-end mt-5">
+            <button
+              type="submit"
               disabled={loading}
-            />
+              className={`w-[300px] bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 shadow-md transition disabled:opacity-60 ${
+                loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+              }`}
+            >
+              {loading ? "Creating Account ..." : "Create Account"}
+            </button>
           </div>
         </form>
       </div>
@@ -280,7 +232,6 @@ const SignUpDetails = () => {
 
 export default SignUpDetails;
 
-// Reusable Input Field Component
 export const InputField = ({
   label,
   placeholder,
@@ -290,22 +241,29 @@ export const InputField = ({
   type,
 }) => (
   <div>
-    <label className="block text-black playfair font-semibold text-lg">
+    <label className="block text-black font-playfair font-semibold text-lg mb-2">
       {label}
     </label>
     <input
       type={type}
       placeholder={placeholder}
-      className="input w-full text-black bg-white rounded-lg shadow-lg hover:shadow-xl focus:shadow-xl"
+      className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-400 transition"
       {...register(name, { required: `${label} is required` })}
+      aria-invalid={errors[name] ? "true" : "false"}
+      aria-describedby={`${name}-error`}
     />
     {errors[name] && (
-      <p className="text-red-500 text-sm mt-1">{errors[name].message}</p>
+      <p
+        id={`${name}-error`}
+        className="text-red-600 text-sm mt-1"
+        role="alert"
+      >
+        {errors[name].message}
+      </p>
     )}
   </div>
 );
 
-// Add PropTypes for InputField
 InputField.propTypes = {
   label: PropTypes.string.isRequired,
   placeholder: PropTypes.string,

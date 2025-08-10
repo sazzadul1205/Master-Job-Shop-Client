@@ -10,7 +10,6 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 
 // Shared
 import SocialLogins from "../../../Shared/SocialLogins/SocialLogins";
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
 
 // Hooks
 import useAuth from "../../../Hooks/useAuth";
@@ -66,27 +65,29 @@ const SignUp = () => {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-blue-400 to-blue-600">
-      {/* Login card container */}
-      <div className="w-full max-w-lg rounded-2xl shadow-md px-3 py-10 md:px-10 md:py-10 bg-linear-to-bl from-blue-500/80 to-blue-100/80">
-        {/* Heading section */}
-        <div className="pb-5">
-          <h4 className="text-3xl playfair font-bold text-center text-white">
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-400 px-4">
+      <div className="w-full max-w-xl rounded-2xl bg-white bg-opacity-90 shadow-lg p-8">
+        {/* Heading */}
+        <div className="mb-8 text-center">
+          <h4 className="text-4xl font-playfair font-bold text-blue-900 mb-2">
             Sign Up
           </h4>
+          <p className="text-lg font-playfair italic text-blue-700 font-semibold">
+            Create a new account
+          </p>
         </div>
 
-        {/* Sign-up form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Email input field */}
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Email */}
           <div>
-            <label className="block text-gray-700 font-semibold text-xl pb-2">
+            <label className="block text-gray-900 font-semibold mb-2 text-lg">
               Email
             </label>
             <input
               type="email"
               placeholder="name@mail.com"
-              className="input w-full text-black bg-white shadow-lg hover:shadow-xl"
+              className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-600 focus:ring-2 focus:ring-blue-400 shadow-sm transition"
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -94,24 +95,26 @@ const SignUp = () => {
                   message: "Invalid email format",
                 },
               })}
+              autoComplete="email"
+              autoFocus
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="text-red-600 text-sm mt-1">
                 {errors.email.message}
               </p>
             )}
           </div>
 
-          {/* Password input field */}
-          <div>
-            <label className="block text-gray-700 font-semibold text-xl pb-2">
+          {/* Password */}
+          <div className="relative mb-4">
+            <label className="block text-black font-semibold text-lg pb-2">
               Password
             </label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="********"
-                className="input w-full text-black bg-white shadow-lg hover:shadow-xl pr-10 cursor-pointer"
+                className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-600 focus:ring-2 focus:ring-blue-400 shadow-sm transition"
                 {...register("password", {
                   required: "Password is required",
                   minLength: {
@@ -123,8 +126,9 @@ const SignUp = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 focus:outline-none"
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 focus:outline-none focus:text-gray-600"
                 tabIndex={-1}
+                style={{ background: "transparent", zIndex: 10 }}
               >
                 {showPassword ? <FiEye size={20} /> : <FiEyeOff size={20} />}
               </button>
@@ -136,62 +140,61 @@ const SignUp = () => {
             )}
           </div>
 
-          {/* Confirm password field */}
+          {/* Confirm Password */}
           <div>
-            <label className="block text-gray-700 font-semibold text-xl pb-2">
+            <label className="block text-gray-900 font-semibold mb-2 text-lg">
               Confirm Password
             </label>
             <input
               type="password"
               placeholder="********"
-              className="input w-full text-black bg-white shadow-lg hover:shadow-xl"
+              className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-600 focus:ring-2 focus:ring-blue-400 shadow-sm transition"
               {...register("confirmPassword", {
                 required: "Confirm Password is required",
                 validate: (value) =>
                   value === password || "Passwords do not match",
               })}
+              autoComplete="new-password"
             />
             {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="text-red-600 text-sm mt-1">
                 {errors.confirmPassword.message}
               </p>
             )}
           </div>
 
-          {/* SignUp button */}
-          <CommonButton
+          {/* Sign Up Button */}
+          {/* Submit */}
+          <button
             type="submit"
-            text="Sign Up"
-            isLoading={loading}
-            loadingText="Signing Up..."
-            bgColor="white"
-            textColor="text-blue-700"
-            borderRadius="rounded-xl text-xl"
-            width="full"
-            px="px-5"
-            py="py-2"
-            className="mt-5 playfair"
             disabled={loading}
-          />
+            className={`w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 shadow-md transition disabled:opacity-60 ${
+              loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+            }`}
+          >
+            {loading ? "Signing Up ..." : "Sign Up"}
+          </button>
 
-          {/* Don't have an Account */}
-          <p className="text-lg font-semibold text-black mt-5">
+          {/* Login link */}
+          <p className="mt-6 text-center text-gray-800 font-semibold text-lg">
             Already have an account?{" "}
             <Link
               to="/Login"
-              className="font-semibold playfair text-blue-800 hover:text-blue-500 hover:underline  "
+              className="text-blue-600 hover:text-blue-700 hover:underline font-semibold"
             >
               Login
             </Link>
           </p>
         </form>
 
-        {/* Divider for social login options */}
-        <div className="divider divider-neutral text-black font-semibold">
-          OR
+        {/* Divider */}
+        <div className="flex items-center my-6 text-gray-500">
+          <hr className="flex-grow border-t border-gray-300" />
+          <span className="mx-4 text-sm font-semibold">OR</span>
+          <hr className="flex-grow border-t border-gray-300" />
         </div>
 
-        {/* Social login component */}
+        {/* Social Logins */}
         <SocialLogins />
       </div>
     </section>

@@ -22,19 +22,17 @@ import { MdEdit } from "react-icons/md";
 // Assets
 import DefaultUserLogo from "../../../assets/DefaultUserLogo.jpg";
 
-// Modals (You'll implement these separately)
-// import EditEmployerProfileModal from "./EditEmployerProfileModal/EditEmployerProfileModal";
-// import AddEmployerProfileModal from "./AddEmployerProfileModal/AddEmployerProfileModal";
-// import ViewEmployerProfileModal from "./ViewEmployerProfileModal/ViewEmployerProfileModal";
+// Modals
+import AddEmployerProfileModal from "./AddEmployerProfileModal.jsx/AddEmployerProfileModal";
+import EditEmployerProfileModal from "./EditEmployerProfileModal/EditEmployerProfileModal";
 
-// Shared UI
+// Shared
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
 
 // Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useAuth from "../../../Hooks/useAuth";
-import AddEmployerProfileModal from "./AddEmployerProfileModal.jsx/AddEmployerProfileModal";
 
 const ManageEmployerProfile = () => {
   const { user, loading } = useAuth();
@@ -54,10 +52,11 @@ const ManageEmployerProfile = () => {
     enabled: !!user?.email,
   });
 
+  const employer = employerData || {};
+
+  // Loading / Error UI
   if (isLoading || loading) return <Loading />;
   if (error) return <Error />;
-
-  const employer = employerData || {};
 
   const handleDeleteEmployerProfile = async () => {
     const { value: textInput } = await Swal.fire({
@@ -119,7 +118,7 @@ const ManageEmployerProfile = () => {
             onClick={() =>
               document.getElementById("Add_Employer_Profile_Modal").showModal()
             }
-            className="mt-4 px-6 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700"
+            className="mt-4 px-6 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition-colors duration-300 cursor-pointer"
           >
             Create Employer Profile
           </button>
@@ -174,7 +173,7 @@ const ManageEmployerProfile = () => {
           <div className="flex items-center gap-4">
             {/* Company Avatar */}
             <img
-              src={employer.avatar || DefaultUserLogo}
+              src={employer.avatar || employer.logo || DefaultUserLogo}
               alt="Employer Avatar"
               className="w-16 h-16 object-contain rounded-full"
               onError={(e) => {
@@ -284,7 +283,7 @@ const ManageEmployerProfile = () => {
             <div className="text-sm text-gray-700 space-y-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Website URL */}
-                <p className="flex items-center text-base gap-2">
+                <p className="flex items-center text-base col-span-3 gap-2">
                   <FaGlobe className="text-blue-500" />
                   <strong>Website: </strong>
                   {employer.onlinePresence?.website ? (
@@ -393,7 +392,7 @@ const ManageEmployerProfile = () => {
 
       {/* Edit Modal */}
       <dialog id="Edit_Employer_Profile_Modal" className="modal">
-        {/* <EditEmployerProfileModal employer={employer} refetch={refetch} /> */}
+        <EditEmployerProfileModal employer={employer} refetch={refetch} />
       </dialog>
 
       {/* View Modal */}

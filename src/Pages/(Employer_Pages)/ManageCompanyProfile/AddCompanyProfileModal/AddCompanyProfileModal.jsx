@@ -450,7 +450,7 @@ const AddCompanyProfileModal = ({ CompanyRefetch }) => {
             loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
           }`}
         >
-          {loading ? "Saving..." : "Save Profile"}
+          {loading ? "Creating..." : "Create Company Profile"}
         </button>
       </form>
     </div>

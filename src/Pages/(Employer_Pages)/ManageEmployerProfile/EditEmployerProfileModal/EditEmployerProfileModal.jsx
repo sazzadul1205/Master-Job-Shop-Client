@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Packages
 import { useFieldArray, useForm } from "react-hook-form";
@@ -13,15 +13,13 @@ import { ImCross } from "react-icons/im";
 import CompanyProfileLogoUpload from "../../ManageCompanyProfile/AddCompanyProfileModal/CompanyProfileLogoUpload/CompanyProfileLogoUpload";
 
 // Hooks
-import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 // Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
 
-const AddEmployerProfileModal = ({ refetch }) => {
-  const { user } = useAuth();
+const EditEmployerProfileModal = ({ employer, refetch }) => {
   const axiosPublic = useAxiosPublic();
 
   // Logo States
@@ -65,22 +63,54 @@ const AddEmployerProfileModal = ({ refetch }) => {
     },
   });
 
-  // Field Array Handling for Tags
+  // Field Array Handling
   const { fields, append, remove } = useFieldArray({
     control,
     name: "tags",
   });
 
-  // Form Submission
+  useEffect(() => {
+    if (employer?.logo) {
+      setPreview(employer.logo);
+    }
+  }, [employer]);
+
+  useEffect(() => {
+    if (employer) {
+      reset({
+        name: employer.name || "",
+        industry: employer.industry || "",
+        overview: employer.overview || "",
+        logo: employer.logo || "",
+        contact: {
+          email: employer.contact?.email || "",
+          phone: employer.contact?.phone || "",
+          location: employer.contact?.location || "",
+          city: employer.contact?.city || "",
+          country: employer.contact?.country || "",
+          address: employer.contact?.address || "",
+        },
+        onlinePresence: {
+          website: employer.onlinePresence?.website || "",
+          linkedin: employer.onlinePresence?.linkedin || "",
+          twitter: employer.onlinePresence?.twitter || "",
+          facebook: employer.onlinePresence?.facebook || "",
+        },
+        tags: employer.tags || [],
+      });
+    }
+  }, [employer, reset]);
+
+  // Update Profile Handler
   const onSubmit = async (data) => {
-    setLoading(true);
     setErrorMessage("");
+    setLoading(true);
 
     try {
-      let uploadedImageUrl = null;
+      let uploadedImageUrl = employer.logo; // Default to existing logo
 
-      // Upload image if selected
-      if (profileImage) {
+      // Upload new logo only if changed
+      if (profileImage && profileImage !== employer.logo) {
         const formData = new FormData();
         formData.append("image", profileImage);
 
@@ -88,56 +118,47 @@ const AddEmployerProfileModal = ({ refetch }) => {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        uploadedImageUrl = res.data?.data?.display_url || null;
+        uploadedImageUrl = res.data.data.display_url;
       }
 
-      // Build the payload
-      const formattedData = {
-        name: data.name,
-        email: user?.email || "",
-        industry: data.industry,
-        overview: data.overview || "",
+      // Construct update payload
+      const updatedEmployerProfile = {
+        ...data,
         logo: uploadedImageUrl,
-        contact: {
-          email: data.contact.email,
-          phone: data.contact.phone,
-          location: data.contact.location,
-          city: data.contact.city,
-          country: data.contact.country,
-          address: data.contact.address || "",
-        },
-        onlinePresence: {
-          website: data.onlinePresence.website,
-          linkedin: data.onlinePresence.linkedin,
-          twitter: data.onlinePresence.twitter || "",
-          facebook: data.onlinePresence.facebook || "",
-        },
-        tags: data.tags || [],
-        createdBy: user?.email || "",
+        updatedAt: new Date(),
       };
 
-      // Send to backend
-      await axiosPublic.post("/Employers", formattedData);
+      // Submit update request
+      const res = await axiosPublic.put(
+        `/Employers/${employer._id}`,
+        updatedEmployerProfile
+      );
 
-      // Success
-      await Swal.fire({
+      // Show success and reset
+      Swal.fire({
         icon: "success",
-        title: "Profile Created",
-        text: "Your Employer profile was saved successfully.",
-        confirmButtonColor: "#2563eb",
+        title: "Updated Successfully",
+        text: res.data.message,
+        timer: 2000,
+        showConfirmButton: false,
       });
 
-      // Close modal & reset
-      document.getElementById("Add_Employer_Profile_Modal").close();
-      reset();
       refetch();
-      setPreview(null);
       setErrorMessage("");
-      setProfileImage(null);
-      setNewFieldValues({ tags: "" });
+      document.getElementById("Edit_Employer_Profile_Modal").close();
     } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to save Employer profile.");
+      console.error("Update failed:", error);
+      setErrorMessage(
+        error?.response?.data?.message || "Failed to update Employer profile."
+      );
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text:
+          error?.response?.data?.message ||
+          error.message ||
+          "Something went wrong. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -145,14 +166,14 @@ const AddEmployerProfileModal = ({ refetch }) => {
 
   return (
     <div
-      id="Add_Employer_Profile_Modal"
+      id="Edit_Employer_Profile_Modal"
       className="modal-box min-w-3xl relative bg-white rounded-lg shadow-xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
     >
       {/* Close Button */}
       <button
         type="button"
         onClick={() => {
-          document.getElementById("Add_Employer_Profile_Modal").close();
+          document.getElementById("Edit_Employer_Profile_Modal").close();
           reset();
           refetch();
           setPreview(null);
@@ -563,16 +584,38 @@ const AddEmployerProfileModal = ({ refetch }) => {
             loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
           }`}
         >
-          {loading ? "Creating..." : "Creating Employer Profile"}
+          {loading ? "Updating..." : "Updating Employer Profile"}
         </button>
       </form>
     </div>
   );
 };
 
-// Prop Vallation
-AddEmployerProfileModal.propTypes = {
+// Prop Validation
+EditEmployerProfileModal.propTypes = {
+  employer: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    industry: PropTypes.string,
+    overview: PropTypes.string,
+    logo: PropTypes.string,
+    contact: PropTypes.shape({
+      email: PropTypes.string,
+      phone: PropTypes.string,
+      location: PropTypes.string,
+      city: PropTypes.string,
+      country: PropTypes.string,
+      address: PropTypes.string,
+    }),
+    onlinePresence: PropTypes.shape({
+      website: PropTypes.string,
+      linkedin: PropTypes.string,
+      twitter: PropTypes.string,
+      facebook: PropTypes.string,
+    }),
+    tags: PropTypes.arrayOf(PropTypes.string),
+  }),
   refetch: PropTypes.func.isRequired,
 };
 
-export default AddEmployerProfileModal;
+export default EditEmployerProfileModal;

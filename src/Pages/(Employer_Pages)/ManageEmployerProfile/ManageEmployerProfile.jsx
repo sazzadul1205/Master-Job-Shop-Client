@@ -11,6 +11,11 @@ import {
   FaGlobe,
   FaUserTie,
   FaEye,
+  FaCity,
+  FaGlobeAmericas,
+  FaHome,
+  FaFacebook,
+  FaTwitter,
 } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 
@@ -29,6 +34,7 @@ import Error from "../../../Shared/Error/Error";
 // Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useAuth from "../../../Hooks/useAuth";
+import AddEmployerProfileModal from "./AddEmployerProfileModal.jsx/AddEmployerProfileModal";
 
 const ManageEmployerProfile = () => {
   const { user, loading } = useAuth();
@@ -42,7 +48,9 @@ const ManageEmployerProfile = () => {
   } = useQuery({
     queryKey: ["EmployerData", user?.email],
     queryFn: () =>
-      axiosPublic.get(`/Employer?email=${user?.email}`).then((res) => res.data),
+      axiosPublic
+        .get(`/Employers?email=${user?.email}`)
+        .then((res) => res.data),
     enabled: !!user?.email,
   });
 
@@ -118,7 +126,7 @@ const ManageEmployerProfile = () => {
         </div>
 
         <dialog id="Add_Employer_Profile_Modal" className="modal">
-          {/* <AddEmployerProfileModal refetch={refetch} /> */}
+          <AddEmployerProfileModal refetch={refetch} />
         </dialog>
       </div>
     );
@@ -158,108 +166,227 @@ const ManageEmployerProfile = () => {
       {/* Divider */}
       <div className="py-[1px] w-full bg-blue-700 my-1" />
 
-      {/* Employer Overview */}
-      <div className="bg-white shadow-md rounded-xl p-6 space-y-4 max-w-3xl mx-auto">
-        <div className="flex items-center gap-4">
-          <img
-            src={employer.avatar || DefaultUserLogo}
-            alt="Employer Avatar"
-            className="w-20 h-20 object-cover rounded-full border border-gray-300"
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = DefaultUserLogo;
-            }}
-          />
-          <div>
-            <h4 className="text-2xl font-semibold">
-              {employer.name || "Your Name"}
-            </h4>
-            <p className="text-gray-600 text-lg">
-              {employer.role || "Your Role"}
-            </p>
+      {/* Company Details */}
+      <div className="space-y-3 py-3 px-5">
+        {/* Company Overview */}
+        <div className="bg-white text-black shadow-md rounded-xl p-6 space-y-4">
+          {/* Basic Info */}
+          <div className="flex items-center gap-4">
+            {/* Company Avatar */}
+            <img
+              src={employer.avatar || DefaultUserLogo}
+              alt="Employer Avatar"
+              className="w-16 h-16 object-contain rounded-full"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = DefaultUserLogo;
+              }}
+            />
+
+            {/* Name & Tagline */}
+            <div>
+              {/* Employer Name */}
+              <h4 className="text-xl font-semibold">
+                {employer.name || "Employer Name"}
+              </h4>
+
+              {/* Employer Tagline */}
+              <p className="text-sm text-gray-600">
+                {employer.industry || "Industry"}
+              </p>
+            </div>
           </div>
+
+          {/* Employer Overview */}
+          <p className="text-gray-700 text-sm leading-relaxed">
+            {employer.overview || "Employer Overview"}
+          </p>
         </div>
 
-        <p className="text-gray-700 text-base">
-          {employer.bio ||
-            "Tell us about yourself or your recruiting philosophy."}
-        </p>
-
-        {/* Contact Info & Location */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <div className="bg-gray-50 p-5 rounded shadow-sm space-y-3">
-            <h5 className="font-semibold text-lg text-gray-800 flex items-center gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Contact Information */}
+          <div className="bg-white text-black shadow-md rounded-xl p-6 space-y-4 border border-gray-100">
+            {/* Title */}
+            <h5 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
               <FaEnvelope className="text-blue-600" /> Contact Information
             </h5>
-            <p className="flex items-center gap-2">
-              <FaEnvelope className="text-blue-500" />{" "}
-              {employer.contact?.email || "No email provided"}
-            </p>
-            <p className="flex items-center gap-2">
-              <FaPhoneAlt className="text-blue-500" />{" "}
-              {employer.contact?.phone || "No phone provided"}
-            </p>
+
+            {/* Divider */}
+            <hr className="bg-blue-500 p-[1px] w-full" />
+
+            {/* Content */}
+            <div className="text-sm text-gray-700 space-y-2">
+              {/* Social */}
+              <div className="grid grid-cols-2 gap-2">
+                {/* Social Info */}
+                <div className="space-y-2">
+                  {/* Email */}
+                  <p className="flex items-center text-base gap-2">
+                    <FaEnvelope className="text-blue-500" />
+                    <strong>Email: </strong>{" "}
+                    {employer.contact?.email || "Not provided"}
+                  </p>
+
+                  {/* Phone Number */}
+                  <p className="flex items-center text-base gap-2">
+                    <FaPhoneAlt className="text-blue-500" />
+                    <strong>Phone Number: </strong>{" "}
+                    {employer.contact?.phone || "Not provided"}
+                  </p>
+                </div>
+
+                {/* Location */}
+                <div className="space-y-2">
+                  {/* Location */}
+                  <p className="flex items-center text-base gap-2">
+                    <FaMapMarkerAlt className="text-blue-500" />
+                    <strong>Location: </strong>{" "}
+                    {employer.contact?.location || "Not provided"}
+                  </p>
+
+                  {/* City */}
+                  <p className="flex items-center text-base gap-2">
+                    <FaCity className="text-blue-500" />
+                    <strong>City: </strong>{" "}
+                    {employer.contact?.city || "Not provided"}
+                  </p>
+
+                  {/* Country */}
+                  <p className="flex items-center text-base gap-2">
+                    <FaGlobeAmericas className="text-blue-500" />
+                    <strong>Country: </strong>{" "}
+                    {employer.contact?.country || "Not provided"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Address (optional) */}
+              {employer.contact?.address && (
+                <p className="flex items-center gap-2">
+                  <FaHome className="text-blue-500" />
+                  <strong>Address: </strong> {employer.contact.address}
+                </p>
+              )}
+            </div>
           </div>
 
-          <div className="bg-gray-50 p-5 rounded shadow-sm space-y-3">
-            <h5 className="font-semibold text-lg text-gray-800 flex items-center gap-2">
-              <FaMapMarkerAlt className="text-blue-600" /> Location
+          {/* Online Presence */}
+          <div className="bg-white text-black shadow-md rounded-xl p-6 space-y-4 border border-gray-100">
+            {/* Title */}
+            <h5 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+              <FaGlobe className="text-blue-600" /> Online Presence
             </h5>
-            <p>
-              {employer.location?.city || "City"},{" "}
-              {employer.location?.country || "Country"}
-            </p>
+
+            {/* Divider */}
+            <hr className="bg-blue-500 p-[1px] w-full" />
+
+            {/* Content */}
+            <div className="text-sm text-gray-700 space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Website URL */}
+                <p className="flex items-center text-base gap-2">
+                  <FaGlobe className="text-blue-500" />
+                  <strong>Website: </strong>
+                  {employer.onlinePresence?.website ? (
+                    <a
+                      href={employer.onlinePresence.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      {employer.onlinePresence.website}
+                    </a>
+                  ) : (
+                    "Not provided"
+                  )}
+                </p>
+
+                {/* LinkedIn Profile URL */}
+                <p className="flex items-center text-base gap-2">
+                  <FaLinkedin className="text-blue-500" />
+                  <strong>LinkedIn: </strong>
+                  {employer.onlinePresence?.linkedin ? (
+                    <a
+                      href={employer.onlinePresence.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      LinkedIn Profile
+                    </a>
+                  ) : (
+                    "Not provided"
+                  )}
+                </p>
+
+                {/* Twitter Profile (optional) */}
+                <p className="flex items-center text-base gap-2">
+                  <FaTwitter className="text-blue-500" />
+                  <strong>Twitter: </strong>
+                  {employer.onlinePresence?.twitter ? (
+                    <a
+                      href={employer.onlinePresence.twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Twitter Profile
+                    </a>
+                  ) : (
+                    "Not provided"
+                  )}
+                </p>
+
+                {/* Facebook Profile (optional) */}
+                <p className="flex items-center text-base gap-2">
+                  <FaFacebook className="text-blue-500" />
+                  <strong>Facebook: </strong>
+                  {employer.onlinePresence?.facebook ? (
+                    <a
+                      href={employer.onlinePresence.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Facebook Profile
+                    </a>
+                  ) : (
+                    "Not provided"
+                  )}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Online Presence */}
-        <div className="bg-gray-50 p-5 rounded shadow-sm mt-6 max-w-xl">
-          <h5 className="font-semibold text-lg text-gray-800 flex items-center gap-2 mb-3">
-            <FaGlobe className="text-blue-600" /> Online Presence
-          </h5>
-          <p className="flex items-center gap-2">
-            <FaGlobe className="text-blue-500" />
-            {employer.website ? (
-              <a
-                href={employer.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                {employer.website}
-              </a>
-            ) : (
-              <span className="italic text-gray-500">No website provided</span>
-            )}
-          </p>
-
-          <p className="flex items-center gap-2 mt-2">
-            <FaLinkedin className="text-blue-500" />
-            {employer.socialLinks?.linkedin ? (
-              <a
-                href={employer.socialLinks.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                LinkedIn Profile
-              </a>
-            ) : (
-              <span className="italic text-gray-500">No LinkedIn provided</span>
-            )}
-          </p>
+        {/* Tags */}
+        <div className="text-black bg-white shadow-md rounded-xl p-5">
+          <h5 className="font-semibold text-lg mb-2">Tags</h5>
+          {employer?.tags?.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {employer.tags.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="bg-blue-100 hover:bg-blue-100/70 text-blue-700 hover:text-blue-700/70 text-sm font-medium px-5 py-2 rounded-lg cursor-pointer"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 italic">No tags available</p>
+          )}
         </div>
 
-        {/* Delete Profile */}
-        <div className="mt-8 bg-red-50 p-5 rounded shadow-sm max-w-xl mx-auto">
+        <div className="text-black bg-white shadow-md rounded-xl p-5">
           <h4 className="text-red-700 font-semibold mb-3">
             Delete Employer Profile
           </h4>
           <button
             onClick={handleDeleteEmployerProfile}
-            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded shadow-md transition-colors cursor-pointer"
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded shadow-md transition-colors duration-300 cursor-pointer"
           >
-            Delete My Profile
+            Delete My Employer Profile
           </button>
         </div>
       </div>

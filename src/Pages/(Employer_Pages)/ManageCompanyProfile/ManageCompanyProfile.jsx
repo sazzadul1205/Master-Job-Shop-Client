@@ -387,7 +387,7 @@ const ManageCompanyProfile = () => {
           </h4>
           <button
             onClick={handleDeleteCompanyProfile}
-            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded shadow-md transition-colors duration-300 cursor-pointer"
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded shadow-md hover:shadow-xl transition-colors duration-300 cursor-pointer"
           >
             Delete My Company Profile
           </button>

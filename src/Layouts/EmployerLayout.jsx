@@ -149,7 +149,7 @@ const EmployerLayout = () => {
     Company: [
       {
         label: "Dashboard",
-        path: "/Employer/Dashboard",
+        path: "/Employer/Company/Dashboard",
         icon: <MdDashboardCustomize />,
       },
       {
@@ -206,6 +206,11 @@ const EmployerLayout = () => {
       },
     ],
     Employer: [
+      {
+        label: "Dashboard",
+        path: "/Employer/Employer/Dashboard",
+        icon: <MdDashboardCustomize />,
+      },
       {
         label: "Manage Employer Profile",
         path: "/Employer/EmployerProfile",

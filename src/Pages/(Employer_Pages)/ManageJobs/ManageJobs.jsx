@@ -30,6 +30,7 @@ const ManageJobs = () => {
   // State Management
   const [selectedJobID, setSelectedJobID] = useState(null);
   const [selectedJobData, setSelectedJobData] = useState(null);
+  
   // Jobs Data
   const {
     data: JobsData = [],
@@ -181,6 +182,7 @@ const ManageJobs = () => {
         />
       </dialog>
 
+      {/* If No Company Profile Warning */}
       <dialog id="Company_Profile_Warning_Modal" className="modal">
         <div className="modal-box min-w-[24rem] max-w-xl mx-auto max-h-[90vh] p-8 bg-white rounded-lg shadow-lg relative overflow-y-auto text-gray-900 flex flex-col items-center text-center">
           {/* Close Button */}

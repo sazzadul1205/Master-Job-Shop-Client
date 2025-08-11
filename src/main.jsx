@@ -95,6 +95,7 @@ import ManageEmployerProfile from "./Pages/(Employer_Pages)/ManageEmployerProfil
 import ManageJobApplications from "./Pages/(Employer_Pages)/ManageJobApplications/ManageJobApplications";
 import ManageEventApplications from "./Pages/(Employer_Pages)/ManageEventApplications/ManageEventApplications";
 import ManageInternshipApplications from "./Pages/(Employer_Pages)/ManageInternshipApplications/ManageInternshipApplications";
+import CompanyDashboard from "./Pages/(Employer_Pages)/CompanyDashboard/CompanyDashboard";
 
 const queryClient = new QueryClient();
 
@@ -264,8 +265,12 @@ createRoot(document.getElementById("root")).render(
             <Route element={<EmployerLayout />}>
               {/* Employer Dashboard */}
               <Route
-                path="/Employer/Dashboard"
+                path="/Employer/Employer/Dashboard"
                 element={<EmployerDashboard />}
+              />
+              <Route
+                path="/Employer/Company/Dashboard"
+                element={<CompanyDashboard />}
               />
 
               {/* Company Profile */}

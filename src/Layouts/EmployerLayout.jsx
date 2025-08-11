@@ -49,73 +49,6 @@ import EventApplicationBlue from "../assets/EmployerLayout/EventApplication/Even
 import Employer from "../assets/EmployerLayout/Employer/Employer.png";
 import EmployerBlue from "../assets/EmployerLayout/Employer/EmployerBlue.png";
 
-// Navigation items
-const navItems = [
-  {
-    label: "Dashboard",
-    path: "/Employer/Dashboard",
-    icon: <MdDashboardCustomize />,
-  },
-  {
-    label: "Company Profile",
-    path: "/Employer/CompanyProfile",
-    icon: <FaBuilding />,
-  },
-  {
-    label: "Manage Employer Profile",
-    path: "/Employer/EmployerProfile",
-    assets: Employer,
-    activeAssets: EmployerBlue,
-  },
-  {
-    label: "Manage Jobs",
-    path: "/Employer/Jobs",
-    icon: <MdWork />,
-  },
-  {
-    label: "Manage Job Applications",
-    path: "/Employer/JobApplications",
-    assets: form,
-    activeAssets: formUp,
-  },
-  {
-    label: "Manage Gigs",
-    path: "/Employer/Gigs",
-    assets: Gig,
-    activeAssets: GigBlue,
-  },
-  {
-    label: "Manage Gig Bids",
-    path: "/Employer/GigBids",
-    assets: Bid,
-    activeAssets: BidBlue,
-  },
-  {
-    label: "Manage Internship",
-    path: "/Employer/Internship",
-    assets: Internship,
-    activeAssets: InternshipBlue,
-  },
-  {
-    label: "Manage Internship Applications",
-    path: "/Employer/InternshipApplications",
-    assets: InternshipApplication,
-    activeAssets: InternshipApplicationBlue,
-  },
-  {
-    label: "Manage Events",
-    path: "/Employer/Events",
-    assets: Events,
-    activeAssets: EventsBlue,
-  },
-  {
-    label: "Manage Event Applications",
-    path: "/Employer/EventApplications",
-    assets: EventApplication,
-    activeAssets: EventApplicationBlue,
-  },
-];
-
 // Component for rendering image-based nav items
 const NavLinkImage = ({
   label,
@@ -155,31 +88,156 @@ const EmployerLayout = () => {
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [hoveredPath, setHoveredPath] = useState(null);
 
-  // Fetch Employer data using user email
+  // Step 1: Fetch User
+  const {
+    data: UsersData = [],
+    isLoading: UsersIsLoading,
+    error: UsersError,
+  } = useQuery({
+    queryKey: ["UsersData"],
+    queryFn: () =>
+      axiosPublic.get(`/Users?email=${user?.email}`).then((res) => {
+        const data = res.data;
+        return Array.isArray(data) ? data : [data]; // normalize to array
+      }),
+    enabled: !!user?.email,
+  });
+
+  // Get Current Role
+  const currentRole = UsersData[0]?.role || null;
+  // const currentRole = "Employer";
+
+  // Fetch Employer data ONLY if role is Employer
   const {
     data: EmployerData,
-    isLoading: EmployerDataIsLoading,
-    error: EmployerDataError,
+    isLoading: EmployerIsLoading,
+    error: EmployerError,
   } = useQuery({
     queryKey: ["EmployerData"],
     queryFn: async () => {
-      if (!user) return null;
-      try {
-        const res = await axiosPublic.get(`/Employers?email=${user?.email}`);
-        return res.data;
-      } catch (error) {
-        if (error.response?.status === 404) return null;
-        throw error;
-      }
+      const res = await axiosPublic.get(`/Employers?email=${user?.email}`);
+      return res.data;
     },
-    enabled: !!user,
+    enabled: !!user && currentRole === "Employer",
+    refetchInterval: 30000,
+    staleTime: 10000,
+  });
+
+  // Fetch Company data ONLY if role is Company
+  const {
+    data: CompanyData,
+    isLoading: CompanyIsLoading,
+    error: CompanyError,
+  } = useQuery({
+    queryKey: ["CompanyData"],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/Company?email=${user?.email}`);
+      return res.data;
+    },
+    enabled: !!user && currentRole === "Company",
     refetchInterval: 30000,
     staleTime: 10000,
   });
 
   // Handle loading & error states
-  if (EmployerDataIsLoading || loading) return <Loading />;
-  if (EmployerDataError) return <Error />;
+  if (UsersIsLoading || CompanyIsLoading || EmployerIsLoading || loading)
+    return <Loading />;
+  if (UsersError || CompanyError || EmployerError) return <Error />;
+
+  // Navigation items
+  const roleBasedLinks = {
+    Company: [
+      {
+        label: "Dashboard",
+        path: "/Employer/Dashboard",
+        icon: <MdDashboardCustomize />,
+      },
+      {
+        label: "Company Profile",
+        path: "/Employer/CompanyProfile",
+        icon: <FaBuilding />,
+      },
+      {
+        label: "Manage Jobs",
+        path: "/Employer/Jobs",
+        icon: <MdWork />,
+      },
+      {
+        label: "Manage Job Applications",
+        path: "/Employer/JobApplications",
+        assets: form,
+        activeAssets: formUp,
+      },
+      {
+        label: "Manage Gigs",
+        path: "/Employer/Gigs",
+        assets: Gig,
+        activeAssets: GigBlue,
+      },
+      {
+        label: "Manage Gig Bids",
+        path: "/Employer/GigBids",
+        assets: Bid,
+        activeAssets: BidBlue,
+      },
+      {
+        label: "Manage Internship",
+        path: "/Employer/Internship",
+        assets: Internship,
+        activeAssets: InternshipBlue,
+      },
+      {
+        label: "Manage Internship Applications",
+        path: "/Employer/InternshipApplications",
+        assets: InternshipApplication,
+        activeAssets: InternshipApplicationBlue,
+      },
+      {
+        label: "Manage Events",
+        path: "/Employer/Events",
+        assets: Events,
+        activeAssets: EventsBlue,
+      },
+      {
+        label: "Manage Event Applications",
+        path: "/Employer/EventApplications",
+        assets: EventApplication,
+        activeAssets: EventApplicationBlue,
+      },
+    ],
+    Employer: [
+      {
+        label: "Manage Employer Profile",
+        path: "/Employer/EmployerProfile",
+        assets: Employer,
+        activeAssets: EmployerBlue,
+      },
+      {
+        label: "Manage Gigs",
+        path: "/Employer/Gigs",
+        assets: Gig,
+        activeAssets: GigBlue,
+      },
+      {
+        label: "Manage Gig Bids",
+        path: "/Employer/GigBids",
+        assets: Bid,
+        activeAssets: BidBlue,
+      },
+      {
+        label: "Manage Events",
+        path: "/Employer/Events",
+        assets: Events,
+        activeAssets: EventsBlue,
+      },
+      {
+        label: "Manage Event Applications",
+        path: "/Employer/EventApplications",
+        assets: EventApplication,
+        activeAssets: EventApplicationBlue,
+      },
+    ],
+  };
 
   // Logout handler
   const handleLogout = async () => {
@@ -203,7 +261,8 @@ const EmployerLayout = () => {
           {/* User Avatar */}
           <img
             src={
-              EmployerData?.profileImage ||
+              EmployerData?.logo ||
+              CompanyData?.logo ||
               "https://i.ibb.co.com/XtrM9rc/UsersData.jpg"
             }
             alt="User Avatar"
@@ -212,7 +271,7 @@ const EmployerLayout = () => {
 
           {/* Employer Name */}
           <h3 className="text-black text-lg font-semibold">
-            {EmployerData?.EmployerName}
+            {EmployerData?.EmployerName || CompanyData?.name || "No Name"}
           </h3>
         </div>
 
@@ -222,7 +281,7 @@ const EmployerLayout = () => {
             Master Job Shop
           </p>
           <p className="text-xl font-semibold playfair text-black py-1">
-            [ Employer Panel ]
+            [ {currentRole} Panel ]
           </p>
         </div>
 
@@ -247,46 +306,48 @@ const EmployerLayout = () => {
         {/* Sidebar Navigation */}
         <aside className="w-1/6 shadow-2xl min-h-screen bg-white border-t border-gray-400">
           <ul className="text-center">
-            {navItems.map(({ label, path, icon, assets, activeAssets }) => (
-              <li
-                key={path}
-                onMouseEnter={() => setHoveredPath(path)}
-                onMouseLeave={() => setHoveredPath(null)}
-              >
-                <NavLink to={path}>
-                  {({ isActive }) => (
-                    <div
-                      className={`group relative flex flex-col items-start gap-1 text-base font-semibold px-2 py-3 mx-2 ${
-                        isActive
-                          ? "text-blue-700"
-                          : "text-black hover:text-blue-700"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        {icon ? (
-                          icon
-                        ) : (
-                          <NavLinkImage
-                            path={path}
-                            label={label}
-                            assets={assets}
-                            activeAssets={activeAssets}
-                            hoveredPath={hoveredPath}
-                            isActive={isActive}
-                          />
-                        )}
-                        {label}
-                      </div>
-                      <span
-                        className={`block h-[2px] bg-blue-700 transition-all duration-500 ${
-                          isActive ? "w-full" : "w-0 group-hover:w-full"
+            {roleBasedLinks[currentRole]?.map(
+              ({ label, path, icon, assets, activeAssets }) => (
+                <li
+                  key={path}
+                  onMouseEnter={() => setHoveredPath(path)}
+                  onMouseLeave={() => setHoveredPath(null)}
+                >
+                  <NavLink to={path}>
+                    {({ isActive }) => (
+                      <div
+                        className={`group relative flex flex-col items-start gap-1 text-base font-semibold px-2 py-3 mx-2 ${
+                          isActive
+                            ? "text-blue-700"
+                            : "text-black hover:text-blue-700"
                         }`}
-                      />
-                    </div>
-                  )}
-                </NavLink>
-              </li>
-            ))}
+                      >
+                        <div className="flex items-center gap-2">
+                          {icon ? (
+                            icon
+                          ) : (
+                            <NavLinkImage
+                              path={path}
+                              label={label}
+                              assets={assets}
+                              activeAssets={activeAssets}
+                              hoveredPath={hoveredPath}
+                              isActive={isActive}
+                            />
+                          )}
+                          {label}
+                        </div>
+                        <span
+                          className={`block h-[2px] bg-blue-700 transition-all duration-500 ${
+                            isActive ? "w-full" : "w-0 group-hover:w-full"
+                          }`}
+                        />
+                      </div>
+                    )}
+                  </NavLink>
+                </li>
+              )
+            )}
           </ul>
         </aside>
 

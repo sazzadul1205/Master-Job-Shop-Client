@@ -55,7 +55,7 @@ const ManageCompanyProfile = () => {
   if (CompanyIsLoading || loading) return <Loading />;
   if (CompanyError) return <Error />;
 
-  // Inside ManageCompanyProfile component, add this function:
+  // Handle Delete Company Profile
   const handleDeleteCompanyProfile = async () => {
     const { value: textInput } = await Swal.fire({
       title: "Delete Account?",
@@ -185,7 +185,7 @@ const ManageCompanyProfile = () => {
           <div className="flex items-center gap-4">
             {/* Company Logo */}
             <img
-              src={company.logo || DefaultCompanyLogo}
+              src={company?.logo || DefaultCompanyLogo}
               alt="Company Logo"
               className="w-16 h-16 object-contain rounded-full"
               onError={(e) => {
@@ -198,19 +198,19 @@ const ManageCompanyProfile = () => {
             <div>
               {/* Company Name */}
               <h4 className="text-xl font-semibold">
-                {company.name || "Company Name"}
+                {company?.name || "Company Name"}
               </h4>
 
               {/* Company Tagline */}
               <p className="text-sm text-gray-600">
-                {company.tagline || "Industry"}
+                {company?.tagline || "Industry"}
               </p>
             </div>
           </div>
 
           {/* Company Overview */}
           <p className="text-gray-700 text-sm leading-relaxed">
-            {company.overview || "Company Overview"}
+            {company?.overview || "Company Overview"}
           </p>
         </div>
 
@@ -230,7 +230,7 @@ const ManageCompanyProfile = () => {
                 <span className="font-semibold text-black text-md pr-2">
                   Founded:
                 </span>{" "}
-                {company.founded || "Year"}
+                {company?.founded || "Year"}
               </p>
 
               {/* Size */}
@@ -238,7 +238,7 @@ const ManageCompanyProfile = () => {
                 <span className="font-semibold text-black text-md pr-2">
                   Size:
                 </span>{" "}
-                {company.size || "Size"}
+                {company?.size || "Size"}
               </p>
 
               {/* Industry */}
@@ -246,7 +246,7 @@ const ManageCompanyProfile = () => {
                 <span className="font-semibold text-black text-md pr-2">
                   Industry:
                 </span>{" "}
-                {company.industry || "Industry"}
+                {company?.industry || "Industry"}
               </p>
 
               {/* Verification Status */}
@@ -256,12 +256,12 @@ const ManageCompanyProfile = () => {
                 </span>
                 <span
                   className={`ml-2 px-2 py-1 rounded text-xs font-semibold uppercase ${
-                    company.verificationStatus === "verified"
+                    company?.verificationStatus === "verified"
                       ? "bg-green-100 text-green-700"
                       : "bg-yellow-100 text-yellow-700"
                   }`}
                 >
-                  {company.verificationStatus || "Status"}
+                  {company?.verificationStatus || "Status"}
                 </span>
               </p>
             </div>
@@ -277,12 +277,12 @@ const ManageCompanyProfile = () => {
             {/* Locations */}
             <p className="text-sm text-gray-700 leading-relaxed">
               {/* Address */}
-              {company.headquarters?.address || "Address"}
+              {company?.headquarters?.address || "Address"}
               <br />
               {/* City & Country */}
-              {(company.headquarters?.city || "City") +
+              {(company?.headquarters?.city || "City") +
                 ", " +
-                (company.headquarters?.country || "Country")}
+                (company?.headquarters?.country || "Country")}
             </p>
           </div>
         </div>
@@ -301,13 +301,13 @@ const ManageCompanyProfile = () => {
               {/* Email */}
               <p className="flex items-center gap-2">
                 <FaEnvelope className="text-blue-500" />{" "}
-                {company.contact.email || "Email"}
+                {company?.contact?.email || "Email"}
               </p>
 
               {/* Phone */}
               <p className="flex items-center gap-2">
                 <FaPhoneAlt className="text-blue-500" />{" "}
-                {company.contact.phone || "Phone"}
+                {company?.contact?.phone || "Phone"}
               </p>
             </div>
           </div>
@@ -326,12 +326,12 @@ const ManageCompanyProfile = () => {
                 <FaGlobe className="text-blue-500" />
                 {company?.website ? (
                   <a
-                    href={company.website}
+                    href={company?.website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
                   >
-                    {company.website}
+                    {company?.website}
                   </a>
                 ) : (
                   <span className="text-gray-500 italic">
@@ -345,7 +345,7 @@ const ManageCompanyProfile = () => {
                 <FaLinkedin className="text-blue-500" />
                 {company?.socialLinks?.linkedin ? (
                   <a
-                    href={company.socialLinks.linkedin}
+                    href={company?.socialLinks?.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
@@ -367,7 +367,7 @@ const ManageCompanyProfile = () => {
           <h5 className="font-semibold text-lg mb-2">Tags</h5>
           {company?.tags?.length > 0 ? (
             <div className="flex flex-wrap gap-2">
-              {company.tags.map((tag, idx) => (
+              {company?.tags.map((tag, idx) => (
                 <span
                   key={idx}
                   className="bg-blue-100 hover:bg-blue-100/70 text-blue-700 hover:text-blue-700/70 text-sm font-medium px-5 py-2 rounded-lg cursor-pointer"

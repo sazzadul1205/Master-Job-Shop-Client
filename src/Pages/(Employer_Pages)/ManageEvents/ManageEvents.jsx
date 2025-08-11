@@ -33,19 +33,26 @@ const ManageEvents = () => {
 
   // Events Data
   const {
-    data: EventsData,
+    data: EventsData = [],
     isLoading: EventsIsLoading,
     error: EventsError,
     refetch: EventsRefetch,
   } = useQuery({
     queryKey: ["EventsData"],
     queryFn: async () => {
-      const res = await axiosPublic.get(`/Events?postedBy=${user?.email}`);
-      const data = res.data;
-      if (Array.isArray(data)) return data;
-      if (data && typeof data === "object") return [data]; // wrap single object in array
-      return [];
+      try {
+        const res = await axiosPublic.get(`/Events?postedBy=${user?.email}`);
+        const data = res.data;
+        if (Array.isArray(data)) return data;
+        if (data && typeof data === "object") return [data]; // wrap single object in array
+        return [];
+      } catch (err) {
+        console.log(err);
+
+        return []; // return empty array on error instead of throwing
+      }
     },
+    enabled: !!user?.email,
   });
 
   // Company Data
@@ -100,9 +107,9 @@ const ManageEvents = () => {
 
       {/* Event Display */}
       <div className="py-3 px-5">
-        {EventsData.length > 0 ? (
+        {EventsData?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-            {EventsData.map((event) => (
+            {EventsData?.map((event) => (
               <div key={event._id}>
                 <EventCard
                   event={event}

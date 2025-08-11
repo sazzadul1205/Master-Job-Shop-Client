@@ -31,19 +31,26 @@ const ManageJobs = () => {
 
   // Jobs Data
   const {
-    data: JobsData,
+    data: JobsData = [],
     isLoading: JobsIsLoading,
     error: JobsError,
     refetch: JobsRefetch,
   } = useQuery({
     queryKey: ["JobsData"],
     queryFn: async () => {
-      const res = await axiosPublic.get(`/Jobs?postedBy=${user?.email}`);
-      const data = res.data;
-      if (Array.isArray(data)) return data;
-      if (data && typeof data === "object") return [data]; // wrap single object in array
-      return [];
+      try {
+        const res = await axiosPublic.get(`/Jobs?postedBy=${user?.email}`);
+        const data = res.data;
+
+        if (Array.isArray(data)) return data;
+        if (data && typeof data === "object") return [data]; // wrap single object in array
+        return [];
+      } catch (err) {
+        if (err.response?.status === 404) return []; // no jobs found
+        return []; // fallback for other cases too
+      }
     },
+    enabled: !!user?.email, // prevents running before user is loaded
   });
 
   // Company Data
@@ -97,7 +104,7 @@ const ManageJobs = () => {
 
       {/* Display Jobs */}
       <div className="py-3 px-5">
-        {JobsData.length > 0 ? (
+        {JobsData?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
             {JobsData.map((job) => (
               <div key={job._id}>

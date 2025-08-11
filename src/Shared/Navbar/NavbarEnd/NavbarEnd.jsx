@@ -15,7 +15,6 @@ import CommonButton from "../../CommonButton/CommonButton";
 // Icons
 import { ImExit } from "react-icons/im";
 
-
 // Assets
 import Events from "../../../assets/Navbar/Member/Events.png";
 import Profile from "../../../assets/Navbar/Member/Profile.png";
@@ -98,6 +97,13 @@ const NavbarEnd = () => {
         img: Profile,
       },
     ],
+    Company: [
+      {
+        name: "Company Profile",
+        path: `/Employer/CompanyProfile`,
+        img: Profile,
+      },
+    ],
   };
 
   // Logout function
@@ -173,13 +179,14 @@ const NavbarEnd = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
   };
 
+  // Restart auto-close timer on mouse leave
   const handleMouseLeave = () => {
     timerRef.current = setTimeout(() => {
       setIsDropdownOpen(false);
     }, 1000);
   };
 
-  //
+  // If State Error / Loading UI
   if (UsersDataIsLoading) return <p>Loading . . . </p>;
   if (UsersDataError) return <p>Error</p>;
 

@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   FaAngleLeft,
   FaAngleRight,
+  FaBoxOpen,
   FaChevronDown,
   FaChevronUp,
 } from "react-icons/fa";
@@ -125,260 +126,275 @@ const ManageInternshipApplications = () => {
 
       {/* Internship Container */}
       <div className="px-4 pt-4 space-y-3">
-        {InternshipWithApplicants?.map((internship, index) => {
-          // Get the current page number for this job from the pageStates object
-          // If there’s no entry yet, default to page 1
-          const currentPage = pageStates[internship._id] || 1;
+        {InternshipWithApplicants?.length > 0 ? (
+          InternshipWithApplicants?.map((internship, index) => {
+            // Get the current page number for this job from the pageStates object
+            // If there’s no entry yet, default to page 1
+            const currentPage = pageStates[internship._id] || 1;
 
-          // Sort the job's applicants by their status
-          // Order: No status first → Accepted → Rejected → Everything else
-          const sortedApplicants = [...internship.Applicants].sort((a, b) => {
-            // Helper function to assign a numeric "rank" to each status
-            const getOrder = (status) => {
-              if (!status) return 0; // No status → highest priority
-              if (status === "Accepted") return 1; // Accepted comes second
-              if (status === "Rejected") return 2; // Rejected comes last
-              return 3; // Any other status after that
-            };
+            // Sort the job's applicants by their status
+            // Order: No status first → Accepted → Rejected → Everything else
+            const sortedApplicants = [...internship.Applicants].sort((a, b) => {
+              // Helper function to assign a numeric "rank" to each status
+              const getOrder = (status) => {
+                if (!status) return 0; // No status → highest priority
+                if (status === "Accepted") return 1; // Accepted comes second
+                if (status === "Rejected") return 2; // Rejected comes last
+                return 3; // Any other status after that
+              };
 
-            // Compare two applicants based on their status order
-            return getOrder(a.status) - getOrder(b.status);
-          });
+              // Compare two applicants based on their status order
+              return getOrder(a.status) - getOrder(b.status);
+            });
 
-          // Slice the sorted list to get only the applicants for the current page
-          const paginatedApplicants = sortedApplicants.slice(
-            (currentPage - 1) * ITEMS_PER_PAGE,
-            currentPage * ITEMS_PER_PAGE
-          );
+            // Slice the sorted list to get only the applicants for the current page
+            const paginatedApplicants = sortedApplicants.slice(
+              (currentPage - 1) * ITEMS_PER_PAGE,
+              currentPage * ITEMS_PER_PAGE
+            );
 
-          // Calculate the total number of pages based on the number of applicants
-          const totalPages = Math.ceil(
-            sortedApplicants.length / ITEMS_PER_PAGE
-          );
+            // Calculate the total number of pages based on the number of applicants
+            const totalPages = Math.ceil(
+              sortedApplicants.length / ITEMS_PER_PAGE
+            );
 
-          return (
-            <div
-              key={internship._id}
-              className="w-full border border-gray-200 rounded p-6 bg-white shadow hover:shadow-lg transition duration-300"
-            >
-              {/* Header */}
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
-                {/* Title */}
-                <h2 className="flex items-center text-lg font-semibold text-gray-900">
-                  #{index + 1}. {internship.title}
-                </h2>
+            return (
+              <div
+                key={internship._id}
+                className="w-full border border-gray-200 rounded p-6 bg-white shadow hover:shadow-lg transition duration-300"
+              >
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+                  {/* Title */}
+                  <h2 className="flex items-center text-lg font-semibold text-gray-900">
+                    #{index + 1}. {internship.title}
+                  </h2>
 
-                {/* Category */}
-                <div className="text-sm text-gray-700">
-                  <span className="font-medium">Category:</span>{" "}
-                  {internship.category}
-                  {internship.subCategory && (
-                    <span className="ml-2 text-gray-500">
-                      ({internship.subCategory})
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Divider */}
-              <hr className="border-gray-200 mb-4" />
-
-              {/* Content */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-6 text-sm text-gray-800 mb-4">
-                {/* Location */}
-                <div>
-                  <span className="font-medium text-gray-900">Location:</span>{" "}
-                  {internship.location}
+                  {/* Category */}
+                  <div className="text-sm text-gray-700">
+                    <span className="font-medium">Category:</span>{" "}
+                    {internship.category}
+                    {internship.subCategory && (
+                      <span className="ml-2 text-gray-500">
+                        ({internship.subCategory})
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                {/* Mode */}
-                <div>
-                  <span className="font-medium text-gray-900">Mode:</span>{" "}
-                  {internship.isRemote ? "Remote" : "Onsite"}
-                </div>
+                {/* Divider */}
+                <hr className="border-gray-200 mb-4" />
 
-                {/* Budget */}
-                <div>
-                  <span className="font-medium text-gray-900">Budget:</span>{" "}
-                  {internship.budget.min} - {internship.budget.max}{" "}
-                  {internship.budget.currency}{" "}
-                  {internship.budget.isNegotiable && (
-                    <span className="text-blue-600 text-xs ml-1">
-                      (Negotiable)
-                    </span>
-                  )}
-                </div>
+                {/* Content */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-6 text-sm text-gray-800 mb-4">
+                  {/* Location */}
+                  <div>
+                    <span className="font-medium text-gray-900">Location:</span>{" "}
+                    {internship.location}
+                  </div>
 
-                {/* Delivery Deadline */}
-                <div>
-                  <span className="font-medium text-gray-900">
-                    Delivery Deadline:
-                  </span>{" "}
-                  {new Date(internship.deliveryDeadline).toLocaleDateString(
-                    "en-US",
-                    {
+                  {/* Mode */}
+                  <div>
+                    <span className="font-medium text-gray-900">Mode:</span>{" "}
+                    {internship.isRemote ? "Remote" : "Onsite"}
+                  </div>
+
+                  {/* Budget */}
+                  <div>
+                    <span className="font-medium text-gray-900">Budget:</span>{" "}
+                    {internship.budget.min} - {internship.budget.max}{" "}
+                    {internship.budget.currency}{" "}
+                    {internship.budget.isNegotiable && (
+                      <span className="text-blue-600 text-xs ml-1">
+                        (Negotiable)
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Delivery Deadline */}
+                  <div>
+                    <span className="font-medium text-gray-900">
+                      Delivery Deadline:
+                    </span>{" "}
+                    {new Date(internship.deliveryDeadline).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    )}
+                  </div>
+
+                  {/* Required Skills */}
+                  <div>
+                    <span className="font-medium text-gray-900">
+                      Required Skills:
+                    </span>{" "}
+                    {internship.requiredSkills.join(", ")}
+                  </div>
+
+                  {/* Posted On */}
+                  <div>
+                    <span className="font-medium text-gray-900">
+                      Posted on:
+                    </span>{" "}
+                    {new Date(internship.postedAt).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "short",
                       day: "numeric",
-                    }
-                  )}
-                </div>
-
-                {/* Required Skills */}
-                <div>
-                  <span className="font-medium text-gray-900">
-                    Required Skills:
-                  </span>{" "}
-                  {internship.requiredSkills.join(", ")}
-                </div>
-
-                {/* Posted On */}
-                <div>
-                  <span className="font-medium text-gray-900">Posted on:</span>{" "}
-                  {new Date(internship.postedAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </div>
-              </div>
-
-              {/* Divider */}
-              <hr className="border-gray-200" />
-
-              {/* Applicants Section */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4">
-                {/* Applicants Number */}
-                <div className="flex text-sm font-medium text-gray-700 gap-4">
-                  <p>
-                    Applicants:{" "}
-                    <span className="text-gray-900">
-                      {internship.Applicants.length}
-                    </span>
-                  </p>
-                  {internship.Applicants.filter(
-                    (app) => app.status === "Accepted"
-                  ).length > 0 && (
-                    <>
-                      {" | "}
-                      <p>
-                        Accepted:{" "}
-                        <span className="text-green-600 font-semibold">
-                          {
-                            internship.Applicants.filter(
-                              (app) => app.status === "Accepted"
-                            ).length
-                          }
-                        </span>
-                      </p>
-                    </>
-                  )}
-
-                  {internship.Applicants.filter(
-                    (app) => app.status === "Rejected"
-                  ).length > 0 && (
-                    <>
-                      {" | "}
-                      <p>
-                        Rejected:{" "}
-                        <span className="text-red-600 font-semibold">
-                          {
-                            internship.Applicants.filter(
-                              (app) => app.status === "Rejected"
-                            ).length
-                          }
-                        </span>
-                      </p>
-                    </>
-                  )}
-                </div>
-
-                {/* Open / Close Applicants Table Button */}
-                {expandedInternshipId === internship._id ? (
-                  <button
-                    onClick={() => setExpandedInternshipId(null)}
-                    className="flex items-center gap-1 text-sm text-red-600 hover:underline transition cursor-pointer"
-                  >
-                    <FaChevronUp className="text-base" />
-                    Close Applicants
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setExpandedInternshipId(internship._id);
-                      setPageStates((prev) => ({
-                        ...prev,
-                        [internship._id]: 1,
-                      }));
-                    }}
-                    className="flex items-center gap-1 text-sm text-blue-600 hover:underline transition cursor-pointer"
-                  >
-                    <FaChevronDown className="text-base" />
-                    View Applicants
-                  </button>
-                )}
-              </div>
-
-              {/* Applicants Table */}
-              <div
-                className={`transition-all duration-500 ease-in-out overflow-hidden ${
-                  expandedInternshipId === internship._id
-                    ? "max-h-[1000px] pt-4"
-                    : "max-h-0"
-                }`}
-              >
-                {/* Applicants Container */}
-                <InternshipApplicantTable
-                  refetch={refetch}
-                  currentPage={currentPage}
-                  ITEMS_PER_PAGE={ITEMS_PER_PAGE}
-                  paginatedApplicants={paginatedApplicants}
-                  setSelectedApplicationID={setSelectedApplicationID}
-                />
-
-                {/* Pagination Controls */}
-                {internship.Applicants.length > ITEMS_PER_PAGE && (
-                  <div className="flex justify-center pt-2">
-                    <div className="join">
-                      {/* Left Button */}
-                      <button
-                        className="join-item bg-white text-black border border-gray-400 hover:bg-gray-300 px-3 py-2 cursor-pointer"
-                        disabled={currentPage === 1}
-                        onClick={() =>
-                          setPageStates((prev) => ({
-                            ...prev,
-                            [internship._id]: currentPage - 1,
-                          }))
-                        }
-                      >
-                        <FaAngleLeft />
-                      </button>
-
-                      {/* Page Count */}
-                      <button className="join-item bg-white text-black border border-gray-400 px-3 py-2 cursor-default">
-                        Page {currentPage}
-                      </button>
-
-                      {/* Right Button */}
-                      <button
-                        className="join-item bg-white text-black border border-gray-400 hover:bg-gray-300 px-3 py-2 cursor-pointer"
-                        disabled={currentPage === totalPages}
-                        onClick={() =>
-                          setPageStates((prev) => ({
-                            ...prev,
-                            [internship._id]: currentPage + 1,
-                          }))
-                        }
-                      >
-                        <FaAngleRight />
-                      </button>
-                    </div>
+                    })}
                   </div>
-                )}
+                </div>
+
+                {/* Divider */}
+                <hr className="border-gray-200" />
+
+                {/* Applicants Section */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4">
+                  {/* Applicants Number */}
+                  <div className="flex text-sm font-medium text-gray-700 gap-4">
+                    <p>
+                      Applicants:{" "}
+                      <span className="text-gray-900">
+                        {internship.Applicants.length}
+                      </span>
+                    </p>
+                    {internship.Applicants.filter(
+                      (app) => app.status === "Accepted"
+                    ).length > 0 && (
+                      <>
+                        {" | "}
+                        <p>
+                          Accepted:{" "}
+                          <span className="text-green-600 font-semibold">
+                            {
+                              internship.Applicants.filter(
+                                (app) => app.status === "Accepted"
+                              ).length
+                            }
+                          </span>
+                        </p>
+                      </>
+                    )}
+
+                    {internship.Applicants.filter(
+                      (app) => app.status === "Rejected"
+                    ).length > 0 && (
+                      <>
+                        {" | "}
+                        <p>
+                          Rejected:{" "}
+                          <span className="text-red-600 font-semibold">
+                            {
+                              internship.Applicants.filter(
+                                (app) => app.status === "Rejected"
+                              ).length
+                            }
+                          </span>
+                        </p>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Open / Close Applicants Table Button */}
+                  {expandedInternshipId === internship._id ? (
+                    <button
+                      onClick={() => setExpandedInternshipId(null)}
+                      className="flex items-center gap-1 text-sm text-red-600 hover:underline transition cursor-pointer"
+                    >
+                      <FaChevronUp className="text-base" />
+                      Close Applicants
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setExpandedInternshipId(internship._id);
+                        setPageStates((prev) => ({
+                          ...prev,
+                          [internship._id]: 1,
+                        }));
+                      }}
+                      className="flex items-center gap-1 text-sm text-blue-600 hover:underline transition cursor-pointer"
+                    >
+                      <FaChevronDown className="text-base" />
+                      View Applicants
+                    </button>
+                  )}
+                </div>
+
+                {/* Applicants Table */}
+                <div
+                  className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                    expandedInternshipId === internship._id
+                      ? "max-h-[1000px] pt-4"
+                      : "max-h-0"
+                  }`}
+                >
+                  {/* Applicants Container */}
+                  <InternshipApplicantTable
+                    refetch={refetch}
+                    currentPage={currentPage}
+                    ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+                    paginatedApplicants={paginatedApplicants}
+                    setSelectedApplicationID={setSelectedApplicationID}
+                  />
+
+                  {/* Pagination Controls */}
+                  {internship.Applicants.length > ITEMS_PER_PAGE && (
+                    <div className="flex justify-center pt-2">
+                      <div className="join">
+                        {/* Left Button */}
+                        <button
+                          className="join-item bg-white text-black border border-gray-400 hover:bg-gray-300 px-3 py-2 cursor-pointer"
+                          disabled={currentPage === 1}
+                          onClick={() =>
+                            setPageStates((prev) => ({
+                              ...prev,
+                              [internship._id]: currentPage - 1,
+                            }))
+                          }
+                        >
+                          <FaAngleLeft />
+                        </button>
+
+                        {/* Page Count */}
+                        <button className="join-item bg-white text-black border border-gray-400 px-3 py-2 cursor-default">
+                          Page {currentPage}
+                        </button>
+
+                        {/* Right Button */}
+                        <button
+                          className="join-item bg-white text-black border border-gray-400 hover:bg-gray-300 px-3 py-2 cursor-pointer"
+                          disabled={currentPage === totalPages}
+                          onClick={() =>
+                            setPageStates((prev) => ({
+                              ...prev,
+                              [internship._id]: currentPage + 1,
+                            }))
+                          }
+                        >
+                          <FaAngleRight />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <div className="w-full flex flex-col items-center justify-center py-16 px-4">
+            <FaBoxOpen className="text-6xl text-gray-300 mb-4" />
+            <p className="text-lg font-semibold text-gray-700 mb-2">
+              No Internships Posted Yet
+            </p>
+            <p className="text-sm text-gray-500 max-w-xs text-center">
+              Looks like you haven&apos;t posted any internships yet. Start
+              posting internships now to attract talented interns!
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Modals */}

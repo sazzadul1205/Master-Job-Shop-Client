@@ -131,7 +131,7 @@ const ManageJobApplications = () => {
       <div className="py-[1px] w-full bg-blue-700 my-1" />
 
       {/* Jobs Container */}
-      <div className="px-4 pt-4 space-y-3">
+      <div className="px-4 py-5 space-y-3">
         {JobsWithApplicants?.length > 0 ? (
           JobsWithApplicants?.map((job, index) => {
             // Get the current page number for this job from the pageStates object

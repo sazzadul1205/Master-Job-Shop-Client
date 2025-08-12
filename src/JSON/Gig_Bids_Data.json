@@ -1,0 +1,496 @@
+[
+  {
+    "name": "Farhan Kabir",
+    "phone": "8801998765432",
+    "email": "farhan.kabir@gmail.com",
+    "gigId": "689a0a213f6dd5a56c92dc65",
+    "coverLetter": "Dear Client,\n\nWith extensive MERN experience, I can deliver your web app with robust backend logic and a responsive UI. I follow best practices in code organization, security, and performance tuning. Let’s build something impressive.\n\nRegards,\nFarhan",
+    "profileImage": "https://i.ibb.co/fNCxk8n/avatar4.jpg",
+    "submittedAt": "2025-08-07T16:38:02.654Z",
+    "bidAmount": 31000,
+    "deliveryDays": 65
+  },
+  {
+    "name": "Sara Ahmed",
+    "phone": "8801776543210",
+    "email": "sara.ahmed@gmail.com",
+    "gigId": "689a0a213f6dd5a56c92dc65",
+    "coverLetter": "Hi! I specialize in React and Node.js, ready to build scalable and maintainable apps that exceed your expectations.",
+    "profileImage": "https://i.ibb.co/7t5q2mk/avatar5.jpg",
+    "submittedAt": "2025-08-10T10:22:00.000Z",
+    "bidAmount": 35000,
+    "deliveryDays": 45
+  },
+  {
+    "name": "Jamal Uddin",
+    "phone": "8801987654321",
+    "email": "jamal.uddin@example.com",
+    "gigId": "689a0a213f6dd5a56c92dc65",
+    "coverLetter": "Experienced full-stack developer here. I’ll deliver clean, efficient code and ensure timely delivery.",
+    "profileImage": "https://i.ibb.co/5G9GpY2/avatar6.jpg",
+    "submittedAt": "2025-08-05T09:00:00.000Z",
+    "bidAmount": 29000,
+    "deliveryDays": 60
+  },
+  {
+    "name": "Nadia Karim",
+    "phone": "8801998123456",
+    "email": "nadia.karim@example.com",
+    "gigId": "689a0a213f6dd5a56c92dc65",
+    "coverLetter": "I’m passionate about UI/UX and backend integration. Let’s create something amazing together.",
+    "profileImage": "https://i.ibb.co/HDxzQG1/avatar7.jpg",
+    "submittedAt": "2025-08-08T15:45:00.000Z",
+    "bidAmount": 33000,
+    "deliveryDays": 55
+  },
+
+  {
+    "name": "Farhan Kabir",
+    "phone": "8801998765432",
+    "email": "farhan.kabir@gmail.com",
+    "gigId": "689ab50b527192f821f048c7",
+    "coverLetter": "Dear Client,\n\nWith extensive MERN experience, I can deliver your web app with robust backend logic and a responsive UI. I follow best practices in code organization, security, and performance tuning. Let’s build something impressive.\n\nRegards,\nFarhan",
+    "profileImage": "https://i.ibb.co/fNCxk8n/avatar4.jpg",
+    "submittedAt": "2025-08-07T16:38:02.654Z",
+    "bidAmount": 31000,
+    "deliveryDays": 65
+  },
+  {
+    "name": "Sara Ahmed",
+    "phone": "8801776543210",
+    "email": "sara.ahmed@gmail.com",
+    "gigId": "689ab50b527192f821f048c7",
+    "coverLetter": "Hi! I specialize in React and Node.js, ready to build scalable and maintainable apps that exceed your expectations.",
+    "profileImage": "https://i.ibb.co/7t5q2mk/avatar5.jpg",
+    "submittedAt": "2025-08-10T10:22:00.000Z",
+    "bidAmount": 35000,
+    "deliveryDays": 45
+  },
+  {
+    "name": "Jamal Uddin",
+    "phone": "8801987654321",
+    "email": "jamal.uddin@example.com",
+    "gigId": "689ab50b527192f821f048c7",
+    "coverLetter": "Experienced full-stack developer here. I’ll deliver clean, efficient code and ensure timely delivery.",
+    "profileImage": "https://i.ibb.co/5G9GpY2/avatar6.jpg",
+    "submittedAt": "2025-08-05T09:00:00.000Z",
+    "bidAmount": 29000,
+    "deliveryDays": 60
+  },
+  {
+    "name": "Nadia Karim",
+    "phone": "8801998123456",
+    "email": "nadia.karim@example.com",
+    "gigId": "689ab50b527192f821f048c7",
+    "coverLetter": "I’m passionate about UI/UX and backend integration. Let’s create something amazing together.",
+    "profileImage": "https://i.ibb.co/HDxzQG1/avatar7.jpg",
+    "submittedAt": "2025-08-08T15:45:00.000Z",
+    "bidAmount": 33000,
+    "deliveryDays": 55
+  },
+
+  {
+    "name": "Farhan Kabir",
+    "phone": "8801998765432",
+    "email": "farhan.kabir@gmail.com",
+    "gigId": "689ab50b527192f821f048c8",
+    "coverLetter": "Dear Client,\n\nWith extensive MERN experience, I can deliver your web app with robust backend logic and a responsive UI. I follow best practices in code organization, security, and performance tuning. Let’s build something impressive.\n\nRegards,\nFarhan",
+    "profileImage": "https://i.ibb.co/fNCxk8n/avatar4.jpg",
+    "submittedAt": "2025-08-07T16:38:02.654Z",
+    "bidAmount": 31000,
+    "deliveryDays": 65
+  },
+  {
+    "name": "Sara Ahmed",
+    "phone": "8801776543210",
+    "email": "sara.ahmed@gmail.com",
+    "gigId": "689ab50b527192f821f048c8",
+    "coverLetter": "Hi! I specialize in React and Node.js, ready to build scalable and maintainable apps that exceed your expectations.",
+    "profileImage": "https://i.ibb.co/7t5q2mk/avatar5.jpg",
+    "submittedAt": "2025-08-10T10:22:00.000Z",
+    "bidAmount": 35000,
+    "deliveryDays": 45
+  },
+  {
+    "name": "Jamal Uddin",
+    "phone": "8801987654321",
+    "email": "jamal.uddin@example.com",
+    "gigId": "689ab50b527192f821f048c8",
+    "coverLetter": "Experienced full-stack developer here. I’ll deliver clean, efficient code and ensure timely delivery.",
+    "profileImage": "https://i.ibb.co/5G9GpY2/avatar6.jpg",
+    "submittedAt": "2025-08-05T09:00:00.000Z",
+    "bidAmount": 29000,
+    "deliveryDays": 60
+  },
+  {
+    "name": "Nadia Karim",
+    "phone": "8801998123456",
+    "email": "nadia.karim@example.com",
+    "gigId": "689ab50b527192f821f048c8",
+    "coverLetter": "I’m passionate about UI/UX and backend integration. Let’s create something amazing together.",
+    "profileImage": "https://i.ibb.co/HDxzQG1/avatar7.jpg",
+    "submittedAt": "2025-08-08T15:45:00.000Z",
+    "bidAmount": 33000,
+    "deliveryDays": 55
+  },
+
+  {
+    "name": "Farhan Kabir",
+    "phone": "8801998765432",
+    "email": "farhan.kabir@gmail.com",
+    "gigId": "689ab50b527192f821f048c9",
+    "coverLetter": "Dear Client,\n\nWith extensive MERN experience, I can deliver your web app with robust backend logic and a responsive UI. I follow best practices in code organization, security, and performance tuning. Let’s build something impressive.\n\nRegards,\nFarhan",
+    "profileImage": "https://i.ibb.co/fNCxk8n/avatar4.jpg",
+    "submittedAt": "2025-08-07T16:38:02.654Z",
+    "bidAmount": 31000,
+    "deliveryDays": 65
+  },
+  {
+    "name": "Sara Ahmed",
+    "phone": "8801776543210",
+    "email": "sara.ahmed@gmail.com",
+    "gigId": "689ab50b527192f821f048c9",
+    "coverLetter": "Hi! I specialize in React and Node.js, ready to build scalable and maintainable apps that exceed your expectations.",
+    "profileImage": "https://i.ibb.co/7t5q2mk/avatar5.jpg",
+    "submittedAt": "2025-08-10T10:22:00.000Z",
+    "bidAmount": 35000,
+    "deliveryDays": 45
+  },
+  {
+    "name": "Jamal Uddin",
+    "phone": "8801987654321",
+    "email": "jamal.uddin@example.com",
+    "gigId": "689ab50b527192f821f048c9",
+    "coverLetter": "Experienced full-stack developer here. I’ll deliver clean, efficient code and ensure timely delivery.",
+    "profileImage": "https://i.ibb.co/5G9GpY2/avatar6.jpg",
+    "submittedAt": "2025-08-05T09:00:00.000Z",
+    "bidAmount": 29000,
+    "deliveryDays": 60
+  },
+  {
+    "name": "Nadia Karim",
+    "phone": "8801998123456",
+    "email": "nadia.karim@example.com",
+    "gigId": "689ab50b527192f821f048c9",
+    "coverLetter": "I’m passionate about UI/UX and backend integration. Let’s create something amazing together.",
+    "profileImage": "https://i.ibb.co/HDxzQG1/avatar7.jpg",
+    "submittedAt": "2025-08-08T15:45:00.000Z",
+    "bidAmount": 33000,
+    "deliveryDays": 55
+  },
+
+  {
+    "name": "Farhan Kabir",
+    "phone": "8801998765432",
+    "email": "farhan.kabir@gmail.com",
+    "gigId": "689ab50b527192f821f048ca",
+    "coverLetter": "Dear Client,\n\nWith extensive MERN experience, I can deliver your web app with robust backend logic and a responsive UI. I follow best practices in code organization, security, and performance tuning. Let’s build something impressive.\n\nRegards,\nFarhan",
+    "profileImage": "https://i.ibb.co/fNCxk8n/avatar4.jpg",
+    "submittedAt": "2025-08-07T16:38:02.654Z",
+    "bidAmount": 31000,
+    "deliveryDays": 65
+  },
+  {
+    "name": "Sara Ahmed",
+    "phone": "8801776543210",
+    "email": "sara.ahmed@gmail.com",
+    "gigId": "689ab50b527192f821f048ca",
+    "coverLetter": "Hi! I specialize in React and Node.js, ready to build scalable and maintainable apps that exceed your expectations.",
+    "profileImage": "https://i.ibb.co/7t5q2mk/avatar5.jpg",
+    "submittedAt": "2025-08-10T10:22:00.000Z",
+    "bidAmount": 35000,
+    "deliveryDays": 45
+  },
+  {
+    "name": "Jamal Uddin",
+    "phone": "8801987654321",
+    "email": "jamal.uddin@example.com",
+    "gigId": "689ab50b527192f821f048ca",
+    "coverLetter": "Experienced full-stack developer here. I’ll deliver clean, efficient code and ensure timely delivery.",
+    "profileImage": "https://i.ibb.co/5G9GpY2/avatar6.jpg",
+    "submittedAt": "2025-08-05T09:00:00.000Z",
+    "bidAmount": 29000,
+    "deliveryDays": 60
+  },
+  {
+    "name": "Nadia Karim",
+    "phone": "8801998123456",
+    "email": "nadia.karim@example.com",
+    "gigId": "689ab50b527192f821f048ca",
+    "coverLetter": "I’m passionate about UI/UX and backend integration. Let’s create something amazing together.",
+    "profileImage": "https://i.ibb.co/HDxzQG1/avatar7.jpg",
+    "submittedAt": "2025-08-08T15:45:00.000Z",
+    "bidAmount": 33000,
+    "deliveryDays": 55
+  },
+
+  {
+    "name": "Farhan Kabir",
+    "phone": "8801998765432",
+    "email": "farhan.kabir@gmail.com",
+    "gigId": "689ab50b527192f821f048cb",
+    "coverLetter": "Dear Client,\n\nWith extensive MERN experience, I can deliver your web app with robust backend logic and a responsive UI. I follow best practices in code organization, security, and performance tuning. Let’s build something impressive.\n\nRegards,\nFarhan",
+    "profileImage": "https://i.ibb.co/fNCxk8n/avatar4.jpg",
+    "submittedAt": "2025-08-07T16:38:02.654Z",
+    "bidAmount": 31000,
+    "deliveryDays": 65
+  },
+  {
+    "name": "Sara Ahmed",
+    "phone": "8801776543210",
+    "email": "sara.ahmed@gmail.com",
+    "gigId": "689ab50b527192f821f048cb",
+    "coverLetter": "Hi! I specialize in React and Node.js, ready to build scalable and maintainable apps that exceed your expectations.",
+    "profileImage": "https://i.ibb.co/7t5q2mk/avatar5.jpg",
+    "submittedAt": "2025-08-10T10:22:00.000Z",
+    "bidAmount": 35000,
+    "deliveryDays": 45
+  },
+  {
+    "name": "Jamal Uddin",
+    "phone": "8801987654321",
+    "email": "jamal.uddin@example.com",
+    "gigId": "689ab50b527192f821f048cb",
+    "coverLetter": "Experienced full-stack developer here. I’ll deliver clean, efficient code and ensure timely delivery.",
+    "profileImage": "https://i.ibb.co/5G9GpY2/avatar6.jpg",
+    "submittedAt": "2025-08-05T09:00:00.000Z",
+    "bidAmount": 29000,
+    "deliveryDays": 60
+  },
+  {
+    "name": "Nadia Karim",
+    "phone": "8801998123456",
+    "email": "nadia.karim@example.com",
+    "gigId": "689ab50b527192f821f048cb",
+    "coverLetter": "I’m passionate about UI/UX and backend integration. Let’s create something amazing together.",
+    "profileImage": "https://i.ibb.co/HDxzQG1/avatar7.jpg",
+    "submittedAt": "2025-08-08T15:45:00.000Z",
+    "bidAmount": 33000,
+    "deliveryDays": 55
+  },
+
+  {
+    "name": "Farhan Kabir",
+    "phone": "8801998765432",
+    "email": "farhan.kabir@gmail.com",
+    "gigId": "689ab50b527192f821f048cc",
+    "coverLetter": "Dear Client,\n\nWith extensive MERN experience, I can deliver your web app with robust backend logic and a responsive UI. I follow best practices in code organization, security, and performance tuning. Let’s build something impressive.\n\nRegards,\nFarhan",
+    "profileImage": "https://i.ibb.co/fNCxk8n/avatar4.jpg",
+    "submittedAt": "2025-08-07T16:38:02.654Z",
+    "bidAmount": 31000,
+    "deliveryDays": 65
+  },
+  {
+    "name": "Sara Ahmed",
+    "phone": "8801776543210",
+    "email": "sara.ahmed@gmail.com",
+    "gigId": "689ab50b527192f821f048cc",
+    "coverLetter": "Hi! I specialize in React and Node.js, ready to build scalable and maintainable apps that exceed your expectations.",
+    "profileImage": "https://i.ibb.co/7t5q2mk/avatar5.jpg",
+    "submittedAt": "2025-08-10T10:22:00.000Z",
+    "bidAmount": 35000,
+    "deliveryDays": 45
+  },
+  {
+    "name": "Jamal Uddin",
+    "phone": "8801987654321",
+    "email": "jamal.uddin@example.com",
+    "gigId": "689ab50b527192f821f048cc",
+    "coverLetter": "Experienced full-stack developer here. I’ll deliver clean, efficient code and ensure timely delivery.",
+    "profileImage": "https://i.ibb.co/5G9GpY2/avatar6.jpg",
+    "submittedAt": "2025-08-05T09:00:00.000Z",
+    "bidAmount": 29000,
+    "deliveryDays": 60
+  },
+  {
+    "name": "Nadia Karim",
+    "phone": "8801998123456",
+    "email": "nadia.karim@example.com",
+    "gigId": "689ab50b527192f821f048cc",
+    "coverLetter": "I’m passionate about UI/UX and backend integration. Let’s create something amazing together.",
+    "profileImage": "https://i.ibb.co/HDxzQG1/avatar7.jpg",
+    "submittedAt": "2025-08-08T15:45:00.000Z",
+    "bidAmount": 33000,
+    "deliveryDays": 55
+  },
+
+  {
+    "name": "Farhan Kabir",
+    "phone": "8801998765432",
+    "email": "farhan.kabir@gmail.com",
+    "gigId": "689ab50b527192f821f048cd",
+    "coverLetter": "Dear Client,\n\nWith extensive MERN experience, I can deliver your web app with robust backend logic and a responsive UI. I follow best practices in code organization, security, and performance tuning. Let’s build something impressive.\n\nRegards,\nFarhan",
+    "profileImage": "https://i.ibb.co/fNCxk8n/avatar4.jpg",
+    "submittedAt": "2025-08-07T16:38:02.654Z",
+    "bidAmount": 31000,
+    "deliveryDays": 65
+  },
+  {
+    "name": "Sara Ahmed",
+    "phone": "8801776543210",
+    "email": "sara.ahmed@gmail.com",
+    "gigId": "689ab50b527192f821f048cd",
+    "coverLetter": "Hi! I specialize in React and Node.js, ready to build scalable and maintainable apps that exceed your expectations.",
+    "profileImage": "https://i.ibb.co/7t5q2mk/avatar5.jpg",
+    "submittedAt": "2025-08-10T10:22:00.000Z",
+    "bidAmount": 35000,
+    "deliveryDays": 45
+  },
+  {
+    "name": "Jamal Uddin",
+    "phone": "8801987654321",
+    "email": "jamal.uddin@example.com",
+    "gigId": "689ab50b527192f821f048cd",
+    "coverLetter": "Experienced full-stack developer here. I’ll deliver clean, efficient code and ensure timely delivery.",
+    "profileImage": "https://i.ibb.co/5G9GpY2/avatar6.jpg",
+    "submittedAt": "2025-08-05T09:00:00.000Z",
+    "bidAmount": 29000,
+    "deliveryDays": 60
+  },
+  {
+    "name": "Nadia Karim",
+    "phone": "8801998123456",
+    "email": "nadia.karim@example.com",
+    "gigId": "689ab50b527192f821f048cd",
+    "coverLetter": "I’m passionate about UI/UX and backend integration. Let’s create something amazing together.",
+    "profileImage": "https://i.ibb.co/HDxzQG1/avatar7.jpg",
+    "submittedAt": "2025-08-08T15:45:00.000Z",
+    "bidAmount": 33000,
+    "deliveryDays": 55
+  },
+
+  {
+    "name": "Farhan Kabir",
+    "phone": "8801998765432",
+    "email": "farhan.kabir@gmail.com",
+    "gigId": "689ab50b527192f821f048ce",
+    "coverLetter": "Dear Client,\n\nWith extensive MERN experience, I can deliver your web app with robust backend logic and a responsive UI. I follow best practices in code organization, security, and performance tuning. Let’s build something impressive.\n\nRegards,\nFarhan",
+    "profileImage": "https://i.ibb.co/fNCxk8n/avatar4.jpg",
+    "submittedAt": "2025-08-07T16:38:02.654Z",
+    "bidAmount": 31000,
+    "deliveryDays": 65
+  },
+  {
+    "name": "Sara Ahmed",
+    "phone": "8801776543210",
+    "email": "sara.ahmed@gmail.com",
+    "gigId": "689ab50b527192f821f048ce",
+    "coverLetter": "Hi! I specialize in React and Node.js, ready to build scalable and maintainable apps that exceed your expectations.",
+    "profileImage": "https://i.ibb.co/7t5q2mk/avatar5.jpg",
+    "submittedAt": "2025-08-10T10:22:00.000Z",
+    "bidAmount": 35000,
+    "deliveryDays": 45
+  },
+  {
+    "name": "Jamal Uddin",
+    "phone": "8801987654321",
+    "email": "jamal.uddin@example.com",
+    "gigId": "689ab50b527192f821f048ce",
+    "coverLetter": "Experienced full-stack developer here. I’ll deliver clean, efficient code and ensure timely delivery.",
+    "profileImage": "https://i.ibb.co/5G9GpY2/avatar6.jpg",
+    "submittedAt": "2025-08-05T09:00:00.000Z",
+    "bidAmount": 29000,
+    "deliveryDays": 60
+  },
+  {
+    "name": "Nadia Karim",
+    "phone": "8801998123456",
+    "email": "nadia.karim@example.com",
+    "gigId": "689ab50b527192f821f048ce",
+    "coverLetter": "I’m passionate about UI/UX and backend integration. Let’s create something amazing together.",
+    "profileImage": "https://i.ibb.co/HDxzQG1/avatar7.jpg",
+    "submittedAt": "2025-08-08T15:45:00.000Z",
+    "bidAmount": 33000,
+    "deliveryDays": 55
+  },
+
+  {
+    "name": "Farhan Kabir",
+    "phone": "8801998765432",
+    "email": "farhan.kabir@gmail.com",
+    "gigId": "689ab50b527192f821f048cf",
+    "coverLetter": "Dear Client,\n\nWith extensive MERN experience, I can deliver your web app with robust backend logic and a responsive UI. I follow best practices in code organization, security, and performance tuning. Let’s build something impressive.\n\nRegards,\nFarhan",
+    "profileImage": "https://i.ibb.co/fNCxk8n/avatar4.jpg",
+    "submittedAt": "2025-08-07T16:38:02.654Z",
+    "bidAmount": 31000,
+    "deliveryDays": 65
+  },
+  {
+    "name": "Sara Ahmed",
+    "phone": "8801776543210",
+    "email": "sara.ahmed@gmail.com",
+    "gigId": "689ab50b527192f821f048cf",
+    "coverLetter": "Hi! I specialize in React and Node.js, ready to build scalable and maintainable apps that exceed your expectations.",
+    "profileImage": "https://i.ibb.co/7t5q2mk/avatar5.jpg",
+    "submittedAt": "2025-08-10T10:22:00.000Z",
+    "bidAmount": 35000,
+    "deliveryDays": 45
+  },
+  {
+    "name": "Jamal Uddin",
+    "phone": "8801987654321",
+    "email": "jamal.uddin@example.com",
+    "gigId": "689ab50b527192f821f048cf",
+    "coverLetter": "Experienced full-stack developer here. I’ll deliver clean, efficient code and ensure timely delivery.",
+    "profileImage": "https://i.ibb.co/5G9GpY2/avatar6.jpg",
+    "submittedAt": "2025-08-05T09:00:00.000Z",
+    "bidAmount": 29000,
+    "deliveryDays": 60
+  },
+  {
+    "name": "Nadia Karim",
+    "phone": "8801998123456",
+    "email": "nadia.karim@example.com",
+    "gigId": "689ab50b527192f821f048cf",
+    "coverLetter": "I’m passionate about UI/UX and backend integration. Let’s create something amazing together.",
+    "profileImage": "https://i.ibb.co/HDxzQG1/avatar7.jpg",
+    "submittedAt": "2025-08-08T15:45:00.000Z",
+    "bidAmount": 33000,
+    "deliveryDays": 55
+  },
+
+  {
+    "name": "Farhan Kabir",
+    "phone": "8801998765432",
+    "email": "farhan.kabir@gmail.com",
+    "gigId": "689ab50b527192f821f048d0",
+    "coverLetter": "Dear Client,\n\nWith extensive MERN experience, I can deliver your web app with robust backend logic and a responsive UI. I follow best practices in code organization, security, and performance tuning. Let’s build something impressive.\n\nRegards,\nFarhan",
+    "profileImage": "https://i.ibb.co/fNCxk8n/avatar4.jpg",
+    "submittedAt": "2025-08-07T16:38:02.654Z",
+    "bidAmount": 31000,
+    "deliveryDays": 65
+  },
+  {
+    "name": "Sara Ahmed",
+    "phone": "8801776543210",
+    "email": "sara.ahmed@gmail.com",
+    "gigId": "689ab50b527192f821f048d0",
+    "coverLetter": "Hi! I specialize in React and Node.js, ready to build scalable and maintainable apps that exceed your expectations.",
+    "profileImage": "https://i.ibb.co/7t5q2mk/avatar5.jpg",
+    "submittedAt": "2025-08-10T10:22:00.000Z",
+    "bidAmount": 35000,
+    "deliveryDays": 45
+  },
+  {
+    "name": "Jamal Uddin",
+    "phone": "8801987654321",
+    "email": "jamal.uddin@example.com",
+    "gigId": "689ab50b527192f821f048d0",
+    "coverLetter": "Experienced full-stack developer here. I’ll deliver clean, efficient code and ensure timely delivery.",
+    "profileImage": "https://i.ibb.co/5G9GpY2/avatar6.jpg",
+    "submittedAt": "2025-08-05T09:00:00.000Z",
+    "bidAmount": 29000,
+    "deliveryDays": 60
+  },
+  {
+    "name": "Nadia Karim",
+    "phone": "8801998123456",
+    "email": "nadia.karim@example.com",
+    "gigId": "689ab50b527192f821f048d0",
+    "coverLetter": "I’m passionate about UI/UX and backend integration. Let’s create something amazing together.",
+    "profileImage": "https://i.ibb.co/HDxzQG1/avatar7.jpg",
+    "submittedAt": "2025-08-08T15:45:00.000Z",
+    "bidAmount": 33000,
+    "deliveryDays": 55
+  }
+]

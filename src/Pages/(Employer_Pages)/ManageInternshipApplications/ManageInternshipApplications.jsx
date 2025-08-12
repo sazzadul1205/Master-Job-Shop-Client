@@ -125,7 +125,7 @@ const ManageInternshipApplications = () => {
       <div className="py-[1px] w-full bg-blue-700 my-1" />
 
       {/* Internship Container */}
-      <div className="px-4 pt-4 space-y-3">
+      <div className="px-4 py-4 space-y-3">
         {InternshipWithApplicants?.length > 0 ? (
           InternshipWithApplicants?.map((internship, index) => {
             // Get the current page number for this job from the pageStates object
@@ -227,11 +227,11 @@ const ManageInternshipApplications = () => {
                   </div>
 
                   {/* Required Skills */}
-                  <div>
-                    <span className="font-medium text-gray-900">
+                  <div className="truncate whitespace-nowrap max-w-full">
+                    <span className="font-medium text-gray-900 mr-1">
                       Required Skills:
-                    </span>{" "}
-                    {internship.requiredSkills.join(", ")}
+                    </span>
+                    <span>{internship.requiredSkills.join(", ")}</span>
                   </div>
 
                   {/* Posted On */}

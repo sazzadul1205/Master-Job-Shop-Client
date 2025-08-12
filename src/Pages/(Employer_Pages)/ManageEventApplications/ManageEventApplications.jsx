@@ -131,7 +131,7 @@ const ManageEventApplications = () => {
       <div className="py-[1px] w-full bg-blue-700 my-1" />
 
       {/* Event Container */}
-      <div className="px-4 pt-4 space-y-3">
+      <div className="px-4 py-4 space-y-3">
         {EventWithApplicants?.length > 0 ? (
           EventWithApplicants?.map((event, index) => {
             // Pagination

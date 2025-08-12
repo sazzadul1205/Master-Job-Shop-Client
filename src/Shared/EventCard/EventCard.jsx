@@ -96,7 +96,7 @@ const EventCard = ({
         <img
           src={event?.organizer?.logo || DefaultCompanyLogo}
           alt={event?.organizer?.name || "Organizer Logo"}
-          className="w-14 h-14 object-contain rounded"
+          className="w-14 h-14 object-contain rounded-full"
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = DefaultCompanyLogo;

@@ -149,11 +149,15 @@ const InternshipCard = ({
       {internship.tags?.length > 0 && (
         <div className="mb-2">
           <p className="text-xs font-semibold text-gray-500 mb-1">Tags:</p>
-          <div className="flex flex-wrap gap-2">
+          <div
+            className="flex gap-2 overflow-x-auto whitespace-nowrap"
+            style={{ scrollbarWidth: "thin" }} // optional for better UX on Firefox
+          >
             {internship.tags.map((tag, idx) => (
               <span
                 key={idx}
-                className="text-xs bg-blue-100 text-blue-800 rounded-full px-2 py-1"
+                className="text-xs bg-blue-100 text-blue-800 rounded-full px-2 py-1 inline-block"
+                style={{ whiteSpace: "nowrap" }}
               >
                 {tag}
               </span>
@@ -168,11 +172,15 @@ const InternshipCard = ({
           <p className="text-xs font-semibold text-gray-500 mb-1">
             Required Skills:
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div
+            className="flex gap-2 overflow-x-auto whitespace-nowrap"
+            style={{ scrollbarWidth: "thin" }}
+          >
             {internship.requiredSkills.map((skill, idx) => (
               <span
                 key={idx}
-                className="text-xs bg-green-100 text-green-800 rounded-full px-2 py-1"
+                className="text-xs bg-green-100 text-green-800 rounded-full px-2 py-1 inline-block"
+                style={{ whiteSpace: "nowrap" }}
               >
                 {skill}
               </span>

@@ -1,362 +1,432 @@
 [
   {
-    "title": "Build Responsive E-commerce Website",
-    "description": "Seeking an experienced web developer to create a responsive e-commerce site using React and Node.js. Must support mobile and desktop seamlessly.",
+    "title": "Junior React Developer Internship",
+    "description": "Join our team as a Junior React Developer Intern to build engaging web applications. Work on real projects, learn ReactJS deeply, and improve your frontend skills under expert guidance.",
     "category": "Web Development",
-    "subCategory": "Full Stack Development",
-    "tags": ["React", "Node.js", "E-commerce"],
-    "deliveryDeadline": "2025-07-30T23:59:59Z",
-    "requiredSkills": ["React", "Node.js", "MongoDB", "CSS"],
+    "subCategory": "ReactJS",
+    "tags": [
+      "ReactJS",
+      "JavaScript",
+      "HTML5",
+      "CSS3",
+      "Internship",
+      "Frontend",
+      "Web Development",
+      "Junior Developer"
+    ],
+    "deliveryDeadline": "2025-10-01T23:59",
+    "requiredSkills": [
+      "Basic knowledge of ReactJS",
+      "Familiarity with JavaScript ES6+",
+      "Understanding of HTML5 and CSS3",
+      "Ability to use Git version control",
+      "Eagerness to learn and work in a team"
+    ],
     "attachments": [],
     "isRemote": true,
-    "location": {},
+    "location": "Remote",
     "budget": {
       "type": "fixed",
-      "min": 1000,
-      "max": 1800,
+      "min": "30000",
+      "max": "45000",
       "currency": "USD",
       "isNegotiable": true
     },
-    "postedBy": {
-      "userId": "user202",
-      "name": "Michael Harper",
-      "profileImage": "",
-      "rating": 4.5,
-      "jobsPosted": 12
-    },
-    "postedAt": "2025-07-05T10:00:00Z",
-    "status": "open",
-    "numberOfBids": 3,
-    "bids": [],
-    "selectedProfessional": null,
     "communication": {
       "preferredMethod": "Email",
-      "allowCalls": true
+      "allowCalls": false
     },
-    "extraNotes": "Focus on clean UI and fast load times."
+    "extraNotes": "* Internship suitable for beginners with basic React knowledge.\n* Mentorship provided.\n* Flexible working hours.\n* No prior experience required.",
+    "postedAt": "2025-08-12T10:00:00.000Z",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    }
   },
   {
-    "title": "Create SEO Optimized Blog Content",
-    "description": "Looking for a content writer to produce SEO-friendly blog posts on technology and innovation. Each article should be 800-1000 words.",
-    "category": "Writing & Translation",
-    "subCategory": "Content Writing",
-    "tags": ["SEO", "Blog", "Technology"],
-    "deliveryDeadline": "2025-07-20T23:59:59Z",
-    "requiredSkills": ["SEO Writing", "Research", "WordPress"],
+    "title": "ReactJS Frontend Development Internship",
+    "description": "Seeking an enthusiastic intern to assist in frontend development using ReactJS. You will build UI components, fix bugs, and collaborate with backend teams to deliver features.",
+    "category": "Software Development",
+    "subCategory": "Frontend Development",
+    "tags": [
+      "ReactJS",
+      "FrontendDeveloper",
+      "JavaScript",
+      "UIUX",
+      "Internship",
+      "Web Development",
+      "Programming"
+    ],
+    "deliveryDeadline": "2025-09-30T23:59",
+    "requiredSkills": [
+      "Intermediate ReactJS skills",
+      "Proficient in JavaScript ES6+",
+      "CSS3 and responsive design knowledge",
+      "Basic REST API integration experience",
+      "Good communication skills"
+    ],
     "attachments": [],
-    "isRemote": true,
-    "location": {},
+    "isRemote": false,
+    "location": "Dhaka, Bangladesh",
     "budget": {
       "type": "fixed",
-      "min": 50,
-      "max": 100,
+      "min": "35000",
+      "max": "50000",
       "currency": "USD",
       "isNegotiable": false
     },
-    "postedBy": {
-      "userId": "user303",
-      "name": "Sarah Collins",
-      "profileImage": "",
-      "rating": 4.9,
-      "jobsPosted": 20
-    },
-    "postedAt": "2025-07-06T09:30:00Z",
-    "status": "open",
-    "numberOfBids": 5,
-    "bids": [],
-    "selectedProfessional": null,
     "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
+      "preferredMethod": "Messaging App",
+      "allowCalls": true
     },
-    "extraNotes": "Articles must pass plagiarism checks."
+    "extraNotes": "* Regular code reviews and feedback.\n* Opportunity to learn best practices in React and frontend architecture.\n* Candidates should have a portfolio or GitHub account.",
+    "postedAt": "2025-07-15T10:00:00.000Z",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    }
   },
   {
-    "title": "Design a Mobile App UI/UX",
-    "description": "Need a skilled designer to create an intuitive UI/UX for a fitness tracking mobile app. Experience with Figma and prototyping required.",
-    "category": "Graphic Design",
-    "subCategory": "UI/UX Design",
-    "tags": ["UI", "UX", "Mobile App", "Figma"],
-    "deliveryDeadline": "2025-07-25T23:59:59Z",
-    "requiredSkills": ["Figma", "UI Design", "Prototyping"],
+    "title": "React Developer Internship - Entry Level",
+    "description": "We want a motivated intern to help develop scalable React applications. Work alongside experienced developers and contribute to UI improvements and new feature builds.",
+    "category": "IT & Software",
+    "subCategory": "ReactJS",
+    "tags": [
+      "ReactJS",
+      "EntryLevel",
+      "Internship",
+      "Web Development",
+      "FrontendDeveloper",
+      "JavaScript",
+      "Programming"
+    ],
+    "deliveryDeadline": "2025-09-15T23:59",
+    "requiredSkills": [
+      "Fundamental ReactJS understanding",
+      "Basic JavaScript and ES6 features",
+      "Familiar with Git workflow",
+      "Ability to follow instructions and deadlines",
+      "Strong problem-solving skills"
+    ],
     "attachments": [],
     "isRemote": true,
-    "location": {},
+    "location": "Remote",
     "budget": {
       "type": "fixed",
-      "min": 300,
-      "max": 600,
+      "min": "25000",
+      "max": "40000",
       "currency": "USD",
       "isNegotiable": true
     },
-    "postedBy": {
-      "userId": "user404",
-      "name": "Jason Lee",
-      "profileImage": "",
-      "rating": 4.6,
-      "jobsPosted": 8
-    },
-    "postedAt": "2025-07-07T11:15:00Z",
-    "status": "open",
-    "numberOfBids": 2,
-    "bids": [],
-    "selectedProfessional": null,
     "communication": {
       "preferredMethod": "Email",
-      "allowCalls": true
+      "allowCalls": false
     },
-    "extraNotes": "Keep designs simple and easy to navigate."
+    "extraNotes": "* Flexible schedule.\n* Suitable for college students.\n* Regular mentorship sessions.",
+    "postedAt": "2025-06-20T10:00:00.000Z",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    }
   },
   {
-    "title": "Develop Marketing Automation Workflow",
-    "description": "We want an expert to set up and customize marketing automation using HubSpot for lead nurturing and email campaigns.",
-    "category": "Marketing",
-    "subCategory": "Marketing Automation",
-    "tags": ["HubSpot", "Automation", "Email Marketing"],
-    "deliveryDeadline": "2025-07-22T23:59:59Z",
-    "requiredSkills": ["HubSpot", "Email Marketing", "CRM"],
+    "title": "ReactJS Internship - UI Focus",
+    "description": "Internship opportunity focusing on ReactJS frontend UI development. Build visually appealing and responsive web interfaces while learning from a skilled team.",
+    "category": "Frontend Development",
+    "subCategory": "ReactJS",
+    "tags": [
+      "ReactJS",
+      "UIUX",
+      "CSS",
+      "JavaScript",
+      "Frontend",
+      "Internship",
+      "Web Design"
+    ],
+    "deliveryDeadline": "2025-10-10T23:59",
+    "requiredSkills": [
+      "Good grasp of ReactJS and JSX",
+      "Strong CSS3 and responsive design skills",
+      "Basic JavaScript knowledge",
+      "Familiarity with design tools is a plus",
+      "Ability to translate designs into code"
+    ],
     "attachments": [],
-    "isRemote": true,
-    "location": {},
+    "isRemote": false,
+    "location": "Chittagong, Bangladesh",
     "budget": {
       "type": "fixed",
-      "min": 400,
-      "max": 700,
+      "min": "30000",
+      "max": "45000",
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "communication": {
+      "preferredMethod": "Messaging App",
+      "allowCalls": true
+    },
+    "extraNotes": "* Candidates with design sensitivity preferred.\n* Internship period: 3 months.\n* Potential full-time hire.",
+    "postedAt": "2025-08-05T10:00:00.000Z",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    }
+  },
+  {
+    "title": "ReactJS Full Stack Internship",
+    "description": "Looking for a proactive intern with basic ReactJS and backend knowledge to support our full stack development team. Learn how frontend and backend interact in real projects.",
+    "category": "Full Stack Development",
+    "subCategory": "MERN Stack",
+    "tags": [
+      "ReactJS",
+      "NodeJS",
+      "MongoDB",
+      "ExpressJS",
+      "FullStack",
+      "Internship",
+      "Web Development"
+    ],
+    "deliveryDeadline": "2025-09-25T23:59",
+    "requiredSkills": [
+      "Basic ReactJS experience",
+      "Understanding of NodeJS basics",
+      "Familiarity with MongoDB",
+      "Ability to write clean code",
+      "Good teamwork and communication"
+    ],
+    "attachments": [],
+    "isRemote": true,
+    "location": "Remote",
+    "budget": {
+      "type": "fixed",
+      "min": "35000",
+      "max": "55000",
       "currency": "USD",
       "isNegotiable": false
     },
-    "postedBy": {
-      "userId": "user505",
-      "name": "Olivia Bennett",
-      "profileImage": "",
-      "rating": 4.8,
-      "jobsPosted": 7
-    },
-    "postedAt": "2025-07-08T14:00:00Z",
-    "status": "open",
-    "numberOfBids": 4,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
-    },
-    "extraNotes": "Must integrate with existing CRM data."
-  },
-  {
-    "title": "Translate Website Content to Spanish",
-    "description": "Looking for a native Spanish speaker to translate our website content of approx 5,000 words with technical accuracy and cultural relevance.",
-    "category": "Writing & Translation",
-    "subCategory": "Translation",
-    "tags": ["Spanish", "Translation", "Website"],
-    "deliveryDeadline": "2025-07-18T23:59:59Z",
-    "requiredSkills": ["Spanish", "Translation", "Technical Writing"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 250,
-      "max": 400,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user606",
-      "name": "Carlos Mendoza",
-      "profileImage": "",
-      "rating": 4.4,
-      "jobsPosted": 15
-    },
-    "postedAt": "2025-07-09T12:00:00Z",
-    "status": "open",
-    "numberOfBids": 6,
-    "bids": [],
-    "selectedProfessional": null,
     "communication": {
       "preferredMethod": "Email",
       "allowCalls": false
     },
-    "extraNotes": "Maintain original tone and style."
-  },
-  {
-    "title": "Setup Google Ads Campaign",
-    "description": "Need a PPC expert to set up and optimize Google Ads campaigns to increase conversions for our SaaS product launch.",
-    "category": "Marketing",
-    "subCategory": "PPC & Paid Search",
-    "tags": ["Google Ads", "PPC", "Conversion"],
-    "deliveryDeadline": "2025-07-20T23:59:59Z",
-    "requiredSkills": ["Google Ads", "PPC", "Analytics"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 300,
-      "max": 550,
-      "currency": "USD",
-      "isNegotiable": false
-    },
+    "extraNotes": "* Full stack exposure.\n* Collaborative environment.\n* Opportunity to work with latest MERN technologies.",
+    "postedAt": "2025-07-30T10:00:00.000Z",
     "postedBy": {
-      "userId": "user707",
-      "name": "Anna Schmidt",
-      "profileImage": "",
-      "rating": 4.7,
-      "jobsPosted": 9
-    },
-    "postedAt": "2025-07-10T09:00:00Z",
-    "status": "open",
-    "numberOfBids": 7,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": true
-    },
-    "extraNotes": "Target tech-savvy audiences."
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    }
   },
   {
-    "title": "Write Python Script for Data Scraping",
-    "description": "Require a Python developer to write a script that scrapes product data from e-commerce sites and outputs JSON files.",
-    "category": "Programming & Tech",
-    "subCategory": "Data Science & Analytics",
-    "tags": ["Python", "Web Scraping", "JSON"],
-    "deliveryDeadline": "2025-07-28T23:59:59Z",
-    "requiredSkills": ["Python", "BeautifulSoup", "Requests"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 350,
-      "max": 600,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user808",
-      "name": "Rahul Singh",
-      "profileImage": "",
-      "rating": 4.3,
-      "jobsPosted": 10
-    },
-    "postedAt": "2025-07-11T13:00:00Z",
-    "status": "open",
-    "numberOfBids": 4,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Email",
-      "allowCalls": false
-    },
-    "extraNotes": "Respect site scraping policies."
-  },
-  {
-    "title": "Create Animated Explainer Video",
-    "description": "Looking for a motion graphics artist to create a 90-second explainer video for our new product launch.",
-    "category": "Video & Animation",
-    "subCategory": "Explainer Videos",
-    "tags": ["Animation", "Explainer", "After Effects"],
-    "deliveryDeadline": "2025-07-27T23:59:59Z",
-    "requiredSkills": ["After Effects", "Illustrator", "Storyboarding"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 500,
-      "max": 900,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user909",
-      "name": "Linda Park",
-      "profileImage": "",
-      "rating": 4.8,
-      "jobsPosted": 13
-    },
-    "postedAt": "2025-07-12T15:30:00Z",
-    "status": "open",
-    "numberOfBids": 5,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
-    },
-    "extraNotes": "Style should be clean and modern."
-  },
-  {
-    "title": "Optimize Website Performance",
-    "description": "Need a front-end specialist to optimize our website’s load speed and mobile responsiveness using modern best practices.",
+    "title": "ReactJS Developer Intern - Component Focus",
+    "description": "Join us as a ReactJS Developer Intern focused on building reusable UI components and improving app scalability. Perfect for those who want to deepen React skills.",
     "category": "Web Development",
-    "subCategory": "Front-end Development",
-    "tags": ["Performance", "Optimization", "JavaScript"],
-    "deliveryDeadline": "2025-07-23T23:59:59Z",
-    "requiredSkills": ["JavaScript", "CSS", "Performance Tuning"],
+    "subCategory": "ReactJS",
+    "tags": [
+      "ReactJS",
+      "Components",
+      "UI",
+      "Internship",
+      "Frontend",
+      "Web Development"
+    ],
+    "deliveryDeadline": "2025-11-01T23:59",
+    "requiredSkills": [
+      "Good knowledge of React components",
+      "JavaScript ES6+",
+      "CSS and styling frameworks",
+      "Git version control",
+      "Team player with good communication"
+    ],
     "attachments": [],
     "isRemote": true,
-    "location": {},
+    "location": "Remote",
     "budget": {
       "type": "fixed",
-      "min": 400,
-      "max": 750,
+      "min": "32000",
+      "max": "46000",
       "currency": "USD",
-      "isNegotiable": false
+      "isNegotiable": true
     },
-    "postedBy": {
-      "userId": "user1010",
-      "name": "David Kim",
-      "profileImage": "",
-      "rating": 4.6,
-      "jobsPosted": 11
-    },
-    "postedAt": "2025-07-13T08:45:00Z",
-    "status": "open",
-    "numberOfBids": 6,
-    "bids": [],
-    "selectedProfessional": null,
     "communication": {
-      "preferredMethod": "Email",
+      "preferredMethod": "Messaging App",
       "allowCalls": true
     },
-    "extraNotes": "Focus on Google Lighthouse improvements."
+    "extraNotes": "* Great learning opportunity with mentorship.\n* Flexible hours.\n* Candidates should be proactive.",
+    "postedAt": "2025-08-20T10:00:00.000Z",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    }
   },
   {
-    "title": "Design Brochure for Corporate Event",
-    "description": "Require a graphic designer to create a professional brochure for an upcoming corporate event. Must include branding elements and clean layout.",
-    "category": "Graphic Design",
-    "subCategory": "Print Design",
-    "tags": ["Brochure", "Branding", "Print"],
-    "deliveryDeadline": "2025-07-21T23:59:59Z",
-    "requiredSkills": ["Adobe InDesign", "Photoshop", "Illustrator"],
+    "title": "React Intern - Testing and Debugging",
+    "description": "Internship focused on writing tests, debugging React applications, and ensuring quality code. Learn best testing practices alongside senior developers.",
+    "category": "Software Testing",
+    "subCategory": "ReactJS",
+    "tags": [
+      "ReactJS",
+      "Testing",
+      "Debugging",
+      "Internship",
+      "Quality Assurance"
+    ],
+    "deliveryDeadline": "2025-09-20T23:59",
+    "requiredSkills": [
+      "Basic React knowledge",
+      "Understanding of testing libraries (Jest, React Testing Library)",
+      "Debugging skills",
+      "Attention to detail",
+      "Good communication"
+    ],
     "attachments": [],
-    "isRemote": true,
-    "location": {},
+    "isRemote": false,
+    "location": "Dhaka, Bangladesh",
     "budget": {
       "type": "fixed",
-      "min": 200,
-      "max": 350,
+      "min": "28000",
+      "max": "40000",
       "currency": "USD",
       "isNegotiable": false
     },
-    "postedBy": {
-      "userId": "user1111",
-      "name": "Rebecca Moore",
-      "profileImage": "",
-      "rating": 4.7,
-      "jobsPosted": 6
-    },
-    "postedAt": "2025-07-14T10:30:00Z",
-    "status": "open",
-    "numberOfBids": 3,
-    "bids": [],
-    "selectedProfessional": null,
     "communication": {
-      "preferredMethod": "Chat",
+      "preferredMethod": "Email",
       "allowCalls": false
     },
-    "extraNotes": "Use company colors: Navy Blue and White."
+    "extraNotes": "* No prior testing experience required.\n* Mentorship available.\n* Internship duration 3 months.",
+    "postedAt": "2025-07-10T10:00:00.000Z",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    }
+  },
+  {
+    "title": "ReactJS Internship - Performance Optimization",
+    "description": "Learn React performance optimization techniques during this internship. Work on real-world projects improving rendering speed and resource usage.",
+    "category": "Frontend Development",
+    "subCategory": "ReactJS",
+    "tags": [
+      "ReactJS",
+      "Performance",
+      "Optimization",
+      "Internship",
+      "Frontend"
+    ],
+    "deliveryDeadline": "2025-10-15T23:59",
+    "requiredSkills": [
+      "ReactJS fundamentals",
+      "JavaScript performance concepts",
+      "Experience with browser dev tools",
+      "Problem-solving skills",
+      "Willingness to learn"
+    ],
+    "attachments": [],
+    "isRemote": true,
+    "location": "Remote",
+    "budget": {
+      "type": "fixed",
+      "min": "34000",
+      "max": "48000",
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "communication": {
+      "preferredMethod": "Messaging App",
+      "allowCalls": true
+    },
+    "extraNotes": "* Flexible schedule.\n* Mentorship provided.\n* Suitable for intermediate React learners.",
+    "postedAt": "2025-08-01T10:00:00.000Z",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    }
+  },
+  {
+    "title": "ReactJS Internship - Component Styling",
+    "description": "Gain hands-on experience styling React components with CSS and CSS-in-JS solutions. Learn to make reusable, themeable UI parts.",
+    "category": "Frontend Design",
+    "subCategory": "ReactJS",
+    "tags": ["ReactJS", "CSS", "Styling", "Internship", "UIUX"],
+    "deliveryDeadline": "2025-09-05T23:59",
+    "requiredSkills": [
+      "Basic ReactJS skills",
+      "Strong CSS knowledge",
+      "Familiarity with styled-components or emotion is a plus",
+      "Attention to detail",
+      "Good communication"
+    ],
+    "attachments": [],
+    "isRemote": false,
+    "location": "Sylhet, Bangladesh",
+    "budget": {
+      "type": "fixed",
+      "min": "29000",
+      "max": "42000",
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "communication": {
+      "preferredMethod": "Email",
+      "allowCalls": false
+    },
+    "extraNotes": "* Internship period: 2-3 months.\n* Mentorship available.\n* Flexible hours.",
+    "postedAt": "2025-07-25T10:00:00.000Z",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    }
+  },
+  {
+    "title": "ReactJS Internship - State Management",
+    "description": "Focus on React state management tools like Redux or Context API. Build scalable and maintainable applications in this focused internship.",
+    "category": "Web Development",
+    "subCategory": "ReactJS",
+    "tags": ["ReactJS", "Redux", "ContextAPI", "Internship", "Frontend"],
+    "deliveryDeadline": "2025-10-20T23:59",
+    "requiredSkills": [
+      "Good ReactJS fundamentals",
+      "Basic knowledge of Redux or Context API",
+      "JavaScript ES6+",
+      "Problem-solving skills",
+      "Team collaboration"
+    ],
+    "attachments": [],
+    "isRemote": true,
+    "location": "Remote",
+    "budget": {
+      "type": "fixed",
+      "min": "35000",
+      "max": "50000",
+      "currency": "USD",
+      "isNegotiable": true
+    },
+    "communication": {
+      "preferredMethod": "Messaging App",
+      "allowCalls": true
+    },
+    "extraNotes": "* Regular mentorship and code reviews.\n* Flexible work hours.\n* Ideal for intermediate React devs.",
+    "postedAt": "2025-08-10T10:00:00.000Z",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    }
   }
 ]

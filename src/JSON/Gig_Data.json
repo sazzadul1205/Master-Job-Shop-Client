@@ -1,728 +1,465 @@
 [
   {
-    "title": "Design a Modern Logo for a SaaS Startup",
-    "description": "Looking for a creative designer to craft a clean and tech-oriented logo for our SaaS startup 'DataHive'. Must reflect innovation, simplicity, and trust.",
-    "category": "Graphic Design",
-    "subCategory": "Logo Design",
-    "tags": ["Logo", "Branding", "SaaS"],
-    "deliveryDeadline": "2025-07-15T23:59:59Z",
-    "requiredSkills": ["Adobe Illustrator", "Figma", "Logo Design"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 80,
-      "max": 150,
-      "currency": "USD",
-      "isNegotiable": false
-    },
-    "postedBy": {
-      "userId": "user101",
-      "name": "Emily Tran",
-      "profileImage": "",
-      "rating": 4.7,
-      "jobsPosted": 5
-    },
-    "postedAt": "2025-07-04T14:00:00Z",
-    "status": "open",
-    "numberOfBids": 0,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
-    },
-    "extraNotes": "Color preferences: Blue, Grey. Avoid clutter or 3D effects."
-  },
-  {
-    "title": "Build a Responsive Landing Page in React",
-    "description": "Need a single landing page built using React and Tailwind for a product prelaunch. Content and wireframe provided.",
-    "category": "Web Development",
-    "subCategory": "Frontend",
-    "tags": ["React", "TailwindCSS", "Landing Page"],
-    "deliveryDeadline": "2025-07-12T23:59:59Z",
-    "requiredSkills": ["React", "Tailwind", "Git"],
-    "attachments": [
-      {
-        "url": "https://example.com/wireframe.png",
-        "type": "image",
-        "label": "Wireframe"
-      }
-    ],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 120,
-      "max": 200,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user102",
-      "name": "Carlos Vega",
-      "profileImage": "",
-      "rating": 4.9,
-      "jobsPosted": 12
-    },
-    "postedAt": "2025-07-03T18:00:00Z",
-    "status": "open",
-    "numberOfBids": 3,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": true
-    },
-    "extraNotes": "Mobile-first layout is essential."
-  },
-  {
-    "title": "Translate Business Proposal to French",
-    "description": "Looking for a fluent French speaker to translate a 10-page business proposal from English to French. Must preserve formatting.",
-    "category": "Writing & Translation",
-    "subCategory": "Translation",
-    "tags": ["Translation", "French", "Business"],
-    "deliveryDeadline": "2025-07-08T23:59:59Z",
-    "requiredSkills": ["French", "Translation", "Proofreading"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 50,
-      "max": 100,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user103",
-      "name": "Liam Cohen",
-      "profileImage": "",
-      "rating": 4.5,
-      "jobsPosted": 3
-    },
-    "postedAt": "2025-07-01T10:00:00Z",
-    "status": "open",
-    "numberOfBids": 1,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
-    },
-    "extraNotes": "Use formal tone; target is a French investor group."
-  },
-  {
-    "title": "Virtual Fitness Consultation with a Certified Trainer",
-    "description": "I’m looking for a personal trainer to evaluate my posture and recommend a home workout plan based on bodyweight.",
-    "category": "Health & Fitness",
-    "subCategory": "Personal Training",
-    "tags": ["Fitness", "Consultation", "Remote"],
-    "deliveryDeadline": "2025-07-09T23:59:59Z",
-    "requiredSkills": ["Personal Training", "Bodyweight Programs"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 25,
-      "max": 50,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user104",
-      "name": "Nina Wells",
-      "profileImage": "",
-      "rating": 5.0,
-      "jobsPosted": 1
-    },
-    "postedAt": "2025-07-02T11:30:00Z",
-    "status": "open",
-    "numberOfBids": 2,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Call",
-      "allowCalls": true
-    },
-    "extraNotes": "Prefer a trainer who speaks fluent English and has experience with injury recovery."
-  },
-  {
-    "title": "Create Eye-Catching Instagram Ad Designs",
-    "description": "We need 3 ad creatives for an upcoming campaign. Should be visually engaging and consistent with our brand colors.",
-    "category": "Graphic Design",
-    "subCategory": "Social Media",
-    "tags": ["Instagram", "Ad Design", "Photoshop"],
-    "deliveryDeadline": "2025-07-07T23:59:59Z",
-    "requiredSkills": ["Photoshop", "Canva", "Social Ads"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 30,
-      "max": 70,
-      "currency": "USD",
-      "isNegotiable": false
-    },
-    "postedBy": {
-      "userId": "user105",
-      "name": "Marvin Lau",
-      "profileImage": "",
-      "rating": 4.2,
-      "jobsPosted": 8
-    },
-    "postedAt": "2025-07-03T08:45:00Z",
-    "status": "open",
-    "numberOfBids": 1,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
-    },
-    "extraNotes": "Samples of past similar ads will be a plus."
-  },
-  {
-    "title": "Edit a 10-Minute Vlog for YouTube",
-    "description": "Need someone to cut, color correct, and add background music to a 10-min vlog. Footage will be shared via Google Drive.",
-    "category": "Video & Animation",
-    "subCategory": "YouTube",
-    "tags": ["Video Editing", "Vlog", "Color Grading"],
-    "deliveryDeadline": "2025-07-11T23:59:59Z",
-    "requiredSkills": ["Adobe Premiere", "Video Editing", "YouTube"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 60,
-      "max": 120,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user106",
-      "name": "Ayesha Khan",
-      "profileImage": "",
-      "rating": 4.8,
-      "jobsPosted": 4
-    },
-    "postedAt": "2025-07-05T12:15:00Z",
-    "status": "open",
-    "numberOfBids": 0,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": true
-    },
-    "extraNotes": "Will provide branding intro/outro clips."
-  },
-  {
-    "title": "Integrate Facebook Pixel and GA4 on Shopify Store",
-    "description": "Need expert to set up Facebook Pixel and Google Analytics 4 properly on my Shopify store for tracking purchases and cart events.",
-    "category": "Digital Marketing",
-    "subCategory": "Tracking & Analytics",
-    "tags": ["Shopify", "Facebook Pixel", "GA4"],
-    "deliveryDeadline": "2025-07-08T23:59:59Z",
-    "requiredSkills": ["Shopify", "Tracking", "Analytics"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 40,
-      "max": 80,
-      "currency": "USD",
-      "isNegotiable": false
-    },
-    "postedBy": {
-      "userId": "user107",
-      "name": "Daniel Ito",
-      "profileImage": "",
-      "rating": 4.4,
-      "jobsPosted": 9
-    },
-    "postedAt": "2025-07-04T09:00:00Z",
-    "status": "open",
-    "numberOfBids": 2,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": true
-    },
-    "extraNotes": "Access to Shopify admin will be provided securely."
-  },
-  {
-    "title": "English Voiceover for App Demo",
-    "description": "Looking for a clear, confident male voice to narrate a 2-minute mobile app tutorial. Script is ready.",
-    "category": "Audio & Voice",
-    "subCategory": "Voice Over",
-    "tags": ["Voiceover", "Tutorial", "Narration"],
-    "deliveryDeadline": "2025-07-06T23:59:59Z",
-    "requiredSkills": ["Voice Acting", "Audio Recording"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 30,
-      "max": 60,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user108",
-      "name": "Sara Jenkins",
-      "profileImage": "",
-      "rating": 4.9,
-      "jobsPosted": 11
-    },
-    "postedAt": "2025-07-03T13:30:00Z",
-    "status": "open",
-    "numberOfBids": 3,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
-    },
-    "extraNotes": "Accent preference: North American or Neutral English."
-  },
-  {
-    "title": "Rewrite and Optimize My Resume for ATS",
-    "description": "I need my resume rewritten with stronger action verbs, professional formatting, and optimized for tech ATS systems.",
-    "category": "Writing & Translation",
-    "subCategory": "Resume Writing",
-    "tags": ["Resume", "ATS", "Editing"],
-    "deliveryDeadline": "2025-07-09T23:59:59Z",
-    "requiredSkills": ["Resume Writing", "ATS", "HR"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 25,
-      "max": 60,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user109",
-      "name": "Kevin Yu",
-      "profileImage": "",
-      "rating": 4.6,
-      "jobsPosted": 2
-    },
-    "postedAt": "2025-07-02T14:45:00Z",
-    "status": "open",
-    "numberOfBids": 1,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
-    },
-    "extraNotes": "I'm applying to frontend jobs with React/Next.js."
-  },
-  {
-    "title": "Mailchimp Email Automation Setup",
-    "description": "Need help setting up a welcome email sequence (3 emails) for new subscribers in Mailchimp. Templates ready.",
-    "category": "Digital Marketing",
-    "subCategory": "Email Marketing",
-    "tags": ["Mailchimp", "Email Automation", "Marketing"],
-    "deliveryDeadline": "2025-07-07T23:59:59Z",
-    "requiredSkills": ["Mailchimp", "Email Strategy", "Automation"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 40,
-      "max": 90,
-      "currency": "USD",
-      "isNegotiable": false
-    },
-    "postedBy": {
-      "userId": "user110",
-      "name": "Olivia Grant",
-      "profileImage": "",
-      "rating": 4.8,
-      "jobsPosted": 6
-    },
-    "postedAt": "2025-07-03T10:20:00Z",
-    "status": "open",
-    "numberOfBids": 2,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": true
-    },
-    "extraNotes": "Sequence timing: Day 0, Day 2, Day 5."
-  },
-  {
-    "title": "Build Responsive E-commerce Website",
-    "description": "Seeking an experienced web developer to create a responsive e-commerce site using React and Node.js. Must support mobile and desktop seamlessly.",
-    "category": "Web Development",
-    "subCategory": "Full Stack Development",
-    "tags": ["React", "Node.js", "E-commerce"],
-    "deliveryDeadline": "2025-07-30T23:59:59Z",
-    "requiredSkills": ["React", "Node.js", "MongoDB", "CSS"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 1000,
-      "max": 1800,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user202",
-      "name": "Michael Harper",
-      "profileImage": "",
-      "rating": 4.5,
-      "jobsPosted": 12
-    },
-    "postedAt": "2025-07-05T10:00:00Z",
-    "status": "open",
-    "numberOfBids": 3,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Email",
-      "allowCalls": true
-    },
-    "extraNotes": "Focus on clean UI and fast load times."
-  },
-  {
-    "title": "Create SEO Optimized Blog Content",
-    "description": "Looking for a content writer to produce SEO-friendly blog posts on technology and innovation. Each article should be 800-1000 words.",
-    "category": "Writing & Translation",
-    "subCategory": "Content Writing",
-    "tags": ["SEO", "Blog", "Technology"],
-    "deliveryDeadline": "2025-07-20T23:59:59Z",
-    "requiredSkills": ["SEO Writing", "Research", "WordPress"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 50,
-      "max": 100,
-      "currency": "USD",
-      "isNegotiable": false
-    },
-    "postedBy": {
-      "userId": "user303",
-      "name": "Sarah Collins",
-      "profileImage": "",
-      "rating": 4.9,
-      "jobsPosted": 20
-    },
-    "postedAt": "2025-07-06T09:30:00Z",
-    "status": "open",
-    "numberOfBids": 5,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
-    },
-    "extraNotes": "Articles must pass plagiarism checks."
-  },
-  {
-    "title": "Design a Mobile App UI/UX",
-    "description": "Need a skilled designer to create an intuitive UI/UX for a fitness tracking mobile app. Experience with Figma and prototyping required.",
-    "category": "Graphic Design",
+    "title": "Mobile App UI Design for Finance Tracker",
+    "description": "Seeking a creative UI designer to develop a clean, intuitive mobile app interface for a personal finance tracking app. Your design should focus on simplicity, usability, and engagement to help users easily track income, expenses, and budgets.\n\nExperience with mobile-first design, interactive prototypes, and tools like Figma or Adobe XD required.\n\nBudget and deadline are tight — only apply if you can deliver high-quality work quickly.",
+    "category": "Mobile App Development",
     "subCategory": "UI/UX Design",
-    "tags": ["UI", "UX", "Mobile App", "Figma"],
-    "deliveryDeadline": "2025-07-25T23:59:59Z",
-    "requiredSkills": ["Figma", "UI Design", "Prototyping"],
+    "tags": [
+      "Mobile Design",
+      "UI Design",
+      "Finance App",
+      "User Experience",
+      "Prototyping",
+      "Figma",
+      "Adobe XD",
+      "Interaction Design",
+      "Responsive Design",
+      "Mobile UX"
+    ],
+    "deliveryDeadline": "2025-08-25T23:59",
+    "requiredSkills": [
+      "Mobile UI design proficiency",
+      "Understanding of finance app UX principles",
+      "Strong wireframing and prototyping skills",
+      "Ability to deliver interactive designs",
+      "Attention to usability and clean visuals",
+      "Quick turnaround and adaptability to feedback"
+    ],
     "attachments": [],
     "isRemote": true,
-    "location": {},
+    "location": "",
     "budget": {
       "type": "fixed",
-      "min": 300,
-      "max": 600,
-      "currency": "USD",
+      "min": "15000",
+      "max": "25000",
+      "currency": "BDT",
       "isNegotiable": true
     },
-    "postedBy": {
-      "userId": "user404",
-      "name": "Jason Lee",
-      "profileImage": "",
-      "rating": 4.6,
-      "jobsPosted": 8
-    },
-    "postedAt": "2025-07-07T11:15:00Z",
-    "status": "open",
-    "numberOfBids": 2,
-    "bids": [],
-    "selectedProfessional": null,
     "communication": {
-      "preferredMethod": "Email",
+      "preferredMethod": "Video Call",
       "allowCalls": true
     },
-    "extraNotes": "Keep designs simple and easy to navigate."
-  },
-  {
-    "title": "Develop Marketing Automation Workflow",
-    "description": "We want an expert to set up and customize marketing automation using HubSpot for lead nurturing and email campaigns.",
-    "category": "Marketing",
-    "subCategory": "Marketing Automation",
-    "tags": ["HubSpot", "Automation", "Email Marketing"],
-    "deliveryDeadline": "2025-07-22T23:59:59Z",
-    "requiredSkills": ["HubSpot", "Email Marketing", "CRM"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 400,
-      "max": 700,
-      "currency": "USD",
-      "isNegotiable": false
-    },
+    "extraNotes": "* Portfolio must include mobile UI work.\n* Source files and prototypes required.\n* Regular updates and responsiveness expected.\n",
     "postedBy": {
-      "userId": "user505",
-      "name": "Olivia Bennett",
-      "profileImage": "",
-      "rating": 4.8,
-      "jobsPosted": 7
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
     },
-    "postedAt": "2025-07-08T14:00:00Z",
     "status": "open",
-    "numberOfBids": 4,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
-    },
-    "extraNotes": "Must integrate with existing CRM data."
+    "postedAt": "2025-03-10T15:47:00.000Z"
   },
   {
-    "title": "Translate Website Content to Spanish",
-    "description": "Looking for a native Spanish speaker to translate our website content of approx 5,000 words with technical accuracy and cultural relevance.",
-    "category": "Writing & Translation",
-    "subCategory": "Translation",
-    "tags": ["Spanish", "Translation", "Website"],
-    "deliveryDeadline": "2025-07-18T23:59:59Z",
-    "requiredSkills": ["Spanish", "Translation", "Technical Writing"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 250,
-      "max": 400,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user606",
-      "name": "Carlos Mendoza",
-      "profileImage": "",
-      "rating": 4.4,
-      "jobsPosted": 15
-    },
-    "postedAt": "2025-07-09T12:00:00Z",
-    "status": "open",
-    "numberOfBids": 6,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Email",
-      "allowCalls": false
-    },
-    "extraNotes": "Maintain original tone and style."
-  },
-  {
-    "title": "Setup Google Ads Campaign",
-    "description": "Need a PPC expert to set up and optimize Google Ads campaigns to increase conversions for our SaaS product launch.",
-    "category": "Marketing",
-    "subCategory": "PPC & Paid Search",
-    "tags": ["Google Ads", "PPC", "Conversion"],
-    "deliveryDeadline": "2025-07-20T23:59:59Z",
-    "requiredSkills": ["Google Ads", "PPC", "Analytics"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 300,
-      "max": 550,
-      "currency": "USD",
-      "isNegotiable": false
-    },
-    "postedBy": {
-      "userId": "user707",
-      "name": "Anna Schmidt",
-      "profileImage": "",
-      "rating": 4.7,
-      "jobsPosted": 9
-    },
-    "postedAt": "2025-07-10T09:00:00Z",
-    "status": "open",
-    "numberOfBids": 7,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": true
-    },
-    "extraNotes": "Target tech-savvy audiences."
-  },
-  {
-    "title": "Write Python Script for Data Scraping",
-    "description": "Require a Python developer to write a script that scrapes product data from e-commerce sites and outputs JSON files.",
-    "category": "Programming & Tech",
-    "subCategory": "Data Science & Analytics",
-    "tags": ["Python", "Web Scraping", "JSON"],
-    "deliveryDeadline": "2025-07-28T23:59:59Z",
-    "requiredSkills": ["Python", "BeautifulSoup", "Requests"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 350,
-      "max": 600,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user808",
-      "name": "Rahul Singh",
-      "profileImage": "",
-      "rating": 4.3,
-      "jobsPosted": 10
-    },
-    "postedAt": "2025-07-11T13:00:00Z",
-    "status": "open",
-    "numberOfBids": 4,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Email",
-      "allowCalls": false
-    },
-    "extraNotes": "Respect site scraping policies."
-  },
-  {
-    "title": "Create Animated Explainer Video",
-    "description": "Looking for a motion graphics artist to create a 90-second explainer video for our new product launch.",
-    "category": "Video & Animation",
-    "subCategory": "Explainer Videos",
-    "tags": ["Animation", "Explainer", "After Effects"],
-    "deliveryDeadline": "2025-07-27T23:59:59Z",
-    "requiredSkills": ["After Effects", "Illustrator", "Storyboarding"],
-    "attachments": [],
-    "isRemote": true,
-    "location": {},
-    "budget": {
-      "type": "fixed",
-      "min": 500,
-      "max": 900,
-      "currency": "USD",
-      "isNegotiable": true
-    },
-    "postedBy": {
-      "userId": "user909",
-      "name": "Linda Park",
-      "profileImage": "",
-      "rating": 4.8,
-      "jobsPosted": 13
-    },
-    "postedAt": "2025-07-12T15:30:00Z",
-    "status": "open",
-    "numberOfBids": 5,
-    "bids": [],
-    "selectedProfessional": null,
-    "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
-    },
-    "extraNotes": "Style should be clean and modern."
-  },
-  {
-    "title": "Optimize Website Performance",
-    "description": "Need a front-end specialist to optimize our website’s load speed and mobile responsiveness using modern best practices.",
+    "title": "Redesign Corporate Website UI/UX",
+    "description": "Looking for an experienced UI/UX designer to redesign our corporate website to enhance professionalism and user engagement. You will create wireframes, mood boards, and high-fidelity prototypes, focusing on clarity, branding consistency, and conversion.\n\nMust be familiar with corporate design standards, responsive layouts, and modern UI tools.",
     "category": "Web Development",
-    "subCategory": "Front-end Development",
-    "tags": ["Performance", "Optimization", "JavaScript"],
-    "deliveryDeadline": "2025-07-23T23:59:59Z",
-    "requiredSkills": ["JavaScript", "CSS", "Performance Tuning"],
+    "subCategory": "UI/UX Design",
+    "tags": [
+      "Web Design",
+      "UI Design",
+      "UX Design",
+      "Corporate Website",
+      "Branding",
+      "Responsive Design",
+      "Wireframing",
+      "Prototyping",
+      "Adobe XD"
+    ],
+    "deliveryDeadline": "2025-09-15T23:59",
+    "requiredSkills": [
+      "Corporate website UI/UX experience",
+      "Strong wireframing and prototyping skills",
+      "Knowledge of branding and visual hierarchy",
+      "Responsive design expertise",
+      "Proficiency in Adobe XD or Figma",
+      "Good communication"
+    ],
     "attachments": [],
     "isRemote": true,
-    "location": {},
+    "location": "",
     "budget": {
       "type": "fixed",
-      "min": 400,
-      "max": 750,
-      "currency": "USD",
+      "min": "25000",
+      "max": "35000",
+      "currency": "BDT",
       "isNegotiable": false
     },
-    "postedBy": {
-      "userId": "user1010",
-      "name": "David Kim",
-      "profileImage": "",
-      "rating": 4.6,
-      "jobsPosted": 11
-    },
-    "postedAt": "2025-07-13T08:45:00Z",
-    "status": "open",
-    "numberOfBids": 6,
-    "bids": [],
-    "selectedProfessional": null,
     "communication": {
-      "preferredMethod": "Email",
+      "preferredMethod": "Video Call",
       "allowCalls": true
     },
-    "extraNotes": "Focus on Google Lighthouse improvements."
+    "extraNotes": "* Portfolio showcasing corporate website redesigns required.\n* Source files and prototypes deliverables.\n* Timely communication and iteration expected.\n",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    },
+    "status": "open",
+    "postedAt": "2025-01-22T09:30:00.000Z"
   },
   {
-    "title": "Design Brochure for Corporate Event",
-    "description": "Require a graphic designer to create a professional brochure for an upcoming corporate event. Must include branding elements and clean layout.",
-    "category": "Graphic Design",
-    "subCategory": "Print Design",
-    "tags": ["Brochure", "Branding", "Print"],
-    "deliveryDeadline": "2025-07-21T23:59:59Z",
-    "requiredSkills": ["Adobe InDesign", "Photoshop", "Illustrator"],
+    "title": "Create Landing Page UI Design for Finance Startup",
+    "description": "Need a skilled UI designer to create a high-converting landing page for a finance startup. The landing page must be visually appealing, clear in messaging, and optimized for lead capture.\n\nExperience with conversion-focused UI design and tools like Figma or Adobe XD is essential.\n\nDeadline is strict; only experienced designers should apply.",
+    "category": "Web Development",
+    "subCategory": "UI Design",
+    "tags": [
+      "Landing Page",
+      "UI Design",
+      "Conversion Optimization",
+      "Finance Startup",
+      "Responsive Design",
+      "Figma",
+      "Adobe XD",
+      "User Experience"
+    ],
+    "deliveryDeadline": "2025-08-31T23:59",
+    "requiredSkills": [
+      "UI design for landing pages",
+      "Conversion optimization techniques",
+      "Responsive and mobile-friendly design",
+      "Proficiency with Figma or Adobe XD",
+      "Good communication and feedback handling"
+    ],
     "attachments": [],
     "isRemote": true,
-    "location": {},
+    "location": "",
     "budget": {
       "type": "fixed",
-      "min": 200,
-      "max": 350,
-      "currency": "USD",
+      "min": "12000",
+      "max": "18000",
+      "currency": "BDT",
+      "isNegotiable": true
+    },
+    "communication": {
+      "preferredMethod": "Video Call",
+      "allowCalls": true
+    },
+    "extraNotes": "* Portfolio with landing pages required.\n* Source files and prototypes expected.\n* Timely updates and iterations are necessary.\n",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    },
+    "status": "open",
+    "postedAt": "2025-07-20T13:15:00.000Z"
+  },
+  {
+    "title": "UX Audit and UI Improvement for Finance Dashboard",
+    "description": "We need a UX/UI expert to audit our existing finance dashboard and suggest improvements to usability, flow, and visual design. Deliverables include a detailed audit report plus redesign mockups.\n\nExperience with data-heavy interfaces and finance products preferred.",
+    "category": "Web Development",
+    "subCategory": "UX/UI",
+    "tags": [
+      "UX Audit",
+      "UI Improvement",
+      "Finance Dashboard",
+      "User Experience",
+      "Wireframing",
+      "Prototyping",
+      "Figma",
+      "Adobe XD"
+    ],
+    "deliveryDeadline": "2025-09-10T23:59",
+    "requiredSkills": [
+      "UX audit experience",
+      "UI redesign skills",
+      "Familiarity with finance dashboards",
+      "Wireframing and prototyping",
+      "Clear communication and reporting"
+    ],
+    "attachments": [],
+    "isRemote": true,
+    "location": "",
+    "budget": {
+      "type": "fixed",
+      "min": "18000",
+      "max": "28000",
+      "currency": "BDT",
       "isNegotiable": false
     },
-    "postedBy": {
-      "userId": "user1111",
-      "name": "Rebecca Moore",
-      "profileImage": "",
-      "rating": 4.7,
-      "jobsPosted": 6
-    },
-    "postedAt": "2025-07-14T10:30:00Z",
-    "status": "open",
-    "numberOfBids": 3,
-    "bids": [],
-    "selectedProfessional": null,
     "communication": {
-      "preferredMethod": "Chat",
-      "allowCalls": false
+      "preferredMethod": "Video Call",
+      "allowCalls": true
     },
-    "extraNotes": "Use company colors: Navy Blue and White."
+    "extraNotes": "* Portfolio with audit or redesign projects preferred.\n* Deliverables: audit report, wireframes, mockups.\n* Punctual and clear communication required.\n",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    },
+    "status": "open",
+    "postedAt": "2025-02-15T11:05:00.000Z"
+  },
+  {
+    "title": "Create Interactive Prototype for Finance Mobile App",
+    "description": "Looking for a UI/UX designer to build a fully interactive prototype of a new finance mobile app. You will translate wireframes into clickable, user-friendly prototypes for usability testing and stakeholder presentations.\n\nExperience with Figma or Adobe XD is mandatory.\n\nFast turnaround is required.",
+    "category": "Mobile App Development",
+    "subCategory": "Prototyping",
+    "tags": [
+      "Interactive Prototype",
+      "Mobile App",
+      "UI Design",
+      "UX Design",
+      "Figma",
+      "Adobe XD",
+      "User Testing"
+    ],
+    "deliveryDeadline": "2025-09-05T23:59",
+    "requiredSkills": [
+      "Prototyping with Figma or Adobe XD",
+      "Understanding of mobile UX",
+      "Ability to create smooth interactive flows",
+      "Good communication"
+    ],
+    "attachments": [],
+    "isRemote": true,
+    "location": "",
+    "budget": {
+      "type": "fixed",
+      "min": "12000",
+      "max": "18000",
+      "currency": "BDT",
+      "isNegotiable": true
+    },
+    "communication": {
+      "preferredMethod": "Video Call",
+      "allowCalls": true
+    },
+    "extraNotes": "* Please share relevant prototype samples.\n* Deliverables include the interactive prototype file.\n* Timely updates expected.\n",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    },
+    "status": "open",
+    "postedAt": "2025-06-30T14:20:00.000Z"
+  },
+  {
+    "title": "Design UI Kit for Finance Web Application",
+    "description": "Need a UI designer to create a comprehensive UI kit for a finance web application. This includes buttons, forms, typography, color schemes, and reusable components to maintain design consistency.\n\nExperience in Figma or Sketch required.",
+    "category": "Web Development",
+    "subCategory": "UI Design",
+    "tags": [
+      "UI Kit",
+      "Design System",
+      "Finance App",
+      "Figma",
+      "Sketch",
+      "UI Components",
+      "Web Design"
+    ],
+    "deliveryDeadline": "2025-08-20T23:59",
+    "requiredSkills": [
+      "UI kit and design system creation",
+      "Strong visual design skills",
+      "Experience with design tools like Figma or Sketch",
+      "Attention to detail"
+    ],
+    "attachments": [],
+    "isRemote": true,
+    "location": "",
+    "budget": {
+      "type": "fixed",
+      "min": "18000",
+      "max": "27000",
+      "currency": "BDT",
+      "isNegotiable": false
+    },
+    "communication": {
+      "preferredMethod": "Video Call",
+      "allowCalls": true
+    },
+    "extraNotes": "* Portfolio with UI kit samples preferred.\n* Source files mandatory.\n* Communication and deadline adherence required.\n",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    },
+    "status": "open",
+    "postedAt": "2025-04-05T09:50:00.000Z"
+  },
+  {
+    "title": "UX Research and Wireframing for Investment Platform",
+    "description": "We require a UX researcher and wireframe expert to analyze user flows and create detailed wireframes for a new investment platform. Your insights will help shape the platform’s user experience.\n\nStrong research skills and wireframing ability are a must.",
+    "category": "Web Development",
+    "subCategory": "UX Design",
+    "tags": [
+      "UX Research",
+      "Wireframing",
+      "Investment Platform",
+      "User Flow",
+      "User Experience",
+      "Figma",
+      "Adobe XD"
+    ],
+    "deliveryDeadline": "2025-09-12T23:59",
+    "requiredSkills": [
+      "UX research methodologies",
+      "Wireframing expertise",
+      "Strong analytical skills",
+      "Good communication"
+    ],
+    "attachments": [],
+    "isRemote": true,
+    "location": "",
+    "budget": {
+      "type": "fixed",
+      "min": "15000",
+      "max": "23000",
+      "currency": "BDT",
+      "isNegotiable": true
+    },
+    "communication": {
+      "preferredMethod": "Video Call",
+      "allowCalls": true
+    },
+    "extraNotes": "* Examples of past UX research and wireframe projects preferred.\n* Deliverables include wireframes and research report.\n",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    },
+    "status": "open",
+    "postedAt": "2025-03-25T16:40:00.000Z"
+  },
+  {
+    "title": "Design Responsive Dashboard UI for Finance Analytics",
+    "description": "Looking for a UI designer to create a responsive dashboard UI for a finance analytics platform. The dashboard should present complex data clearly and intuitively for non-technical users.\n\nExperience with data visualization UI is highly preferred.",
+    "category": "Web Development",
+    "subCategory": "UI Design",
+    "tags": [
+      "Dashboard Design",
+      "Finance Analytics",
+      "Responsive Design",
+      "Data Visualization",
+      "UI Design",
+      "Figma",
+      "Adobe XD"
+    ],
+    "deliveryDeadline": "2025-09-08T23:59",
+    "requiredSkills": [
+      "Dashboard UI design",
+      "Data visualization principles",
+      "Responsive and mobile-first design",
+      "Strong visual hierarchy skills"
+    ],
+    "attachments": [],
+    "isRemote": true,
+    "location": "",
+    "budget": {
+      "type": "fixed",
+      "min": "22000",
+      "max": "32000",
+      "currency": "BDT",
+      "isNegotiable": false
+    },
+    "communication": {
+      "preferredMethod": "Video Call",
+      "allowCalls": true
+    },
+    "extraNotes": "* Portfolio with dashboard designs required.\n* Deliverables: design files, prototypes.\n* Clear, timely communication essential.\n",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    },
+    "status": "open",
+    "postedAt": "2025-07-12T12:10:00.000Z"
+  },
+  {
+    "title": "Prototype and UI Design for Crypto Wallet App",
+    "description": "We want a creative UI designer to prototype and design the interface for a new cryptocurrency wallet app. Your work will focus on secure, user-friendly design suitable for both beginners and advanced users.\n\nExperience with fintech or crypto apps is a big plus.",
+    "category": "Mobile App Development",
+    "subCategory": "UI/UX Design",
+    "tags": [
+      "Crypto Wallet",
+      "UI Design",
+      "Prototype",
+      "Fintech",
+      "Mobile App",
+      "Figma",
+      "Adobe XD"
+    ],
+    "deliveryDeadline": "2025-09-20T23:59",
+    "requiredSkills": [
+      "UI design and prototyping skills",
+      "Understanding of fintech app UX",
+      "Security-minded design",
+      "Mobile-first approach"
+    ],
+    "attachments": [],
+    "isRemote": true,
+    "location": "",
+    "budget": {
+      "type": "fixed",
+      "min": "25000",
+      "max": "35000",
+      "currency": "BDT",
+      "isNegotiable": true
+    },
+    "communication": {
+      "preferredMethod": "Video Call",
+      "allowCalls": true
+    },
+    "extraNotes": "* Crypto or fintech portfolio preferred.\n* Deliverables: prototypes and source files.\n* Deadline adherence and communication required.\n",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    },
+    "status": "open",
+    "postedAt": "2025-05-22T08:30:00.000Z"
+  },
+  {
+    "title": "UX/UI Designer for Banking Website Redesign",
+    "description": "Seeking a UX/UI designer to revamp a traditional banking website to improve usability, modernize the look, and increase customer engagement. Your role will include user research, wireframing, and UI design.\n\nFamiliarity with banking compliance and security considerations is a plus.",
+    "category": "Web Development",
+    "subCategory": "UX/UI Design",
+    "tags": [
+      "Banking Website",
+      "UX Design",
+      "UI Design",
+      "Wireframing",
+      "User Research",
+      "Figma",
+      "Adobe XD"
+    ],
+    "deliveryDeadline": "2025-09-30T23:59",
+    "requiredSkills": [
+      "UX research and wireframing",
+      "UI design for banking or finance",
+      "Understanding of security and compliance",
+      "Strong communication skills"
+    ],
+    "attachments": [],
+    "isRemote": true,
+    "location": "",
+    "budget": {
+      "type": "fixed",
+      "min": "30000",
+      "max": "40000",
+      "currency": "BDT",
+      "isNegotiable": false
+    },
+    "communication": {
+      "preferredMethod": "Video Call",
+      "allowCalls": true
+    },
+    "extraNotes": "* Portfolio with finance or banking projects required.\n* Deliverables include research, wireframes, and UI files.\n* Clear communication and deadline respect are mandatory.\n",
+    "postedBy": {
+      "email": "employer@gmail.com",
+      "name": "Limestone Finance",
+      "profileImage": "https://i.ibb.co/SD06HhbS/abstract-company-logo-53876-120501.jpg",
+      "rating": 0
+    },
+    "status": "open",
+    "postedAt": "2025-04-15T17:45:00.000Z"
   }
 ]

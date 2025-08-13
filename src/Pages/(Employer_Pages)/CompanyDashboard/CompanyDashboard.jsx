@@ -177,10 +177,6 @@ const CompanyDashboard = () => {
     enabled: !!GigIdsData?.length,
   });
 
-  console.log(GigIdsData);
-
-  console.log(DailyGigBidsStatus);
-
   // Daily Internship Applications data
   const {
     data: DailyInternshipApplicationsStatus,
@@ -195,7 +191,7 @@ const CompanyDashboard = () => {
         .join(",");
       return axiosPublic
         .get(`/InternshipApplications/DailyStatus`, {
-          params: { jobIds: cleanIds },
+          params: { internshipIds: cleanIds },
         })
         .then((res) => res.data);
     },
@@ -215,7 +211,9 @@ const CompanyDashboard = () => {
         .filter(Boolean)
         .join(",");
       return axiosPublic
-        .get(`/EventApplications/DailyStatus`, { params: { jobIds: cleanIds } })
+        .get(`/EventApplications/DailyStatus`, {
+          params: { eventIds: cleanIds },
+        })
         .then((res) => res.data);
     },
     enabled: !!EventIdsData?.length,

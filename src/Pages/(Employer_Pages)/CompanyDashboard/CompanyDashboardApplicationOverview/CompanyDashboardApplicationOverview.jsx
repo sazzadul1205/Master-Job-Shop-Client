@@ -6,16 +6,16 @@ const CompanyDashboardApplicationOverview = ({
   DailyEventApplicationsStatus,
   DailyInternshipApplicationsStatus,
 }) => {
-//   console.log("Daily Gig Bids Status : ", DailyGigBidsStatus);
-//   console.log("Daily Job Applications Status : ", DailyJobApplicationsStatus);
-//   console.log(
-//     "Daily Event Applications Status : ",
-//     DailyEventApplicationsStatus
-//   );
-//   console.log(
-//     "Daily Internship Applications Status : ",
-//     DailyInternshipApplicationsStatus
-//   );
+  console.log("Daily Gig Bids Status : ", DailyGigBidsStatus);
+  console.log("Daily Job Applications Status : ", DailyJobApplicationsStatus);
+  console.log(
+    "Daily Event Applications Status : ",
+    DailyEventApplicationsStatus
+  );
+  console.log(
+    "Daily Internship Applications Status : ",
+    DailyInternshipApplicationsStatus
+  );
 
   return (
     <div className="border border-gray-300 rounded mt-5 mx-5">
@@ -39,3 +39,5 @@ const CompanyDashboardApplicationOverview = ({
 };
 
 export default CompanyDashboardApplicationOverview;
+
+

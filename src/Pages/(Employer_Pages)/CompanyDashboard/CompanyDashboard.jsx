@@ -92,6 +92,8 @@ const CompanyDashboard = () => {
     enabled: !!user?.email,
   });
 
+  console.log(JobIdsData);
+
   // Gig Ids Data
   const {
     data: GigIdsData,

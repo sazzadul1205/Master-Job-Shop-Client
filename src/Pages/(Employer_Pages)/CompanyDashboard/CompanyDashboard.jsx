@@ -11,6 +11,7 @@ import Error from "../../../Shared/Error/Error";
 
 // Components
 import CompanyDashboardKPI from "./CompanyDashboardKPI/CompanyDashboardKPI";
+import CompanyDashboardApplicationOverview from "./CompanyDashboardApplicationOverview/CompanyDashboardApplicationOverview";
 
 const CompanyDashboard = () => {
   const { user, loading } = useAuth();
@@ -136,6 +137,90 @@ const CompanyDashboard = () => {
     enabled: !!user?.email,
   });
 
+  // Daily Job Applications data
+  const {
+    data: DailyJobApplicationsStatus,
+    isLoading: DailyJobApplicationsStatusLoading,
+    error: DailyJobApplicationsStatusError,
+    refetch: DailyJobApplicationsStatusRefetch,
+  } = useQuery({
+    queryKey: ["DailyJobApplicationsStatus", JobIdsData],
+    queryFn: () => {
+      // Trim each ID and remove any empty values
+      const cleanIds = JobIdsData.map((id) => id.trim())
+        .filter((id) => id)
+        .join(",");
+
+      return axiosPublic
+        .get(`/JobApplications/DailyStatus`, { params: { jobIds: cleanIds } })
+        .then((res) => res.data);
+    },
+    enabled: !!JobIdsData?.length,
+  });
+
+  // Daily Gig Bids data
+  const {
+    data: DailyGigBidsStatus,
+    isLoading: DailyGigBidsStatusLoading,
+    error: DailyGigBidsStatusError,
+    refetch: DailyGigBidsStatusRefetch,
+  } = useQuery({
+    queryKey: ["DailyGigBidsStatus", GigIdsData],
+    queryFn: () => {
+      const cleanIds = GigIdsData.map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+      return axiosPublic
+        .get(`/GigBids/DailyStatus`, { params: { gigIds: cleanIds } })
+        .then((res) => res.data);
+    },
+    enabled: !!GigIdsData?.length,
+  });
+
+  console.log(GigIdsData);
+
+  console.log(DailyGigBidsStatus);
+
+  // Daily Internship Applications data
+  const {
+    data: DailyInternshipApplicationsStatus,
+    isLoading: DailyInternshipApplicationsStatusLoading,
+    error: DailyInternshipApplicationsStatusError,
+    refetch: DailyInternshipApplicationsStatusRefetch,
+  } = useQuery({
+    queryKey: ["DailyInternshipApplicationsStatus", InternshipIdsData],
+    queryFn: () => {
+      const cleanIds = InternshipIdsData.map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+      return axiosPublic
+        .get(`/InternshipApplications/DailyStatus`, {
+          params: { jobIds: cleanIds },
+        })
+        .then((res) => res.data);
+    },
+    enabled: !!InternshipIdsData?.length,
+  });
+
+  // Daily Event Applications data
+  const {
+    data: DailyEventApplicationsStatus,
+    isLoading: DailyEventApplicationsStatusLoading,
+    error: DailyEventApplicationsStatusError,
+    refetch: DailyEventApplicationsStatusRefetch,
+  } = useQuery({
+    queryKey: ["DailyEventApplicationsStatus", EventIdsData],
+    queryFn: () => {
+      const cleanIds = EventIdsData.map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+      return axiosPublic
+        .get(`/EventApplications/DailyStatus`, { params: { jobIds: cleanIds } })
+        .then((res) => res.data);
+    },
+    enabled: !!EventIdsData?.length,
+  });
+
   // Refetch both datasets
   const refetch = async () => {
     await JobIdsRefetch();
@@ -145,22 +230,32 @@ const CompanyDashboard = () => {
     await DailyJobStatusRefetch();
     await DailyGigStatusRefetch();
     await DailyEventStatusRefetch();
+    await DailyGigBidsStatusRefetch();
     await DailyInternshipStatusRefetch();
+    await DailyJobApplicationsStatusRefetch();
+    await DailyEventApplicationsStatusRefetch();
+    await DailyInternshipApplicationsStatusRefetch();
   };
 
-  // Loading / Error UI
+  // If Loading Show UI
   if (
+    loading ||
     JobIdsIsLoading ||
     GigIdsIsLoading ||
     EventIdsIsLoading ||
     InternshipIdsIsLoading ||
     DailyJobStatusIsLoading ||
     DailyGigStatusIsLoading ||
+    DailyGigBidsStatusLoading ||
     DailyEventStatusIsLoading ||
     DailyInternshipStatusIsLoading ||
-    loading
+    DailyJobApplicationsStatusLoading ||
+    DailyEventApplicationsStatusLoading ||
+    DailyInternshipApplicationsStatusLoading
   )
     return <Loading />;
+
+  // If Error Show UI
   if (
     JobIdsError ||
     GigIdsError ||
@@ -169,23 +264,31 @@ const CompanyDashboard = () => {
     DailyJobStatusError ||
     DailyGigStatusError ||
     DailyEventStatusError ||
-    DailyInternshipStatusError
+    DailyGigBidsStatusError ||
+    DailyInternshipStatusError ||
+    DailyJobApplicationsStatusError ||
+    DailyEventApplicationsStatusError ||
+    DailyInternshipApplicationsStatusError
   )
     return <Error />;
 
-  console.log("Job Ids Data : - ", JobIdsData);
-  console.log("Gig Ids Data : - ", GigIdsData);
-  console.log("Event Ids Data : - ", EventIdsData);
-  console.log("Internship Ids Data : - ", InternshipIdsData);
-
   return (
     <div>
+      {/* Company Dashboard KPI */}
       <CompanyDashboardKPI
         refetch={refetch}
         DailyJobStatusData={DailyJobStatusData}
         DailyGigStatusData={DailyGigStatusData}
         DailyEventStatusData={DailyEventStatusData}
         DailyInternshipStatusData={DailyInternshipStatusData}
+      />
+
+      {/* Company Dashboard Application Overview */}
+      <CompanyDashboardApplicationOverview
+        DailyGigBidsStatus={DailyGigBidsStatus}
+        DailyJobApplicationsStatus={DailyJobApplicationsStatus}
+        DailyEventApplicationsStatus={DailyEventApplicationsStatus}
+        DailyInternshipApplicationsStatus={DailyInternshipApplicationsStatus}
       />
     </div>
   );

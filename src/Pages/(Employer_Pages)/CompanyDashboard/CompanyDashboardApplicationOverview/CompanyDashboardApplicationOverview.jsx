@@ -72,7 +72,7 @@ const CompanyDashboardApplicationOverview = ({
   ]);
 
   return (
-    <div className="bg-white border border-gray-300 shadow hover:shadow-xl rounded mt-5 mx-5 p-5 h-[450px]">
+    <div className="bg-white border border-gray-300 shadow-lg rounded mt-5 mx-5 p-5 h-[450px]">
       {/* Header section with title and date range filter */}
       <div className="flex items-center justify-between mb-4">
         {/* Title */}

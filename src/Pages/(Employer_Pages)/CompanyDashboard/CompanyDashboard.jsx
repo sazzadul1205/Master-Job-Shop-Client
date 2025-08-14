@@ -12,6 +12,8 @@ import Error from "../../../Shared/Error/Error";
 // Components
 import CompanyDashboardKPI from "./CompanyDashboardKPI/CompanyDashboardKPI";
 import CompanyDashboardApplicationOverview from "./CompanyDashboardApplicationOverview/CompanyDashboardApplicationOverview";
+import CompanyDashboardRecentApplicant from "./CompanyDashboardRecentApplicant/CompanyDashboardRecentApplicant";
+import CompanyDashboardUpcomingDeadline from "./CompanyDashboardUpcomingDeadline/CompanyDashboardUpcomingDeadline";
 
 const CompanyDashboard = () => {
   const { user, loading } = useAuth();
@@ -91,8 +93,6 @@ const CompanyDashboard = () => {
         .then((res) => res.data),
     enabled: !!user?.email,
   });
-
-  console.log(JobIdsData);
 
   // Gig Ids Data
   const {
@@ -221,19 +221,127 @@ const CompanyDashboard = () => {
     enabled: !!EventIdsData?.length,
   });
 
+  // Fetch Latest Job Applications
+  const {
+    data: LatestJobApplications,
+    isLoading: LatestJobApplicationsLoading,
+    error: LatestJobApplicationsError,
+    refetch: LatestJobApplicationsRefetch,
+  } = useQuery({
+    queryKey: ["LatestJobApplications", JobIdsData],
+    queryFn: () => {
+      // Clean and join IDs as a comma-separated string
+      const cleanIds = JobIdsData.map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+
+      // Optional: define limit
+      const limit = 5; // or leave undefined to use default of 5 on server
+
+      return axiosPublic
+        .get(`/JobApplications/LatestApplications`, {
+          params: { jobIds: cleanIds, limit },
+        })
+        .then((res) => res.data);
+    },
+    enabled: !!JobIdsData?.length,
+  });
+
+  // Fetch Latest Gig Bids
+  const {
+    data: LatestGigBids,
+    isLoading: LatestGigBidsLoading,
+    error: LatestGigBidsError,
+    refetch: LatestGigBidsRefetch,
+  } = useQuery({
+    queryKey: ["LatestGigBids", GigIdsData],
+    queryFn: () => {
+      // Clean and join IDs as a comma-separated string
+      const cleanIds = GigIdsData.map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+
+      // Optional: define limit
+      const limit = 5; // or leave undefined to use default of 5 on server
+
+      return axiosPublic
+        .get(`/GigBids/LatestBids`, {
+          params: { gigIds: cleanIds, limit },
+        })
+        .then((res) => res.data);
+    },
+    enabled: !!GigIdsData?.length,
+  });
+
+  // Fetch Latest Internship Applications
+  const {
+    data: LatestInternshipApplications,
+    isLoading: LatestInternshipApplicationsLoading,
+    error: LatestInternshipApplicationsError,
+    refetch: LatestInternshipApplicationsRefetch,
+  } = useQuery({
+    queryKey: ["LatestInternshipApplications", InternshipIdsData],
+    queryFn: () => {
+      // Clean and join IDs as a comma-separated string
+      const cleanIds = InternshipIdsData.map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+
+      // Optional: define limit
+      const limit = 5; // or leave undefined to use default of 5 on server
+
+      return axiosPublic
+        .get(`/InternshipApplications/LatestApplications`, {
+          params: { internshipIds: cleanIds, limit },
+        })
+        .then((res) => res.data);
+    },
+    enabled: !!InternshipIdsData?.length,
+  });
+
+  // Fetch Latest Event Applications
+  const {
+    data: LatestEventApplications,
+    isLoading: LatestEventApplicationsLoading,
+    error: LatestEventApplicationsError,
+    refetch: LatestEventApplicationsRefetch,
+  } = useQuery({
+    queryKey: ["LatestEventApplications", EventIdsData],
+    queryFn: () => {
+      // Clean and join IDs as a comma-separated string
+      const cleanIds = EventIdsData.map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+
+      // Optional: define limit
+      const limit = 5; // or leave undefined to use default of 5 on server
+
+      return axiosPublic
+        .get(`/EventApplications/LatestApplications`, {
+          params: { eventIds: cleanIds, limit },
+        })
+        .then((res) => res.data);
+    },
+    enabled: !!EventIdsData?.length,
+  });
+
   // Refetch both datasets
   const refetch = async () => {
     await JobIdsRefetch();
     await GigIdsRefetch();
     await EventIdsRefetch();
+    await LatestGigBidsRefetch();
     await InternshipIdsRefetch();
     await DailyJobStatusRefetch();
     await DailyGigStatusRefetch();
     await DailyEventStatusRefetch();
     await DailyGigBidsStatusRefetch();
     await DailyInternshipStatusRefetch();
+    await LatestJobApplicationsRefetch();
+    await LatestEventApplicationsRefetch();
     await DailyJobApplicationsStatusRefetch();
     await DailyEventApplicationsStatusRefetch();
+    await LatestInternshipApplicationsRefetch();
     await DailyInternshipApplicationsStatusRefetch();
   };
 
@@ -243,13 +351,17 @@ const CompanyDashboard = () => {
     JobIdsIsLoading ||
     GigIdsIsLoading ||
     EventIdsIsLoading ||
+    LatestGigBidsLoading ||
     InternshipIdsIsLoading ||
     DailyJobStatusIsLoading ||
     DailyGigStatusIsLoading ||
     DailyGigBidsStatusLoading ||
     DailyEventStatusIsLoading ||
+    LatestJobApplicationsLoading ||
     DailyInternshipStatusIsLoading ||
+    LatestEventApplicationsLoading ||
     DailyJobApplicationsStatusLoading ||
+    LatestInternshipApplicationsLoading ||
     DailyEventApplicationsStatusLoading ||
     DailyInternshipApplicationsStatusLoading
   )
@@ -261,12 +373,16 @@ const CompanyDashboard = () => {
     GigIdsError ||
     EventIdsError ||
     InternshipIdsError ||
+    LatestGigBidsError ||
     DailyJobStatusError ||
     DailyGigStatusError ||
     DailyEventStatusError ||
     DailyGigBidsStatusError ||
+    LatestJobApplicationsError ||
     DailyInternshipStatusError ||
+    LatestEventApplicationsError ||
     DailyJobApplicationsStatusError ||
+    LatestInternshipApplicationsError ||
     DailyEventApplicationsStatusError ||
     DailyInternshipApplicationsStatusError
   )
@@ -290,6 +406,30 @@ const CompanyDashboard = () => {
         DailyEventApplicationsStatus={DailyEventApplicationsStatus}
         DailyInternshipApplicationsStatus={DailyInternshipApplicationsStatus}
       />
+
+      {/* Activity & Deadlines */}
+      <div className="px-5 py-6">
+        {/* Title */}
+        <h3 className="text-lg text-black font-bold">Activity & Deadlines</h3>
+
+        {/* Content */}
+        <div className="flex flex-rowe gap-2 items-center pt-3">
+          {/* Recent Applicants */}
+          <div className="w-1/2 bg-white border border-gray-300 rounded-lg py-5 px-5">
+            <CompanyDashboardRecentApplicant
+              LatestGigBids={LatestGigBids}
+              LatestJobApplications={LatestJobApplications}
+              LatestEventApplications={LatestEventApplications}
+              LatestInternshipApplications={LatestInternshipApplications}
+            />
+          </div>
+
+          {/* Upcoming Deadline */}
+          <div className="w-1/2 bg-white border border-gray-300 rounded-lg py-5 px-5">
+            <CompanyDashboardUpcomingDeadline />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

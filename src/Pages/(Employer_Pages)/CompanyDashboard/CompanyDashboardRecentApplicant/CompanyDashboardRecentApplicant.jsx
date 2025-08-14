@@ -1,5 +1,13 @@
+import { useState } from "react";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
+import PropTypes from "prop-types";
+
+// Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+
+// Shared
 import Error from "../../../../Shared/Error/Error";
 import Loading from "../../../../Shared/Loading/Loading";
 
@@ -47,30 +55,30 @@ const CompanyDashboardRecentApplicant = ({
       timeAgo: timeAgo(item.submittedAt),
       gigId: item.gigId, // Add gigId
     })),
-    // ...LatestJobApplications.map((item) => ({
-    //   name: item.name,
-    //   type: "Job",
-    //   photo: item.profileImage || item.name.charAt(0).toUpperCase(),
-    //   date: item.appliedAt,
-    //   timeAgo: timeAgo(item.appliedAt),
-    //   jobId: item.jobId, // Add jobId
-    // })),
-    // ...LatestEventApplications.map((item) => ({
-    //   name: item.name,
-    //   type: "Event",
-    //   photo: item.profileImage || item.name.charAt(0).toUpperCase(),
-    //   date: item.appliedAt,
-    //   timeAgo: timeAgo(item.appliedAt),
-    //   eventId: item.eventId, // Add eventId
-    // })),
-    // ...LatestInternshipApplications.map((item) => ({
-    //   name: item.name,
-    //   type: "Internship",
-    //   photo: item.profileImage || item.name.charAt(0).toUpperCase(),
-    //   date: item.appliedAt,
-    //   timeAgo: timeAgo(item.appliedAt),
-    //   internshipId: item.internshipId, // Add internshipId
-    // })),
+    ...LatestJobApplications.map((item) => ({
+      name: item.name,
+      type: "Job",
+      photo: item.profileImage || item.name.charAt(0).toUpperCase(),
+      date: item.appliedAt,
+      timeAgo: timeAgo(item.appliedAt),
+      jobId: item.jobId, // Add jobId
+    })),
+    ...LatestEventApplications.map((item) => ({
+      name: item.name,
+      type: "Event",
+      photo: item.profileImage || item.name.charAt(0).toUpperCase(),
+      date: item.appliedAt,
+      timeAgo: timeAgo(item.appliedAt),
+      eventId: item.eventId, // Add eventId
+    })),
+    ...LatestInternshipApplications.map((item) => ({
+      name: item.name,
+      type: "Internship",
+      photo: item.profileImage || item.name.charAt(0).toUpperCase(),
+      date: item.appliedAt,
+      timeAgo: timeAgo(item.appliedAt),
+      internshipId: item.internshipId, // Add internshipId
+    })),
   ];
 
   // Sort by actual date descending (latest first)
@@ -162,6 +170,64 @@ const CompanyDashboardRecentApplicant = ({
     enabled: !!gigIds?.length,
   });
 
+  // Fetch Latest Event Summaries
+  const {
+    data: EventSummary,
+    isLoading: EventSummaryLoading,
+    error: EventSummaryError,
+  } = useQuery({
+    queryKey: ["EventSummary", eventIds],
+    queryFn: () => {
+      if (!eventIds?.length) return Promise.resolve([]);
+
+      // Clean and join IDs as a comma-separated string
+      const cleanIds = eventIds
+        .map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+
+      return axiosPublic
+        .get(`/Events/Summary`, {
+          params: { eventIds: cleanIds },
+        })
+        .then((res) => res.data)
+        .then((events) => {
+          return Array.isArray(events) ? events.slice(0, 5) : [events];
+        });
+    },
+    enabled: !!eventIds?.length,
+  });
+
+  // Fetch Latest Internship Summaries
+  const {
+    data: InternshipSummary,
+    isLoading: InternshipSummaryLoading,
+    error: InternshipSummaryError,
+  } = useQuery({
+    queryKey: ["InternshipSummary", internshipIds],
+    queryFn: () => {
+      if (!internshipIds?.length) return Promise.resolve([]);
+
+      // Clean and join IDs as a comma-separated string
+      const cleanIds = internshipIds
+        .map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+
+      return axiosPublic
+        .get(`/Internship/Summary`, {
+          params: { internshipIds: cleanIds },
+        })
+        .then((res) => res.data)
+        .then((internship) => {
+          return Array.isArray(internship)
+            ? internship.slice(0, 5)
+            : [internship];
+        });
+    },
+    enabled: !!internshipIds?.length,
+  });
+
   // Lookup map for JobSummary
   const jobTitleMap = {};
   if (Array.isArray(JobSummary)) {
@@ -182,6 +248,26 @@ const CompanyDashboardRecentApplicant = ({
     gigTitleMap[GigSummary._id] = GigSummary.title;
   }
 
+  // Lookup map for EventSummary
+  const eventTitleMap = {};
+  if (Array.isArray(EventSummary)) {
+    EventSummary.forEach((event) => {
+      eventTitleMap[event._id] = event.title;
+    });
+  } else if (EventSummary?._id) {
+    eventTitleMap[EventSummary._id] = EventSummary.title;
+  }
+
+  // Lookup map for InternshipSummary
+  const internshipTitleMap = {};
+  if (Array.isArray(InternshipSummary)) {
+    InternshipSummary.forEach((internship) => {
+      internshipTitleMap[internship._id] = internship.title;
+    });
+  } else if (InternshipSummary?._id) {
+    internshipTitleMap[InternshipSummary._id] = InternshipSummary.title;
+  }
+
   // Enrich latestFiveApplications with titles
   const enrichedApplications = latestFiveApplications.map((app) => {
     if (app.type === "Job" && app.jobId && jobTitleMap[app.jobId]) {
@@ -190,18 +276,36 @@ const CompanyDashboardRecentApplicant = ({
     if (app.type === "Gig" && app.gigId && gigTitleMap[app.gigId]) {
       return { ...app, title: gigTitleMap[app.gigId] };
     }
+    if (app.type === "Event" && app.eventId && eventTitleMap[app.eventId]) {
+      return { ...app, title: eventTitleMap[app.eventId] };
+    }
+    if (
+      app.type === "Internship" &&
+      app.internshipId &&
+      internshipTitleMap[app.internshipId]
+    ) {
+      return { ...app, title: internshipTitleMap[app.internshipId] };
+    }
     return app;
   });
 
-  console.log("Enriched Applications:", enrichedApplications);
-
   // If Loading Show UI
-  if (JobSummaryLoading || GigSummaryLoading) return <Loading />;
+  if (
+    JobSummaryLoading ||
+    GigSummaryLoading ||
+    EventSummaryLoading ||
+    InternshipSummaryLoading
+  )
+    return <Loading />;
 
   // If Error Show UI
-  if (JobSummaryError || GigSummaryError) return <Error />;
-
-  console.log(JobSummary);
+  if (
+    JobSummaryError ||
+    GigSummaryError ||
+    EventSummaryError ||
+    InternshipSummaryError
+  )
+    return <Error />;
 
   return (
     <>
@@ -216,25 +320,7 @@ const CompanyDashboardRecentApplicant = ({
           <div key={index} className="flex gap-2 items-center">
             {/* Avatar */}
             <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold text-lg">
-              {app.photo && app.photo.startsWith("http") ? (
-                <img
-                  src={app.photo}
-                  alt={app.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                  onError={(e) => {
-                    e.target.onerror = null; // prevent infinite loop
-                    e.target.style.display = "none"; // hide broken image
-                  }}
-                />
-              ) : (
-                // Show first 2 letters if no image
-                app.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase()
-              )}
+              <Avatar photo={app.photo} name={app.name} />
             </div>
 
             {/* Text */}
@@ -254,4 +340,79 @@ const CompanyDashboardRecentApplicant = ({
   );
 };
 
+// Prop Validation
+CompanyDashboardRecentApplicant.propTypes = {
+  LatestGigBids: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      profileImage: PropTypes.string,
+      submittedAt: PropTypes.string.isRequired,
+      gigId: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  LatestJobApplications: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      profileImage: PropTypes.string,
+      appliedAt: PropTypes.string.isRequired,
+      jobId: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  LatestEventApplications: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      profileImage: PropTypes.string,
+      appliedAt: PropTypes.string.isRequired,
+      eventId: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  LatestInternshipApplications: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      profileImage: PropTypes.string,
+      appliedAt: PropTypes.string.isRequired,
+      internshipId: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
+
+
 export default CompanyDashboardRecentApplicant;
+
+
+// Avatar Component
+export function Avatar({ photo, name }) {
+  const [imgError, setImgError] = useState(false);
+
+  // Get initials from name
+  const getInitials = (fullName) => {
+    if (!fullName) return "";
+    const parts = fullName.trim().split(" ");
+    return parts
+      .slice(0, 2) // first and last name only
+      .map((part) => part[0]?.toUpperCase())
+      .join("");
+  };
+
+  return (
+    <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold text-lg overflow-hidden">
+      {!imgError && photo ? (
+        <img
+          src={photo}
+          alt={name}
+          className="w-10 h-10 rounded-full object-cover"
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <span>{getInitials(name)}</span>
+      )}
+    </div>
+  );
+}
+
+
+// Prop validation
+Avatar.propTypes = {
+  photo: PropTypes.string,
+  name: PropTypes.string.isRequired,
+};

@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
-import PropTypes from "prop-types"; // For prop validation
+
+// Packages
+import PropTypes from "prop-types";
 
 // ReCharts imports
 import {

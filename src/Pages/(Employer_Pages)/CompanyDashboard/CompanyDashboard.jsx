@@ -11,9 +11,9 @@ import Error from "../../../Shared/Error/Error";
 
 // Components
 import CompanyDashboardKPI from "./CompanyDashboardKPI/CompanyDashboardKPI";
-import CompanyDashboardApplicationOverview from "./CompanyDashboardApplicationOverview/CompanyDashboardApplicationOverview";
 import CompanyDashboardRecentApplicant from "./CompanyDashboardRecentApplicant/CompanyDashboardRecentApplicant";
 import CompanyDashboardUpcomingDeadline from "./CompanyDashboardUpcomingDeadline/CompanyDashboardUpcomingDeadline";
+import CompanyDashboardApplicationOverview from "./CompanyDashboardApplicationOverview/CompanyDashboardApplicationOverview";
 
 const CompanyDashboard = () => {
   const { user, loading } = useAuth();

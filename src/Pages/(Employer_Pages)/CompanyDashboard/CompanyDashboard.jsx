@@ -529,7 +529,7 @@ const CompanyDashboard = () => {
         <h3 className="text-lg text-black font-bold">Activity & Deadlines</h3>
 
         {/* Content */}
-        <div className="flex flex-rowe gap-2 items-center pt-3">
+        <div className="flex gap-2 items-stretch pt-3">
           {/* Recent Applicants */}
           <div className="w-1/2 bg-white border border-gray-300 rounded-lg py-5 px-5">
             <CompanyDashboardRecentApplicant

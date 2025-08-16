@@ -14,6 +14,7 @@ import CompanyDashboardKPI from "./CompanyDashboardKPI/CompanyDashboardKPI";
 import CompanyDashboardRecentApplicant from "./CompanyDashboardRecentApplicant/CompanyDashboardRecentApplicant";
 import CompanyDashboardUpcomingDeadline from "./CompanyDashboardUpcomingDeadline/CompanyDashboardUpcomingDeadline";
 import CompanyDashboardApplicationOverview from "./CompanyDashboardApplicationOverview/CompanyDashboardApplicationOverview";
+import CompanyDashboardQuickAction from "./CompanyDashboardQuickAction/CompanyDashboardQuickAction";
 
 const CompanyDashboard = () => {
   const { user, loading } = useAuth();
@@ -551,6 +552,8 @@ const CompanyDashboard = () => {
           </div>
         </div>
       </div>
+
+      <CompanyDashboardQuickAction />
     </div>
   );
 };

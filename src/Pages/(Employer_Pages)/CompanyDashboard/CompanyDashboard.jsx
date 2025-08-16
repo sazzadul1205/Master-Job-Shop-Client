@@ -325,17 +325,125 @@ const CompanyDashboard = () => {
     enabled: !!EventIdsData?.length,
   });
 
+  // Fetch Jobs Deadline Data
+  const {
+    data: JobDeadline,
+    isLoading: JobDeadlineLoading,
+    error: JobDeadlineError,
+    refetch: JobDeadlineRefetch,
+  } = useQuery({
+    queryKey: ["JobDeadline", JobIdsData],
+    queryFn: () => {
+      // Clean and join IDs as a comma-separated string
+      const cleanIds = JobIdsData.map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+
+      // Optional: define limit
+      const limit = 5; // or leave undefined to use default of 5 on server
+
+      return axiosPublic
+        .get(`/Jobs/Deadline`, {
+          params: { jobIds: cleanIds, limit },
+        })
+        .then((res) => res.data);
+    },
+    enabled: !!JobIdsData?.length,
+  });
+
+  // Fetch Gigs Deadline Data
+  const {
+    data: GigDeadline,
+    isLoading: GigDeadlineLoading,
+    error: GigDeadlineError,
+    refetch: GigDeadlineRefetch,
+  } = useQuery({
+    queryKey: ["GigDeadline", GigIdsData],
+    queryFn: () => {
+      // Clean and join IDs as a comma-separated string
+      const cleanIds = GigIdsData.map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+
+      // Optional: define limit
+      const limit = 5; // or leave undefined to use default of 5 on server
+
+      return axiosPublic
+        .get(`/Gigs/Deadline`, {
+          params: { gigIds: cleanIds, limit },
+        })
+        .then((res) => res.data);
+    },
+    enabled: !!GigIdsData?.length,
+  });
+
+  // Fetch Internship Deadline Data
+  const {
+    data: InternshipDeadline,
+    isLoading: InternshipDeadlineLoading,
+    error: InternshipDeadlineError,
+    refetch: InternshipDeadlineRefetch,
+  } = useQuery({
+    queryKey: ["InternshipDeadline", InternshipIdsData],
+    queryFn: () => {
+      // Clean and join IDs as a comma-separated string
+      const cleanIds = InternshipIdsData.map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+
+      // Optional: define limit
+      const limit = 5; // or leave undefined to use default of 5 on server
+
+      return axiosPublic
+        .get(`/Internship/Deadline`, {
+          params: { internshipIds: cleanIds, limit },
+        })
+        .then((res) => res.data);
+    },
+    enabled: !!InternshipIdsData?.length,
+  });
+
+  // Fetch Events Deadline Data
+  const {
+    data: EventsDeadline,
+    isLoading: EventsDeadlineLoading,
+    error: EventsDeadlineError,
+    refetch: EventsDeadlineRefetch,
+  } = useQuery({
+    queryKey: ["EventsDeadline", EventIdsData],
+    queryFn: () => {
+      // Clean and join IDs as a comma-separated string
+      const cleanIds = EventIdsData.map((id) => id.trim())
+        .filter(Boolean)
+        .join(",");
+
+      // Optional: define limit
+      const limit = 5; // or leave undefined to use default of 5 on server
+
+      return axiosPublic
+        .get(`/Events/Deadline`, {
+          params: { eventIds: cleanIds, limit },
+        })
+        .then((res) => res.data);
+    },
+    enabled: !!EventIdsData?.length,
+  });
+
   // Refetch both datasets
   const refetch = async () => {
     await JobIdsRefetch();
     await GigIdsRefetch();
     await EventIdsRefetch();
+    await JobDeadlineRefetch();
+    await GigDeadlineRefetch();
     await LatestGigBidsRefetch();
     await InternshipIdsRefetch();
+    await EventsDeadlineRefetch();
     await DailyJobStatusRefetch();
     await DailyGigStatusRefetch();
     await DailyEventStatusRefetch();
     await DailyGigBidsStatusRefetch();
+    await InternshipDeadlineRefetch();
     await DailyInternshipStatusRefetch();
     await LatestJobApplicationsRefetch();
     await LatestEventApplicationsRefetch();
@@ -351,10 +459,14 @@ const CompanyDashboard = () => {
     JobIdsIsLoading ||
     GigIdsIsLoading ||
     EventIdsIsLoading ||
+    JobDeadlineLoading ||
+    GigDeadlineLoading ||
     LatestGigBidsLoading ||
+    EventsDeadlineLoading ||
     InternshipIdsIsLoading ||
     DailyJobStatusIsLoading ||
     DailyGigStatusIsLoading ||
+    InternshipDeadlineLoading ||
     DailyGigBidsStatusLoading ||
     DailyEventStatusIsLoading ||
     LatestJobApplicationsLoading ||
@@ -372,11 +484,15 @@ const CompanyDashboard = () => {
     JobIdsError ||
     GigIdsError ||
     EventIdsError ||
+    JobDeadlineError ||
+    GigDeadlineError ||
     InternshipIdsError ||
     LatestGigBidsError ||
+    EventsDeadlineError ||
     DailyJobStatusError ||
     DailyGigStatusError ||
     DailyEventStatusError ||
+    InternshipDeadlineError ||
     DailyGigBidsStatusError ||
     LatestJobApplicationsError ||
     DailyInternshipStatusError ||
@@ -426,7 +542,12 @@ const CompanyDashboard = () => {
 
           {/* Upcoming Deadline */}
           <div className="w-1/2 bg-white border border-gray-300 rounded-lg py-5 px-5">
-            <CompanyDashboardUpcomingDeadline />
+            <CompanyDashboardUpcomingDeadline
+              JobDeadline={JobDeadline}
+              GigDeadline={GigDeadline}
+              EventsDeadline={EventsDeadline}
+              InternshipDeadline={InternshipDeadline}
+            />
           </div>
         </div>
       </div>

@@ -30,12 +30,14 @@ import GigBidsTable from "./GigBidsTable/GigBidsTable";
 import AcceptGigBidsModal from "./AcceptGigBidsModal/AcceptGigBidsModal";
 import ViewBidInterviewModal from "./ViewBidInterviewModal/ViewBidInterviewModal";
 import MyGigBidsModal from "../../(Member_Pages)/MyGigBids/MyGigBidsModal/MyGigBidsModal";
+import ViewMemberProfileModal from "../CompanyDashboard/CompanyDashboardRecentApplicant/ViewMemberProfileModal/ViewMemberProfileModal";
 
 const ManageGigBids = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
   // State Management [ Expanded Gig Id , Page States ]
+  const [userEmail, setUserEmail] = useState("");
   const [pageStates, setPageStates] = useState({});
   const [expandedGigId, setExpandedGigId] = useState(null);
   const [selectedBidID, setSelectedBidID] = useState(null);
@@ -223,37 +225,37 @@ const ManageGigBids = () => {
 
                     {gig?.Bids.filter((app) => app.status === "Accepted")
                       .length > 0 && (
-                      <>
-                        {" | "}
-                        <p>
-                          Accepted:{" "}
-                          <span className="text-green-600 font-semibold">
-                            {
-                              gig?.Bids.filter(
-                                (app) => app.status === "Accepted"
-                              ).length
-                            }
-                          </span>
-                        </p>
-                      </>
-                    )}
+                        <>
+                          {" | "}
+                          <p>
+                            Accepted:{" "}
+                            <span className="text-green-600 font-semibold">
+                              {
+                                gig?.Bids.filter(
+                                  (app) => app.status === "Accepted"
+                                ).length
+                              }
+                            </span>
+                          </p>
+                        </>
+                      )}
 
                     {gig?.Bids.filter((app) => app.status === "Rejected")
                       .length > 0 && (
-                      <>
-                        {" | "}
-                        <p>
-                          Rejected:{" "}
-                          <span className="text-red-600 font-semibold">
-                            {
-                              gig?.Bids.filter(
-                                (app) => app.status === "Rejected"
-                              ).length
-                            }
-                          </span>
-                        </p>
-                      </>
-                    )}
+                        <>
+                          {" | "}
+                          <p>
+                            Rejected:{" "}
+                            <span className="text-red-600 font-semibold">
+                              {
+                                gig?.Bids.filter(
+                                  (app) => app.status === "Rejected"
+                                ).length
+                              }
+                            </span>
+                          </p>
+                        </>
+                      )}
                   </div>
 
                   {/* Open / Close Applicants Table Button */}
@@ -281,15 +283,15 @@ const ManageGigBids = () => {
 
                 {/* Applicants Table */}
                 <div
-                  className={`transition-all duration-500 ease-in-out overflow-hidden ${
-                    expandedGigId === gig._id
-                      ? "max-h-[1000px] pt-4"
-                      : "max-h-0"
-                  }`}
+                  className={`transition-all duration-500 ease-in-out overflow-hidden ${expandedGigId === gig._id
+                    ? "max-h-[1000px] pt-4"
+                    : "max-h-0"
+                    }`}
                 >
                   {/* Applicants Container */}
                   <GigBidsTable
                     refetch={refetch}
+                    setUserEmail={setUserEmail}
                     currentPage={currentPage}
                     paginatedBids={paginatedBids}
                     ITEMS_PER_PAGE={ITEMS_PER_PAGE}
@@ -379,6 +381,11 @@ const ManageGigBids = () => {
           selectedBidID={selectedBidID}
           setSelectedBidID={setSelectedBidID}
         />
+      </dialog>
+
+      {/* View User Profile Modal */}
+      <dialog id="View_Profile_Modal" className="modal">
+        <ViewMemberProfileModal userEmail={userEmail} setUserEmail={setUserEmail} />
       </dialog>
     </>
   );

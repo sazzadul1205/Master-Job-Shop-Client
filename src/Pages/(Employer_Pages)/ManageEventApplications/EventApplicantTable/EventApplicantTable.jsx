@@ -12,6 +12,7 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 const EventApplicantTable = ({
   refetch,
   currentPage,
+  setUserEmail,
   ITEMS_PER_PAGE,
   paginatedApplicants,
   setSelectedApplicationID,
@@ -147,13 +148,12 @@ const EventApplicantTable = ({
             paginatedApplicants.map((applicant, idx) => (
               <tr
                 key={applicant._id}
-                className={`${
-                  applicant.status === "Rejected"
-                    ? "bg-red-50"
-                    : applicant.status === "Accepted"
+                className={`${applicant.status === "Rejected"
+                  ? "bg-red-50"
+                  : applicant.status === "Accepted"
                     ? "bg-green-50"
                     : "hover:bg-gray-50"
-                }`}
+                  }`}
               >
                 {/* Index */}
                 <td className="px-4 py-3 text-center">
@@ -180,7 +180,12 @@ const EventApplicantTable = ({
                       </div>
                     )}
                     {/* Name */}
-                    <span className="font-medium">
+                    <span
+                      onClick={() => {
+                        document.getElementById("View_Profile_Modal").showModal()
+                        setUserEmail(applicant.email);
+                      }}
+                      className="font-medium hover:underline cursor-pointer">
                       {applicant.fullName || applicant.name || "Unnamed"}
                     </span>
                   </div>
@@ -297,6 +302,7 @@ const EventApplicantTable = ({
 // Prop Validation
 EventApplicantTable.propTypes = {
   refetch: PropTypes.func.isRequired,
+  setUserEmail: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   ITEMS_PER_PAGE: PropTypes.number.isRequired,
   paginatedApplicants: PropTypes.arrayOf(

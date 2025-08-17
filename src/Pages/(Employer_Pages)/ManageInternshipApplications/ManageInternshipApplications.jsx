@@ -30,6 +30,7 @@ import InternshipApplicantTable from "./InternshipApplicantTable/InternshipAppli
 import ViewInternshipApplicationModal from "./ViewInternshipApplicationModal/ViewInternshipApplicationModal";
 import AcceptInternshipApplicationModal from "./AcceptInternshipApplicationModal/AcceptInternshipApplicationModal";
 import MyInternshipApplicationModal from "../../(Member_Pages)/MyInternshipApplications/MyInternshipApplicationModal/MyInternshipApplicationModal";
+import ViewMemberProfileModal from "../CompanyDashboard/CompanyDashboardRecentApplicant/ViewMemberProfileModal/ViewMemberProfileModal";
 
 const ManageInternshipApplications = () => {
   const { user, loading } = useAuth();
@@ -43,6 +44,10 @@ const ManageInternshipApplications = () => {
 
   // Selected Application ID
   const [selectedApplicationID, setSelectedApplicationID] = useState(null);
+
+  // User Email State
+  const [userEmail, setUserEmail] = useState("");
+
 
   // Items Per Page
   const ITEMS_PER_PAGE = 5;
@@ -263,38 +268,38 @@ const ManageInternshipApplications = () => {
                     {internship.Applicants.filter(
                       (app) => app.status === "Accepted"
                     ).length > 0 && (
-                      <>
-                        {" | "}
-                        <p>
-                          Accepted:{" "}
-                          <span className="text-green-600 font-semibold">
-                            {
-                              internship.Applicants.filter(
-                                (app) => app.status === "Accepted"
-                              ).length
-                            }
-                          </span>
-                        </p>
-                      </>
-                    )}
+                        <>
+                          {" | "}
+                          <p>
+                            Accepted:{" "}
+                            <span className="text-green-600 font-semibold">
+                              {
+                                internship.Applicants.filter(
+                                  (app) => app.status === "Accepted"
+                                ).length
+                              }
+                            </span>
+                          </p>
+                        </>
+                      )}
 
                     {internship.Applicants.filter(
                       (app) => app.status === "Rejected"
                     ).length > 0 && (
-                      <>
-                        {" | "}
-                        <p>
-                          Rejected:{" "}
-                          <span className="text-red-600 font-semibold">
-                            {
-                              internship.Applicants.filter(
-                                (app) => app.status === "Rejected"
-                              ).length
-                            }
-                          </span>
-                        </p>
-                      </>
-                    )}
+                        <>
+                          {" | "}
+                          <p>
+                            Rejected:{" "}
+                            <span className="text-red-600 font-semibold">
+                              {
+                                internship.Applicants.filter(
+                                  (app) => app.status === "Rejected"
+                                ).length
+                              }
+                            </span>
+                          </p>
+                        </>
+                      )}
                   </div>
 
                   {/* Open / Close Applicants Table Button */}
@@ -325,16 +330,16 @@ const ManageInternshipApplications = () => {
 
                 {/* Applicants Table */}
                 <div
-                  className={`transition-all duration-500 ease-in-out overflow-hidden ${
-                    expandedInternshipId === internship._id
-                      ? "max-h-[1000px] pt-4"
-                      : "max-h-0"
-                  }`}
+                  className={`transition-all duration-500 ease-in-out overflow-hidden ${expandedInternshipId === internship._id
+                    ? "max-h-[1000px] pt-4"
+                    : "max-h-0"
+                    }`}
                 >
                   {/* Applicants Container */}
                   <InternshipApplicantTable
                     refetch={refetch}
                     currentPage={currentPage}
+                    setUserEmail={setUserEmail}
                     ITEMS_PER_PAGE={ITEMS_PER_PAGE}
                     paginatedApplicants={paginatedApplicants}
                     setSelectedApplicationID={setSelectedApplicationID}
@@ -422,6 +427,12 @@ const ManageInternshipApplications = () => {
           selectedApplicationID={selectedApplicationID}
           setSelectedApplicationID={setSelectedApplicationID}
         />
+      </dialog>
+
+
+      {/* View User Profile Modal */}
+      <dialog id="View_Profile_Modal" className="modal">
+        <ViewMemberProfileModal userEmail={userEmail} setUserEmail={setUserEmail} />
       </dialog>
     </>
   );

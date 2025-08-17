@@ -30,6 +30,7 @@ import JobApplicantTable from "./JobApplicantTable/JobApplicantTable";
 import AcceptJobApplicationModal from "./AcceptJobApplicationModal/AcceptJobApplicationModal";
 import ViewApplicantInterviewModal from "./ViewApplicantInterviewModal/ViewApplicantInterviewModal";
 import MyJobApplicationModal from "../../(Member_Pages)/MyJobApplications/MyJobApplicationModal/MyJobApplicationModal";
+import ViewMemberProfileModal from "../CompanyDashboard/CompanyDashboardRecentApplicant/ViewMemberProfileModal/ViewMemberProfileModal";
 
 const ManageJobApplications = () => {
   const { user, loading } = useAuth();
@@ -43,6 +44,9 @@ const ManageJobApplications = () => {
 
   // Selected Application ID
   const [selectedApplicationID, setSelectedApplicationID] = useState(null);
+
+  // User Email State
+  const [userEmail, setUserEmail] = useState("");
 
   // Items Per Page
   const ITEMS_PER_PAGE = 5;
@@ -254,37 +258,37 @@ const ManageJobApplications = () => {
                     </p>
                     {job.Applicants.filter((app) => app.status === "Accepted")
                       .length > 0 && (
-                      <>
-                        {" | "}
-                        <p>
-                          Accepted:{" "}
-                          <span className="text-green-600 font-semibold">
-                            {
-                              job.Applicants.filter(
-                                (app) => app.status === "Accepted"
-                              ).length
-                            }
-                          </span>
-                        </p>
-                      </>
-                    )}
+                        <>
+                          {" | "}
+                          <p>
+                            Accepted:{" "}
+                            <span className="text-green-600 font-semibold">
+                              {
+                                job.Applicants.filter(
+                                  (app) => app.status === "Accepted"
+                                ).length
+                              }
+                            </span>
+                          </p>
+                        </>
+                      )}
 
                     {job.Applicants.filter((app) => app.status === "Rejected")
                       .length > 0 && (
-                      <>
-                        {" | "}
-                        <p>
-                          Rejected:{" "}
-                          <span className="text-red-600 font-semibold">
-                            {
-                              job.Applicants.filter(
-                                (app) => app.status === "Rejected"
-                              ).length
-                            }
-                          </span>
-                        </p>
-                      </>
-                    )}
+                        <>
+                          {" | "}
+                          <p>
+                            Rejected:{" "}
+                            <span className="text-red-600 font-semibold">
+                              {
+                                job.Applicants.filter(
+                                  (app) => app.status === "Rejected"
+                                ).length
+                              }
+                            </span>
+                          </p>
+                        </>
+                      )}
                   </div>
 
                   {/* Open / Close Applicants Table Button */}
@@ -312,16 +316,16 @@ const ManageJobApplications = () => {
 
                 {/* Applicants Table */}
                 <div
-                  className={`transition-all duration-500 ease-in-out overflow-hidden ${
-                    expandedJobId === job._id
-                      ? "max-h-[1000px] pt-4"
-                      : "max-h-0"
-                  }`}
+                  className={`transition-all duration-500 ease-in-out overflow-hidden ${expandedJobId === job._id
+                    ? "max-h-[1000px] pt-4"
+                    : "max-h-0"
+                    }`}
                 >
                   {/* Applicants Container */}
                   <JobApplicantTable
                     refetch={refetch}
                     currentPage={currentPage}
+                    setUserEmail={setUserEmail}
                     ITEMS_PER_PAGE={ITEMS_PER_PAGE}
                     paginatedApplicants={paginatedApplicants}
                     setSelectedApplicationID={setSelectedApplicationID}
@@ -409,6 +413,12 @@ const ManageJobApplications = () => {
           selectedApplicationID={selectedApplicationID}
           setSelectedApplicationID={setSelectedApplicationID}
         />
+      </dialog>
+
+
+      {/* View User Profile Modal */}
+      <dialog id="View_Profile_Modal" className="modal">
+        <ViewMemberProfileModal userEmail={userEmail} setUserEmail={setUserEmail} />
       </dialog>
     </>
   );

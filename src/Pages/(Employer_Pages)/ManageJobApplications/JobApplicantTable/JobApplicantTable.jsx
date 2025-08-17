@@ -12,6 +12,7 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 const JobApplicantTable = ({
   refetch,
   currentPage,
+  setUserEmail,
   ITEMS_PER_PAGE,
   paginatedApplicants,
   setSelectedApplicationID,
@@ -144,17 +145,16 @@ const JobApplicantTable = ({
               return (
                 <tr
                   key={applicant._id}
-                  className={`${
-                    applicant.status === "Rejected"
-                      ? "bg-red-50"
-                      : applicant.status === "Accepted" &&
-                        interviewDate &&
-                        interviewDate < now
+                  className={`${applicant.status === "Rejected"
+                    ? "bg-red-50"
+                    : applicant.status === "Accepted" &&
+                      interviewDate &&
+                      interviewDate < now
                       ? "bg-gray-100"
                       : applicant.status === "Accepted"
-                      ? "bg-green-50"
-                      : "hover:bg-gray-50"
-                  }`}
+                        ? "bg-green-50"
+                        : "hover:bg-gray-50"
+                    }`}
                 >
                   {/* Applicant Number */}
                   <td className="px-4 py-3 font-medium whitespace-nowrap ">
@@ -171,7 +171,14 @@ const JobApplicantTable = ({
                         className="w-9 h-9 rounded-full object-cover border border-gray-300"
                       />
                       {/* Name */}
-                      <span className="font-medium">{applicant.name}</span>
+                      <span
+                        onClick={() => {
+                          document.getElementById("View_Profile_Modal").showModal()
+                          setUserEmail(applicant.email);
+                        }}
+                        className="font-medium hover:underline cursor-pointer">
+                        {applicant.name}
+                      </span>
                     </div>
                   </td>
 
@@ -339,6 +346,7 @@ const JobApplicantTable = ({
 // Prop Validation
 JobApplicantTable.propTypes = {
   refetch: PropTypes.func.isRequired,
+  setUserEmail: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   ITEMS_PER_PAGE: PropTypes.number.isRequired,
   paginatedApplicants: PropTypes.arrayOf(

@@ -12,6 +12,7 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 const InternshipApplicantTable = ({
   refetch,
   currentPage,
+  setUserEmail,
   ITEMS_PER_PAGE,
   paginatedApplicants,
   setSelectedApplicationID,
@@ -144,17 +145,16 @@ const InternshipApplicantTable = ({
               return (
                 <tr
                   key={applicant._id}
-                  className={`${
-                    applicant.status === "Rejected"
-                      ? "bg-red-50"
-                      : applicant.status === "Accepted" &&
-                        interviewDate &&
-                        interviewDate < now
+                  className={`${applicant.status === "Rejected"
+                    ? "bg-red-50"
+                    : applicant.status === "Accepted" &&
+                      interviewDate &&
+                      interviewDate < now
                       ? "bg-gray-100"
                       : applicant.status === "Accepted"
-                      ? "bg-green-50"
-                      : "hover:bg-gray-50"
-                  }`}
+                        ? "bg-green-50"
+                        : "hover:bg-gray-50"
+                    }`}
                 >
                   {/* Applicant Number */}
                   <td className="px-4 py-3 font-medium whitespace-nowrap ">
@@ -184,6 +184,15 @@ const InternshipApplicantTable = ({
                       <span className="font-medium">
                         {applicant.fullName || applicant.name || "Unnamed"}
                       </span>
+                      {/* Name */}
+                      <span
+                        onClick={() => {
+                          document.getElementById("View_Profile_Modal").showModal()
+                          setUserEmail(applicant.email);
+                        }}
+                        className="font-medium hover:underline cursor-pointer">
+                        {applicant.name || applicant.fullName}
+                      </span>
                     </div>
                   </td>
 
@@ -195,21 +204,21 @@ const InternshipApplicantTable = ({
                     {applicant.phone?.startsWith("+")
                       ? applicant.phone
                       : applicant.phone
-                      ? `+${applicant.phone}`
-                      : "N/A"}
+                        ? `+${applicant.phone}`
+                        : "N/A"}
                   </td>
 
                   {/* Applied At */}
                   <td className="px-4 py-3 whitespace-nowrap">
                     {applicant.appliedAt
                       ? new Date(applicant.appliedAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          }
-                        )
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        }
+                      )
                       : "N/A"}
                   </td>
 
@@ -366,6 +375,7 @@ const InternshipApplicantTable = ({
 // Prop Validation
 InternshipApplicantTable.propTypes = {
   refetch: PropTypes.func.isRequired,
+  setUserEmail: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   ITEMS_PER_PAGE: PropTypes.number.isRequired,
   paginatedApplicants: PropTypes.arrayOf(

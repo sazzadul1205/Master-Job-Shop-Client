@@ -20,6 +20,7 @@ const CompanyDashboardRecentApplicant = ({
 }) => {
   const axiosPublic = useAxiosPublic();
 
+  // User Email State
   const [userEmail, setUserEmail] = useState("");
 
   // Helper function to get time ago

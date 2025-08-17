@@ -12,6 +12,7 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 const GigBidsTable = ({
   refetch,
   currentPage,
+  setUserEmail,
   paginatedBids,
   ITEMS_PER_PAGE,
   setSelectedBidID,
@@ -127,17 +128,16 @@ const GigBidsTable = ({
               return (
                 <tr
                   key={applicant._id}
-                  className={`${
-                    applicant.status === "Rejected"
-                      ? "bg-red-50"
-                      : applicant.status === "Accepted" &&
-                        interviewDate &&
-                        interviewDate < now
+                  className={`${applicant.status === "Rejected"
+                    ? "bg-red-50"
+                    : applicant.status === "Accepted" &&
+                      interviewDate &&
+                      interviewDate < now
                       ? "bg-gray-100"
                       : applicant.status === "Accepted"
-                      ? "bg-green-50"
-                      : "hover:bg-gray-50"
-                  }`}
+                        ? "bg-green-50"
+                        : "hover:bg-gray-50"
+                    }`}
                 >
                   {/* Email */}
                   <td className="px-4 py-2">
@@ -154,7 +154,14 @@ const GigBidsTable = ({
                         className="w-9 h-9 rounded-full object-cover border border-gray-300"
                       />
                       {/* Name */}
-                      <span className="font-medium">{applicant.name}</span>
+                      <span
+                        onClick={() => {
+                          document.getElementById("View_Profile_Modal").showModal()
+                          setUserEmail(applicant.email);
+                        }}
+                        className="font-medium hover:underline cursor-pointer">
+                        {applicant.name}
+                      </span>
                     </div>
                   </td>
 
@@ -318,6 +325,7 @@ const GigBidsTable = ({
 // Prop Validation
 GigBidsTable.propTypes = {
   refetch: PropTypes.func.isRequired,
+  setUserEmail: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   paginatedBids: PropTypes.arrayOf(
     PropTypes.shape({

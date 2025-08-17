@@ -49,6 +49,7 @@ const Login = () => {
     });
   };
 
+  // Submit Handler
   const onSubmit = useCallback(
     async (data) => {
       setLoading(true);
@@ -62,16 +63,21 @@ const Login = () => {
         }
 
         const userData = await axiosPublic.get(`/Users?email=${user.email}`);
+        const role = userData?.data?.role;
 
-        if (!userData?.data) {
+        if (!role) {
           showAlert("error", "User data not found. Please contact support.");
           return;
         }
 
         showAlert("success", "You have successfully logged in!");
 
-        // Redirect to the previous route
-        navigate(from, { replace: true });
+        // Redirect based on role
+        if (role === "Company") {
+          navigate("/Employer/Company/Dashboard", { replace: true });
+        } else {
+          navigate(from, { replace: true });
+        }
       } catch (error) {
         showAlert(
           "error",
@@ -83,6 +89,7 @@ const Login = () => {
     },
     [signIn, axiosPublic, navigate, from]
   );
+
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-400 px-4">
@@ -164,9 +171,8 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 shadow-md transition disabled:opacity-60 ${
-              loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
-            }`}
+            className={`w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 shadow-md transition disabled:opacity-60 ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+              }`}
           >
             {loading ? "Logging In ..." : "Log In"}
           </button>

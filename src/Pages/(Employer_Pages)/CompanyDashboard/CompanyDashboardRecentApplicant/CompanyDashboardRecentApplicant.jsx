@@ -10,6 +10,7 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 // Shared
 import Error from "../../../../Shared/Error/Error";
 import Loading from "../../../../Shared/Loading/Loading";
+import ViewMemberProfileModal from "./ViewMemberProfileModal/ViewMemberProfileModal";
 
 const CompanyDashboardRecentApplicant = ({
   LatestGigBids,
@@ -18,6 +19,8 @@ const CompanyDashboardRecentApplicant = ({
   LatestInternshipApplications,
 }) => {
   const axiosPublic = useAxiosPublic();
+
+  const [userEmail, setUserEmail] = useState("");
 
   // Helper function to get time ago
   function timeAgo(dateString) {
@@ -49,6 +52,7 @@ const CompanyDashboardRecentApplicant = ({
   const formattedApplications = [
     ...LatestGigBids.map((item) => ({
       name: item.name,
+      email: item.email,
       type: "Gig",
       photo: item.profileImage || item.name.charAt(0).toUpperCase(),
       date: item.submittedAt,
@@ -57,6 +61,7 @@ const CompanyDashboardRecentApplicant = ({
     })),
     ...LatestJobApplications.map((item) => ({
       name: item.name,
+      email: item.email,
       type: "Job",
       photo: item.profileImage || item.name.charAt(0).toUpperCase(),
       date: item.appliedAt,
@@ -65,6 +70,7 @@ const CompanyDashboardRecentApplicant = ({
     })),
     ...LatestEventApplications.map((item) => ({
       name: item.name,
+      email: item.email,
       type: "Event",
       photo: item.profileImage || item.name.charAt(0).toUpperCase(),
       date: item.appliedAt,
@@ -73,6 +79,7 @@ const CompanyDashboardRecentApplicant = ({
     })),
     ...LatestInternshipApplications.map((item) => ({
       name: item.name,
+      email: item.email,
       type: "Internship",
       photo: item.profileImage || item.name.charAt(0).toUpperCase(),
       date: item.appliedAt,
@@ -326,16 +333,33 @@ const CompanyDashboardRecentApplicant = ({
             {/* Text */}
             <div className="text-gray-600">
               <h3>
-                <span className="font-semibold text-black">{app.name}</span>{" "}
-                applied for{" "}
-                <span className="text-black font-semibold">{app.title}</span>{" "}
+                <span
+                  onClick={() => {
+                    document.getElementById("View_Profile_Modal").showModal()
+                    setUserEmail(app.email);
+                  }}
+                  className="font-semibold text-black hover:underline cursor-pointer"
+                >
+                  {app.name}
+                </span>
+                {" "}
+                applied for
+                {" "}
+                <span className="text-black font-semibold hover:underline cursor-pointer">{app.title}</span>
+                {" "}
                 {app.type}
               </h3>
+              {/* Times Ago Part */}
               <p className="text-sm text-gray-500">{app.timeAgo}</p>
             </div>
           </div>
         ))}
       </div>
+
+      {/* View User Profile Modal */}
+      <dialog id="View_Profile_Modal" className="modal">
+        <ViewMemberProfileModal userEmail={userEmail} setUserEmail={setUserEmail} />
+      </dialog>
     </>
   );
 };

@@ -1,5 +1,6 @@
 // Icons
 import { IoMdAdd } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 const CompanyDashboardQuickAction = () => {
     return (
@@ -14,7 +15,7 @@ const CompanyDashboardQuickAction = () => {
                 {/* Buttons */}
                 <div className='flex items-center justify-between gap-4' >
                     {/* Add Jobs Button */}
-                    <button className="group flex items-center justify-center gap-3 rounded-lg border border-blue-500 w-[300px] py-4 transition-colors duration-300 hover:bg-blue-500 cursor-pointer">
+                    <Link to={'/Employer/Jobs'} onClick={() => window.scrollTo(0, 0)} className="group flex items-center justify-center gap-3 rounded-lg border border-blue-500 w-[300px] py-4 transition-colors duration-300 hover:bg-blue-500 cursor-pointer">
                         {/* Add Icon */}
                         <IoMdAdd className="font-semibold text-black group-hover:text-white" />
 
@@ -34,10 +35,10 @@ const CompanyDashboardQuickAction = () => {
                         <p className="font-semibold text-black group-hover:text-white text-sm">
                             Create New Job
                         </p>
-                    </button>
+                    </Link>
 
                     {/* Add Gigs Button */}
-                    <button className="group flex items-center justify-center gap-3 rounded-lg border border-blue-500 w-[300px] py-4 transition-colors duration-300 hover:bg-blue-500 cursor-pointer">
+                    <Link to={'/Employer/Gigs'} onClick={() => window.scrollTo(0, 0)} className="group flex items-center justify-center gap-3 rounded-lg border border-blue-500 w-[300px] py-4 transition-colors duration-300 hover:bg-blue-500 cursor-pointer">
                         {/* Add Icon */}
                         <IoMdAdd className="font-semibold text-black group-hover:text-white" />
 
@@ -59,12 +60,12 @@ const CompanyDashboardQuickAction = () => {
                         <p className="font-semibold text-black group-hover:text-white text-sm">
                             Create New Gig
                         </p>
-                    </button>
+                    </Link>
 
 
 
                     {/* Add Internship Button */}
-                    <button className="group flex items-center justify-center gap-3 rounded-lg border border-blue-500 w-[300px] py-4 transition-colors duration-300 hover:bg-blue-500 cursor-pointer">
+                    <Link to={'/Employer/Internship'} onClick={() => window.scrollTo(0, 0)} className="group flex items-center justify-center gap-3 rounded-lg border border-blue-500 w-[300px] py-4 transition-colors duration-300 hover:bg-blue-500 cursor-pointer">
                         {/* Add Icon */}
                         <IoMdAdd className="font-semibold text-black group-hover:text-white" />
 
@@ -86,12 +87,12 @@ const CompanyDashboardQuickAction = () => {
                         <p className="font-semibold text-black group-hover:text-white text-sm">
                             Create New Internship
                         </p>
-                    </button>
+                    </Link>
 
 
 
                     {/* Add Event Button */}
-                    <button className="group flex items-center justify-center gap-3 rounded-lg border border-blue-500 w-[300px] py-4 transition-colors duration-300 hover:bg-blue-500 cursor-pointer">
+                    <Link to={'/Employer/Events'} onClick={() => window.scrollTo(0, 0)} className="group flex items-center justify-center gap-3 rounded-lg border border-blue-500 w-[300px] py-4 transition-colors duration-300 hover:bg-blue-500 cursor-pointer">
                         {/* Add Icon */}
                         <IoMdAdd className="font-semibold text-black group-hover:text-white" />
 
@@ -110,7 +111,7 @@ const CompanyDashboardQuickAction = () => {
                         <p className="font-semibold text-black group-hover:text-white text-sm">
                             Create New Event
                         </p>
-                    </button>
+                    </Link>
                 </div>
             </div>
         </div>

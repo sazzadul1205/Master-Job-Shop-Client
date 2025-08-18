@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
 
 // Icons
 import { FaPlus } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
 
 // Assets
 import GigBlue from "../../../assets/EmployerLayout/Gig/GigBlue.png";
@@ -22,8 +24,8 @@ import GigCard from "../../../Shared/GigCard/GigCard";
 import EditGigModal from "./EditGigModal/EditGigModal";
 import AddNewGigModal from "./AddNewGigModal/AddNewGigModal";
 import GigDetailsModal from "../../(Public_Pages)/Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
-import { Link } from "react-router-dom";
-import { ImCross } from "react-icons/im";
+
+
 
 const ManageGigs = () => {
   const { user, loading } = useAuth();
@@ -32,6 +34,21 @@ const ManageGigs = () => {
   // State Management
   const [selectedGigID, setSelectedGigID] = useState(null);
   const [selectedGigData, setSelectedGigData] = useState(null);
+
+  // User Role Data
+  const {
+    data: UserRoleData,
+    isLoading: UserRoleIsLoading,
+    error: UserRoleError,
+    refetch: UserRoleRefetch,
+  } = useQuery({
+    queryKey: ["UserRoleData", user?.email],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/Users/Role?email=${user?.email}`);
+      return res.data.role;
+    },
+    enabled: !!user?.email,
+  });
 
   // Gigs Data
   const {
@@ -64,23 +81,47 @@ const ManageGigs = () => {
     error: CompanyError,
     refetch: CompanyRefetch,
   } = useQuery({
-    queryKey: ["CompanyData"],
+    queryKey: ["CompanyData", user?.email],
     queryFn: () =>
       axiosPublic.get(`/Company?email=${user?.email}`).then((res) => res.data),
+    enabled: UserRoleData === "Company",
   });
 
-  // Company Data Destructuring
-  const company = CompanyData || {};
+  // Employer Data
+  const {
+    data: EmployerData,
+    isLoading: EmployerIsLoading,
+    error: EmployerError,
+    refetch: EmployerRefetch,
+  } = useQuery({
+    queryKey: ["EmployerData", user?.email],
+    queryFn: () =>
+      axiosPublic.get(`/Employers?email=${user?.email}`).then((res) => res.data),
+    enabled: UserRoleData === "Employer",
+  });
+
+  // Unified Data Based on Role
+  const userData =
+    UserRoleData === "Company"
+      ? CompanyData || {}
+      : UserRoleData === "Employer"
+        ? EmployerData || {}
+        : {};
 
   // Refetching Data
   const refetch = () => {
     GigsRefetch();
     CompanyRefetch();
+    EmployerRefetch();
+    UserRoleRefetch();
   };
 
+  // console.log(GigsData[0]?._id);
+
+
   // Loading / Error UI
-  if (CompanyIsLoading || GigsIsLoading || loading) return <Loading />;
-  if (CompanyError || GigsError) return <Error />;
+  if (CompanyIsLoading || GigsIsLoading || EmployerIsLoading || UserRoleIsLoading || loading) return <Loading />;
+  if (CompanyError || GigsError || EmployerError || UserRoleError) return <Error />;
 
   return (
     <>
@@ -95,7 +136,7 @@ const ManageGigs = () => {
         {/* Add New Gig Button */}
         <button
           onClick={() => {
-            if (!company?._id) {
+            if (!userData?._id) {
               // Company data missing: show warning
               document
                 .getElementById("Company_Profile_Warning_Modal")
@@ -147,7 +188,7 @@ const ManageGigs = () => {
             <div className="flex justify-center pt-5">
               <button
                 onClick={() => {
-                  if (!company?._id) {
+                  if (!userData?._id) {
                     // Company data missing: show warning
                     document
                       .getElementById("Company_Profile_Warning_Modal")
@@ -169,7 +210,7 @@ const ManageGigs = () => {
 
       {/* Add New Gig Modals */}
       <dialog id="Add_New_Gig_Modal" className="modal">
-        <AddNewGigModal CompanyData={company} refetch={refetch} />
+        <AddNewGigModal CompanyData={userData} refetch={refetch} />
       </dialog>
 
       {/* Edit Gig Modals */}

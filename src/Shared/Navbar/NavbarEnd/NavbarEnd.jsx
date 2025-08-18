@@ -99,8 +99,15 @@ const NavbarEnd = () => {
     ],
     Company: [
       {
-        name: "Company Profile",
-        path: `/Employer/CompanyProfile`,
+        name: "Company Dashboard",
+        path: `/Employer/Company/Dashboard`,
+        img: Profile,
+      },
+    ],
+    Employer: [
+      {
+        name: "Employer Dashboard",
+        path: `/Employer/Employer/Dashboard`,
         img: Profile,
       },
     ],

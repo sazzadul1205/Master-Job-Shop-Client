@@ -142,7 +142,7 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
 
       setErrorMessage(
         err.response?.data?.message ||
-          "Failed to post Gigs. Please try again later."
+        "Failed to post Gigs. Please try again later."
       );
     } finally {
       setIsLoading(false);
@@ -184,9 +184,8 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
             id="title"
             {...register("title", { required: "Job title is required" })}
             placeholder="e.g., Design a Modern Logo"
-            className={`input input-bordered w-full bg-white text-black border ${
-              errors.title ? "border-red-500" : "border-black"
-            }`}
+            className={`input input-bordered w-full bg-white text-black border ${errors.title ? "border-red-500" : "border-black"
+              }`}
           />
           {errors.title && (
             <p className="text-sm text-red-600 mt-1">{errors.title.message}</p>
@@ -204,9 +203,8 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
               id="category"
               {...register("category", { required: "Category is required" })}
               placeholder="e.g., Graphic Design"
-              className={`input input-bordered w-full bg-white text-black border ${
-                errors.category ? "border-red-500" : "border-black"
-              }`}
+              className={`input input-bordered w-full bg-white text-black border ${errors.category ? "border-red-500" : "border-black"
+                }`}
             />
             {errors.category && (
               <p className="text-sm text-red-600 mt-1">
@@ -226,9 +224,8 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
                 required: "Subcategory is required",
               })}
               placeholder="e.g., Logo Design"
-              className={`input input-bordered w-full bg-white text-black border ${
-                errors.subCategory ? "border-red-500" : "border-black"
-              }`}
+              className={`input input-bordered w-full bg-white text-black border ${errors.subCategory ? "border-red-500" : "border-black"
+                }`}
             />
             {errors.subCategory && (
               <p className="text-sm text-red-600 mt-1">
@@ -253,9 +250,8 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
               },
             })}
             placeholder="Provide a clear and concise Gig description..."
-            className={`textarea textarea-bordered w-full bg-white text-black border ${
-              errors.description ? "border-red-500" : "border-black"
-            }`}
+            className={`textarea textarea-bordered w-full bg-white text-black border ${errors.description ? "border-red-500" : "border-black"
+              }`}
             rows={5}
           />
           {errors.description && (
@@ -340,9 +336,8 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
             {...register("deliveryDeadline", {
               required: "Delivery deadline is required",
             })}
-            className={`input input-bordered w-full bg-white text-black border ${
-              errors.deliveryDeadline ? "border-red-500" : "border-black"
-            }`}
+            className={`input input-bordered w-full bg-white text-black border ${errors.deliveryDeadline ? "border-red-500" : "border-black"
+              }`}
             min={new Date().toISOString().slice(0, 16)}
           />
           {errors.deliveryDeadline && (
@@ -393,9 +388,8 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
                   },
                 })}
                 placeholder="e.g., Bangalore, India"
-                className={`input input-bordered w-full bg-white text-black border ${
-                  errors.location ? "border-red-500" : "border-black"
-                }`}
+                className={`input input-bordered w-full bg-white text-black border ${errors.location ? "border-red-500" : "border-black"
+                  }`}
               />
               {errors.location && (
                 <p className="text-sm text-red-600 mt-1">
@@ -431,9 +425,8 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
                   },
                 })}
                 placeholder="e.g. 30000"
-                className={`input input-bordered w-full bg-white text-black border ${
-                  errors?.budget?.min ? "border-red-500" : "border-black"
-                }`}
+                className={`input input-bordered w-full bg-white text-black border ${errors?.budget?.min ? "border-red-500" : "border-black"
+                  }`}
               />
               {errors?.budget?.min && (
                 <p className="text-sm text-red-600 mt-1">
@@ -460,9 +453,8 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
                   },
                 })}
                 placeholder="e.g. 60000"
-                className={`input input-bordered w-full bg-white text-black border ${
-                  errors?.budget?.max ? "border-red-500" : "border-black"
-                }`}
+                className={`input input-bordered w-full bg-white text-black border ${errors?.budget?.max ? "border-red-500" : "border-black"
+                  }`}
               />
               {errors?.budget?.max && (
                 <p className="text-sm text-red-600 mt-1">
@@ -481,11 +473,10 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
                 {...register("budget.type", {
                   required: "Budget type is required",
                 })}
-                className={`input input-bordered w-full bg-white text-black border ${
-                  errors.communication?.preferredMethod
-                    ? "border-red-500"
-                    : "border-black"
-                } cursor-pointer`}
+                className={`input input-bordered w-full bg-white text-black border ${errors.communication?.preferredMethod
+                  ? "border-red-500"
+                  : "border-black"
+                  } cursor-pointer`}
               >
                 <option value="">Select Budget Type</option>
                 <option value="fixed">Fixed</option>
@@ -507,11 +498,10 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
                 {...register("budget.currency", {
                   required: "Currency selection is required",
                 })}
-                className={`input input-bordered w-full bg-white text-black border ${
-                  errors.communication?.preferredMethod
-                    ? "border-red-500"
-                    : "border-black"
-                } cursor-pointer`}
+                className={`input input-bordered w-full bg-white text-black border ${errors.communication?.preferredMethod
+                  ? "border-red-500"
+                  : "border-black"
+                  } cursor-pointer`}
               >
                 <option value="">Select Currency</option>
                 {Currencies.map((currency) => (
@@ -564,11 +554,10 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
               {...register("communication.preferredMethod", {
                 required: "Please select a communication method",
               })}
-              className={`input input-bordered w-full bg-white text-black border ${
-                errors.communication?.preferredMethod
-                  ? "border-red-500"
-                  : "border-black"
-              } cursor-pointer`}
+              className={`input input-bordered w-full bg-white text-black border ${errors.communication?.preferredMethod
+                ? "border-red-500"
+                : "border-black"
+                } cursor-pointer`}
             >
               <option value="">Select one</option>
               <option value="Chat">Chat</option>
@@ -614,9 +603,8 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
           <textarea
             {...register("extraNotes")}
             placeholder="Provide a clear and concise Gig Extra Notes..."
-            className={`textarea textarea-bordered w-full bg-white text-black border ${
-              errors.extraNotes ? "border-red-500" : "border-black"
-            }`}
+            className={`textarea textarea-bordered w-full bg-white text-black border ${errors.extraNotes ? "border-red-500" : "border-black"
+              }`}
             rows={5}
           />
           {errors.extraNotes && (
@@ -702,9 +690,8 @@ const AddNewGigModal = ({ CompanyData, refetch }) => {
         {/* Submit Button */}
         <button
           type="submit"
-          className={`bg-blue-700 text-white font-semibold py-2 w-full cursor-pointer rounded shadow-lg transition-colors duration-300 mt-6 ${
-            isLoading ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-800"
-          }`}
+          className={`bg-blue-700 text-white font-semibold py-2 w-full cursor-pointer rounded shadow-lg transition-colors duration-300 mt-6 ${isLoading ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-800"
+            }`}
           disabled={isLoading}
         >
           {isLoading ? "Posting..." : "Post Gig"}

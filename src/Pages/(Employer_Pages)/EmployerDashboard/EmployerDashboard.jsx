@@ -3,7 +3,7 @@
 const EmployerDashboard = () => {
     return (
         <div>
-            
+
         </div>
     );
 };

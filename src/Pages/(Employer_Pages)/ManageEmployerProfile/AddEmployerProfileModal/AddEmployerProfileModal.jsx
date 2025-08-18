@@ -119,6 +119,10 @@ const AddEmployerProfileModal = ({ refetch }) => {
       // Send to backend
       await axiosPublic.post("/Employers", formattedData);
 
+
+      // Close modal & reset
+      document.getElementById("Add_Employer_Profile_Modal").close();
+
       // Success
       await Swal.fire({
         icon: "success",
@@ -126,9 +130,6 @@ const AddEmployerProfileModal = ({ refetch }) => {
         text: "Your Employer profile was saved successfully.",
         confirmButtonColor: "#2563eb",
       });
-
-      // Close modal & reset
-      document.getElementById("Add_Employer_Profile_Modal").close();
       reset();
       refetch();
       setPreview(null);
@@ -225,7 +226,7 @@ const AddEmployerProfileModal = ({ refetch }) => {
 
         {/* Overview */}
         <div>
-          <label className="font-medium text-sm mb-1">Company Overview</label>
+          <label className="font-medium text-sm mb-1">Employer Overview</label>
           <textarea
             {...register("overview")}
             className="textarea textarea-bordered w-full bg-white text-black border-black"
@@ -416,7 +417,7 @@ const AddEmployerProfileModal = ({ refetch }) => {
                 </p>
               )}
             </div>
-
+jk
             {/* LinkedIn Profile URL */}
             <div>
               <label
@@ -559,9 +560,8 @@ const AddEmployerProfileModal = ({ refetch }) => {
         <button
           type="submit"
           disabled={loading}
-          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow ${
-            loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
-          }`}
+          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+            }`}
         >
           {loading ? "Creating..." : "Creating Employer Profile"}
         </button>

@@ -103,6 +103,7 @@ const SignUpDetails = () => {
 
     const Payload = {
       email: user?.email,
+      fullname: data.name,
       phone: phoneNumber,
       role: "Member",
       ...data,

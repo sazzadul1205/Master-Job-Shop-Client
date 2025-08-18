@@ -104,7 +104,15 @@ const NavbarEnd = () => {
         img: Profile,
       },
     ],
+    NoRole: [ // 👈 fallback menu
+      {
+        name: "Complete Your Details",
+        path: `/SignUp/Details`,
+        img: Profile, // you can replace with another icon if you want
+      },
+    ],
   };
+
 
   // Logout function
   const handleLogOut = async () => {
@@ -217,16 +225,12 @@ const NavbarEnd = () => {
               onMouseLeave={handleMouseLeave}
             >
               <ul className="py-2">
-                {/* Render navigation links based on user role */}
-                {(roleBasedLinks[UsersData?.role] || []).map((link) => (
+                {(roleBasedLinks[UsersData?.role] || roleBasedLinks.NoRole).map((link) => (
                   <li
                     key={link.name}
                     className="flex py-2 px-5 gap-2 hover:bg-gray-100 border-b border-gray-300"
                   >
-                    <Link
-                      to={link.path}
-                      className="flex items-center gap-2 w-full"
-                    >
+                    <Link to={link.path} className="flex items-center gap-2 w-full">
                       <span className="border-r border-black pr-2">
                         <img src={link.img} className="w-5" alt="" />
                       </span>

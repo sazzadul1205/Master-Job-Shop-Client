@@ -34,7 +34,7 @@ const ProfileHeader = ({ user, refetch }) => {
           <div>
             {/* Full Name */}
             <h1 className="text-2xl font-bold text-gray-800">
-              {user?.fullName || "Not Given Yet"}
+              {user?.fullName || user?.name || "Not Given Yet"}
             </h1>
 
             {/* Title */}
@@ -90,6 +90,7 @@ const ProfileHeader = ({ user, refetch }) => {
 ProfileHeader.propTypes = {
   user: PropTypes.shape({
     fullName: PropTypes.string,
+    name: PropTypes.string,
     title: PropTypes.string,
     location: PropTypes.string,
     profileImage: PropTypes.string,

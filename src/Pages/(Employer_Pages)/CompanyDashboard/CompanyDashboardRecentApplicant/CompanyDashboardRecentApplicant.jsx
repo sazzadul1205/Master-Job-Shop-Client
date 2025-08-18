@@ -322,45 +322,66 @@ const CompanyDashboardRecentApplicant = ({
         Recent Applicant Actions
       </h3>
 
-      {/* Map over the latest 5 */}
+      {/* Map over the latest 5 or show fallback */}
       <div className="flex flex-col gap-8 pt-6">
-        {enrichedApplications.map((app, index) => (
-          <div key={index} className="flex gap-2 items-center">
-            {/* Avatar */}
-            <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold text-lg">
-              <Avatar photo={app.photo} name={app.name} />
-            </div>
+        {enrichedApplications && enrichedApplications.length > 0 ? (
+          enrichedApplications.map((app, index) => (
+            <div key={index} className="flex gap-2 items-center">
+              {/* Avatar */}
+              <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold text-lg">
+                <Avatar photo={app.photo} name={app.name} />
+              </div>
 
-            {/* Text */}
-            <div className="text-gray-600">
-              <h3>
-                <span
-                  onClick={() => {
-                    document.getElementById("View_Profile_Modal").showModal()
-                    setUserEmail(app.email);
-                  }}
-                  className="font-semibold text-black hover:underline cursor-pointer"
-                >
-                  {app.name}
-                </span>
-                {" "}
-                applied for
-                {" "}
-                <span className="text-black font-semibold hover:underline cursor-pointer">{app.title}</span>
-                {" "}
-                {app.type}
-              </h3>
-              {/* Times Ago Part */}
-              <p className="text-sm text-gray-500">{app.timeAgo}</p>
+              {/* Text */}
+              <div className="text-gray-600">
+                <h3>
+                  <span
+                    onClick={() => {
+                      document.getElementById("View_Profile_Modal").showModal();
+                      setUserEmail(app.email);
+                    }}
+                    className="font-semibold text-black hover:underline cursor-pointer"
+                  >
+                    {app.name}
+                  </span>{" "}
+                  applied for{" "}
+                  <span className="text-black font-semibold hover:underline cursor-pointer">
+                    {app.title}
+                  </span>{" "}
+                  {app.type}
+                </h3>
+                {/* Times Ago Part */}
+                <p className="text-sm text-gray-500">{app.timeAgo}</p>
+              </div>
             </div>
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center py-10 border border-gray-200 rounded-lg bg-gray-50">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-gray-400 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 17v-6h6v6m2 0h2a2 2 0 002-2V7a2 2 0 00-2-2h-2M7 17H5a2 2 0 01-2-2V7a2 2 0 012-2h2"
+              />
+            </svg>
+            <p className="text-gray-500 text-sm">No applications or bids have been submitted yet.</p>
+            <p className="text-gray-400 text-xs mt-1">Once users apply, they will appear here.</p>
           </div>
-        ))}
+        )}
       </div>
 
       {/* View User Profile Modal */}
       <dialog id="View_Profile_Modal" className="modal">
         <ViewMemberProfileModal userEmail={userEmail} setUserEmail={setUserEmail} />
       </dialog>
+
     </>
   );
 };

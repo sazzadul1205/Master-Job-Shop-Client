@@ -22,413 +22,473 @@ const CompanyDashboard = () => {
 
   // Daily Job Status Data
   const {
-    data: DailyJobStatusData,
+    data: DailyJobStatusData = [],
     isLoading: DailyJobStatusIsLoading,
     error: DailyJobStatusError,
     refetch: DailyJobStatusRefetch,
   } = useQuery({
     queryKey: ["DailyJobStatusData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/Jobs/DailyJobPosted?postedBy=${user.email}`)
-        .then((res) => res.data),
-    enabled: !!user?.email, // Only run when user.email exists
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/Jobs/DailyJobPosted?postedBy=${user.email}`);
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        throw error;
+      }
+    },
+    enabled: !!user?.email,
   });
 
   // Daily Gig Status Data
   const {
-    data: DailyGigStatusData,
+    data: DailyGigStatusData = [],
     isLoading: DailyGigStatusIsLoading,
     error: DailyGigStatusError,
     refetch: DailyGigStatusRefetch,
   } = useQuery({
     queryKey: ["DailyGigStatusData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/Gigs/DailyGigPosted?postedBy=${user.email}`)
-        .then((res) => res.data),
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/Gigs/DailyGigPosted?postedBy=${user.email}`);
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        throw error;
+      }
+    },
     enabled: !!user?.email,
   });
 
   // Daily Internship Status Data
   const {
-    data: DailyInternshipStatusData,
+    data: DailyInternshipStatusData = [],
     isLoading: DailyInternshipStatusIsLoading,
     error: DailyInternshipStatusError,
     refetch: DailyInternshipStatusRefetch,
   } = useQuery({
     queryKey: ["DailyInternshipStatusData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/Internship/DailyInternshipPosted?postedBy=${user.email}`)
-        .then((res) => res.data),
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/Internship/DailyInternshipPosted?postedBy=${user.email}`);
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        throw error;
+      }
+    },
     enabled: !!user?.email,
   });
 
   // Daily Event Status Data
   const {
-    data: DailyEventStatusData,
+    data: DailyEventStatusData = [],
     isLoading: DailyEventStatusIsLoading,
     error: DailyEventStatusError,
     refetch: DailyEventStatusRefetch,
   } = useQuery({
     queryKey: ["DailyEventStatusData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/Events/DailyEventsPosted?postedBy=${user.email}`)
-        .then((res) => res.data),
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/Events/DailyEventsPosted?postedBy=${user.email}`);
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        throw error;
+      }
+    },
     enabled: !!user?.email,
   });
 
+  // GET Ids
   // Job Ids Data
   const {
-    data: JobIdsData,
+    data: JobIdsData = [],
     isLoading: JobIdsIsLoading,
     error: JobIdsError,
     refetch: JobIdsRefetch,
   } = useQuery({
     queryKey: ["JobIdsData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/Jobs/Ids?postedBy=${user.email}`)
-        .then((res) => res.data),
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/Jobs/Ids?postedBy=${user.email}`);
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return []; // 👈 fallback to empty array
+        throw error;
+      }
+    },
     enabled: !!user?.email,
   });
 
   // Gig Ids Data
   const {
-    data: GigIdsData,
+    data: GigIdsData = [],
     isLoading: GigIdsIsLoading,
     error: GigIdsError,
     refetch: GigIdsRefetch,
   } = useQuery({
     queryKey: ["GigIdsData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/Gigs/Ids?postedBy=${user.email}`)
-        .then((res) => res.data),
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/Gigs/Ids?postedBy=${user.email}`);
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        throw error;
+      }
+    },
     enabled: !!user?.email,
   });
 
   // Internship Ids Data
   const {
-    data: InternshipIdsData,
+    data: InternshipIdsData = [],
     isLoading: InternshipIdsIsLoading,
     error: InternshipIdsError,
     refetch: InternshipIdsRefetch,
   } = useQuery({
     queryKey: ["InternshipIdsData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/Internship/Ids?postedBy=${user.email}`)
-        .then((res) => res.data),
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/Internship/Ids?postedBy=${user.email}`);
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        throw error;
+      }
+    },
     enabled: !!user?.email,
   });
 
   // Event Ids Data
   const {
-    data: EventIdsData,
+    data: EventIdsData = [],
     isLoading: EventIdsIsLoading,
     error: EventIdsError,
     refetch: EventIdsRefetch,
   } = useQuery({
     queryKey: ["EventIdsData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/Events/Ids?postedBy=${user.email}`)
-        .then((res) => res.data),
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/Events/Ids?postedBy=${user.email}`);
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        throw error;
+      }
+    },
     enabled: !!user?.email,
   });
 
+  // Fetch Applications / Bids Status
   // Daily Job Applications data
   const {
-    data: DailyJobApplicationsStatus,
+    data: DailyJobApplicationsStatus = [],
     isLoading: DailyJobApplicationsStatusLoading,
     error: DailyJobApplicationsStatusError,
     refetch: DailyJobApplicationsStatusRefetch,
   } = useQuery({
     queryKey: ["DailyJobApplicationsStatus", JobIdsData],
-    queryFn: () => {
-      // Trim each ID and remove any empty values
-      const cleanIds = JobIdsData.map((id) => id.trim())
-        .filter((id) => id)
-        .join(",");
+    queryFn: async () => {
+      try {
+        const cleanIds = JobIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
 
-      return axiosPublic
-        .get(`/JobApplications/DailyStatus`, { params: { jobIds: cleanIds } })
-        .then((res) => res.data);
+        const res = await axiosPublic.get(`/JobApplications/DailyStatus`, {
+          params: { jobIds: cleanIds },
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!JobIdsData?.length,
   });
 
   // Daily Gig Bids data
   const {
-    data: DailyGigBidsStatus,
+    data: DailyGigBidsStatus = [],
     isLoading: DailyGigBidsStatusLoading,
     error: DailyGigBidsStatusError,
     refetch: DailyGigBidsStatusRefetch,
   } = useQuery({
     queryKey: ["DailyGigBidsStatus", GigIdsData],
-    queryFn: () => {
-      const cleanIds = GigIdsData.map((id) => id.trim())
-        .filter(Boolean)
-        .join(",");
-      return axiosPublic
-        .get(`/GigBids/DailyStatus`, { params: { gigIds: cleanIds } })
-        .then((res) => res.data);
+    queryFn: async () => {
+      try {
+        const cleanIds = GigIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
+
+        const res = await axiosPublic.get(`/GigBids/DailyStatus`, {
+          params: { gigIds: cleanIds },
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!GigIdsData?.length,
   });
 
   // Daily Internship Applications data
   const {
-    data: DailyInternshipApplicationsStatus,
+    data: DailyInternshipApplicationsStatus = [],
     isLoading: DailyInternshipApplicationsStatusLoading,
     error: DailyInternshipApplicationsStatusError,
     refetch: DailyInternshipApplicationsStatusRefetch,
   } = useQuery({
     queryKey: ["DailyInternshipApplicationsStatus", InternshipIdsData],
-    queryFn: () => {
-      const cleanIds = InternshipIdsData.map((id) => id.trim())
-        .filter(Boolean)
-        .join(",");
-      return axiosPublic
-        .get(`/InternshipApplications/DailyStatus`, {
+    queryFn: async () => {
+      try {
+        const cleanIds = InternshipIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
+
+        const res = await axiosPublic.get(`/InternshipApplications/DailyStatus`, {
           params: { internshipIds: cleanIds },
-        })
-        .then((res) => res.data);
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!InternshipIdsData?.length,
   });
 
   // Daily Event Applications data
   const {
-    data: DailyEventApplicationsStatus,
+    data: DailyEventApplicationsStatus = [],
     isLoading: DailyEventApplicationsStatusLoading,
     error: DailyEventApplicationsStatusError,
     refetch: DailyEventApplicationsStatusRefetch,
   } = useQuery({
     queryKey: ["DailyEventApplicationsStatus", EventIdsData],
-    queryFn: () => {
-      const cleanIds = EventIdsData.map((id) => id.trim())
-        .filter(Boolean)
-        .join(",");
-      return axiosPublic
-        .get(`/EventApplications/DailyStatus`, {
+    queryFn: async () => {
+      try {
+        const cleanIds = EventIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
+
+        const res = await axiosPublic.get(`/EventApplications/DailyStatus`, {
           params: { eventIds: cleanIds },
-        })
-        .then((res) => res.data);
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!EventIdsData?.length,
   });
 
+  // Fetch Latest Applications
   // Fetch Latest Job Applications
   const {
-    data: LatestJobApplications,
+    data: LatestJobApplications = [],
     isLoading: LatestJobApplicationsLoading,
     error: LatestJobApplicationsError,
     refetch: LatestJobApplicationsRefetch,
   } = useQuery({
     queryKey: ["LatestJobApplications", JobIdsData],
-    queryFn: () => {
-      // Clean and join IDs as a comma-separated string
-      const cleanIds = JobIdsData.map((id) => id.trim())
-        .filter(Boolean)
-        .join(",");
+    queryFn: async () => {
+      try {
+        const cleanIds = JobIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
+        const limit = 5;
 
-      // Optional: define limit
-      const limit = 5; // or leave undefined to use default of 5 on server
-
-      return axiosPublic
-        .get(`/JobApplications/LatestApplications`, {
+        const res = await axiosPublic.get(`/JobApplications/LatestApplications`, {
           params: { jobIds: cleanIds, limit },
-        })
-        .then((res) => res.data);
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!JobIdsData?.length,
   });
 
   // Fetch Latest Gig Bids
   const {
-    data: LatestGigBids,
+    data: LatestGigBids = [],
     isLoading: LatestGigBidsLoading,
     error: LatestGigBidsError,
     refetch: LatestGigBidsRefetch,
   } = useQuery({
     queryKey: ["LatestGigBids", GigIdsData],
-    queryFn: () => {
-      // Clean and join IDs as a comma-separated string
-      const cleanIds = GigIdsData.map((id) => id.trim())
-        .filter(Boolean)
-        .join(",");
+    queryFn: async () => {
+      try {
+        const cleanIds = GigIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
+        const limit = 5;
 
-      // Optional: define limit
-      const limit = 5; // or leave undefined to use default of 5 on server
-
-      return axiosPublic
-        .get(`/GigBids/LatestBids`, {
+        const res = await axiosPublic.get(`/GigBids/LatestBids`, {
           params: { gigIds: cleanIds, limit },
-        })
-        .then((res) => res.data);
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!GigIdsData?.length,
   });
 
   // Fetch Latest Internship Applications
   const {
-    data: LatestInternshipApplications,
+    data: LatestInternshipApplications = [],
     isLoading: LatestInternshipApplicationsLoading,
     error: LatestInternshipApplicationsError,
     refetch: LatestInternshipApplicationsRefetch,
   } = useQuery({
     queryKey: ["LatestInternshipApplications", InternshipIdsData],
-    queryFn: () => {
-      // Clean and join IDs as a comma-separated string
-      const cleanIds = InternshipIdsData.map((id) => id.trim())
-        .filter(Boolean)
-        .join(",");
+    queryFn: async () => {
+      try {
+        const cleanIds = InternshipIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
+        const limit = 5;
 
-      // Optional: define limit
-      const limit = 5; // or leave undefined to use default of 5 on server
-
-      return axiosPublic
-        .get(`/InternshipApplications/LatestApplications`, {
-          params: { internshipIds: cleanIds, limit },
-        })
-        .then((res) => res.data);
+        const res = await axiosPublic.get(
+          `/InternshipApplications/LatestApplications`,
+          { params: { internshipIds: cleanIds, limit } }
+        );
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!InternshipIdsData?.length,
   });
 
   // Fetch Latest Event Applications
   const {
-    data: LatestEventApplications,
+    data: LatestEventApplications = [],
     isLoading: LatestEventApplicationsLoading,
     error: LatestEventApplicationsError,
     refetch: LatestEventApplicationsRefetch,
   } = useQuery({
     queryKey: ["LatestEventApplications", EventIdsData],
-    queryFn: () => {
-      // Clean and join IDs as a comma-separated string
-      const cleanIds = EventIdsData.map((id) => id.trim())
-        .filter(Boolean)
-        .join(",");
+    queryFn: async () => {
+      try {
+        const cleanIds = EventIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
+        const limit = 5;
 
-      // Optional: define limit
-      const limit = 5; // or leave undefined to use default of 5 on server
-
-      return axiosPublic
-        .get(`/EventApplications/LatestApplications`, {
-          params: { eventIds: cleanIds, limit },
-        })
-        .then((res) => res.data);
+        const res = await axiosPublic.get(
+          `/EventApplications/LatestApplications`,
+          { params: { eventIds: cleanIds, limit } }
+        );
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!EventIdsData?.length,
   });
 
-  // Fetch Jobs Deadline Data
+  // Jobs Deadline
   const {
-    data: JobDeadline,
+    data: JobDeadline = [],
     isLoading: JobDeadlineLoading,
     error: JobDeadlineError,
     refetch: JobDeadlineRefetch,
   } = useQuery({
     queryKey: ["JobDeadline", JobIdsData],
-    queryFn: () => {
-      // Clean and join IDs as a comma-separated string
-      const cleanIds = JobIdsData.map((id) => id.trim())
-        .filter(Boolean)
-        .join(",");
-
-      // Optional: define limit
-      const limit = 5; // or leave undefined to use default of 5 on server
-
-      return axiosPublic
-        .get(`/Jobs/Deadline`, {
-          params: { jobIds: cleanIds, limit },
-        })
-        .then((res) => res.data);
+    queryFn: async () => {
+      try {
+        const cleanIds = JobIdsData.map((id) => id.trim()).filter(Boolean).join(",");
+        const res = await axiosPublic.get(`/Jobs/Deadline`, {
+          params: { jobIds: cleanIds, limit: 5 },
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!JobIdsData?.length,
   });
 
-  // Fetch Gigs Deadline Data
+  // Gigs Deadline
   const {
-    data: GigDeadline,
+    data: GigDeadline = [],
     isLoading: GigDeadlineLoading,
     error: GigDeadlineError,
     refetch: GigDeadlineRefetch,
   } = useQuery({
     queryKey: ["GigDeadline", GigIdsData],
-    queryFn: () => {
-      // Clean and join IDs as a comma-separated string
-      const cleanIds = GigIdsData.map((id) => id.trim())
-        .filter(Boolean)
-        .join(",");
-
-      // Optional: define limit
-      const limit = 5; // or leave undefined to use default of 5 on server
-
-      return axiosPublic
-        .get(`/Gigs/Deadline`, {
-          params: { gigIds: cleanIds, limit },
-        })
-        .then((res) => res.data);
+    queryFn: async () => {
+      try {
+        const cleanIds = GigIdsData.map((id) => id.trim()).filter(Boolean).join(",");
+        const res = await axiosPublic.get(`/Gigs/Deadline`, {
+          params: { gigIds: cleanIds, limit: 5 },
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!GigIdsData?.length,
   });
 
-  // Fetch Internship Deadline Data
+  // Internship Deadline
   const {
-    data: InternshipDeadline,
+    data: InternshipDeadline = [],
     isLoading: InternshipDeadlineLoading,
     error: InternshipDeadlineError,
     refetch: InternshipDeadlineRefetch,
   } = useQuery({
     queryKey: ["InternshipDeadline", InternshipIdsData],
-    queryFn: () => {
-      // Clean and join IDs as a comma-separated string
-      const cleanIds = InternshipIdsData.map((id) => id.trim())
-        .filter(Boolean)
-        .join(",");
-
-      // Optional: define limit
-      const limit = 5; // or leave undefined to use default of 5 on server
-
-      return axiosPublic
-        .get(`/Internship/Deadline`, {
-          params: { internshipIds: cleanIds, limit },
-        })
-        .then((res) => res.data);
+    queryFn: async () => {
+      try {
+        const cleanIds = InternshipIdsData.map((id) => id.trim()).filter(Boolean).join(",");
+        const res = await axiosPublic.get(`/Internship/Deadline`, {
+          params: { internshipIds: cleanIds, limit: 5 },
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!InternshipIdsData?.length,
   });
 
-  // Fetch Events Deadline Data
+  // Events Deadline
   const {
-    data: EventsDeadline,
+    data: EventsDeadline = [],
     isLoading: EventsDeadlineLoading,
     error: EventsDeadlineError,
     refetch: EventsDeadlineRefetch,
   } = useQuery({
     queryKey: ["EventsDeadline", EventIdsData],
-    queryFn: () => {
-      // Clean and join IDs as a comma-separated string
-      const cleanIds = EventIdsData.map((id) => id.trim())
-        .filter(Boolean)
-        .join(",");
-
-      // Optional: define limit
-      const limit = 5; // or leave undefined to use default of 5 on server
-
-      return axiosPublic
-        .get(`/Events/Deadline`, {
-          params: { eventIds: cleanIds, limit },
-        })
-        .then((res) => res.data);
+    queryFn: async () => {
+      try {
+        const cleanIds = EventIdsData.map((id) => id.trim()).filter(Boolean).join(",");
+        const res = await axiosPublic.get(`/Events/Deadline`, {
+          params: { eventIds: cleanIds, limit: 5 },
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
     },
     enabled: !!EventIdsData?.length,
   });
+
 
   // Refetch both datasets
   const refetch = async () => {

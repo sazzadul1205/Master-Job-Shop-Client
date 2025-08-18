@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
 
 // Icons
 import { FaPlus } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
 
 // Assets
 import EventsBlue from "../../../assets/EmployerLayout/Events/EventsBlue.png";
@@ -22,8 +24,7 @@ import EventCard from "../../../Shared/EventCard/EventCard";
 import EditEventModal from "./EditEventModal/EditEventModal";
 import AddNewEventModal from "./AddNewEventModal/AddNewEventModal";
 import EventDetailsModal from "../../(Public_Pages)/Home/FeaturedEvents/EventDetailsModal/EventDetailsModal";
-import { Link } from "react-router-dom";
-import { ImCross } from "react-icons/im";
+
 
 const ManageEvents = () => {
   const { user, loading } = useAuth();
@@ -32,6 +33,21 @@ const ManageEvents = () => {
   // State Management
   const [selectedEventID, setSelectedEventID] = useState(null);
   const [selectedEventData, setSelectedEventData] = useState(null);
+
+  // User Role Data
+  const {
+    data: UserRoleData,
+    isLoading: UserRoleIsLoading,
+    error: UserRoleError,
+    refetch: UserRoleRefetch,
+  } = useQuery({
+    queryKey: ["UserRoleData", user?.email],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/Users/Role?email=${user?.email}`);
+      return res.data.role;
+    },
+    enabled: !!user?.email,
+  });
 
   // Events Data
   const {
@@ -45,16 +61,17 @@ const ManageEvents = () => {
       try {
         const res = await axiosPublic.get(`/Events?postedBy=${user?.email}`);
         const data = res.data;
+
         if (Array.isArray(data)) return data;
         if (data && typeof data === "object") return [data]; // wrap single object in array
         return [];
       } catch (err) {
+        if (err.response?.status === 404) return []; // no Gigs found
         console.log(err);
-
-        return []; // return empty array on error instead of throwing
+        return []; // fallback for other cases too
       }
     },
-    enabled: !!user?.email,
+    enabled: !!user?.email, // prevents running before user is loaded
   });
 
   // Company Data
@@ -64,23 +81,47 @@ const ManageEvents = () => {
     error: CompanyError,
     refetch: CompanyRefetch,
   } = useQuery({
-    queryKey: ["CompanyData"],
+    queryKey: ["CompanyData", user?.email],
     queryFn: () =>
       axiosPublic.get(`/Company?email=${user?.email}`).then((res) => res.data),
+    enabled: UserRoleData === "Company",
   });
 
-  // Company Data Destructuring
-  const company = CompanyData || {};
+  // Employer Data
+  const {
+    data: EmployerData,
+    isLoading: EmployerIsLoading,
+    error: EmployerError,
+    refetch: EmployerRefetch,
+  } = useQuery({
+    queryKey: ["EmployerData", user?.email],
+    queryFn: () =>
+      axiosPublic.get(`/Employers?email=${user?.email}`).then((res) => res.data),
+    enabled: UserRoleData === "Employer",
+  });
+
+  // Unified Data Based on Role
+  const userData =
+    UserRoleData === "Company"
+      ? CompanyData || {}
+      : UserRoleData === "Employer"
+        ? EmployerData || {}
+        : {};
 
   // Refetching Data
-  const refetch = () => {
-    EventsRefetch();
-    CompanyRefetch();
+  const refetch = async () => {
+    await EventsRefetch();
+    await CompanyRefetch();
+    await UserRoleRefetch();
+    await EmployerRefetch();
   };
 
+  console.log(EventsData[0]?._id);
+
+
   // Loading / Error UI
-  if (CompanyIsLoading || EventsIsLoading || loading) return <Loading />;
-  if (CompanyError || EventsError) return <Error />;
+  if (CompanyIsLoading || EventsIsLoading || EmployerIsLoading || UserRoleIsLoading || loading) return <Loading />;
+  if (CompanyError || EventsError || EmployerError || UserRoleError) return <Error />;
 
   return (
     <>
@@ -95,7 +136,7 @@ const ManageEvents = () => {
         {/* Add New Events Button */}
         <button
           onClick={() => {
-            if (!company?._id) {
+            if (!userData?._id) {
               // Company data missing: show warning
               document
                 .getElementById("Company_Profile_Warning_Modal")
@@ -147,7 +188,7 @@ const ManageEvents = () => {
             <div className="flex justify-center pt-5">
               <button
                 onClick={() => {
-                  if (!company?._id) {
+                  if (!userData?._id) {
                     // Company data missing: show warning
                     document
                       .getElementById("Company_Profile_Warning_Modal")
@@ -169,7 +210,7 @@ const ManageEvents = () => {
 
       {/* Add New Event Modals */}
       <dialog id="Add_New_Event_Modal" className="modal">
-        <AddNewEventModal CompanyData={company} refetch={refetch} />
+        <AddNewEventModal CompanyData={userData} refetch={refetch} />
       </dialog>
 
       {/* Edit Event Modals */}

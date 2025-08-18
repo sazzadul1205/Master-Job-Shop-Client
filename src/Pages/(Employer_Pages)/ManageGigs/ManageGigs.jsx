@@ -25,8 +25,6 @@ import EditGigModal from "./EditGigModal/EditGigModal";
 import AddNewGigModal from "./AddNewGigModal/AddNewGigModal";
 import GigDetailsModal from "../../(Public_Pages)/Home/FeaturedGigs/GigDetailsModal/GigDetailsModal";
 
-
-
 const ManageGigs = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
@@ -68,6 +66,7 @@ const ManageGigs = () => {
         return [];
       } catch (err) {
         if (err.response?.status === 404) return []; // no Gigs found
+        console.log(err);
         return []; // fallback for other cases too
       }
     },
@@ -109,15 +108,12 @@ const ManageGigs = () => {
         : {};
 
   // Refetching Data
-  const refetch = () => {
-    GigsRefetch();
-    CompanyRefetch();
-    EmployerRefetch();
-    UserRoleRefetch();
+  const refetch = async () => {
+    await GigsRefetch();
+    await CompanyRefetch();
+    await EmployerRefetch();
+    await UserRoleRefetch();
   };
-
-  // console.log(GigsData[0]?._id);
-
 
   // Loading / Error UI
   if (CompanyIsLoading || GigsIsLoading || EmployerIsLoading || UserRoleIsLoading || loading) return <Loading />;

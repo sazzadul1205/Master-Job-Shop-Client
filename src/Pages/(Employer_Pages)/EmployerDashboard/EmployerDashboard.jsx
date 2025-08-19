@@ -13,6 +13,7 @@ import Error from "../../../Shared/Error/Error";
 import EmployerDashboardKPI from "./EmployerDashboardKPI/EmployerDashboardKPI";
 import EmployerDashboardApplicationOverview from "./EmployerDashboardApplicationOverview/EmployerDashboardApplicationOverview";
 import EmployerDashboardRecentApplicant from "./EmployerDashboardRecentApplicant/EmployerDashboardRecentApplicant";
+import EmployerDashboardUpcomingDeadline from "./EmployerDashboardUpcomingDeadline/EmployerDashboardUpcomingDeadline";
 
 const EmployerDashboard = () => {
   const { user, loading } = useAuth();
@@ -221,6 +222,7 @@ const EmployerDashboard = () => {
     enabled: !!GigIdsData?.length,
   });
 
+  // Fetch Latest Event Applications
   const {
     data: LatestEventApplications = [],
     isLoading: LatestEventApplicationsLoading,
@@ -248,12 +250,60 @@ const EmployerDashboard = () => {
     enabled: !!EventIdsData?.length,
   });
 
+  // Deadline's
+  // Gigs Deadline
+  const {
+    data: GigDeadline = [],
+    isLoading: GigDeadlineLoading,
+    error: GigDeadlineError,
+    refetch: GigDeadlineRefetch,
+  } = useQuery({
+    queryKey: ["GigDeadline", GigIdsData],
+    queryFn: async () => {
+      try {
+        const cleanIds = GigIdsData.map((id) => id.trim()).filter(Boolean).join(",");
+        const res = await axiosPublic.get(`/Gigs/Deadline`, {
+          params: { gigIds: cleanIds, limit: 5 },
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
+    },
+    enabled: !!GigIdsData?.length,
+  });
+  // Events Deadline
+  const {
+    data: EventsDeadline = [],
+    isLoading: EventsDeadlineLoading,
+    error: EventsDeadlineError,
+    refetch: EventsDeadlineRefetch,
+  } = useQuery({
+    queryKey: ["EventsDeadline", EventIdsData],
+    queryFn: async () => {
+      try {
+        const cleanIds = EventIdsData.map((id) => id.trim()).filter(Boolean).join(",");
+        const res = await axiosPublic.get(`/Events/Deadline`, {
+          params: { eventIds: cleanIds, limit: 5 },
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
+    },
+    enabled: !!EventIdsData?.length,
+  });
+
   // Refetch both datasets
   const refetch = async () => {
     await GigIdsRefetch();
     await EventIdsRefetch();
+    await GigDeadlineRefetch();
     await LatestGigBidsRefetch();
     await DailyGigStatusRefetch();
+    await EventsDeadlineRefetch();
     await DailyBidsStatusRefetch();
     await DailyEventStatusRefetch();
     await DailyGigBidsStatusRefetch();
@@ -267,7 +317,9 @@ const EmployerDashboard = () => {
     loading ||
     GigIdsIsLoading ||
     EventIdsIsLoading ||
+    GigDeadlineLoading ||
     LatestGigBidsLoading ||
+    EventsDeadlineLoading ||
     DailyBidsStatusLoading ||
     DailyGigStatusIsLoading ||
     DailyEventStatusIsLoading ||
@@ -282,8 +334,10 @@ const EmployerDashboard = () => {
   if (
     GigIdsError ||
     EventIdsError ||
+    GigDeadlineError ||
     LatestGigBidsError ||
     DailyGigStatusError ||
+    EventsDeadlineError ||
     DailyBidsStatusError ||
     DailyEventStatusError ||
     DailyGigBidsStatusError ||
@@ -326,12 +380,10 @@ const EmployerDashboard = () => {
 
           {/* Upcoming Deadline */}
           <div className="w-1/2 bg-white border border-gray-300 rounded-lg py-5 px-5">
-            {/* <CompanyDashboardUpcomingDeadline
-              JobDeadline={JobDeadline}
+            <EmployerDashboardUpcomingDeadline
               GigDeadline={GigDeadline}
               EventsDeadline={EventsDeadline}
-              InternshipDeadline={InternshipDeadline}
-            /> */}
+            />
           </div>
         </div>
       </div>

@@ -91,7 +91,7 @@ const EmployerDashboard = () => {
     enabled: !!user?.email,
   });
 
-  // Daily Event Status Data
+  // Daily Event Applications Status Data
   const {
     data: DailyEventApplicationsStatusData = [],
     isLoading: DailyEventApplicationsStatusIsLoading,
@@ -101,18 +101,38 @@ const EmployerDashboard = () => {
     queryKey: ["DailyEventApplicationsStatusData"],
     queryFn: async () => {
       try {
-        const res = await axiosPublic.get(`/eventApplications/DailyEventApplicationsPosted?eventIds=${EventIdsData}`);
+        const res = await axiosPublic.get(`/EventApplications/DailyEventApplicationsPosted?eventIds=${EventIdsData}`);
         return res.data || [];
       } catch (error) {
         if (error.response?.status === 404) return [];
         throw error;
       }
     },
-    enabled: !!user?.email,
+    enabled: !!EventIdsData,
   });
 
+  // Daily Gig Bids Status Data
+  const {
+    data: DailyGigBidsStatusData = [],
+    isLoading: DailyGigBidsStatusIsLoading,
+    error: DailyGigBidsStatusError,
+    refetch: DailyGigBidsStatusRefetch,
+  } = useQuery({
+    queryKey: ["DailyGigBidsStatusData"],
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/GigBids/DailyGigBidsPosted?gigIds=${GigIdsData}`);
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        throw error;
+      }
+    },
+    enabled: !!GigIdsData,
+  });
+
+  console.log("Daily Gig Bids Status Data :", DailyGigBidsStatusData);
   console.log("Daily Event Applications Status Data :", DailyEventApplicationsStatusData);
-  // console.log("Event Ids Data :", EventIdsData);
 
   // Refetch both datasets
   const refetch = async () => {
@@ -120,6 +140,7 @@ const EmployerDashboard = () => {
     await EventIdsRefetch();
     await DailyGigStatusRefetch();
     await DailyEventStatusRefetch();
+    await DailyGigBidsStatusRefetch();
     await DailyEventApplicationsStatusRefetch();
   };
 
@@ -130,7 +151,9 @@ const EmployerDashboard = () => {
     EventIdsIsLoading ||
     DailyGigStatusIsLoading ||
     DailyEventStatusIsLoading ||
-    DailyEventApplicationsStatusIsLoading)
+    DailyGigBidsStatusIsLoading ||
+    DailyEventApplicationsStatusIsLoading
+  )
     return <Loading />;
 
   // If Error Show UI
@@ -139,7 +162,9 @@ const EmployerDashboard = () => {
     EventIdsError ||
     DailyGigStatusError ||
     DailyEventStatusError ||
-    DailyEventApplicationsStatusError)
+    DailyGigBidsStatusError ||
+    DailyEventApplicationsStatusError
+  )
     return <Error />;
 
   return (
@@ -149,7 +174,8 @@ const EmployerDashboard = () => {
         refetch={refetch}
         DailyGigStatusData={DailyGigStatusData}
         DailyEventStatusData={DailyEventStatusData}
-
+        DailyGigBidsStatusData={DailyGigBidsStatusData}
+        DailyEventApplicationsStatusData={DailyEventApplicationsStatusData}
       />
 
 

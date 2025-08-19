@@ -12,6 +12,7 @@ import Error from "../../../Shared/Error/Error";
 // Components
 import EmployerDashboardKPI from "./EmployerDashboardKPI/EmployerDashboardKPI";
 import EmployerDashboardApplicationOverview from "./EmployerDashboardApplicationOverview/EmployerDashboardApplicationOverview";
+import EmployerDashboardRecentApplicant from "./EmployerDashboardRecentApplicant/EmployerDashboardRecentApplicant";
 
 const EmployerDashboard = () => {
   const { user, loading } = useAuth();
@@ -138,7 +139,8 @@ const EmployerDashboard = () => {
     enabled: !!GigIdsData,
   });
 
-  // Daily  Bids data
+  // Daily Data
+  // Daily Bids data
   const {
     data: DailyBidsStatus = [],
     isLoading: DailyBidsStatusLoading,
@@ -163,7 +165,8 @@ const EmployerDashboard = () => {
     },
     enabled: !!GigIdsData?.length,
   });
-  // Daily  Applications data
+
+  // Daily Applications data
   const {
     data: DailyApplicationsStatus = [],
     isLoading: DailyApplicationsStatusLoading,
@@ -189,17 +192,72 @@ const EmployerDashboard = () => {
     enabled: !!EventIdsData?.length,
   });
 
-  console.log("Daily Bids Status :", DailyBidsStatus);
-  console.log("Daily Applications Status :", DailyApplicationsStatus);
+
+  // Fetch Latest Applications
+  // Fetch Latest Gig Bids
+  const {
+    data: LatestGigBids = [],
+    isLoading: LatestGigBidsLoading,
+    error: LatestGigBidsError,
+    refetch: LatestGigBidsRefetch,
+  } = useQuery({
+    queryKey: ["LatestGigBids", GigIdsData],
+    queryFn: async () => {
+      try {
+        const cleanIds = GigIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
+        const limit = 5;
+
+        const res = await axiosPublic.get(`/GigBids/LatestBids`, {
+          params: { gigIds: cleanIds, limit },
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
+    },
+    enabled: !!GigIdsData?.length,
+  });
+
+  const {
+    data: LatestEventApplications = [],
+    isLoading: LatestEventApplicationsLoading,
+    error: LatestEventApplicationsError,
+    refetch: LatestEventApplicationsRefetch,
+  } = useQuery({
+    queryKey: ["LatestEventApplications", EventIdsData],
+    queryFn: async () => {
+      try {
+        const cleanIds = EventIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
+        const limit = 5;
+
+        const res = await axiosPublic.get(
+          `/EventApplications/LatestApplications`,
+          { params: { eventIds: cleanIds, limit } }
+        );
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
+    },
+    enabled: !!EventIdsData?.length,
+  });
 
   // Refetch both datasets
   const refetch = async () => {
     await GigIdsRefetch();
     await EventIdsRefetch();
+    await LatestGigBidsRefetch();
     await DailyGigStatusRefetch();
     await DailyBidsStatusRefetch();
     await DailyEventStatusRefetch();
     await DailyGigBidsStatusRefetch();
+    await LatestEventApplicationsRefetch();
     await DailyApplicationsStatusRefetch();
     await DailyEventApplicationsStatusRefetch();
   };
@@ -209,11 +267,13 @@ const EmployerDashboard = () => {
     loading ||
     GigIdsIsLoading ||
     EventIdsIsLoading ||
+    LatestGigBidsLoading ||
     DailyBidsStatusLoading ||
     DailyGigStatusIsLoading ||
     DailyEventStatusIsLoading ||
     DailyGigBidsStatusIsLoading ||
     DailyApplicationsStatusLoading ||
+    LatestEventApplicationsLoading ||
     DailyEventApplicationsStatusIsLoading
   )
     return <Loading />;
@@ -222,10 +282,12 @@ const EmployerDashboard = () => {
   if (
     GigIdsError ||
     EventIdsError ||
+    LatestGigBidsError ||
     DailyGigStatusError ||
     DailyBidsStatusError ||
     DailyEventStatusError ||
     DailyGigBidsStatusError ||
+    LatestEventApplicationsError ||
     DailyApplicationsStatusError ||
     DailyEventApplicationsStatusError
   )
@@ -246,6 +308,33 @@ const EmployerDashboard = () => {
         DailyBidsStatus={DailyBidsStatus}
         DailyApplicationsStatus={DailyApplicationsStatus}
       />
+
+      {/* Activity & Deadlines */}
+      <div className="px-5 py-6">
+        {/* Title */}
+        <h3 className="text-lg text-black font-bold">Activity & Deadlines</h3>
+
+        {/* Content */}
+        <div className="flex gap-2 items-stretch pt-3">
+          {/* Recent Applicants */}
+          <div className="w-1/2 bg-white border border-gray-300 rounded-lg py-5 px-5">
+            <EmployerDashboardRecentApplicant
+              LatestGigBids={LatestGigBids}
+              LatestEventApplications={LatestEventApplications}
+            />
+          </div>
+
+          {/* Upcoming Deadline */}
+          <div className="w-1/2 bg-white border border-gray-300 rounded-lg py-5 px-5">
+            {/* <CompanyDashboardUpcomingDeadline
+              JobDeadline={JobDeadline}
+              GigDeadline={GigDeadline}
+              EventsDeadline={EventsDeadline}
+              InternshipDeadline={InternshipDeadline}
+            /> */}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

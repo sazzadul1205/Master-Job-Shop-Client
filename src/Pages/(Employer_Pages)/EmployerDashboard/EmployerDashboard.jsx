@@ -2,18 +2,19 @@
 import { useQuery } from "@tanstack/react-query";
 
 // Hooks
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useAuth from "../../../Hooks/useAuth";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Shared
-import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+import Loading from "../../../Shared/Loading/Loading";
 
 // Components
 import EmployerDashboardKPI from "./EmployerDashboardKPI/EmployerDashboardKPI";
-import EmployerDashboardApplicationOverview from "./EmployerDashboardApplicationOverview/EmployerDashboardApplicationOverview";
+import EmployerDashboardQuickAction from "./EmployerDashboardQuickAction/EmployerDashboardQuickAction";
 import EmployerDashboardRecentApplicant from "./EmployerDashboardRecentApplicant/EmployerDashboardRecentApplicant";
 import EmployerDashboardUpcomingDeadline from "./EmployerDashboardUpcomingDeadline/EmployerDashboardUpcomingDeadline";
+import EmployerDashboardApplicationOverview from "./EmployerDashboardApplicationOverview/EmployerDashboardApplicationOverview";
 
 const EmployerDashboard = () => {
   const { user, loading } = useAuth();
@@ -387,6 +388,8 @@ const EmployerDashboard = () => {
           </div>
         </div>
       </div>
+
+      <EmployerDashboardQuickAction />
     </div>
   );
 };

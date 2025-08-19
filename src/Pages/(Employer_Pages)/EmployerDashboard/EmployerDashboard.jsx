@@ -1,10 +1,17 @@
+// Packages
 import { useQuery } from "@tanstack/react-query";
-import useAuth from "../../../Hooks/useAuth";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import EmployerDashboardKPI from "./EmployerDashboardKPI/EmployerDashboardKPI";
-import Error from "../../../Shared/Error/Error";
-import Loading from "../../../Shared/Loading/Loading";
 
+// Hooks
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import useAuth from "../../../Hooks/useAuth";
+
+// Shared
+import Loading from "../../../Shared/Loading/Loading";
+import Error from "../../../Shared/Error/Error";
+
+// Components
+import EmployerDashboardKPI from "./EmployerDashboardKPI/EmployerDashboardKPI";
+import EmployerDashboardApplicationOverview from "./EmployerDashboardApplicationOverview/EmployerDashboardApplicationOverview";
 
 const EmployerDashboard = () => {
   const { user, loading } = useAuth();
@@ -131,16 +138,69 @@ const EmployerDashboard = () => {
     enabled: !!GigIdsData,
   });
 
-  console.log("Daily Gig Bids Status Data :", DailyGigBidsStatusData);
-  console.log("Daily Event Applications Status Data :", DailyEventApplicationsStatusData);
+  // Daily  Bids data
+  const {
+    data: DailyBidsStatus = [],
+    isLoading: DailyBidsStatusLoading,
+    error: DailyBidsStatusError,
+    refetch: DailyBidsStatusRefetch,
+  } = useQuery({
+    queryKey: ["DailyBidsStatus", GigIdsData],
+    queryFn: async () => {
+      try {
+        const cleanIds = GigIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
+
+        const res = await axiosPublic.get(`/GigBids/DailyStatus`, {
+          params: { gigIds: cleanIds },
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
+    },
+    enabled: !!GigIdsData?.length,
+  });
+  // Daily  Applications data
+  const {
+    data: DailyApplicationsStatus = [],
+    isLoading: DailyApplicationsStatusLoading,
+    error: DailyApplicationsStatusError,
+    refetch: DailyApplicationsStatusRefetch,
+  } = useQuery({
+    queryKey: ["DailyApplicationsStatus", EventIdsData],
+    queryFn: async () => {
+      try {
+        const cleanIds = EventIdsData.map((id) => id.trim())
+          .filter(Boolean)
+          .join(",");
+
+        const res = await axiosPublic.get(`/EventApplications/DailyStatus`, {
+          params: { eventIds: cleanIds },
+        });
+        return res.data || [];
+      } catch (error) {
+        if (error.response?.status === 404) return [];
+        return [];
+      }
+    },
+    enabled: !!EventIdsData?.length,
+  });
+
+  console.log("Daily Bids Status :", DailyBidsStatus);
+  console.log("Daily Applications Status :", DailyApplicationsStatus);
 
   // Refetch both datasets
   const refetch = async () => {
     await GigIdsRefetch();
     await EventIdsRefetch();
     await DailyGigStatusRefetch();
+    await DailyBidsStatusRefetch();
     await DailyEventStatusRefetch();
     await DailyGigBidsStatusRefetch();
+    await DailyApplicationsStatusRefetch();
     await DailyEventApplicationsStatusRefetch();
   };
 
@@ -149,9 +209,11 @@ const EmployerDashboard = () => {
     loading ||
     GigIdsIsLoading ||
     EventIdsIsLoading ||
+    DailyBidsStatusLoading ||
     DailyGigStatusIsLoading ||
     DailyEventStatusIsLoading ||
     DailyGigBidsStatusIsLoading ||
+    DailyApplicationsStatusLoading ||
     DailyEventApplicationsStatusIsLoading
   )
     return <Loading />;
@@ -161,8 +223,10 @@ const EmployerDashboard = () => {
     GigIdsError ||
     EventIdsError ||
     DailyGigStatusError ||
+    DailyBidsStatusError ||
     DailyEventStatusError ||
     DailyGigBidsStatusError ||
+    DailyApplicationsStatusError ||
     DailyEventApplicationsStatusError
   )
     return <Error />;
@@ -178,7 +242,10 @@ const EmployerDashboard = () => {
         DailyEventApplicationsStatusData={DailyEventApplicationsStatusData}
       />
 
-
+      <EmployerDashboardApplicationOverview
+        DailyBidsStatus={DailyBidsStatus}
+        DailyApplicationsStatus={DailyApplicationsStatus}
+      />
     </div>
   );
 };

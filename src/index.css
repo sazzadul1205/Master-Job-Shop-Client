@@ -39,3 +39,24 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   filter: brightness(0) saturate(100%);
   cursor: pointer;
 }
+
+
+.scroll-text {
+  display: inline-block;
+  white-space: nowrap;
+  transform: translateX(0);
+}
+
+.group:hover .scroll-text {
+  animation: scroll-left 6s linear infinite;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}

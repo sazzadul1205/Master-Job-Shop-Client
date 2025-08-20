@@ -19,53 +19,43 @@ import EmployerLayout from "./Layouts/EmployerLayout";
 // Public Pages
 import Home from "./Pages/(Public_Pages)/Home/Home";
 
+
 // Auth Pages
 import Login from "./Pages/(Auth_Pages)/Login/Login";
 import SignUp from "./Pages/(Auth_Pages)/SignUp/SignUp";
 import SignUpDetails from "./Pages/(Auth_Pages)/SignUpDetails/SignUpDetails";
 
-// Jobs
+// Public Pages - Main
 import Jobs from "./Pages/(Public_Pages)/Jobs/Jobs";
-import JobsApplyPage from "./Pages/(Public_Pages)/JobsApplyPage/JobsApplyPage";
-import MyJobApplications from "./Pages/(Member_Pages)/MyJobApplications/MyJobApplications";
-
-// Gigs
 import Gigs from "./Pages/(Public_Pages)/Gigs/Gigs";
-import MyGigBids from "./Pages/(Member_Pages)/MyGigBids/MyGigBids";
-import GigBiddingpage from "./Pages/(Public_Pages)/GigBiddingpage/GigBiddingpage";
-
-// Blogs
-import Blogs from "./Pages/(Public_Pages)/Blogs/Blogs";
-
-// Courses
-import Courses from "./Pages/(Public_Pages)/Courses/Courses";
-import CoursesApplyPage from "./Pages/(Public_Pages)/CoursesApplyPage/CoursesApplyPage";
-
-// Mentorship
-import Mentorship from "./Pages/(Public_Pages)/Mentorship/Mentorship";
-import MentorshipApplyPage from "./Pages/(Public_Pages)/MentorshipApplyPage/MentorshipApplyPage";
-import MyMentorshipApplications from "./Pages/(Member_Pages)/MyMentorshipApplications/MyMentorshipApplications";
-
-// Internship
-import Internship from "./Pages/(Public_Pages)/Internship/Internship";
-import InternshipApplyPage from "./Pages/(Public_Pages)/InternshipApplyPage/InternshipApplyPage";
-import MyInternshipApplications from "./Pages/(Member_Pages)/MyInternshipApplications/MyInternshipApplications";
-
-// Event
 import Events from "./Pages/(Public_Pages)/Events/Events";
-import MyEventApplications from "./Pages/(Member_Pages)/MyEventApplications/MyEventApplications";
-import EventApplicationPage from "./Pages/(Public_Pages)/EventApplicationPage/EventApplicationPage";
-
-// Company Profile
+import Courses from "./Pages/(Public_Pages)/Courses/Courses";
+import Mentorship from "./Pages/(Public_Pages)/Mentorship/Mentorship";
+import Internship from "./Pages/(Public_Pages)/Internship/Internship";
 import CompanyProfiles from "./Pages/(Public_Pages)/CompanyProfiles/CompanyProfiles";
-import MyCourseApplications from "./Pages/(Member_Pages)/MyCourseApplications/MyCourseApplications";
-import CompanyProfilesDetails from "./Pages/(Public_Pages)/CompanyProfilesDetails/CompanyProfilesDetails";
 
-// Testimonials
+// Public Pages - Extra
+import Blogs from "./Pages/(Public_Pages)/Blogs/Blogs";
+import AboutUs from "./Pages/(Public_Pages)/AboutUs/AboutUs";
 import Testimonials from "./Pages/(Public_Pages)/Testimonials/Testimonials";
 
-// About Us
-import AboutUs from "./Pages/(Public_Pages)/AboutUs/AboutUs";
+// Public Pages - Applications / Bids
+import MyGigBids from "./Pages/(Member_Pages)/MyGigBids/MyGigBids";
+import JobsApplyPage from "./Pages/(Public_Pages)/JobsApplyPage/JobsApplyPage";
+import MentorshipApplyPage from "./Pages/(Public_Pages)/MentorshipApplyPage/MentorshipApplyPage";
+import InternshipApplyPage from "./Pages/(Public_Pages)/InternshipApplyPage/InternshipApplyPage";
+import MyEventApplications from "./Pages/(Member_Pages)/MyEventApplications/MyEventApplications";
+import MyCourseApplications from "./Pages/(Member_Pages)/MyCourseApplications/MyCourseApplications";
+
+
+// Member Pages
+import GigBiddingpage from "./Pages/(Public_Pages)/GigBiddingpage/GigBiddingpage";
+import CoursesApplyPage from "./Pages/(Public_Pages)/CoursesApplyPage/CoursesApplyPage";
+import MyJobApplications from "./Pages/(Member_Pages)/MyJobApplications/MyJobApplications";
+import EventApplicationPage from "./Pages/(Public_Pages)/EventApplicationPage/EventApplicationPage";
+import CompanyProfilesDetails from "./Pages/(Public_Pages)/CompanyProfilesDetails/CompanyProfilesDetails";
+import MyMentorshipApplications from "./Pages/(Member_Pages)/MyMentorshipApplications/MyMentorshipApplications";
+import MyInternshipApplications from "./Pages/(Member_Pages)/MyInternshipApplications/MyInternshipApplications";
 
 // User Profile
 import UserProfile from "./Pages/(Member_Pages)/UserProfile/UserProfile";
@@ -95,7 +85,11 @@ import ManageEmployerProfile from "./Pages/(Employer_Pages)/ManageEmployerProfil
 import ManageJobApplications from "./Pages/(Employer_Pages)/ManageJobApplications/ManageJobApplications";
 import ManageEventApplications from "./Pages/(Employer_Pages)/ManageEventApplications/ManageEventApplications";
 import ManageInternshipApplications from "./Pages/(Employer_Pages)/ManageInternshipApplications/ManageInternshipApplications";
+
+
+// Company Dashboard
 import CompanyDashboard from "./Pages/(Employer_Pages)/CompanyDashboard/CompanyDashboard";
+import MentorDashboard from "./Pages/(Mentor_Pages)/MentorDashboard/MentorDashboard";
 
 const queryClient = new QueryClient();
 
@@ -320,6 +314,11 @@ createRoot(document.getElementById("root")).render(
                 path="/Employer/EventApplications"
                 element={<ManageEventApplications />}
               />
+            </Route>
+
+            <Route element={<EmployerLayout />} >
+              <Route path="/Dashboard" element={<MentorDashboard />} />
+
             </Route>
           </Routes>
         </BrowserRouter>

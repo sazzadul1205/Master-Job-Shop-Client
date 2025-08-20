@@ -20,6 +20,7 @@ const CompanyDashboard = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
+  // Daily Status Data - Jobs, Gigs, Events, Internship
   // Daily Job Status Data
   const {
     data: DailyJobStatusData = [],
@@ -100,7 +101,8 @@ const CompanyDashboard = () => {
     enabled: !!user?.email,
   });
 
-  // GET Ids
+
+  // GET Ids Data - Jobs, Gigs, Events, Internship
   // Job Ids Data
   const {
     data: JobIdsData = [],
@@ -181,7 +183,8 @@ const CompanyDashboard = () => {
     enabled: !!user?.email,
   });
 
-  // Fetch Applications / Bids Status
+
+  // Fetch Applications / Bids Status - Jobs, Gigs, Events, Internship
   // Daily Job Applications data
   const {
     data: DailyJobApplicationsStatus = [],
@@ -286,7 +289,8 @@ const CompanyDashboard = () => {
     enabled: !!EventIdsData?.length,
   });
 
-  // Fetch Latest Applications
+
+  // Fetch Latest Applications - Jobs, Gigs, Events, Internship
   // Fetch Latest Job Applications
   const {
     data: LatestJobApplications = [],
@@ -397,6 +401,8 @@ const CompanyDashboard = () => {
     enabled: !!EventIdsData?.length,
   });
 
+
+  // Fetch Deadline Data - Jobs, Gigs, Events, Internship
   // Jobs Deadline
   const {
     data: JobDeadline = [],

@@ -17,6 +17,7 @@ const MemberPrivateRoute = ({ children }) => {
   const location = useLocation();
   const axiosPublic = useAxiosPublic();
 
+  // Fetch user data
   const {
     data: UserData,
     isLoading: UserDataIsLoading,

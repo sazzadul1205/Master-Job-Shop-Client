@@ -19,6 +19,9 @@ const FeaturedCompanyProfiles = ({ CompanyData }) => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
+  // Ensure CompanyData is always an array
+  const companies = Array.isArray(CompanyData) ? CompanyData : [];
+
   return (
     <section className="bg-gradient-to-tl from-blue-400 to-blue-600 py-5">
       <div className="p-20 mx-auto">
@@ -47,12 +50,12 @@ const FeaturedCompanyProfiles = ({ CompanyData }) => {
 
         {/* Companies Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-          {CompanyData.slice(0, 6).map((company, index) => (
+          {companies.slice(0, 6).map((company, index) => (
             <Link
-              key={company._id}
+              key={company._id || index}
               to={`/CompanyProfiles/${company._id}`}
               data-aos="fade-up"
-              data-aos-delay={index * 150} // 150ms delay between cards
+              data-aos-delay={index * 150}
               className="bg-white rounded-xl shadow hover:shadow-lg transition p-4 flex flex-col items-center text-center group"
             >
               <img
@@ -61,7 +64,7 @@ const FeaturedCompanyProfiles = ({ CompanyData }) => {
                   e.target.onerror = null;
                   e.target.src = DefaultCompanyLogo;
                 }}
-                alt={company.name}
+                alt={company.name || "Unknown Company"}
                 className="w-16 h-16 object-contain rounded-full border border-gray-200 mb-3"
               />
 
@@ -71,14 +74,16 @@ const FeaturedCompanyProfiles = ({ CompanyData }) => {
 
               {/* Tags */}
               <div className="flex flex-wrap justify-center gap-1 text-xs mt-1">
-                {company.tags?.map((tag, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full"
-                  >
-                    {tag}
-                  </span>
-                )) || (
+                {company.tags && company.tags.length > 0 ? (
+                  company.tags.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full"
+                    >
+                      {tag}
+                    </span>
+                  ))
+                ) : (
                   <span className="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
                     No Tags
                   </span>
@@ -96,12 +101,12 @@ const FeaturedCompanyProfiles = ({ CompanyData }) => {
 FeaturedCompanyProfiles.propTypes = {
   CompanyData: PropTypes.arrayOf(
     PropTypes.shape({
-      _id: PropTypes.string.isRequired,
+      _id: PropTypes.string,
       logo: PropTypes.string,
-      name: PropTypes.string.isRequired,
+      name: PropTypes.string,
       tags: PropTypes.arrayOf(PropTypes.string),
     })
-  ).isRequired,
+  ),
 };
 
 export default FeaturedCompanyProfiles;

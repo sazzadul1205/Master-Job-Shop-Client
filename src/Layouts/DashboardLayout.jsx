@@ -1,11 +1,24 @@
 import { useContext, useState, useEffect } from "react";
-import { FaArrowLeft } from "react-icons/fa6";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { IoMenu } from "react-icons/io5";
-import Logo from "../assets/Logo.png";
-import { AuthContext } from "../Provider/AuthProvider";
-import useAxiosPublic from "../Hooks/useAxiosPublic";
+
+// Package
 import { useQuery } from "@tanstack/react-query";
+
+
+// Icons
+import { FaArrowLeft } from "react-icons/fa6";
+import { IoMenu } from "react-icons/io5";
+
+// Assets
+import Logo from "../assets/Logo.png";
+
+// Provider
+import { AuthContext } from "../Provider/AuthProvider";
+
+// Hooks
+import useAxiosPublic from "../Hooks/useAxiosPublic";
+
+// Shared
 import Loader from "../Pages/Shared/Loader/Loader";
 
 const DashboardLayout = () => {

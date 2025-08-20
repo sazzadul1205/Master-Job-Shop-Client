@@ -19,7 +19,6 @@ import EmployerLayout from "./Layouts/EmployerLayout";
 // Public Pages
 import Home from "./Pages/(Public_Pages)/Home/Home";
 
-
 // Auth Pages
 import Login from "./Pages/(Auth_Pages)/Login/Login";
 import SignUp from "./Pages/(Auth_Pages)/SignUp/SignUp";
@@ -46,7 +45,6 @@ import MentorshipApplyPage from "./Pages/(Public_Pages)/MentorshipApplyPage/Ment
 import InternshipApplyPage from "./Pages/(Public_Pages)/InternshipApplyPage/InternshipApplyPage";
 import MyEventApplications from "./Pages/(Member_Pages)/MyEventApplications/MyEventApplications";
 import MyCourseApplications from "./Pages/(Member_Pages)/MyCourseApplications/MyCourseApplications";
-
 
 // Member Pages
 import GigBiddingpage from "./Pages/(Public_Pages)/GigBiddingpage/GigBiddingpage";
@@ -86,10 +84,11 @@ import ManageJobApplications from "./Pages/(Employer_Pages)/ManageJobApplication
 import ManageEventApplications from "./Pages/(Employer_Pages)/ManageEventApplications/ManageEventApplications";
 import ManageInternshipApplications from "./Pages/(Employer_Pages)/ManageInternshipApplications/ManageInternshipApplications";
 
-
 // Company Dashboard
 import CompanyDashboard from "./Pages/(Employer_Pages)/CompanyDashboard/CompanyDashboard";
 import MentorDashboard from "./Pages/(Mentor_Pages)/MentorDashboard/MentorDashboard";
+import EmployerPrivateRoute from "./Routes/EmployerPrivateRoute";
+import MentorLayout from "./Layouts/MentorLayout";
 
 const queryClient = new QueryClient();
 
@@ -260,65 +259,126 @@ createRoot(document.getElementById("root")).render(
               {/* Employer Dashboard */}
               <Route
                 path="/Employer/Employer/Dashboard"
-                element={<EmployerDashboard />}
+                element={
+                  <EmployerPrivateRoute allowedRoles={["Employer"]}>
+                    <EmployerDashboard />
+                  </EmployerPrivateRoute>
+                }
               />
+
+              {/* Employer Profile */}
+              <Route
+                path="/Employer/EmployerProfile"
+                element={
+                  <EmployerPrivateRoute allowedRoles={["Employer"]}>
+                    <ManageEmployerProfile />
+                  </EmployerPrivateRoute>
+                }
+              />
+
+              {/* Company Dashboard */}
               <Route
                 path="/Employer/Company/Dashboard"
-                element={<CompanyDashboard />}
+                element={
+                  <EmployerPrivateRoute allowedRoles={["Company"]}>
+                    <CompanyDashboard />
+                  </EmployerPrivateRoute>
+                }
               />
 
               {/* Company Profile */}
               <Route
                 path="/Employer/CompanyProfile"
-                element={<ManageCompanyProfile />}
-              />
-
-              {/* Company Profile */}
-              <Route
-                path="/Employer/EmployerProfile"
-                element={<ManageEmployerProfile />}
+                element={
+                  <EmployerPrivateRoute allowedRoles={["Company"]}>
+                    <ManageCompanyProfile />
+                  </EmployerPrivateRoute>
+                }
               />
 
               {/* Employer Jobs */}
-              <Route path="/Employer/Jobs" element={<ManageJobs />} />
+              <Route
+                path="/Employer/Jobs"
+                element={
+                  <EmployerPrivateRoute allowedRoles={["Company"]}>
+                    <ManageJobs />
+                  </EmployerPrivateRoute>
+                }
+              />
 
               {/* Employer Jobs */}
               <Route
                 path="/Employer/JobApplications"
-                element={<ManageJobApplications />}
+                element={
+                  <EmployerPrivateRoute allowedRoles={["Company"]}>
+                    <ManageJobApplications />
+                  </EmployerPrivateRoute>
+                }
               />
 
               {/* Employer Gigs */}
-              <Route path="/Employer/Gigs" element={<ManageGigs />} />
+              <Route
+                path="/Employer/Gigs"
+                element={
+                  <EmployerPrivateRoute>
+                    <ManageGigs />
+                  </EmployerPrivateRoute>
+                }
+              />
 
               {/* Employer Gig Bids */}
-              <Route path="/Employer/GigBids" element={<ManageGigBids />} />
+              <Route
+                path="/Employer/GigBids"
+                element={
+                  <EmployerPrivateRoute>
+                    <ManageGigBids />
+                  </EmployerPrivateRoute>
+                }
+              />
 
               {/* Employer Internship */}
               <Route
                 path="/Employer/Internship"
-                element={<ManageInternship />}
+                element={
+                  <EmployerPrivateRoute allowedRoles={["Company"]}>
+                    <ManageInternship />
+                  </EmployerPrivateRoute>
+                }
               />
 
               {/* Employer Internship Application */}
               <Route
                 path="/Employer/InternshipApplications"
-                element={<ManageInternshipApplications />}
+                element={
+                  <EmployerPrivateRoute allowedRoles={["Company"]}>
+                    <ManageInternshipApplications />
+                  </EmployerPrivateRoute>
+                }
               />
 
               {/* Employer Events */}
-              <Route path="/Employer/Events" element={<ManageEvents />} />
+              <Route
+                path="/Employer/Events"
+                element={
+                  <EmployerPrivateRoute>
+                    <ManageEvents />
+                  </EmployerPrivateRoute>
+                }
+              />
 
               {/* Employer Event Application */}
               <Route
                 path="/Employer/EventApplications"
-                element={<ManageEventApplications />}
+                element={
+                  <EmployerPrivateRoute>
+                    <ManageEventApplications />
+                  </EmployerPrivateRoute>
+                }
               />
             </Route>
 
-            <Route element={<EmployerLayout />} >
-              <Route path="/Dashboard" element={<MentorDashboard />} />
-
+            <Route element={<MentorLayout />}>
+              <Route path="/Mentor/Dashboard" element={<MentorDashboard />} />
             </Route>
           </Routes>
         </BrowserRouter>

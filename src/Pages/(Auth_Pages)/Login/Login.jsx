@@ -49,7 +49,6 @@ const Login = () => {
     });
   };
 
-  // Submit Handler
   const onSubmit = useCallback(
     async (data) => {
       setLoading(true);
@@ -62,20 +61,24 @@ const Login = () => {
           return;
         }
 
-        const userData = await axiosPublic.get(`/Users?email=${user.email}`);
-        const role = userData?.data?.role;
+        const UserRole = await axiosPublic.get(
+          `/Users/Role?email=${user.email}`
+        );
+        const Role = UserRole.data.role;
+        console.log(Role);
 
-        if (!role) {
+        if (!Role) {
           showAlert("error", "User data not found. Please contact support.");
           return;
         }
 
-        showAlert("success", "You have successfully logged in!");
-
-        // Redirect based on role
-        if (role === "Company") {
+        // Redirect based on Role
+        if (Role === "Company") {
           navigate("/Employer/Company/Dashboard", { replace: true });
+        } else if (Role === "Employer") {
+          navigate("/Employer/Employer/Dashboard", { replace: true });
         } else {
+          // fallback if role is unknown
           navigate(from, { replace: true });
         }
       } catch (error) {
@@ -89,7 +92,6 @@ const Login = () => {
     },
     [signIn, axiosPublic, navigate, from]
   );
-
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-400 px-4">
@@ -171,8 +173,9 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 shadow-md transition disabled:opacity-60 ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
-              }`}
+            className={`w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 shadow-md transition disabled:opacity-60 ${
+              loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+            }`}
           >
             {loading ? "Logging In ..." : "Log In"}
           </button>

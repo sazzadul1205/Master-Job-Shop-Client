@@ -321,10 +321,11 @@ const EmployerLayout = () => {
                   <NavLink to={path}>
                     {({ isActive }) => (
                       <div
-                        className={`group relative flex flex-col items-start gap-1 text-base font-semibold px-2 py-3 mx-2 ${isActive
+                        className={`group relative flex flex-col items-start gap-1 text-base font-semibold px-2 py-3 mx-2 ${
+                          isActive
                             ? "text-blue-700"
                             : "text-black hover:text-blue-700"
-                          }`}
+                        }`}
                       >
                         <div className="flex items-center gap-2">
                           {icon ? (
@@ -342,8 +343,9 @@ const EmployerLayout = () => {
                           {label}
                         </div>
                         <span
-                          className={`block h-[2px] bg-blue-700 transition-all duration-500 ${isActive ? "w-full" : "w-0 group-hover:w-full"
-                            }`}
+                          className={`block h-[2px] bg-blue-700 transition-all duration-500 ${
+                            isActive ? "w-full" : "w-0 group-hover:w-full"
+                          }`}
                         />
                       </div>
                     )}

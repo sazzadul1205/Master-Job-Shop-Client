@@ -3,15 +3,87 @@ import { NavLink, Outlet } from "react-router-dom";
 
 // Icons
 import { CiMail } from "react-icons/ci";
-import { IoAddSharp } from "react-icons/io5";
+import {
+  IoAddSharp,
+  IoNotificationsOutline,
+  IoSettingsOutline,
+} from "react-icons/io5";
+import { FaRegMessage } from "react-icons/fa6";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 // Assets - Icons
+import MenteesIcon from "../assets/MentorLayoutIcons/MenteesIcon";
+import SessionsIcon from "../assets/MentorLayoutIcons/SessionsIcon";
 import MyCoursesIcon from "../assets/MentorLayoutIcons/MyCoursesIcon";
 import DashboardIcon from "../assets/MentorLayoutIcons/DashboardIcon";
 import MyMentorshipIcon from "../assets/MentorLayoutIcons/MyMentorshipIcon";
 import ApplicationsIcon from "../assets/MentorLayoutIcons/ApplicationsIcon";
+
+const sidebarLinks = [
+  {
+    title: null,
+    links: [
+      { label: "Dashboard", path: "/Mentor/Dashboard", icon: DashboardIcon },
+    ],
+  },
+  {
+    title: "Mentorship Management",
+    links: [
+      {
+        label: "My Mentorship's",
+        path: "/mentorship/my",
+        icon: MyMentorshipIcon,
+      },
+      {
+        label: "Mentorship Applications Management",
+        path: "/mentorship/applications",
+        icon: ApplicationsIcon,
+        scroll: true,
+      },
+      {
+        label: "Create Mentorship",
+        path: "/mentorship/create",
+        icon: IoAddSharp,
+      },
+    ],
+  },
+  {
+    title: "Course Management",
+    links: [
+      { label: "My Course's", path: "/courses/my", icon: MyCoursesIcon },
+      {
+        label: "Course Applications Management",
+        path: "/courses/applications",
+        icon: ApplicationsIcon,
+        scroll: true,
+      },
+      { label: "Create Course", path: "/courses/create", icon: IoAddSharp },
+    ],
+  },
+  {
+    title: "Mentees & Sessions",
+    links: [
+      { label: "Mentees", path: "/mentees", icon: MenteesIcon },
+      { label: "Sessions & Schedule", path: "/sessions", icon: SessionsIcon },
+    ],
+  },
+  {
+    title: "Communications",
+    links: [
+      { label: "Messages", path: "/messages", icon: FaRegMessage },
+      {
+        label: "Notifications",
+        path: "/notifications",
+        icon: IoNotificationsOutline,
+      },
+    ],
+  },
+  {
+    title: "More",
+    links: [{ label: "Settings", path: "/settings", icon: IoSettingsOutline }],
+  },
+];
 
 const MentorLayout = () => {
   // State for dropdown visibility
@@ -68,6 +140,7 @@ const MentorLayout = () => {
           </div>
         </NavLink>
 
+        {/* Dropdowns */}
         <div className="flex items-center gap-7">
           {/* Notifications */}
           <div className="relative" ref={notificationRef}>
@@ -203,81 +276,73 @@ const MentorLayout = () => {
       <div className="flex">
         {/* Sidebar Navigation */}
         <aside className="w-1/6 shadow-2xl min-h-screen bg-white border-t border-r-3 border-gray-400 pt-8 px-2">
-          {/* Dashboard Link */}
-          <div className="flex items-center gap-3 cursor-pointer group p-2 text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-500">
-            <DashboardIcon className="w-[20px] h-[20px] fill-black transition-colors duration-300 group-hover:fill-blue-500" />
-            <p className="font-semibold transition-colors duration-300 group-hover:text-blue-500">
-              Dashboard
-            </p>
-          </div>
+          {sidebarLinks.map((section, i) => (
+            <div key={i} className="mb-4">
+              {section.title && (
+                <h3 className="flex items-center gap-2 font-semibold text-gray-600 pt-3 pb-2 px-2 uppercase">
+                  {/* <GoDotFill /> */}
+                  {section.title}
+                </h3>
+              )}
 
-          {/* Mentorship Management Title */}
-          <h3 className="font-semibold text-gray-600 pt-5 pb-3 px-4">
-            Mentorship Management
-          </h3>
+              <div className="space-y-2">
+                {section.links.map(({ label, path, icon: Icon, scroll }, j) => (
+                  <NavLink
+                    key={j}
+                    to={path}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden group
+                  ${
+                    isActive
+                      ? "bg-gray-200 text-blue-500"
+                      : "text-gray-700 hover:bg-gray-200"
+                  }`
+                    }
+                  >
+                    {({ isActive }) => (
+                      <>
+                        {/* Icon */}
+                        <Icon
+                          className={`w-[20px] h-[20px] transition-colors duration-300 ${
+                            isActive
+                              ? "text-blue-500 fill-blue-500"
+                              : "text-gray-700 fill-black group-hover:text-blue-500 group-hover:fill-blue-500"
+                          }`}
+                        />
 
-          {/* Mentorship Management Links */}
-          <div className="space-y-2">
-            {/* My Mentorship Link */}
-            <div className="flex items-center gap-3 cursor-pointer group p-2 text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-500 overflow-hidden">
-              <MyMentorshipIcon className="w-[20px] h-[20px] fill-black transition-colors duration-300 group-hover:fill-blue-500" />
-              <p className="font-semibold transition-colors duration-300 group-hover:text-blue-500">
-                My Mentorship&apos;s
-              </p>
-            </div>
-
-            {/* My Mentorship Link */}
-            <div className="flex items-center gap-3 cursor-pointer group p-2 text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-500 overflow-hidden">
-              <ApplicationsIcon className="w-[20px] h-[20px] fill-black transition-colors duration-300 group-hover:fill-blue-500" />
-              <div className="relative overflow-hidden w-[220px]">
-                <p className="font-semibold whitespace-nowrap transition-colors duration-300 group-hover:text-blue-500 scroll-text">
-                  Mentorship Applications Management
-                </p>
+                        {/* Label */}
+                        {scroll ? (
+                          <div className="relative overflow-hidden w-[220px]">
+                            <p
+                              className={`font-semibold whitespace-nowrap transition-colors duration-300 scroll-text
+                          ${
+                            isActive
+                              ? "text-blue-500"
+                              : "group-hover:text-blue-500"
+                          }`}
+                            >
+                              {label}
+                            </p>
+                          </div>
+                        ) : (
+                          <p
+                            className={`font-semibold transition-colors duration-300
+                        ${
+                          isActive
+                            ? "text-blue-500"
+                            : "group-hover:text-blue-500"
+                        }`}
+                          >
+                            {label}
+                          </p>
+                        )}
+                      </>
+                    )}
+                  </NavLink>
+                ))}
               </div>
             </div>
-
-            {/* My Mentorship Link */}
-            <div className="flex items-center gap-3 cursor-pointer group p-2 text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-500 overflow-hidden">
-              <IoAddSharp className="w-[20px] h-[20px] fill-black transition-colors duration-300 group-hover:fill-blue-500" />
-              <p className="font-semibold transition-colors duration-300 group-hover:text-blue-500">
-                Create Mentorship
-              </p>
-            </div>
-          </div>
-
-          {/* Course Management Title */}
-          <h3 className="font-semibold text-gray-600 pt-5 pb-3 px-4">
-            Course Management
-          </h3>
-
-          {/* Course Management Links */}
-          <div className="space-y-2">
-            {/* My Course Link */}
-            <div className="flex items-center gap-3 cursor-pointer group p-2 text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-500 overflow-hidden">
-              <MyCoursesIcon className="w-[20px] h-[20px] fill-black transition-colors duration-300 group-hover:fill-blue-500" />
-              <p className="font-semibold transition-colors duration-300 group-hover:text-blue-500">
-                My Course&apos;s
-              </p>
-            </div>
-
-            {/* My Course Link */}
-            <div className="flex items-center gap-3 cursor-pointer group p-2 text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-500 overflow-hidden">
-              <ApplicationsIcon className="w-[20px] h-[20px] fill-black transition-colors duration-300 group-hover:fill-blue-500" />
-              <div className="relative overflow-hidden w-[220px]">
-                <p className="font-semibold whitespace-nowrap transition-colors duration-300 group-hover:text-blue-500 scroll-text">
-                  Course Applications Management
-                </p>
-              </div>
-            </div>
-
-            {/* My Course Link */}
-            <div className="flex items-center gap-3 cursor-pointer group p-2 text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-500 overflow-hidden">
-              <IoAddSharp className="w-[20px] h-[20px] fill-black transition-colors duration-300 group-hover:fill-blue-500" />
-              <p className="font-semibold transition-colors duration-300 group-hover:text-blue-500">
-                Create Course
-              </p>
-            </div>
-          </div>
+          ))}
         </aside>
 
         {/* Dynamic Main Content Area */}

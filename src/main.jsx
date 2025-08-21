@@ -87,8 +87,16 @@ import ManageInternshipApplications from "./Pages/(Employer_Pages)/ManageInterns
 // Company Dashboard
 import CompanyDashboard from "./Pages/(Employer_Pages)/CompanyDashboard/CompanyDashboard";
 import MentorDashboard from "./Pages/(Mentor_Pages)/MentorDashboard/MentorDashboard";
+
+// Private Route
 import EmployerPrivateRoute from "./Routes/EmployerPrivateRoute";
+
+// Mentor Layout
 import MentorLayout from "./Layouts/MentorLayout";
+
+// Mentor Pages
+import MentorMyMentorship from "./Pages/(Mentor_Pages)/MentorMyMentorship/MentorMyMentorship";
+import MentorProfile from "./Pages/(Mentor_Pages)/MentorProfile/MentorProfile";
 
 const queryClient = new QueryClient();
 
@@ -379,6 +387,11 @@ createRoot(document.getElementById("root")).render(
 
             <Route element={<MentorLayout />}>
               <Route path="/Mentor/Dashboard" element={<MentorDashboard />} />
+              <Route
+                path="/Mentor/MyMentorship's"
+                element={<MentorMyMentorship />}
+              />
+              <Route path="/Mentor/Profile" element={<MentorProfile />} />
             </Route>
           </Routes>
         </BrowserRouter>

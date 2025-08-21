@@ -2,12 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 
 // Icons
-import { CiMail } from "react-icons/ci";
 import {
   IoAddSharp,
   IoNotificationsOutline,
   IoSettingsOutline,
 } from "react-icons/io5";
+import { CiMail } from "react-icons/ci";
+import { CgProfile } from "react-icons/cg";
 import { FaRegMessage } from "react-icons/fa6";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -25,6 +26,7 @@ const sidebarLinks = [
     title: null,
     links: [
       { label: "Dashboard", path: "/Mentor/Dashboard", icon: DashboardIcon },
+      { label: "Profile", path: "/Mentor/Profile", icon: CgProfile },
     ],
   },
   {
@@ -32,7 +34,7 @@ const sidebarLinks = [
     links: [
       {
         label: "My Mentorship's",
-        path: "/mentorship/my",
+        path: "/Mentor/MyMentorship's",
         icon: MyMentorshipIcon,
       },
       {

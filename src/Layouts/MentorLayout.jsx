@@ -20,7 +20,13 @@ import MyCoursesIcon from "../assets/MentorLayoutIcons/MyCoursesIcon";
 import DashboardIcon from "../assets/MentorLayoutIcons/DashboardIcon";
 import MyMentorshipIcon from "../assets/MentorLayoutIcons/MyMentorshipIcon";
 import ApplicationsIcon from "../assets/MentorLayoutIcons/ApplicationsIcon";
+import useAuth from "../Hooks/useAuth";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../Shared/Loading/Loading";
+import Error from "../Shared/Error/Error";
 
+// Sidebar Links
 const sidebarLinks = [
   {
     title: null,
@@ -88,6 +94,9 @@ const sidebarLinks = [
 ];
 
 const MentorLayout = () => {
+  const { user, loading } = useAuth();
+  const axiosPublic = useAxiosPublic();
+
   // State for dropdown visibility
   const [openDropdown, setOpenDropdown] = useState(null);
 
@@ -100,6 +109,19 @@ const MentorLayout = () => {
   const messages = 15;
 
   const formatCount = (count) => (count > 1200 ? "99+" : count);
+
+  // Fetch Mentor Data
+  const {
+    data: MentorData,
+    isLoading,
+    error,
+    // refetch,
+  } = useQuery({
+    queryKey: ["MentorData", user?.email],
+    queryFn: () =>
+      axiosPublic.get(`/Mentors?email=${user?.email}`).then((res) => res.data),
+    enabled: !!user?.email,
+  });
 
   // Close dropdown when clicking outside or scrolling
   useEffect(() => {
@@ -126,6 +148,10 @@ const MentorLayout = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Loading / Error UI
+  if (isLoading || loading) return <Loading />;
+  if (error) return <Error />;
 
   const toggleDropdown = (name) => {
     setOpenDropdown((prev) => (prev === name ? null : name));
@@ -237,11 +263,13 @@ const MentorLayout = () => {
               onClick={() => toggleDropdown("profile")}
             >
               <img
-                src="https://i.ibb.co/XtrM9rc/UsersData.jpg"
-                alt="User Avatar"
+                src={
+                  MentorData?.avatar || "https://i.ibb.co/XtrM9rc/UsersData.jpg"
+                }
+                alt={MentorData?.name || "Mentor Avatar"}
                 className="w-12 h-12 rounded-full"
               />
-              <p className="text-sm">User Name</p>
+              <p className="text-sm">{MentorData?.name || "Mentor"}</p>
               {openDropdown === "profile" ? (
                 <FaChevronUp className="transition-transform duration-300" />
               ) : (

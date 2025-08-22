@@ -1,16 +1,38 @@
 import { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { ImCross } from "react-icons/im";
-import CompanyProfileLogoUpload from "../../../(Employer_Pages)/ManageCompanyProfile/AddCompanyProfileModal/CompanyProfileLogoUpload/CompanyProfileLogoUpload";
+
+// Packages
+import Swal from "sweetalert2";
+import PropTypes from "prop-types";
 import PhoneInput from "react-phone-input-2";
+import { useFieldArray, useForm } from "react-hook-form";
+
+// Icons
+import { ImCross } from "react-icons/im";
 import { RxCross2 } from "react-icons/rx";
 
+// Hooks
+import useAuth from "../../../../Hooks/useAuth";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+
+// Components
+import CompanyProfileLogoUpload from "../../../(Employer_Pages)/ManageCompanyProfile/AddCompanyProfileModal/CompanyProfileLogoUpload/CompanyProfileLogoUpload";
+
+// Constants for image hosting API
+const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
+
 const CreateMentorProfileModal = ({ refetch }) => {
+  const { user } = useAuth();
+  const axiosPublic = useAxiosPublic();
+
   // States
+  const [loading, setLoading] = useState(null);
   const [preview, setPreview] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [profileImage, setProfileImage] = useState(null);
+
+  // New Field Values
   const [newFieldValues, setNewFieldValues] = useState({
     expertise: "",
     skills: "",
@@ -18,7 +40,6 @@ const CreateMentorProfileModal = ({ refetch }) => {
 
   // Form Handling
   const {
-    watch,
     reset,
     control,
     register,
@@ -48,17 +69,100 @@ const CreateMentorProfileModal = ({ refetch }) => {
 
   // Form Submission
   const onSubmit = async (data) => {
-    console.log(data);
+    // Loading & Error Message Reinstate
+    setLoading(true);
+    setErrorMessage("");
+
+    // Image Upload URL
+    let uploadedImageUrl = null;
+
+    // Image Upload
+    try {
+      if (profileImage) {
+        const formData = new FormData();
+        formData.append("image", profileImage);
+
+        const res = await axiosPublic.post(Image_Hosting_API, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        uploadedImageUrl = res.data.data.display_url;
+      }
+
+      // formatted Data Payload
+      const formattedData = {
+        avatar: uploadedImageUrl,
+        name: data.name,
+        position: data.position,
+        description: data.description,
+        email: user.email,
+        contact: {
+          email: data.email, // from form
+          phone: phoneNumber,
+          linkedin: data.linkedin,
+        },
+        expertise: data.expertise
+          .map((t) => t.value.trim())
+          .filter((t) => t !== ""),
+        skills: data.skills.map((t) => t.value.trim()).filter((t) => t !== ""),
+        biography: data.biography,
+      };
+
+      // POST Request
+      await axiosPublic.post("/Mentors", formattedData);
+
+      // Close Modal after success
+      document.getElementById("Create_Mentor_Profile_Modal").close();
+
+      // Reset states after modal is closed
+      reset();
+      refetch();
+      setPreview("");
+      setPhoneNumber("+880 ");
+      setErrorMessage("");
+      setProfileImage("");
+      setNewFieldValues({
+        expertise: "",
+        skills: "",
+      });
+
+      // Success Message
+      Swal.fire({
+        icon: "success",
+        title: "Mentor Profile Created",
+        text: "Your Mentor profile was saved successfully.",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      setErrorMessage("Failed to save Mentor profile.");
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="modal-box min-w-3xl relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto">
+    <div
+      id="Create_Mentor_Profile_Modal"
+      className="modal-box min-w-3xl relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
+    >
       {/* Close Button */}
       <button
         type="button"
         onClick={() => {
-          document.getElementById("Add_Company_Profile_Modal ").close();
+          document.getElementById("Create_Mentor_Profile_Modal").close();
+          reset();
           refetch();
+          setPreview("");
+          setPhoneNumber("+880 ");
+          setErrorMessage("");
+          setProfileImage("");
+          setNewFieldValues({
+            expertise: "",
+            skills: "",
+          });
         }}
         className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
       >
@@ -98,10 +202,10 @@ const CreateMentorProfileModal = ({ refetch }) => {
 
           {/* Initial Information */}
           <div className="w-2/3 space-y-3 py-2">
-            {/* Company Name */}
+            {/* Name */}
             <div>
               <label className="font-medium text-sm mb-1">
-                Company Name <span className="text-red-500">*</span>
+                Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -140,6 +244,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
           />
         </div>
 
+        {/* Contact Information */}
         <div>
           {/* Title */}
           <h3 className="font-semibold text-lg text-gray-800">
@@ -193,7 +298,9 @@ const CreateMentorProfileModal = ({ refetch }) => {
           </div>
         </div>
 
+        {/* Expertise */}
         <div className="mb-3">
+          {/* Label */}
           <label
             htmlFor="expertise-input"
             className="block font-semibold text-sm mb-2 capitalize"
@@ -201,6 +308,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
             Expertise
           </label>
 
+          {/* Expertise Fields */}
           <div className="flex flex-wrap gap-2 rounded border border-gray-700 mb-3 px-2 py-2">
             {expertiseFields.length > 0 ? (
               expertiseFields.map((item, index) => (
@@ -209,8 +317,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
                   onClick={() => removeExpertise(index)}
                   className="flex items-center border border-gray-600 font-semibold text-gray-800 gap-2 px-5 py-1 rounded-full cursor-pointer hover:bg-gray-100 transition-all duration-200 text-sm"
                 >
-                  {watch(`expertise.${index}`) || `Expertise #${index + 1}`}{" "}
-                  <RxCross2 />
+                  {item.value || `Expertise #${index + 1}`} <RxCross2 />
                 </div>
               ))
             ) : (
@@ -220,7 +327,9 @@ const CreateMentorProfileModal = ({ refetch }) => {
             )}
           </div>
 
+          {/* Add New Expertise */}
           <div className="flex justify-end gap-2">
+            {/* Input */}
             <input
               id="expertise-input"
               type="text"
@@ -234,12 +343,14 @@ const CreateMentorProfileModal = ({ refetch }) => {
               placeholder="Add new expertise"
               className="input input-bordered bg-white text-black border-black w-3/7"
             />
+
+            {/* Add Button */}
             <button
               type="button"
               onClick={() => {
                 const value = newFieldValues.expertise.trim();
                 if (value) {
-                  appendExpertise(value);
+                  appendExpertise({ value }); // must be object
                   setNewFieldValues((prev) => ({ ...prev, expertise: "" }));
                 }
               }}
@@ -250,7 +361,9 @@ const CreateMentorProfileModal = ({ refetch }) => {
           </div>
         </div>
 
+        {/* Skills */}
         <div className="mb-3">
+          {/* Label */}
           <label
             htmlFor="skills-input"
             className="block font-semibold text-sm mb-2 capitalize"
@@ -258,6 +371,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
             Skills
           </label>
 
+          {/* Skills Fields */}
           <div className="flex flex-wrap gap-2 rounded border border-gray-700 mb-3 px-2 py-2">
             {skillsFields.length > 0 ? (
               skillsFields.map((item, index) => (
@@ -266,8 +380,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
                   onClick={() => removeSkills(index)}
                   className="flex items-center border border-gray-600 font-semibold text-gray-800 gap-2 px-5 py-1 rounded-full cursor-pointer hover:bg-gray-100 transition-all duration-200 text-sm"
                 >
-                  {watch(`skills.${index}`) || `Skill #${index + 1}`}{" "}
-                  <RxCross2 />
+                  {item.value || `Skill #${index + 1}`} <RxCross2 />
                 </div>
               ))
             ) : (
@@ -277,7 +390,9 @@ const CreateMentorProfileModal = ({ refetch }) => {
             )}
           </div>
 
+          {/* Add New Skill */}
           <div className="flex justify-end gap-2">
+            {/* Input */}
             <input
               id="skills-input"
               type="text"
@@ -291,12 +406,14 @@ const CreateMentorProfileModal = ({ refetch }) => {
               placeholder="Add new skills"
               className="input input-bordered bg-white text-black border-black w-3/7"
             />
+
+            {/* Add Button */}
             <button
               type="button"
               onClick={() => {
                 const value = newFieldValues.skills.trim();
                 if (value) {
-                  appendSkills(value);
+                  appendSkills({ value }); // must be object
                   setNewFieldValues((prev) => ({ ...prev, skills: "" }));
                 }
               }}
@@ -306,9 +423,36 @@ const CreateMentorProfileModal = ({ refetch }) => {
             </button>
           </div>
         </div>
+
+        {/* Biography */}
+        <div>
+          <label className="font-medium text-sm mb-1">Biography</label>
+          <textarea
+            {...register("biography")}
+            className="textarea textarea-bordered w-full bg-white text-black border-black"
+            placeholder="Describe your Biography"
+            rows={4}
+          />
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow ${
+            loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+          }`}
+        >
+          {loading ? "Creating..." : "Create Mentor Profile"}
+        </button>
       </form>
     </div>
   );
+};
+
+// Prop Validation
+CreateMentorProfileModal.propTypes = {
+  refetch: PropTypes.func.isRequired,
 };
 
 export default CreateMentorProfileModal;

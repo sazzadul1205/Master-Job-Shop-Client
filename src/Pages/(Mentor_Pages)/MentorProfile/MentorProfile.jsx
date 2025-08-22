@@ -41,7 +41,7 @@ const MentorProfile = () => {
   if (error) return <Error />;
 
   // If no mentor profile data exists
-  if (MentorData || Object.keys(MentorData).length === 0) {
+  if (!MentorData || Object.keys(MentorData).length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-[70vh] text-center`">
         <h2 className="text-2xl text-black font-bold mb-4">No Profile Found</h2>

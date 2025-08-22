@@ -111,10 +111,12 @@ const AddCompanyProfileModal = ({ CompanyRefetch }) => {
         icon: "success",
         title: "Profile Created",
         text: "Your company profile was saved successfully.",
-        confirmButtonColor: "#2563eb",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
       }).then(() => {
         // Close Modal
-        () => document.getElementById("Add_Company_Profile_Modal ").close();
+        document.getElementById("Add_Company_Profile_Modal ").close();
         reset();
         CompanyRefetch();
         setPreview(null);

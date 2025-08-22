@@ -130,9 +130,11 @@ const SignUpDetails = () => {
     }
   };
 
+  // Loading / Error UI
   if (UserExistsCheckIsLoading) return <Loading />;
   if (UserExistsCheckError) return <Error />;
 
+  // If user already has an account
   if (UserExistCheck?.exists) {
     return (
       <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-bl from-blue-400 to-blue-600 px-4">

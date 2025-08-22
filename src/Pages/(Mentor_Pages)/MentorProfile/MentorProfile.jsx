@@ -17,6 +17,7 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 // Shared
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+import CreateMentorProfileModal from "./CreateMentorProfileModal/CreateMentorProfileModal";
 
 const MentorProfile = () => {
   const { user, loading } = useAuth();
@@ -27,7 +28,7 @@ const MentorProfile = () => {
     data: MentorData,
     isLoading,
     error,
-    // refetch,
+    refetch,
   } = useQuery({
     queryKey: ["MentorData", user?.email],
     queryFn: () =>
@@ -48,9 +49,18 @@ const MentorProfile = () => {
           You haven’t created your mentor profile yet. Please set it up to
           showcase your expertise and connect with mentees.
         </p>
-        <button className="border-2 border-blue-500 hover:bg-blue-500 text-blue-700 hover:text-white font-semibold px-10 py-3 rounded-xl cursor-pointer transition-colors duration-500">
+        <button
+          onClick={() =>
+            document.getElementById("Create_Mentor_Profile_Modal").showModal()
+          }
+          className="border-2 border-blue-500 hover:bg-blue-500 text-blue-700 hover:text-white font-semibold px-10 py-3 rounded-lg cursor-pointer transition-colors duration-500"
+        >
           Create Profile
         </button>
+
+        <dialog id="Create_Mentor_Profile_Modal" className="modal">
+          <CreateMentorProfileModal refetch={refetch} />
+        </dialog>
       </div>
     );
   }

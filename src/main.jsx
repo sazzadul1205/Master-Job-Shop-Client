@@ -3,7 +3,7 @@ import "./index.css";
 // React and React Router
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // TanStack Query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -385,7 +385,14 @@ createRoot(document.getElementById("root")).render(
               />
             </Route>
 
+            {/* Mentor Route */}
             <Route element={<MentorLayout />}>
+              {/* Redirect /Mentor to /Mentor/Dashboard */}
+              <Route
+                path="/Mentor"
+                element={<Navigate to="/Mentor/Dashboard" replace />}
+              />
+
               <Route path="/Mentor/Dashboard" element={<MentorDashboard />} />
               <Route
                 path="/Mentor/MyMentorship's"

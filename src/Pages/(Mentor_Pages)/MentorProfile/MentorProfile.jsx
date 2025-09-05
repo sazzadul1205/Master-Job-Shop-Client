@@ -18,6 +18,7 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
 import CreateMentorProfileModal from "./CreateMentorProfileModal/CreateMentorProfileModal";
+import EditProfileBasicInformation from "./EditProfileBasicInformation/EditProfileBasicInformation";
 
 const MentorProfile = () => {
   const { user, loading } = useAuth();
@@ -71,8 +72,14 @@ const MentorProfile = () => {
       <div className="bg-white text-black w-full px-6 rounded-xl pb-7 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
         {/* Header */}
         <div className="flex items-center justify-between pt-7">
+          {/* Title */}
           <h3 className="font-bold text-xl">Mentor Profile</h3>
-          <button className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer">
+
+          {/* Edit Button */}
+          <button
+            onClick={() => document.getElementById("Edit_Profile_Basic_Information").showModal()}
+            className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer"
+          >
             <MdEdit /> Edit Profile
           </button>
         </div>
@@ -191,6 +198,12 @@ const MentorProfile = () => {
           ))}
         </div>
       </div>
+
+      {/* Modals */}
+      {/* Edit Profile Modal */}
+      <dialog id="Edit_Profile_Basic_Information" className="modal">
+        <EditProfileBasicInformation />
+      </dialog>
     </div>
   );
 };

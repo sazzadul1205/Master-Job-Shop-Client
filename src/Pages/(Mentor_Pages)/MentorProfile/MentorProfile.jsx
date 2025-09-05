@@ -21,6 +21,7 @@ import Error from "../../../Shared/Error/Error";
 // Modals
 import CreateMentorProfileModal from "./CreateMentorProfileModal/CreateMentorProfileModal";
 import EditProfileBasicInformationModal from "./EditProfileBasicInformationModal/EditProfileBasicInformationModal";
+import EditProfileContactDetailsModal from "./EditProfileContactDetailsModal/EditProfileContactDetailsModal";
 
 const MentorProfile = () => {
   const { user, loading } = useAuth();
@@ -101,8 +102,10 @@ const MentorProfile = () => {
         <div className="flex items-center gap-6 pt-5">
           {/* Avatar */}
           {isLoading || isFetching ? (
+            // If loading, show skeleton
             <div className="skeleton h-20 w-20 rounded-full shrink-0"></div>
           ) : (
+            // If no avatar, show default logo
             <img
               src={MentorData.avatar || DefaultUserLogo}
               alt={MentorData.name || "Mentor avatar"}
@@ -112,7 +115,10 @@ const MentorProfile = () => {
 
           {/* Name & Position */}
           <div>
+            {/* Name */}
             <h2 className="text-2xl font-semibold">{MentorData.name}</h2>
+
+            {/* Position */}
             <p className="text-gray-500">{MentorData.position}</p>
           </div>
         </div>
@@ -125,8 +131,18 @@ const MentorProfile = () => {
       <div className="bg-white text-black w-full px-6 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ">
         {/* Header */}
         <div className="flex items-center justify-between pt-7 ">
+          {/* Title */}
           <h3 className="font-semibold text-xl">Contact Details</h3>
-          <button className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer">
+
+          {/* Edit Button */}
+          <button
+            onClick={() =>
+              document
+                .getElementById("Edit_Profile_Contact_Details")
+                .showModal()
+            }
+            className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer"
+          >
             <MdEdit /> Edit Contact
           </button>
         </div>
@@ -220,6 +236,14 @@ const MentorProfile = () => {
       {/* Edit Profile Modal */}
       <dialog id="Edit_Profile_Basic_Information" className="modal">
         <EditProfileBasicInformationModal
+          MentorData={MentorData}
+          refetch={refetch}
+        />
+      </dialog>
+
+      {/* Edit Profile Modal */}
+      <dialog id="Edit_Profile_Contact_Details" className="modal">
+        <EditProfileContactDetailsModal
           MentorData={MentorData}
           refetch={refetch}
         />

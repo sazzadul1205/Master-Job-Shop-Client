@@ -9,6 +9,8 @@ import { ImCross } from "react-icons/im";
 
 // Components
 import CompanyProfileLogoUpload from "../../../(Employer_Pages)/ManageCompanyProfile/AddCompanyProfileModal/CompanyProfileLogoUpload/CompanyProfileLogoUpload";
+
+// Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 // Constants for image hosting API

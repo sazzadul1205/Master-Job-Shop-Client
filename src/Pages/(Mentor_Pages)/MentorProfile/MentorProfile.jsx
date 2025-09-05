@@ -27,6 +27,7 @@ const MentorProfile = () => {
   // Fetch Mentor Data
   const {
     data: MentorData,
+    isFetching,
     isLoading,
     error,
     refetch,
@@ -44,12 +45,17 @@ const MentorProfile = () => {
   // If no mentor profile data exists
   if (!MentorData || Object.keys(MentorData).length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[70vh] text-center`">
+      <div className="flex flex-col items-center justify-center h-[70vh] text-center">
+        {/* Header */}
         <h2 className="text-2xl text-black font-bold mb-4">No Profile Found</h2>
+
+        {/* Message */}
         <p className="text-gray-600 font-semibold text-xl mb-6 w-1/2 text-center">
           You haven’t created your mentor profile yet. Please set it up to
           showcase your expertise and connect with mentees.
         </p>
+
+        {/* Create Button */}
         <button
           onClick={() =>
             document.getElementById("Create_Mentor_Profile_Modal").showModal()
@@ -59,6 +65,7 @@ const MentorProfile = () => {
           Create Profile
         </button>
 
+        {/* Create Mentor Profile Modal */}
         <dialog id="Create_Mentor_Profile_Modal" className="modal">
           <CreateMentorProfileModal refetch={refetch} />
         </dialog>
@@ -77,7 +84,11 @@ const MentorProfile = () => {
 
           {/* Edit Button */}
           <button
-            onClick={() => document.getElementById("Edit_Profile_Basic_Information").showModal()}
+            onClick={() =>
+              document
+                .getElementById("Edit_Profile_Basic_Information")
+                .showModal()
+            }
             className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer"
           >
             <MdEdit /> Edit Profile
@@ -87,11 +98,15 @@ const MentorProfile = () => {
         {/* Profile Details */}
         <div className="flex items-center gap-6 pt-5">
           {/* Avatar */}
-          <img
-            src={MentorData.avatar || DefaultUserLogo}
-            alt={MentorData.name || "Mentor avatar"}
-            className="w-20 h-20 rounded-full"
-          />
+          {isLoading || isFetching ? (
+            <div className="skeleton h-20 w-20 rounded-full shrink-0"></div>
+          ) : (
+            <img
+              src={MentorData.avatar || DefaultUserLogo}
+              alt={MentorData.name || "Mentor avatar"}
+              className="w-20 h-20 rounded-full"
+            />
+          )}
 
           {/* Name & Position */}
           <div>
@@ -101,7 +116,7 @@ const MentorProfile = () => {
         </div>
 
         {/* Description */}
-        <p className="pt-1">{MentorData.description}</p>
+        <p className="pt-5">{MentorData.description}</p>
       </div>
 
       {/* Contact Details Block */}
@@ -202,7 +217,10 @@ const MentorProfile = () => {
       {/* Modals */}
       {/* Edit Profile Modal */}
       <dialog id="Edit_Profile_Basic_Information" className="modal">
-        <EditProfileBasicInformation />
+        <EditProfileBasicInformation
+          MentorData={MentorData}
+          refetch={refetch}
+        />
       </dialog>
     </div>
   );

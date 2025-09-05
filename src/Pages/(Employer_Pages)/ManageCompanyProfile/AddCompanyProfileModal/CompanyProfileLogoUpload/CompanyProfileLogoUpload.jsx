@@ -24,8 +24,11 @@ const CompanyProfileLogoUpload = ({ preview, setPreview, setProfileImage }) => {
     if (file && file.type.startsWith("image/")) {
       const imageUrl = URL.createObjectURL(file);
       setImageSrc(imageUrl);
-      setShowCropper(true); // open cropper instead of setting preview immediately
+      setShowCropper(true);
     }
+
+    // Reset input so selecting the same file triggers onChange next time
+    e.target.value = null;
   };
 
   // Triggered when an image is dropped

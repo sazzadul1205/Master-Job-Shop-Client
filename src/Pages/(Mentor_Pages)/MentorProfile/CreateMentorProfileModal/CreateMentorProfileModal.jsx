@@ -190,7 +190,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
         <div className="flex w-full gap-1">
           <div className="w-1/3 py-2 px-5">
             {/* Logo Title */}
-            <p className="font-medium text-center text-sm mb-1">Company Logo</p>
+            <p className="font-medium text-center text-sm mb-1">Mentor Image</p>
 
             {/* Logo Upload Container */}
             <CompanyProfileLogoUpload

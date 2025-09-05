@@ -15,7 +15,7 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
 
-const EditProfileBasicInformation = ({ MentorData, refetch }) => {
+const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
   const axiosPublic = useAxiosPublic();
 
   // State Variables
@@ -206,7 +206,7 @@ const EditProfileBasicInformation = ({ MentorData, refetch }) => {
 };
 
 // Prop Validation
-EditProfileBasicInformation.propTypes = {
+EditProfileBasicInformationModal.propTypes = {
   MentorData: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     name: PropTypes.string,
@@ -217,4 +217,4 @@ EditProfileBasicInformation.propTypes = {
   refetch: PropTypes.func.isRequired,
 };
 
-export default EditProfileBasicInformation;
+export default EditProfileBasicInformationModal;

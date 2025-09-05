@@ -17,8 +17,10 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 // Shared
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+
+// Modals
 import CreateMentorProfileModal from "./CreateMentorProfileModal/CreateMentorProfileModal";
-import EditProfileBasicInformation from "./EditProfileBasicInformation/EditProfileBasicInformation";
+import EditProfileBasicInformationModal from "./EditProfileBasicInformationModal/EditProfileBasicInformationModal";
 
 const MentorProfile = () => {
   const { user, loading } = useAuth();
@@ -217,7 +219,7 @@ const MentorProfile = () => {
       {/* Modals */}
       {/* Edit Profile Modal */}
       <dialog id="Edit_Profile_Basic_Information" className="modal">
-        <EditProfileBasicInformation
+        <EditProfileBasicInformationModal
           MentorData={MentorData}
           refetch={refetch}
         />

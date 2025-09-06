@@ -23,6 +23,7 @@ import CreateMentorProfileModal from "./CreateMentorProfileModal/CreateMentorPro
 import EditProfileBasicInformationModal from "./EditProfileBasicInformationModal/EditProfileBasicInformationModal";
 import EditProfileContactDetailsModal from "./EditProfileContactDetailsModal/EditProfileContactDetailsModal";
 import EditProfileExpertiseModal from "./EditProfileExpertiseModal/EditProfileExpertiseModal";
+import EditProfileBiographyModal from "./EditProfileBiographyModal/EditProfileBiographyModal";
 
 const MentorProfile = () => {
   const { user, loading } = useAuth();
@@ -227,22 +228,33 @@ const MentorProfile = () => {
       <div className="bg-white text-black w-full px-6 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
         {/* Header */}
         <div className="flex items-center justify-between pt-7">
+          {/* Title */}
           <h3 className="font-bold text-xl">Biography</h3>
-          <button className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer">
+
+          {/* Edit Button */}
+          <button
+            onClick={() =>
+              document.getElementById("Edit_Profile_Biography").showModal()
+            }
+            className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer"
+          >
             <MdEdit /> Edit Biography
           </button>
         </div>
 
         {/* Biography */}
         <div className="py-6 space-y-6">
-          {MentorData.biography.map((para, idx) => (
-            <p key={idx}>{para}</p>
-          ))}
+          {(MentorData?.biography || "")
+            .split("\n")
+            .filter((para) => para.trim() !== "")
+            .map((para, idx) => (
+              <p key={idx}>{para}</p>
+            ))}
         </div>
       </div>
 
       {/* Modals */}
-      {/* Edit Profile Modal */}
+      {/* Edit Profile Basic Information Modal */}
       <dialog id="Edit_Profile_Basic_Information" className="modal">
         <EditProfileBasicInformationModal
           MentorData={MentorData}
@@ -250,7 +262,7 @@ const MentorProfile = () => {
         />
       </dialog>
 
-      {/* Edit Profile Modal */}
+      {/* Edit Profile Contact Details Modal */}
       <dialog id="Edit_Profile_Contact_Details" className="modal">
         <EditProfileContactDetailsModal
           MentorData={MentorData}
@@ -258,9 +270,14 @@ const MentorProfile = () => {
         />
       </dialog>
 
-      {/* Edit Profile Modal */}
+      {/* Edit Profile Expertise Modal */}
       <dialog id="Edit_Profile_Expertise" className="modal">
         <EditProfileExpertiseModal MentorData={MentorData} refetch={refetch} />
+      </dialog>
+
+      {/* Edit Profile Biography Modal */}
+      <dialog id="Edit_Profile_Biography" className="modal">
+        <EditProfileBiographyModal MentorData={MentorData} refetch={refetch} />
       </dialog>
     </div>
   );

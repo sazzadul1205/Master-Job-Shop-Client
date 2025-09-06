@@ -22,6 +22,7 @@ import Error from "../../../Shared/Error/Error";
 import CreateMentorProfileModal from "./CreateMentorProfileModal/CreateMentorProfileModal";
 import EditProfileBasicInformationModal from "./EditProfileBasicInformationModal/EditProfileBasicInformationModal";
 import EditProfileContactDetailsModal from "./EditProfileContactDetailsModal/EditProfileContactDetailsModal";
+import EditProfileExpertiseModal from "./EditProfileExpertiseModal/EditProfileExpertiseModal";
 
 const MentorProfile = () => {
   const { user, loading } = useAuth();
@@ -173,8 +174,16 @@ const MentorProfile = () => {
       <div className="bg-white text-black w-full px-6 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
         {/* Header */}
         <div className="flex items-center justify-between pt-7">
+          {/* Title */}
           <h3 className="font-bold text-xl">Expertise & Skills</h3>
-          <button className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer">
+
+          {/* Edit Button */}
+          <button
+            onClick={() =>
+              document.getElementById("Edit_Profile_Expertise").showModal()
+            }
+            className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer"
+          >
             <MdEdit /> Edit Expertise
           </button>
         </div>
@@ -247,6 +256,11 @@ const MentorProfile = () => {
           MentorData={MentorData}
           refetch={refetch}
         />
+      </dialog>
+
+      {/* Edit Profile Modal */}
+      <dialog id="Edit_Profile_Expertise" className="modal">
+        <EditProfileExpertiseModal MentorData={MentorData} refetch={refetch} />
       </dialog>
     </div>
   );

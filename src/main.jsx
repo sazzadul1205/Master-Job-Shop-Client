@@ -393,11 +393,16 @@ createRoot(document.getElementById("root")).render(
                 element={<Navigate to="/Mentor/Dashboard" replace />}
               />
 
+              {/* Mentor Dashboard */}
               <Route path="/Mentor/Dashboard" element={<MentorDashboard />} />
+
+              {/* Mentor My Mentorship */}
               <Route
                 path="/Mentor/MyMentorship's"
                 element={<MentorMyMentorship />}
               />
+
+              {/* Mentor Profile */}
               <Route path="/Mentor/Profile" element={<MentorProfile />} />
             </Route>
           </Routes>

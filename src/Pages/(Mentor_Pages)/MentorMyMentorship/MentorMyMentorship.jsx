@@ -1,11 +1,36 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+// Icons
 import { FaPlus } from "react-icons/fa";
+
+// Components
 import MentorMyActiveMentorship from "./MentorMyActiveMentorship/MentorMyActiveMentorship";
 
+// Modals
+import CreateMentorshipModal from "./CreateMentorshipModal/CreateMentorshipModal";
+
+// Hooks
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
 const MentorMyMentorship = () => {
+  const axiosPublic = useAxiosPublic();
+
   // Track active tab
   const [activeTab, setActiveTab] = useState("active");
 
+  // Fetch Mentorship
+  const {
+    data: MentorshipData,
+    isLoading,
+    refetch,
+    error,
+  } = useQuery({
+    queryKey: ["MentorshipData"],
+    queryFn: () => axiosPublic.get(`/Mentorship`).then((res) => res.data),
+  });
+
+  // Tabs Data
   const tabs = [
     { id: "active", label: "Active Mentorship's" },
     { id: "completed", label: "Completed Mentorship's" },
@@ -20,7 +45,12 @@ const MentorMyMentorship = () => {
         <h3 className="text-2xl text-black font-bold">My Mentorship&apos;s</h3>
 
         {/* Create New Mentorship Button */}
-        <button className="flex items-center gap-4 bg-[#002242] hover:bg-[#00509e] text-white shadow hover:shadow-2xl font-semibold px-5 py-3 rounded-md transition-colors duration-500 cursor-pointer">
+        <button
+          onClick={() =>
+            document.getElementById("Create_Mentorship_Modal").showModal()
+          }
+          className="flex items-center gap-4 bg-[#002242] hover:bg-[#00509e] text-white shadow hover:shadow-2xl font-semibold px-5 py-3 rounded-md transition-colors duration-500 cursor-pointer"
+        >
           <FaPlus /> Create New Mentorship
         </button>
       </div>
@@ -46,7 +76,13 @@ const MentorMyMentorship = () => {
       {/* Tabs Content */}
       <div className="p-8">
         {/* Active Tab Content */}
-        {activeTab === "active" && <MentorMyActiveMentorship />}
+        {activeTab === "active" && (
+          <MentorMyActiveMentorship
+            error={error}
+            isLoading={isLoading}
+            MentorshipData={MentorshipData}
+          />
+        )}
 
         {/* Completed Tab Content */}
         {activeTab === "completed" && (
@@ -62,6 +98,12 @@ const MentorMyMentorship = () => {
           </p>
         )}
       </div>
+
+      {/* Modals */}
+      {/* Create Mentorship Modal */}
+      <dialog id="Create_Mentorship_Modal" className="modal">
+        <CreateMentorshipModal refetch={refetch} />
+      </dialog>
     </div>
   );
 };

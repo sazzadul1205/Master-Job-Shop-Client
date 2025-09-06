@@ -1,10 +1,17 @@
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
-import MentorshipDetailsModal from "../../../(Public_Pages)/Home/FeaturedMentorship/MentorshipDetailsModal/MentorshipDetailsModal";
 import { useState } from "react";
-import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
+
+// Packages
+import PropTypes from "prop-types";
+
+// Icons
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+
+// Shared
 import Loading from "../../../../Shared/Loading/Loading";
 import Error from "../../../../Shared/Error/Error";
+
+// Modals
+import MentorshipDetailsModal from "../../../(Public_Pages)/Home/FeaturedMentorship/MentorshipDetailsModal/MentorshipDetailsModal";
 
 // Utility: Format Budget Display
 const formatBudget = (amount, currency = "USD", isNegotiable = false) => {
@@ -22,21 +29,9 @@ const calculateDaysAgo = (isoString) => {
   return days === 0 ? "Today" : `${days} day${days > 1 ? "s" : ""} ago`;
 };
 
-const MentorMyActiveMentorship = () => {
-  const axiosPublic = useAxiosPublic();
-
+const MentorMyActiveMentorship = ({ error, isLoading, MentorshipData }) => {
   // State Variables
   const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
-
-  // Fetch Mentorship
-  const {
-    data: MentorshipData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["MentorshipData"],
-    queryFn: () => axiosPublic.get(`/Mentorship`).then((res) => res.data),
-  });
 
   // Loading State
   if (isLoading) return <Loading />;
@@ -135,6 +130,31 @@ const MentorMyActiveMentorship = () => {
       </dialog>
     </div>
   );
+};
+
+// Prop Validation
+MentorMyActiveMentorship.propTypes = {
+  error: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  MentorshipData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      category: PropTypes.string,
+      subCategory: PropTypes.string,
+      location: PropTypes.shape({
+        city: PropTypes.string,
+        country: PropTypes.string,
+      }),
+      isRemote: PropTypes.bool,
+      fee: PropTypes.shape({
+        amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        currency: PropTypes.string,
+        isNegotiable: PropTypes.bool,
+      }),
+      postedAt: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 export default MentorMyActiveMentorship;

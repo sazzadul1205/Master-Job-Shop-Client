@@ -10,6 +10,7 @@ const FormInput = ({
   as = "input", // "input", "textarea", or "select"
   rows = 4, // for textarea
   options = [], // for select
+  disabled = false, // NEW
 }) => {
   return (
     <div className="w-full space-y-1">
@@ -24,17 +25,19 @@ const FormInput = ({
           {...register}
           rows={rows}
           placeholder={placeholder}
+          disabled={disabled}
           className={`textarea textarea-bordered w-full bg-white text-black border ${
             error ? "border-red-500" : "border-black"
-          }`}
+          } ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""}`}
         />
       ) : as === "select" ? (
         <select
           {...register}
           defaultValue=""
+          disabled={disabled}
           className={`select select-bordered w-full bg-white text-black border ${
             error ? "border-red-500" : "border-black"
-          }`}
+          } ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""}`}
         >
           {placeholder && (
             <option value="" disabled>
@@ -52,16 +55,18 @@ const FormInput = ({
           type={type}
           {...register}
           placeholder={placeholder}
+          disabled={disabled}
           className={`input input-bordered w-full bg-white text-black border ${
             error ? "border-red-500" : "border-black"
-          }`}
+          } ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""}`}
         />
       )}
 
       {/* Error Message */}
-      {error && (
-        <p className="text-red-500 text-sm">{error.message || "Required"}</p>
-      )}
+      {error &&
+        !disabled && ( // don’t show errors when disabled
+          <p className="text-red-500 text-sm">{error.message || "Required"}</p>
+        )}
     </div>
   );
 };
@@ -82,6 +87,7 @@ FormInput.propTypes = {
       label: PropTypes.string.isRequired,
     })
   ),
+  disabled: PropTypes.bool,
 };
 
 export default FormInput;

@@ -189,7 +189,7 @@ const CreateMentorshipModal = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    defaultValues: { tags: [] },
+    defaultValues: { tags: [], prerequisites: [] },
   });
 
   // Skills
@@ -201,6 +201,27 @@ const CreateMentorshipModal = () => {
     control,
     name: "skills",
   });
+
+  // Prerequisites
+  const {
+    fields: prerequisitesFields,
+    append: appendPrerequisites,
+    remove: removePrerequisites,
+  } = useFieldArray({
+    control,
+    name: "prerequisites",
+  });
+
+  // Attachments
+  const {
+    fields: attachmentsFields,
+    append: appendAttachments,
+    remove: removeAttachments,
+  } = useFieldArray({
+    control,
+    name: "attachments",
+  });
+
   // Watch category selection
   const selectedCategory = watch("category");
 
@@ -322,6 +343,211 @@ const CreateMentorshipModal = () => {
           label="Skills"
           placeholder="Add a skill"
         />
+
+        {/* Prerequisites TagInput */}
+        <TagInput
+          items={prerequisitesFields}
+          appendItem={appendPrerequisites}
+          removeItem={removePrerequisites}
+          label="Prerequisites"
+          placeholder="Add a Prerequisites"
+        />
+
+        {/* Attachments TagInput */}
+        <TagInput
+          items={attachmentsFields}
+          appendItem={appendAttachments}
+          removeItem={removeAttachments}
+          label="Attachments"
+          placeholder="Add a Attachment"
+        />
+
+        {/* Schedule */}
+        <div className="space-y-2">
+          {/* Header */}
+          <h3 className="font-bold text-lg">Schedule</h3>
+
+          {/* Divider */}
+          <p className="bg-gray-500 p-[1px] my-2" />
+
+          {/* Duration & Sessions Per Week */}
+          <div className="flex gap-4">
+            {/* Total Duration */}
+            <FormInput
+              label="Total Duration (Weeks)"
+              type="number"
+              placeholder="e.g., 8"
+              required
+              register={register("durationWeeks", {
+                required: "Required",
+                min: { value: 1, message: "Must be at least 1" },
+              })}
+              error={errors.durationWeeks}
+            />
+
+            {/* Sessions Per Week */}
+            <FormInput
+              label="Sessions Per Week"
+              type="number"
+              placeholder="e.g., 2"
+              required
+              register={register("sessionsPerWeek", {
+                required: "Required",
+                min: { value: 1, message: "Must be at least 1" },
+                max: { value: 7, message: "Cannot exceed 7 sessions per week" },
+              })}
+              error={errors.sessionsPerWeek}
+            />
+          </div>
+
+          {/* Session Length */}
+          <FormInput
+            label="Session Length"
+            as="select"
+            required
+            placeholder="Select length"
+            register={register("sessionLength", { required: "Required" })}
+            error={errors.sessionLength}
+            options={[
+              { value: "30min", label: "30 minutes" },
+              { value: "1hr", label: "1 hour" },
+              { value: "2hr", label: "2 hours" },
+              { value: "3hr", label: "3 hours" },
+            ]}
+          />
+
+          {/* Session Days */}
+          {/* Session Days */}
+          <div className="space-y-2">
+            <label className="block font-medium text-sm">Session Days</label>
+            <div className="grid grid-cols-7 gap-2">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
+                const selectedDays = watch("sessionDays") || [];
+                const sessionsPerWeek = Number(watch("sessionsPerWeek")) || 0;
+                const isSelected = selectedDays.includes(day);
+
+                // Disable unchecked boxes if limit reached
+                const disabled =
+                  !isSelected && selectedDays.length >= sessionsPerWeek;
+
+                return (
+                  <label
+                    key={day}
+                    className={`cursor-pointer px-2 py-2 rounded-lg border text-center transition-colors duration-200 flex items-center justify-center ${
+                      isSelected
+                        ? "bg-blue-500 text-white border-blue-500"
+                        : "bg-gray-100 text-gray-700 border-gray-300"
+                    } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    <input
+                      type="checkbox"
+                      value={day}
+                      {...register("sessionDays")}
+                      disabled={disabled}
+                      className="hidden"
+                    />
+                    {day}
+                  </label>
+                );
+              })}
+            </div>
+            {/* Error message if limit exceeded */}
+            {watch("sessionDays")?.length >
+              Number(watch("sessionsPerWeek")) && (
+              <p className="text-red-500 text-sm mt-1">
+                Maximum {watch("sessionsPerWeek")} sessions per week allowed.
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Duration Weeks */}
+        <FormInput
+          label="Duration Weeks"
+          type="number"
+          required
+          register={register("durationWeeks", {
+            required: "Duration Weeks is required",
+          })}
+          error={errors.durationWeeks}
+        />
+
+        {/* Remote / On-site Toggle */}
+        <div className="flex flex-col gap-2">
+          {/* Label */}
+          <label className="block font-medium text-sm">
+            Mentorship Mode <span className="text-red-500">*</span>
+          </label>
+
+          {/* Divider */}
+          <p className="h-[2px] w-full bg-black" />
+
+          {/* Toggle */}
+          <div className="flex items-center gap-3">
+            {/* Remote Toggle */}
+            <span className="font-semibold">Remote</span>
+
+            {/* Toggle */}
+            <input
+              type="checkbox"
+              className="toggle bg-blue-400 checked:bg-blue-600"
+              {...register("modeToggle")}
+            />
+
+            {/* On-site Toggle */}
+            <span className="font-semibold">On-site</span>
+          </div>
+        </div>
+
+        {/* On-site Detailed Location (always shown, disabled if Remote) */}
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          {/* City */}
+          <FormInput
+            label="City"
+            placeholder="Enter city"
+            disabled={!watch("modeToggle")}
+            required={watch("modeToggle")}
+            register={register("location.city", {
+              required: watch("modeToggle") ? "City is required" : false,
+            })}
+            error={errors?.location?.city}
+          />
+
+          {/* State / Province */}
+          <FormInput
+            label="State / Province"
+            placeholder="Enter state or province"
+            disabled={!watch("modeToggle")}
+            required={watch("modeToggle")}
+            register={register("location.state", {
+              required: watch("modeToggle")
+                ? "State/Province is required"
+                : false,
+            })}
+            error={errors?.location?.state}
+          />
+
+          {/* Country */}
+          <FormInput
+            label="Country"
+            placeholder="Enter country"
+            disabled={!watch("modeToggle")}
+            required={watch("modeToggle")}
+            register={register("location.country", {
+              required: watch("modeToggle") ? "Country is required" : false,
+            })}
+            error={errors?.location?.country}
+          />
+
+          {/* Address (Optional, not required) */}
+          <FormInput
+            label="Address (optional)"
+            placeholder="Enter detailed address"
+            disabled={!watch("modeToggle")}
+            register={register("location.address")}
+            error={errors?.location?.address}
+          />
+        </div>
 
         {/* Submit Button */}
         <button

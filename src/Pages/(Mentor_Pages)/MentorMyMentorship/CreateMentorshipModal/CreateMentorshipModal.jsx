@@ -9,6 +9,7 @@ import { ImCross } from "react-icons/im";
 // Shared
 import FormInput from "../../../../Shared/FormInput/FormInput";
 import TagInput from "../../../../Shared/TagInput/TagInput";
+import WeeklyPlanInput from "./WeeklyPlanInput/WeeklyPlanInput";
 
 // Category Options
 const CategoryOptions = [
@@ -222,6 +223,16 @@ const CreateMentorshipModal = () => {
     name: "attachments",
   });
 
+  // WeeklyPlan
+  const {
+    fields: weeklyPlanFields,
+    append: appendWeeklyPlan,
+    remove: removeWeeklyPlan,
+  } = useFieldArray({
+    control,
+    name: "weeklyPlan",
+  });
+
   // Watch category selection
   const selectedCategory = watch("category");
 
@@ -363,7 +374,7 @@ const CreateMentorshipModal = () => {
         />
 
         {/* Schedule */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           {/* Header */}
           <h3 className="font-bold text-lg">Schedule</h3>
 
@@ -417,7 +428,6 @@ const CreateMentorshipModal = () => {
           />
 
           {/* Session Days */}
-          {/* Session Days */}
           <div className="space-y-2">
             <label className="block font-medium text-sm">Session Days</label>
             <div className="grid grid-cols-7 gap-2">
@@ -451,6 +461,7 @@ const CreateMentorshipModal = () => {
                 );
               })}
             </div>
+
             {/* Error message if limit exceeded */}
             {watch("sessionDays")?.length >
               Number(watch("sessionsPerWeek")) && (
@@ -459,94 +470,197 @@ const CreateMentorshipModal = () => {
               </p>
             )}
           </div>
-        </div>
 
-        {/* Duration Weeks */}
-        <FormInput
-          label="Duration Weeks"
-          type="number"
-          required
-          register={register("durationWeeks", {
-            required: "Duration Weeks is required",
-          })}
-          error={errors.durationWeeks}
-        />
-
-        {/* Remote / On-site Toggle */}
-        <div className="flex flex-col gap-2">
-          {/* Label */}
-          <label className="block font-medium text-sm">
-            Mentorship Mode <span className="text-red-500">*</span>
-          </label>
-
-          {/* Divider */}
-          <p className="h-[2px] w-full bg-black" />
-
-          {/* Toggle */}
-          <div className="flex items-center gap-3">
-            {/* Remote Toggle */}
-            <span className="font-semibold">Remote</span>
-
-            {/* Toggle */}
-            <input
-              type="checkbox"
-              className="toggle bg-blue-400 checked:bg-blue-600"
-              {...register("modeToggle")}
+          {/* Start Time & Start Date */}
+          <div className="flex gap-4 mt-2">
+            {/* Session Start Time */}
+            <FormInput
+              label="Session Start Time"
+              type="time"
+              required
+              register={register("sessionStartTime", { required: "Required" })}
+              error={errors.sessionStartTime}
             />
 
-            {/* On-site Toggle */}
-            <span className="font-semibold">On-site</span>
+            {/* Start Date */}
+            <FormInput
+              label="Program Start Date"
+              type="date"
+              required
+              register={register("startDate", { required: "Required" })}
+              error={errors.startDate}
+            />
+          </div>
+
+          {/* Weekly Plan */}
+          <WeeklyPlanInput
+            register={register}
+            fields={weeklyPlanFields}
+            remove={removeWeeklyPlan}
+            append={appendWeeklyPlan}
+            errors={errors.weeklyPlan}
+          />
+        </div>
+
+        {/* Location */}
+        <div className="space-y-3">
+          {/* Remote / On-site Toggle */}
+          <div className="flex flex-col gap-2">
+            {/* Label */}
+            <label className="block font-medium text-sm">
+              Mentorship Mode <span className="text-red-500">*</span>
+            </label>
+
+            {/* Divider */}
+            <p className="h-[2px] w-full bg-black" />
+
+            {/* Toggle */}
+            <div className="flex items-center gap-3">
+              {/* Remote Toggle */}
+              <span className="font-semibold">Remote</span>
+
+              {/* Toggle */}
+              <input
+                type="checkbox"
+                className="toggle bg-blue-400 checked:bg-blue-600"
+                {...register("modeToggle")}
+              />
+
+              {/* On-site Toggle */}
+              <span className="font-semibold">On-site</span>
+            </div>
+          </div>
+
+          {/* On-site Detailed Location (always shown, disabled if Remote) */}
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            {/* City */}
+            <FormInput
+              label="City"
+              placeholder="Enter city"
+              disabled={!watch("modeToggle")}
+              required={watch("modeToggle")}
+              register={register("location.city", {
+                required: watch("modeToggle") ? "City is required" : false,
+              })}
+              error={errors?.location?.city}
+            />
+
+            {/* State / Province */}
+            <FormInput
+              label="State / Province"
+              placeholder="Enter state or province"
+              disabled={!watch("modeToggle")}
+              required={watch("modeToggle")}
+              register={register("location.state", {
+                required: watch("modeToggle")
+                  ? "State/Province is required"
+                  : false,
+              })}
+              error={errors?.location?.state}
+            />
+
+            {/* Country */}
+            <FormInput
+              label="Country"
+              placeholder="Enter country"
+              disabled={!watch("modeToggle")}
+              required={watch("modeToggle")}
+              register={register("location.country", {
+                required: watch("modeToggle") ? "Country is required" : false,
+              })}
+              error={errors?.location?.country}
+            />
+
+            {/* Address (Optional, not required) */}
+            <FormInput
+              label="Address (optional)"
+              placeholder="Enter detailed address"
+              disabled={!watch("modeToggle")}
+              register={register("location.address")}
+              error={errors?.location?.address}
+            />
           </div>
         </div>
 
-        {/* On-site Detailed Location (always shown, disabled if Remote) */}
-        <div className="grid grid-cols-2 gap-2 mt-2">
-          {/* City */}
-          <FormInput
-            label="City"
-            placeholder="Enter city"
-            disabled={!watch("modeToggle")}
-            required={watch("modeToggle")}
-            register={register("location.city", {
-              required: watch("modeToggle") ? "City is required" : false,
-            })}
-            error={errors?.location?.city}
-          />
+        {/* Fee & Payment */}
+        <div className="space-y-3">
+          {/* Header */}
+          <h3 className="font-semibold text-lg">Fee & Payment</h3>
 
-          {/* State / Province */}
-          <FormInput
-            label="State / Province"
-            placeholder="Enter state or province"
-            disabled={!watch("modeToggle")}
-            required={watch("modeToggle")}
-            register={register("location.state", {
-              required: watch("modeToggle")
-                ? "State/Province is required"
-                : false,
-            })}
-            error={errors?.location?.state}
-          />
+          {/* Divider */}
+          <p className="bg-gray-500 p-[1px] my-2" />
 
-          {/* Country */}
-          <FormInput
-            label="Country"
-            placeholder="Enter country"
-            disabled={!watch("modeToggle")}
-            required={watch("modeToggle")}
-            register={register("location.country", {
-              required: watch("modeToggle") ? "Country is required" : false,
-            })}
-            error={errors?.location?.country}
-          />
+          <div className="grid grid-cols-2 items-center gap-4">
+            {/* Fee Type */}
+            <FormInput
+              label="Fee Type"
+              required
+              as="select"
+              placeholder="-- Select Fee Type --"
+              register={register("fee.type", {
+                required: "Fee type is required",
+              })}
+              error={errors?.fee?.type}
+              options={[
+                { value: "fixed", label: "Fixed" },
+                { value: "hourly", label: "Hourly" },
+                { value: "perSession", label: "Per Session" },
+                { value: "weekly", label: "Weekly" },
+              ]}
+            />
 
-          {/* Address (Optional, not required) */}
-          <FormInput
-            label="Address (optional)"
-            placeholder="Enter detailed address"
-            disabled={!watch("modeToggle")}
-            register={register("location.address")}
-            error={errors?.location?.address}
-          />
+            {/* Amount */}
+            <FormInput
+              label="Amount"
+              type="number"
+              placeholder="e.g., 50"
+              required
+              register={register("fee.amount", {
+                required: "Amount is required",
+                valueAsNumber: true,
+                min: { value: 1, message: "Amount must be greater than 0" },
+              })}
+              error={errors?.fee?.amount}
+            />
+
+            {/* Currency */}
+            <FormInput
+              label="Currency"
+              required
+              as="select"
+              placeholder="-- Select Currency --"
+              register={register("fee.currency", {
+                required: "Currency is required",
+              })}
+              error={errors?.fee?.currency}
+              options={[
+                { value: "USD", label: "USD ($)" },
+                { value: "EUR", label: "EUR (€)" },
+                { value: "GBP", label: "GBP (£)" },
+                { value: "BDT", label: "BDT (৳)" },
+                { value: "INR", label: "INR (₹)" },
+              ]}
+            />
+
+            {/* Negotiable */}
+            <div className="flex flex-col justify-center">
+              <label
+                htmlFor="negotiable"
+                className="block font-medium text-sm mb-1"
+              >
+                Negotiable
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="negotiable"
+                  {...register("fee.negotiable")}
+                  className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+                />
+                <span className="text-gray-700 text-sm">Yes</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Submit Button */}

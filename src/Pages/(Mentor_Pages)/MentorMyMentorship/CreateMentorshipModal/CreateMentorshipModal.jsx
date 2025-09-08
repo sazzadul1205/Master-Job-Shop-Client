@@ -10,6 +10,8 @@ import { ImCross } from "react-icons/im";
 import FormInput from "../../../../Shared/FormInput/FormInput";
 import TagInput from "../../../../Shared/TagInput/TagInput";
 import WeeklyPlanInput from "./WeeklyPlanInput/WeeklyPlanInput";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import useAuth from "../../../../Hooks/useAuth";
 
 // Category Options
 const CategoryOptions = [
@@ -176,6 +178,10 @@ const CategoryOptions = [
 ];
 
 const CreateMentorshipModal = () => {
+  // Axios
+  const axiosPublic = useAxiosPublic();
+  const { user } = useAuth();
+
   // States Variables
   const [loading, setLoading] = useState(null);
   const [subOptions, setSubOptions] = useState([]);
@@ -233,6 +239,16 @@ const CreateMentorshipModal = () => {
     name: "weeklyPlan",
   });
 
+  // skillsCovered
+  const {
+    fields: skillsCoveredFields,
+    append: AppendSkillsCovered,
+    remove: RemoveSkillsCovered,
+  } = useFieldArray({
+    control,
+    name: "skillsCovered",
+  });
+
   // Watch category selection
   const selectedCategory = watch("category");
 
@@ -256,7 +272,13 @@ const CreateMentorshipModal = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     console.log(data);
+
+    const payload = { ...data, status: "active", postedAt: new Date() };
+
+    console.log(payload);
   };
+
+  console.log("user", user?.email);
 
   return (
     <div
@@ -292,86 +314,107 @@ const CreateMentorshipModal = () => {
 
       {/* Modal Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Title */}
-        <FormInput
-          label="Title"
-          required
-          placeholder="Mentorship Title..."
-          register={register("title", { required: "Title is required" })}
-          error={errors.title}
-        />
-
-        {/* Description */}
-        <FormInput
-          as="textarea"
-          label="Description"
-          required
-          placeholder="Enter mentorship description..."
-          register={register("description", {
-            required: "Description is required",
-          })}
-          error={errors.description}
-          rows={6}
-        />
-
-        {/* Category & Subcategory */}
-        <div className="flex gap-4">
-          {/* Category */}
+        {/* Basic Info Section */}
+        <div className="space-y-4">
+          {/* Title */}
           <FormInput
-            as="select"
-            label="Category"
+            label="Title"
             required
-            placeholder="Select a Category"
-            options={CategoryOptions.map((c) => ({
-              value: c.value,
-              label: c.label,
-            }))}
-            register={register("category", {
-              required: "Category is required",
-            })}
-            error={errors.category}
+            placeholder="Mentorship Title..."
+            register={register("title", { required: "Title is required" })}
+            error={errors.title}
           />
 
-          {/* Subcategory */}
+          {/* Description */}
           <FormInput
-            as="select"
-            label="Sub Category"
+            as="textarea"
+            label="Description"
             required
-            placeholder="Select a Sub Category"
-            options={subOptions}
-            register={register("subCategory", {
-              required: "Sub Category is required",
+            placeholder="Enter mentorship description..."
+            register={register("description", {
+              required: "Description is required",
             })}
-            error={errors.subCategory}
+            error={errors.description}
+            rows={6}
+          />
+
+          {/* Category & Subcategory */}
+          <div className="flex gap-4">
+            {/* Category */}
+            <FormInput
+              as="select"
+              label="Category"
+              required
+              placeholder="Select a Category"
+              options={CategoryOptions.map((c) => ({
+                value: c.value,
+                label: c.label,
+              }))}
+              register={register("category", {
+                required: "Category is required",
+              })}
+              error={errors.category}
+            />
+
+            {/* Subcategory */}
+            <FormInput
+              as="select"
+              label="Sub Category"
+              required
+              placeholder="Select a Sub Category"
+              options={subOptions}
+              register={register("subCategory", {
+                required: "Sub Category is required",
+              })}
+              error={errors.subCategory}
+            />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
+        {/* Skills, Prerequisites & Attachments */}
+        <div className="space-y-4">
+          {/* Skills TagInput */}
+          <TagInput
+            items={skillFields}
+            appendItem={appendSkill}
+            removeItem={removeSkill}
+            label="Skills"
+            placeholder="Add a skill"
+          />
+
+          {/* Prerequisites TagInput */}
+          <TagInput
+            items={prerequisitesFields}
+            appendItem={appendPrerequisites}
+            removeItem={removePrerequisites}
+            label="Prerequisites"
+            placeholder="Add a Prerequisites"
+          />
+
+          {/* Attachments TagInput */}
+          <TagInput
+            items={attachmentsFields}
+            appendItem={appendAttachments}
+            removeItem={removeAttachments}
+            label="Attachments"
+            placeholder="Add a Attachment"
+          />
+
+          {/* Skills Covered TagInput */}
+          <TagInput
+            items={skillsCoveredFields}
+            appendItem={AppendSkillsCovered}
+            removeItem={RemoveSkillsCovered}
+            label="Skills Covered In Mentorship"
+            placeholder="Add a Skills Covered"
           />
         </div>
 
-        {/* Skills TagInput */}
-        <TagInput
-          items={skillFields}
-          appendItem={appendSkill}
-          removeItem={removeSkill}
-          label="Skills"
-          placeholder="Add a skill"
-        />
-
-        {/* Prerequisites TagInput */}
-        <TagInput
-          items={prerequisitesFields}
-          appendItem={appendPrerequisites}
-          removeItem={removePrerequisites}
-          label="Prerequisites"
-          placeholder="Add a Prerequisites"
-        />
-
-        {/* Attachments TagInput */}
-        <TagInput
-          items={attachmentsFields}
-          appendItem={appendAttachments}
-          removeItem={removeAttachments}
-          label="Attachments"
-          placeholder="Add a Attachment"
-        />
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
 
         {/* Schedule */}
         <div className="space-y-3">
@@ -429,7 +472,10 @@ const CreateMentorshipModal = () => {
 
           {/* Session Days */}
           <div className="space-y-2">
+            {/* Label */}
             <label className="block font-medium text-sm">Session Days</label>
+
+            {/* Days Checkboxes */}
             <div className="grid grid-cols-7 gap-2">
               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
                 const selectedDays = watch("sessionDays") || [];
@@ -471,8 +517,8 @@ const CreateMentorshipModal = () => {
             )}
           </div>
 
-          {/* Start Time & Start Date */}
-          <div className="flex gap-4 mt-2">
+          {/* Session Times */}
+          <div className="flex gap-4">
             {/* Session Start Time */}
             <FormInput
               label="Session Start Time"
@@ -482,13 +528,13 @@ const CreateMentorshipModal = () => {
               error={errors.sessionStartTime}
             />
 
-            {/* Start Date */}
+            {/* Session End Time */}
             <FormInput
-              label="Program Start Date"
-              type="date"
+              label="Session End Time"
+              type="time"
               required
-              register={register("startDate", { required: "Required" })}
-              error={errors.startDate}
+              register={register("sessionEndTime", { required: "Required" })}
+              error={errors.sessionEndTime}
             />
           </div>
 
@@ -501,6 +547,9 @@ const CreateMentorshipModal = () => {
             errors={errors.weeklyPlan}
           />
         </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
 
         {/* Location */}
         <div className="space-y-3">
@@ -582,6 +631,9 @@ const CreateMentorshipModal = () => {
           </div>
         </div>
 
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
         {/* Fee & Payment */}
         <div className="space-y-3">
           {/* Header */}
@@ -661,6 +713,136 @@ const CreateMentorshipModal = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
+        {/* Dates */}
+        <div className="flex gap-2">
+          {/* Start Date */}
+          <FormInput
+            label="Program Start Date"
+            type="date"
+            required
+            register={register("startDate", { required: "Required" })}
+            error={errors.startDate}
+          />
+
+          {/* End Date */}
+          <FormInput
+            label="Program End Date"
+            type="date"
+            required
+            register={register("endDate", { required: "Required" })}
+            error={errors.endDate}
+          />
+        </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
+        {/* Communication Preferences */}
+        <div className="space-y-3">
+          {/* Label */}
+          <h4 className="font-semibold text-lg">Communication Preferences</h4>
+
+          {/* Preferred Method */}
+          <FormInput
+            label="Preferred Method"
+            required
+            as="select"
+            placeholder="-- Select Method --"
+            register={register("communication.preferredMethod", {
+              required: "Preferred communication method is required",
+            })}
+            error={errors?.communication?.preferredMethod}
+            options={[
+              { value: "Zoom", label: "Zoom" },
+              { value: "Google Meet", label: "Google Meet" },
+              { value: "Microsoft Teams", label: "Microsoft Teams" },
+              { value: "Slack", label: "Slack" },
+              { value: "Discord", label: "Discord" },
+              { value: "Phone", label: "Phone Call" },
+              { value: "InPerson", label: "In-Person" },
+            ]}
+          />
+
+          <div className="flex flex-row justify-between px-20 py-2">
+            {/* Group Chat Enabled */}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="groupChatEnabled"
+                {...register("communication.groupChatEnabled")}
+                className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+              />
+              <label
+                htmlFor="groupChatEnabled"
+                className="text-gray-700 font-medium leading-none"
+              >
+                Enable Group Chat
+              </label>
+            </div>
+
+            {/* One-on-One Support */}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="oneOnOneSupport"
+                {...register("communication.oneOnOneSupport")}
+                className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+              />
+              <label
+                htmlFor="oneOnOneSupport"
+                className="text-gray-700 font-medium leading-none"
+              >
+                One-on-One Support
+              </label>
+            </div>
+          </div>
+
+          {/* Availability Time Zone */}
+          <FormInput
+            label="Time Zone"
+            as="select"
+            placeholder="-- Select Time Zone --"
+            register={register("communication.timeZone")}
+            error={errors?.communication?.timeZone}
+            options={[
+              { value: "UTC-5", label: "EST (UTC-5)" },
+              { value: "UTC+0", label: "GMT (UTC+0)" },
+              { value: "UTC+1", label: "CET (UTC+1)" },
+              { value: "UTC+5.5", label: "IST (UTC+5:30)" },
+              { value: "UTC+6", label: "BST (UTC+6)" },
+              { value: "UTC+8", label: "SGT (UTC+8)" },
+            ]}
+          />
+
+          {/* Communication Frequency */}
+          <FormInput
+            label="Preferred Communication Frequency"
+            as="select"
+            placeholder="-- Select Frequency --"
+            register={register("communication.frequency")}
+            error={errors?.communication?.frequency}
+            options={[
+              { value: "daily", label: "Daily" },
+              { value: "weekly", label: "Weekly" },
+              { value: "biweekly", label: "Bi-Weekly" },
+              { value: "monthly", label: "Monthly" },
+              { value: "asNeeded", label: "As Needed" },
+            ]}
+          />
+
+          {/* Notes / Special Instructions */}
+          <FormInput
+            label="Additional Notes"
+            as="textarea"
+            placeholder="Any special communication preferences..."
+            register={register("communication.notes")}
+            error={errors?.communication?.notes}
+          />
         </div>
 
         {/* Submit Button */}

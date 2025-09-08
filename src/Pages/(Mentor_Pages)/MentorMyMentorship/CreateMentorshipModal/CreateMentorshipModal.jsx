@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 // Packages
+import { useQuery } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 
 // Icons
@@ -11,6 +12,8 @@ import FormInput from "../../../../Shared/FormInput/FormInput";
 import TagInput from "../../../../Shared/TagInput/TagInput";
 import WeeklyPlanInput from "./WeeklyPlanInput/WeeklyPlanInput";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+
+// Hooks
 import useAuth from "../../../../Hooks/useAuth";
 
 // Category Options
@@ -187,6 +190,13 @@ const CreateMentorshipModal = () => {
   const [subOptions, setSubOptions] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Fetch Mentors
+  const { data: MyMentorsData } = useQuery({
+    queryKey: ["MentorsData"],
+    queryFn: () =>
+      axiosPublic.get(`/Mentors?email=${user?.email}`).then((res) => res.data),
+  });
+
   // Form Handling
   const {
     watch,
@@ -196,7 +206,12 @@ const CreateMentorshipModal = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    defaultValues: { tags: [], prerequisites: [] },
+    defaultValues: {
+      tags: [],
+      attachments: [],
+      prerequisites: [],
+      skillsCovered: [],
+    },
   });
 
   // Skills
@@ -252,6 +267,7 @@ const CreateMentorshipModal = () => {
   // Watch category selection
   const selectedCategory = watch("category");
 
+  // Update subcategory options based on selected category
   useEffect(() => {
     const category = CategoryOptions.find((c) => c.value === selectedCategory);
     setSubOptions(
@@ -273,12 +289,21 @@ const CreateMentorshipModal = () => {
     setLoading(true);
     console.log(data);
 
-    const payload = { ...data, status: "active", postedAt: new Date() };
+    const payload = {
+      ...data,
+      status: "active",
+      postedAt: new Date(),
+      Mentor: {
+        name: MyMentorsData?.name || "",
+        profileImage: MyMentorsData?.avatar || "",
+        bio: MyMentorsData?.description || "",
+        rating: MyMentorsData?.rating || "0.0",
+        positions: MyMentorsData?.positions || "",
+      },
+    };
 
-    console.log(payload);
+    console.log("payload :", payload);
   };
-
-  console.log("user", user?.email);
 
   return (
     <div
@@ -369,480 +394,6 @@ const CreateMentorshipModal = () => {
               error={errors.subCategory}
             />
           </div>
-        </div>
-
-        {/* Divider */}
-        <p className="bg-gray-500 h-[1px] w-full" />
-
-        {/* Skills, Prerequisites & Attachments */}
-        <div className="space-y-4">
-          {/* Skills TagInput */}
-          <TagInput
-            items={skillFields}
-            appendItem={appendSkill}
-            removeItem={removeSkill}
-            label="Skills"
-            placeholder="Add a skill"
-          />
-
-          {/* Prerequisites TagInput */}
-          <TagInput
-            items={prerequisitesFields}
-            appendItem={appendPrerequisites}
-            removeItem={removePrerequisites}
-            label="Prerequisites"
-            placeholder="Add a Prerequisites"
-          />
-
-          {/* Attachments TagInput */}
-          <TagInput
-            items={attachmentsFields}
-            appendItem={appendAttachments}
-            removeItem={removeAttachments}
-            label="Attachments"
-            placeholder="Add a Attachment"
-          />
-
-          {/* Skills Covered TagInput */}
-          <TagInput
-            items={skillsCoveredFields}
-            appendItem={AppendSkillsCovered}
-            removeItem={RemoveSkillsCovered}
-            label="Skills Covered In Mentorship"
-            placeholder="Add a Skills Covered"
-          />
-        </div>
-
-        {/* Divider */}
-        <p className="bg-gray-500 h-[1px] w-full" />
-
-        {/* Schedule */}
-        <div className="space-y-3">
-          {/* Header */}
-          <h3 className="font-bold text-lg">Schedule</h3>
-
-          {/* Divider */}
-          <p className="bg-gray-500 p-[1px] my-2" />
-
-          {/* Duration & Sessions Per Week */}
-          <div className="flex gap-4">
-            {/* Total Duration */}
-            <FormInput
-              label="Total Duration (Weeks)"
-              type="number"
-              placeholder="e.g., 8"
-              required
-              register={register("durationWeeks", {
-                required: "Required",
-                min: { value: 1, message: "Must be at least 1" },
-              })}
-              error={errors.durationWeeks}
-            />
-
-            {/* Sessions Per Week */}
-            <FormInput
-              label="Sessions Per Week"
-              type="number"
-              placeholder="e.g., 2"
-              required
-              register={register("sessionsPerWeek", {
-                required: "Required",
-                min: { value: 1, message: "Must be at least 1" },
-                max: { value: 7, message: "Cannot exceed 7 sessions per week" },
-              })}
-              error={errors.sessionsPerWeek}
-            />
-          </div>
-
-          {/* Session Length */}
-          <FormInput
-            label="Session Length"
-            as="select"
-            required
-            placeholder="Select length"
-            register={register("sessionLength", { required: "Required" })}
-            error={errors.sessionLength}
-            options={[
-              { value: "30min", label: "30 minutes" },
-              { value: "1hr", label: "1 hour" },
-              { value: "2hr", label: "2 hours" },
-              { value: "3hr", label: "3 hours" },
-            ]}
-          />
-
-          {/* Session Days */}
-          <div className="space-y-2">
-            {/* Label */}
-            <label className="block font-medium text-sm">Session Days</label>
-
-            {/* Days Checkboxes */}
-            <div className="grid grid-cols-7 gap-2">
-              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
-                const selectedDays = watch("sessionDays") || [];
-                const sessionsPerWeek = Number(watch("sessionsPerWeek")) || 0;
-                const isSelected = selectedDays.includes(day);
-
-                // Disable unchecked boxes if limit reached
-                const disabled =
-                  !isSelected && selectedDays.length >= sessionsPerWeek;
-
-                return (
-                  <label
-                    key={day}
-                    className={`cursor-pointer px-2 py-2 rounded-lg border text-center transition-colors duration-200 flex items-center justify-center ${
-                      isSelected
-                        ? "bg-blue-500 text-white border-blue-500"
-                        : "bg-gray-100 text-gray-700 border-gray-300"
-                    } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    <input
-                      type="checkbox"
-                      value={day}
-                      {...register("sessionDays")}
-                      disabled={disabled}
-                      className="hidden"
-                    />
-                    {day}
-                  </label>
-                );
-              })}
-            </div>
-
-            {/* Error message if limit exceeded */}
-            {watch("sessionDays")?.length >
-              Number(watch("sessionsPerWeek")) && (
-              <p className="text-red-500 text-sm mt-1">
-                Maximum {watch("sessionsPerWeek")} sessions per week allowed.
-              </p>
-            )}
-          </div>
-
-          {/* Session Times */}
-          <div className="flex gap-4">
-            {/* Session Start Time */}
-            <FormInput
-              label="Session Start Time"
-              type="time"
-              required
-              register={register("sessionStartTime", { required: "Required" })}
-              error={errors.sessionStartTime}
-            />
-
-            {/* Session End Time */}
-            <FormInput
-              label="Session End Time"
-              type="time"
-              required
-              register={register("sessionEndTime", { required: "Required" })}
-              error={errors.sessionEndTime}
-            />
-          </div>
-
-          {/* Weekly Plan */}
-          <WeeklyPlanInput
-            register={register}
-            fields={weeklyPlanFields}
-            remove={removeWeeklyPlan}
-            append={appendWeeklyPlan}
-            errors={errors.weeklyPlan}
-          />
-        </div>
-
-        {/* Divider */}
-        <p className="bg-gray-500 h-[1px] w-full" />
-
-        {/* Location */}
-        <div className="space-y-3">
-          {/* Remote / On-site Toggle */}
-          <div className="flex flex-col gap-2">
-            {/* Label */}
-            <label className="block font-medium text-sm">
-              Mentorship Mode <span className="text-red-500">*</span>
-            </label>
-
-            {/* Divider */}
-            <p className="h-[2px] w-full bg-black" />
-
-            {/* Toggle */}
-            <div className="flex items-center gap-3">
-              {/* Remote Toggle */}
-              <span className="font-semibold">Remote</span>
-
-              {/* Toggle */}
-              <input
-                type="checkbox"
-                className="toggle bg-blue-400 checked:bg-blue-600"
-                {...register("modeToggle")}
-              />
-
-              {/* On-site Toggle */}
-              <span className="font-semibold">On-site</span>
-            </div>
-          </div>
-
-          {/* On-site Detailed Location (always shown, disabled if Remote) */}
-          <div className="grid grid-cols-2 gap-2 mt-2">
-            {/* City */}
-            <FormInput
-              label="City"
-              placeholder="Enter city"
-              disabled={!watch("modeToggle")}
-              required={watch("modeToggle")}
-              register={register("location.city", {
-                required: watch("modeToggle") ? "City is required" : false,
-              })}
-              error={errors?.location?.city}
-            />
-
-            {/* State / Province */}
-            <FormInput
-              label="State / Province"
-              placeholder="Enter state or province"
-              disabled={!watch("modeToggle")}
-              required={watch("modeToggle")}
-              register={register("location.state", {
-                required: watch("modeToggle")
-                  ? "State/Province is required"
-                  : false,
-              })}
-              error={errors?.location?.state}
-            />
-
-            {/* Country */}
-            <FormInput
-              label="Country"
-              placeholder="Enter country"
-              disabled={!watch("modeToggle")}
-              required={watch("modeToggle")}
-              register={register("location.country", {
-                required: watch("modeToggle") ? "Country is required" : false,
-              })}
-              error={errors?.location?.country}
-            />
-
-            {/* Address (Optional, not required) */}
-            <FormInput
-              label="Address (optional)"
-              placeholder="Enter detailed address"
-              disabled={!watch("modeToggle")}
-              register={register("location.address")}
-              error={errors?.location?.address}
-            />
-          </div>
-        </div>
-
-        {/* Divider */}
-        <p className="bg-gray-500 h-[1px] w-full" />
-
-        {/* Fee & Payment */}
-        <div className="space-y-3">
-          {/* Header */}
-          <h3 className="font-semibold text-lg">Fee & Payment</h3>
-
-          {/* Divider */}
-          <p className="bg-gray-500 p-[1px] my-2" />
-
-          <div className="grid grid-cols-2 items-center gap-4">
-            {/* Fee Type */}
-            <FormInput
-              label="Fee Type"
-              required
-              as="select"
-              placeholder="-- Select Fee Type --"
-              register={register("fee.type", {
-                required: "Fee type is required",
-              })}
-              error={errors?.fee?.type}
-              options={[
-                { value: "fixed", label: "Fixed" },
-                { value: "hourly", label: "Hourly" },
-                { value: "perSession", label: "Per Session" },
-                { value: "weekly", label: "Weekly" },
-              ]}
-            />
-
-            {/* Amount */}
-            <FormInput
-              label="Amount"
-              type="number"
-              placeholder="e.g., 50"
-              required
-              register={register("fee.amount", {
-                required: "Amount is required",
-                valueAsNumber: true,
-                min: { value: 1, message: "Amount must be greater than 0" },
-              })}
-              error={errors?.fee?.amount}
-            />
-
-            {/* Currency */}
-            <FormInput
-              label="Currency"
-              required
-              as="select"
-              placeholder="-- Select Currency --"
-              register={register("fee.currency", {
-                required: "Currency is required",
-              })}
-              error={errors?.fee?.currency}
-              options={[
-                { value: "USD", label: "USD ($)" },
-                { value: "EUR", label: "EUR (€)" },
-                { value: "GBP", label: "GBP (£)" },
-                { value: "BDT", label: "BDT (৳)" },
-                { value: "INR", label: "INR (₹)" },
-              ]}
-            />
-
-            {/* Negotiable */}
-            <div className="flex flex-col justify-center">
-              <label
-                htmlFor="negotiable"
-                className="block font-medium text-sm mb-1"
-              >
-                Negotiable
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="negotiable"
-                  {...register("fee.negotiable")}
-                  className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
-                />
-                <span className="text-gray-700 text-sm">Yes</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <p className="bg-gray-500 h-[1px] w-full" />
-
-        {/* Dates */}
-        <div className="flex gap-2">
-          {/* Start Date */}
-          <FormInput
-            label="Program Start Date"
-            type="date"
-            required
-            register={register("startDate", { required: "Required" })}
-            error={errors.startDate}
-          />
-
-          {/* End Date */}
-          <FormInput
-            label="Program End Date"
-            type="date"
-            required
-            register={register("endDate", { required: "Required" })}
-            error={errors.endDate}
-          />
-        </div>
-
-        {/* Divider */}
-        <p className="bg-gray-500 h-[1px] w-full" />
-
-        {/* Communication Preferences */}
-        <div className="space-y-3">
-          {/* Label */}
-          <h4 className="font-semibold text-lg">Communication Preferences</h4>
-
-          {/* Preferred Method */}
-          <FormInput
-            label="Preferred Method"
-            required
-            as="select"
-            placeholder="-- Select Method --"
-            register={register("communication.preferredMethod", {
-              required: "Preferred communication method is required",
-            })}
-            error={errors?.communication?.preferredMethod}
-            options={[
-              { value: "Zoom", label: "Zoom" },
-              { value: "Google Meet", label: "Google Meet" },
-              { value: "Microsoft Teams", label: "Microsoft Teams" },
-              { value: "Slack", label: "Slack" },
-              { value: "Discord", label: "Discord" },
-              { value: "Phone", label: "Phone Call" },
-              { value: "InPerson", label: "In-Person" },
-            ]}
-          />
-
-          <div className="flex flex-row justify-between px-20 py-2">
-            {/* Group Chat Enabled */}
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="groupChatEnabled"
-                {...register("communication.groupChatEnabled")}
-                className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
-              />
-              <label
-                htmlFor="groupChatEnabled"
-                className="text-gray-700 font-medium leading-none"
-              >
-                Enable Group Chat
-              </label>
-            </div>
-
-            {/* One-on-One Support */}
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="oneOnOneSupport"
-                {...register("communication.oneOnOneSupport")}
-                className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
-              />
-              <label
-                htmlFor="oneOnOneSupport"
-                className="text-gray-700 font-medium leading-none"
-              >
-                One-on-One Support
-              </label>
-            </div>
-          </div>
-
-          {/* Availability Time Zone */}
-          <FormInput
-            label="Time Zone"
-            as="select"
-            placeholder="-- Select Time Zone --"
-            register={register("communication.timeZone")}
-            error={errors?.communication?.timeZone}
-            options={[
-              { value: "UTC-5", label: "EST (UTC-5)" },
-              { value: "UTC+0", label: "GMT (UTC+0)" },
-              { value: "UTC+1", label: "CET (UTC+1)" },
-              { value: "UTC+5.5", label: "IST (UTC+5:30)" },
-              { value: "UTC+6", label: "BST (UTC+6)" },
-              { value: "UTC+8", label: "SGT (UTC+8)" },
-            ]}
-          />
-
-          {/* Communication Frequency */}
-          <FormInput
-            label="Preferred Communication Frequency"
-            as="select"
-            placeholder="-- Select Frequency --"
-            register={register("communication.frequency")}
-            error={errors?.communication?.frequency}
-            options={[
-              { value: "daily", label: "Daily" },
-              { value: "weekly", label: "Weekly" },
-              { value: "biweekly", label: "Bi-Weekly" },
-              { value: "monthly", label: "Monthly" },
-              { value: "asNeeded", label: "As Needed" },
-            ]}
-          />
-
-          {/* Notes / Special Instructions */}
-          <FormInput
-            label="Additional Notes"
-            as="textarea"
-            placeholder="Any special communication preferences..."
-            register={register("communication.notes")}
-            error={errors?.communication?.notes}
-          />
         </div>
 
         {/* Submit Button */}

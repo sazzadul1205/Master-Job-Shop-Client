@@ -207,10 +207,11 @@ const CreateMentorshipModal = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      tags: [],
       attachments: [],
       prerequisites: [],
       skillsCovered: [],
+      WeeklyPlan: [],
+      skills: [],
     },
   });
 
@@ -298,7 +299,7 @@ const CreateMentorshipModal = () => {
         profileImage: MyMentorsData?.avatar || "",
         bio: MyMentorsData?.description || "",
         rating: MyMentorsData?.rating || "0.0",
-        positions: MyMentorsData?.positions || "",
+        position: MyMentorsData?.position || "",
       },
     };
 
@@ -339,61 +340,160 @@ const CreateMentorshipModal = () => {
 
       {/* Modal Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Basic Info Section */}
-        <div className="space-y-4">
-          {/* Title */}
-          <FormInput
-            label="Title"
-            required
-            placeholder="Mentorship Title..."
-            register={register("title", { required: "Title is required" })}
-            error={errors.title}
-          />
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
 
-          {/* Description */}
-          <FormInput
-            as="textarea"
-            label="Description"
-            required
-            placeholder="Enter mentorship description..."
-            register={register("description", {
-              required: "Description is required",
-            })}
-            error={errors.description}
-            rows={6}
-          />
+        {/* Fee & Payment */}
+        <div className="space-y-3">
+          {/* Header */}
+          <h3 className="font-semibold text-lg">Fee & Payment</h3>
 
-          {/* Category & Subcategory */}
-          <div className="flex gap-4">
-            {/* Category */}
-            <FormInput
-              as="select"
-              label="Category"
-              required
-              placeholder="Select a Category"
-              options={CategoryOptions.map((c) => ({
-                value: c.value,
-                label: c.label,
-              }))}
-              register={register("category", {
-                required: "Category is required",
-              })}
-              error={errors.category}
+          {/* Divider */}
+          <p className="bg-gray-500 p-[1px] my-2" />
+
+          {/* Free Toggle */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="isFree"
+              {...register("fee.isFree")}
+              className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
             />
-
-            {/* Subcategory */}
-            <FormInput
-              as="select"
-              label="Sub Category"
-              required
-              placeholder="Select a Sub Category"
-              options={subOptions}
-              register={register("subCategory", {
-                required: "Sub Category is required",
-              })}
-              error={errors.subCategory}
-            />
+            <label htmlFor="isFree" className="text-gray-700 font-medium">
+              Free Mentorship
+            </label>
           </div>
+
+          {/* All fee inputs (conditionally disabled if Free) */}
+          <div className="grid grid-cols-2 items-center gap-4">
+            {/* Fee Type */}
+            <FormInput
+              label="Fee Type"
+              required
+              as="select"
+              placeholder="-- Select Fee Type --"
+              register={register("fee.type", {
+                required: !watch("fee.isFree") ? "Fee type is required" : false,
+              })}
+              error={errors?.fee?.type}
+              disabled={watch("fee.isFree")}
+              options={[
+                { value: "fixed", label: "Fixed" },
+                { value: "hourly", label: "Hourly" },
+                { value: "perSession", label: "Per Session" },
+                { value: "weekly", label: "Weekly" },
+              ]}
+            />
+
+            {/* Amount */}
+            <FormInput
+              label="Amount"
+              type="number"
+              placeholder="e.g., 50"
+              required
+              register={register("fee.amount", {
+                required: !watch("fee.isFree") ? "Amount is required" : false,
+                valueAsNumber: true,
+                min: { value: 1, message: "Amount must be greater than 0" },
+              })}
+              error={errors?.fee?.amount}
+              disabled={watch("fee.isFree")}
+            />
+
+            {/* Currency */}
+            <FormInput
+              label="Currency"
+              required
+              as="select"
+              placeholder="-- Select Currency --"
+              register={register("fee.currency", {
+                required: !watch("fee.isFree") ? "Currency is required" : false,
+              })}
+              error={errors?.fee?.currency}
+              disabled={watch("fee.isFree")}
+              options={[
+                { value: "USD", label: "USD ($)" },
+                { value: "EUR", label: "EUR (€)" },
+                { value: "GBP", label: "GBP (£)" },
+                { value: "BDT", label: "BDT (৳)" },
+                { value: "INR", label: "INR (₹)" },
+              ]}
+            />
+
+            {/* Payment Method */}
+            <FormInput
+              label="Payment Method"
+              required
+              as="select"
+              placeholder="-- Select Payment Method --"
+              register={register("fee.paymentMethod", {
+                required: !watch("fee.isFree")
+                  ? "Payment method is required"
+                  : false,
+              })}
+              error={errors?.fee?.paymentMethod}
+              disabled={watch("fee.isFree")}
+              options={[
+                { value: "paypal", label: "PayPal" },
+                { value: "stripe", label: "Stripe" },
+                { value: "bankTransfer", label: "Bank Transfer" },
+                {
+                  value: "mobilePayment",
+                  label: "Mobile Payment (bKash, Paytm, etc.)",
+                },
+                { value: "other", label: "Other" },
+              ]}
+            />
+
+            {/* Confirmation Type */}
+            <FormInput
+              label="Confirmation Type"
+              required
+              as="select"
+              placeholder="-- Select Confirmation Type --"
+              register={register("fee.confirmationType", {
+                required: !watch("fee.isFree")
+                  ? "Confirmation type is required"
+                  : false,
+              })}
+              error={errors?.fee?.confirmationType}
+              disabled={watch("fee.isFree")}
+              options={[
+                { value: "receiptLink", label: "Receipt Link (URL)" },
+                { value: "transactionId", label: "Transaction ID" },
+                { value: "screenshot", label: "Screenshot Upload" },
+                { value: "referenceNumber", label: "Bank Reference Number" },
+              ]}
+            />
+
+            {/* Negotiable */}
+            <div className="flex flex-col justify-center">
+              <label
+                htmlFor="negotiable"
+                className="block font-medium text-sm mb-1"
+              >
+                Negotiable
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="negotiable"
+                  {...register("fee.negotiable")}
+                  disabled={watch("fee.isFree")}
+                  className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+                />
+                <span className="text-gray-700 text-sm">Yes</span>
+              </div>
+            </div>
+          </div>
+          {/* Payment Link */}
+          <FormInput
+            label="Payment Link"
+            placeholder="e.g., https://paypal.me/username"
+            register={register("fee.paymentLink")}
+            error={errors?.fee?.paymentLink}
+            disabled={watch("fee.isFree")}
+          />
         </div>
 
         {/* Submit Button */}

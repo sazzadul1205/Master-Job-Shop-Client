@@ -1,5 +1,15 @@
 import PropTypes from "prop-types";
 
+const formatDate = (value) => {
+  if (!value) return "";
+  const date = new Date(value);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }); // e.g. Aug 23, 2001
+};
+
 const FormInput = ({
   label,
   required = false,
@@ -7,11 +17,16 @@ const FormInput = ({
   register,
   error,
   type = "text",
-  as = "input", // "input", "textarea", or "select"
-  rows = 4, // for textarea
-  options = [], // for select
-  disabled = false, // NEW
+  as = "input",
+  rows = 4,
+  options = [],
+  disabled = false,
+  watch, // NEW: pass watch from react-hook-form
+  name, // NEW: input name
 }) => {
+  // Watch the value for formatting (only for date type)
+  const value = watch && name ? watch(name) : "";
+
   return (
     <div className="w-full space-y-1">
       {/* Label */}
@@ -62,16 +77,19 @@ const FormInput = ({
         />
       )}
 
+      {/* Show formatted date preview */}
+      {type === "date" && value && (
+        <p className="text-xs text-gray-600 italic">{formatDate(value)}</p>
+      )}
+
       {/* Error Message */}
-      {error &&
-        !disabled && ( // don’t show errors when disabled
-          <p className="text-red-500 text-sm">{error.message || "Required"}</p>
-        )}
+      {error && !disabled && (
+        <p className="text-red-500 text-sm">{error.message || "Required"}</p>
+      )}
     </div>
   );
 };
 
-// Prop validation
 FormInput.propTypes = {
   rows: PropTypes.number,
   type: PropTypes.string,
@@ -88,6 +106,8 @@ FormInput.propTypes = {
     })
   ),
   disabled: PropTypes.bool,
+  watch: PropTypes.func,
+  name: PropTypes.string,
 };
 
 export default FormInput;

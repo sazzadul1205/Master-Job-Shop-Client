@@ -7,11 +7,15 @@ import { useQuery } from "@tanstack/react-query";
 // Icons
 import { ImCross } from "react-icons/im";
 import {
-  FaCalendarAlt,
-  FaDollarSign,
+  FaUserTie,
+  FaClock,
   FaMapMarkerAlt,
-  FaChalkboardTeacher,
-  FaUsers,
+  FaMoneyBillWave,
+  FaCalendarAlt,
+  FaTools,
+  FaBook,
+  FaTasks,
+  FaCommentDots,
 } from "react-icons/fa";
 
 // Assets
@@ -23,6 +27,7 @@ import Loading from "../../../../../Shared/Loading/Loading";
 
 // Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
+import { useEffect, useRef, useState } from "react";
 
 const MentorshipDetailsModal = ({
   isEditor = false,
@@ -31,9 +36,14 @@ const MentorshipDetailsModal = ({
 }) => {
   const axiosPublic = useAxiosPublic();
 
-  // Fetch Selected Mentorship
+  // Bio Expand State
+  const [bioExpanded, setBioExpanded] = useState(false);
+  const bioRef = useRef(null);
+  const [bioHeight, setBioHeight] = useState(0);
+
+  // Fetch Mentorship Data
   const {
-    data: SelectedMentorshipData,
+    data: mentorship,
     isLoading,
     error,
   } = useQuery({
@@ -45,13 +55,20 @@ const MentorshipDetailsModal = ({
     enabled: !!selectedMentorshipID,
   });
 
-  // Close Modal Handler
+  // Close Modal
   const handleClose = () => {
     setSelectedMentorshipID("");
     document.getElementById("Mentorship_Details_Modal")?.close();
   };
 
-  // Loading State
+  // Adjust bio height on load and when bio changes
+  useEffect(() => {
+    if (bioRef.current && mentorship?.Mentor?.bio) {
+      setBioHeight(bioRef.current.scrollHeight);
+    }
+  }, [mentorship?.Mentor?.bio]);
+
+  // If loading
   if (isLoading)
     return (
       <div className="min-w-[600px] max-h-[90vh] relative">
@@ -65,11 +82,10 @@ const MentorshipDetailsModal = ({
       </div>
     );
 
-  // Error State
+  // If error
   if (error)
     return (
       <div className="min-w-[600px] max-h-[90vh] relative">
-        {/* Close */}
         <button
           onClick={handleClose}
           className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
@@ -80,33 +96,37 @@ const MentorshipDetailsModal = ({
       </div>
     );
 
-  // If no data
-  if (!SelectedMentorshipData) return null;
+  if (!mentorship) return null;
 
-  // Destructure Data
+  // Destructure Mentorship Data
   const {
-    mentor,
+    Mentor,
     title,
     description,
     category,
     subCategory,
-    tags,
     skillsCovered,
     prerequisites,
-    schedule,
-    fee,
-    startDate,
-    applicationDeadline,
-    communication,
-    isRemote,
+    attachments,
+    weeklyPlan,
+    skills,
+    sessionsPerWeek,
+    sessionLength,
+    sessionDays,
+    sessionStartTime,
+    sessionEndTime,
     location,
-    extraNotes,
+    fee,
+    durationWeeks,
+    startDate,
+    endDate,
+    communication,
     postedAt,
-  } = SelectedMentorshipData;
+  } = mentorship;
 
   return (
-    <div className="modal-box min-w-[800px] relative bg-white rounded-xl shadow-lg w-full mx-auto overflow-y-auto max-h-[90vh] p-6 space-y-6">
-      {/* Close */}
+    <div className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh]">
+      {/* Close Button */}
       <button
         onClick={handleClose}
         className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
@@ -115,178 +135,266 @@ const MentorshipDetailsModal = ({
       </button>
 
       {/* Mentor Info */}
-      <div className="flex items-center gap-4">
-        {/* Profile Image */}
+      <div className="flex items-center space-x-4">
+        {/* Mentor Image */}
         <img
-          src={mentor?.profileImage || DefaultUserLogo}
-          alt={mentor?.name || "Mentor"}
-          className="w-16 h-16 rounded-full object-cover border border-gray-300"
+          src={Mentor.profileImage || DefaultUserLogo}
+          alt={Mentor.name}
+          className="w-20 h-20 rounded-full object-cover border-2 border-blue-400"
         />
 
         {/* Mentor Details */}
         <div>
           {/* Name */}
-          <p className="text-xl font-bold text-gray-800">
-            {mentor?.name || "Unknown Mentor"}
-          </p>
+          <h2 className="text-2xl font-semibold flex items-center gap-2">
+            <FaUserTie className="text-blue-500" /> {Mentor.name}
+          </h2>
 
-          {/* Rating & Mentees */}
-          <p className="text-sm text-gray-500 flex items-center gap-2">
-            {/* Rating */}
-            <FaChalkboardTeacher /> Rating: {mentor?.rating ?? "N/A"} |{" "}
-            {/* Total Mentees */}
-            <FaUsers /> Mentees: {mentor?.totalMentees ?? "0"}
-          </p>
-        </div>
-      </div>
+          {/* Position */}
+          <p className="text-sm text-gray-500">{Mentor.position}</p>
 
-      {/* Title */}
-      <h2 className="text-2xl font-extrabold text-blue-900">
-        {title || "Untitled Mentorship"}
-      </h2>
-
-      {/* Description */}
-      <p className="text-gray-700 leading-relaxed">
-        {description || "No description provided."}
-      </p>
-
-      {/* Category & Tags */}
-      <div className="flex flex-wrap gap-2 items-center">
-        {/* Category */}
-        <span className="text-sm font-medium text-gray-600">
-          <strong>Category:</strong> {category || "General"} ›{" "}
-          {subCategory || "General"}
-        </span>
-
-        {/* Tags */}
-        {tags?.length > 0 ? (
-          tags.map((tag, i) => (
-            <span
-              key={i}
-              className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium"
+          {/* Bio */}
+          <div className="mt-2 text-gray-700">
+            <div
+              className={`cursor-pointer overflow-hidden transition-all duration-500`}
+              style={{
+                maxHeight: bioExpanded ? `${bioHeight}px` : "1.5rem", // approx 1 line
+              }}
+              onClick={() => setBioExpanded(!bioExpanded)}
+              title="Click to expand"
+              ref={bioRef}
             >
-              {tag}
-            </span>
-          ))
-        ) : (
-          <span className="text-gray-500 text-xs">No tags</span>
-        )}
-      </div>
-
-      {/* Skills & Prerequisites */}
-      <div className="grid md:grid-cols-2 gap-4">
-        {/* Skills */}
-        <div>
-          {/* Title */}
-          <p className="font-semibold text-gray-800 mb-1">Skills Covered:</p>
-
-          {/* List */}
-          <div className="flex flex-wrap gap-2">
-            {skillsCovered?.length > 0 ? (
-              skillsCovered.map((skill, i) => (
-                <span
-                  key={i}
-                  className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium"
-                >
-                  {skill}
-                </span>
-              ))
-            ) : (
-              <span className="text-gray-500 text-sm">None</span>
-            )}
-          </div>
-        </div>
-
-        {/* Prerequisites */}
-        <div>
-          {/* Title */}
-          <p className="font-semibold text-gray-800 mb-1">Prerequisites:</p>
-
-          {/* List */}
-          <div className="flex flex-wrap gap-2">
-            {prerequisites?.length > 0 ? (
-              prerequisites.map((p, i) => (
-                <span
-                  key={i}
-                  className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium"
-                >
-                  {p}
-                </span>
-              ))
-            ) : (
-              <span className="text-gray-500 text-sm">None</span>
-            )}
+              {Mentor.bio}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Schedule */}
-      <div className="flex flex-col md:flex-row md:gap-6 text-gray-700">
+      {/* Program Title & Description */}
+      <div>
+        {/* Title */}
+        <h1 className="text-3xl font-bold mt-4 text-blue-600">{title}</h1>
+
+        {/* Description */}
+        <p className="mt-2 text-gray-700 whitespace-pre-line">{description}</p>
+      </div>
+
+      {/* Key Details */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        {/* Category */}
+        <div className="flex items-center gap-2">
+          <FaBook className="text-green-500" />
+          <div>
+            <h3 className="font-semibold text-lg">Category</h3>
+            <p>
+              {category} / {subCategory}
+            </p>
+          </div>
+        </div>
+
+        {/* Duration weeks */}
+        <div className="flex items-center gap-2">
+          <FaClock className="text-orange-500" />
+          <div>
+            <h3 className="font-semibold text-lg">Duration</h3>
+            <p>{durationWeeks} Weeks</p>
+          </div>
+        </div>
+
         {/* Sessions */}
-        <p className="flex items-center gap-2">
-          <FaCalendarAlt /> {schedule?.sessionsPerWeek ?? 0} sessions/week •{" "}
-          {schedule?.sessionLength || "N/A"}
-        </p>
+        <div className="flex items-center gap-2">
+          <FaCalendarAlt className="text-blue-400" />
+          <div>
+            <h3 className="font-semibold text-lg">Sessions</h3>
+            {/* Sessions Per Week & Session Length */}
+            <p>
+              {sessionsPerWeek} per week, {sessionLength} each
+            </p>
 
-        {/* Days */}
-        <p className="flex items-center gap-2">
-          Days: {schedule?.days?.length ? schedule.days.join(", ") : "N/A"} •
-          Time Zone: {schedule?.timeZone || "N/A"}
-        </p>
+            {/* Session Days, Start Time & End Time */}
+            <p>
+              {sessionDays.join(", ")} | {sessionStartTime} - {sessionEndTime}
+            </p>
+          </div>
+        </div>
+
+        {/* Location */}
+        <div className="flex items-center gap-2">
+          <FaMapMarkerAlt className="text-red-400" />
+          <div>
+            <h3 className="font-semibold text-lg">Location</h3>
+
+            {/* Address, City, State, Country */}
+            <p>
+              {location.address}, {location.city}, {location.state},{" "}
+              {location.country}
+            </p>
+          </div>
+        </div>
+
+        {/* Fee */}
+        <div className="flex items-center gap-2">
+          <FaMoneyBillWave className="text-yellow-500" />
+
+          {/* Fee */}
+          <div>
+            <h3 className="font-semibold text-lg">Fee</h3>
+            {fee.isFree ? (
+              <p>Free</p>
+            ) : (
+              //  Fee Amount, Currency, Payment Method & Payment Link
+              <p>
+                {fee.amount} {fee.currency} via{" "}
+                <span className="text-black">{fee.paymentMethod}</span>
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Start Date & End Date */}
+        <div className="flex items-center gap-2">
+          <FaCalendarAlt className="text-purple-400" />
+          <div>
+            <h3 className="font-semibold text-lg">Start / End Date</h3>
+            <p>
+              {startDate} - {endDate}
+            </p>
+          </div>
+        </div>
+
+        {/* Posted At */}
+        <div className="flex items-center gap-2">
+          <FaCalendarAlt className="text-gray-500" />
+          <div>
+            <h3 className="font-semibold text-lg">Posted At</h3>
+            <p>{new Date(postedAt).toLocaleString()}</p>
+          </div>
+        </div>
       </div>
 
-      {/* Fee & Dates */}
-      <div className="flex flex-col md:flex-row md:gap-6 text-gray-700">
-        {/* Fee */}
-        <p className="flex items-center gap-2">
-          <FaDollarSign /> Fee: {fee?.currency || "USD"}
-          {fee?.amount ?? "0"} {fee?.isNegotiable ? "(Negotiable)" : ""}
-        </p>
+      {/* Required Skills */}
+      <div>
+        <h3 className="font-semibold text-xl mt-6 flex items-center gap-2 text-blue-600">
+          <FaTools /> Required Skills
+        </h3>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+          {skills.map((tech, idx) => (
+            <li
+              key={idx}
+              className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full inline-block font-medium"
+            >
+              {tech}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-        {/* Dates */}
-        <p className="flex items-center gap-2">
-          <FaCalendarAlt /> Start Date:{" "}
-          {startDate ? new Date(startDate).toLocaleDateString() : "TBD"}
-        </p>
+      {/* Prerequisites / Soft Requirements */}
+      <div>
+        <h3 className="font-semibold text-xl mt-4 flex items-center gap-2 text-green-600">
+          <FaTasks /> Prerequisites / Soft Requirements
+        </h3>
+        <ul className="list-disc list-inside mt-2 text-gray-700">
+          {prerequisites.map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
+        </ul>
+      </div>
 
-        {/* Deadline */}
-        <p className="flex items-center gap-2">
-          <FaCalendarAlt /> Application Deadline:{" "}
-          {applicationDeadline
-            ? new Date(applicationDeadline).toLocaleDateString()
-            : "TBD"}
-        </p>
+      {/* Skills Covered */}
+      <div>
+        <h3 className="font-semibold text-xl mt-4 flex items-center gap-2 text-purple-600">
+          <FaTools /> Skills You Will Learn
+        </h3>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+          {skillsCovered.map((skill, idx) => (
+            <li
+              key={idx}
+              className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full inline-block font-medium"
+            >
+              {skill}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Attachments */}
+      <div>
+        <h3 className="font-semibold text-xl mt-4 flex items-center gap-2 text-orange-600">
+          <FaBook /> Attachments
+        </h3>
+        <ul className="list-disc list-inside mt-2 text-gray-700">
+          {attachments.map((file, idx) => (
+            <li key={idx}>{file}</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Weekly Plan */}
+      <div>
+        {/* Title */}
+        <h3 className="font-semibold text-xl mt-4 flex items-center gap-2 text-teal-600">
+          <FaTasks /> Weekly Plan
+        </h3>
+
+        {/* Weekly Plan */}
+        <div className="space-y-4 mt-2">
+          {weeklyPlan.map((week) => (
+            <div
+              key={week.weekNo}
+              className="p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+            >
+              {/* Week Number & Topic */}
+              <h4 className="font-semibold text-lg">
+                Week {week.weekNo}: {week.topic}
+              </h4>
+
+              {/* Objectives */}
+              <p className="text-gray-700 mt-1">
+                <strong>Objectives:</strong> {week.objectives}
+              </p>
+
+              {/* Resources */}
+              <p className="text-gray-700 mt-1">
+                <strong>Resources:</strong> {week.resources}
+              </p>
+
+              {/* Notes */}
+              <p className="text-gray-500 mt-1 text-sm">{week.notes}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Communication */}
-      <div className="text-gray-700">
-        <p className="font-semibold text-gray-800">Communication:</p>
-        <p>Preferred: {communication?.preferredMethod || "N/A"}</p>
-        <p>
-          Group Chat: {communication?.groupChatEnabled ? "Enabled" : "Disabled"}
+      <div>
+        {/* Title */}
+        <h3 className="font-semibold text-xl mt-4 flex items-center gap-2 text-red-600">
+          <FaCommentDots /> Communication & Support
+        </h3>
+
+        {/* Preferred Method */}
+        <p className="text-gray-700 mt-1">
+          <strong>Preferred Method:</strong> {communication.preferredMethod}
         </p>
-        <p>
-          One-on-One Support: {communication?.oneOnOneSupport ? "Yes" : "No"}
+
+        {/* One-on-One Support */}
+        <p className="text-gray-700 mt-1">
+          <strong>One-on-One Support:</strong>{" "}
+          {communication.oneOnOneSupport ? "Yes" : "No"}
+        </p>
+
+        {/* Group Chat */}
+        <p className="text-gray-700 mt-1">
+          <strong>Group Chat:</strong>{" "}
+          {communication.groupChatEnabled ? "Enabled" : "Disabled"}
+        </p>
+
+        {/* Notes */}
+        <p className="text-gray-700 mt-1 whitespace-pre-line">
+          {communication.notes}
         </p>
       </div>
-
-      {/* Location */}
-      <p className="text-gray-700 flex items-center gap-2">
-        <FaMapMarkerAlt /> Location:{" "}
-        {isRemote
-          ? "Remote"
-          : location?.city
-          ? `${location.city}, ${location.country || ""}`
-          : "Not specified"}
-      </p>
-
-      {/* Extra Notes */}
-      {extraNotes && (
-        <div className="bg-gray-50 p-3 rounded border-l-4 border-blue-500">
-          <p className="font-semibold text-gray-800">Extra Notes:</p>
-          <p className="text-gray-700 text-sm">{extraNotes}</p>
-        </div>
-      )}
 
       {/* Apply Button */}
       {!isEditor && (
@@ -308,7 +416,6 @@ const MentorshipDetailsModal = ({
   );
 };
 
-// Prop Validation
 MentorshipDetailsModal.propTypes = {
   isEditor: PropTypes.bool,
   selectedMentorshipID: PropTypes.string.isRequired,

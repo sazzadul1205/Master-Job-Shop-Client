@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-
 // Packages
+import Swal from "sweetalert2";
+import PropTypes from "prop-types";
 import { useQuery } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 
@@ -8,14 +9,13 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 
 // Shared
-import FormInput from "../../../../Shared/FormInput/FormInput";
 import TagInput from "../../../../Shared/TagInput/TagInput";
-import WeeklyPlanInput from "./WeeklyPlanInput/WeeklyPlanInput";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import FormInput from "../../../../Shared/FormInput/FormInput";
+import WeeklyPlanInput from "./WeeklyPlanInput/WeeklyPlanInput";
 
 // Hooks
 import useAuth from "../../../../Hooks/useAuth";
-import Swal from "sweetalert2";
 
 // Category Options
 const CategoryOptions = [
@@ -192,7 +192,7 @@ const formatDate = (dateStr) => {
   }); // e.g. 25 Aug 2023
 };
 
-const CreateMentorshipModal = () => {
+const CreateMentorshipModal = ({ refetch }) => {
   const axiosPublic = useAxiosPublic();
   const { user } = useAuth();
 
@@ -291,9 +291,14 @@ const CreateMentorshipModal = () => {
 
   // Close Modal and Clear Errors
   const handleClose = () => {
+    // Close Modal after success
+    document.getElementById("Create_Mentorship_Modal").close();
+
+    // Clear Errors and Loading
     setErrorMessage("");
     setLoading(false);
     setSubOptions([]);
+    refetch();
     reset();
   };
 
@@ -331,10 +336,7 @@ const CreateMentorshipModal = () => {
       // POST Request
       await axiosPublic.post("/Mentorship", payload);
 
-      // Close Modal after success
-      document.getElementById("Create_Mentorship_Modal").close();
-
-      reset();
+      // Close Modal and Reset
       handleClose();
 
       // Success Message
@@ -364,10 +366,7 @@ const CreateMentorshipModal = () => {
       {/* Close Button */}
       <button
         type="button"
-        onClick={() => {
-          document.getElementById("Create_Mentorship_Modal").close();
-          handleClose();
-        }}
+        onClick={() => handleClose()}
         className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
       >
         <ImCross className="text-xl" />
@@ -1004,6 +1003,10 @@ const CreateMentorshipModal = () => {
       </form>
     </div>
   );
+};
+
+CreateMentorshipModal.propTypes = {
+  refetch: PropTypes.func,
 };
 
 export default CreateMentorshipModal;

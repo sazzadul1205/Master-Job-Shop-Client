@@ -12,8 +12,10 @@ import CreateMentorshipModal from "./CreateMentorshipModal/CreateMentorshipModal
 
 // Hooks
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import useAuth from "../../../Hooks/useAuth";
 
 const MentorMyMentorship = () => {
+  const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
 
   // Track active tab
@@ -27,7 +29,12 @@ const MentorMyMentorship = () => {
     error,
   } = useQuery({
     queryKey: ["MentorshipData"],
-    queryFn: () => axiosPublic.get(`/Mentorship`).then((res) => res.data),
+    queryFn: () =>
+      axiosPublic.get(`/Mentorship?mentorEmail=${user?.email}`).then((res) => {
+        const data = res.data;
+        // Ensure the result is always an array
+        return Array.isArray(data) ? data : [data];
+      }),
   });
 
   // Tabs Data

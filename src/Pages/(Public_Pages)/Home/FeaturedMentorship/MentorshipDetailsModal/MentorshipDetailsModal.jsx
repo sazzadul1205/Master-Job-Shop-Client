@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -27,7 +28,19 @@ import Loading from "../../../../../Shared/Loading/Loading";
 
 // Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
-import { useEffect, useRef, useState } from "react";
+
+// Format Time
+const formatTime = (time) => {
+  if (!time) return "TBD";
+  const [hour, minute] = time.split(":");
+  const date = new Date();
+  date.setHours(hour, minute);
+  return date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
 
 const MentorshipDetailsModal = ({
   isEditor = false,
@@ -122,6 +135,7 @@ const MentorshipDetailsModal = ({
     endDate,
     communication,
     postedAt,
+    isRemote,
   } = mentorship;
 
   return (
@@ -138,8 +152,8 @@ const MentorshipDetailsModal = ({
       <div className="flex items-center space-x-4">
         {/* Mentor Image */}
         <img
-          src={Mentor.profileImage || DefaultUserLogo}
-          alt={Mentor.name}
+          src={Mentor?.profileImage || DefaultUserLogo}
+          alt={Mentor?.name || "Mentor"}
           className="w-20 h-20 rounded-full object-cover border-2 border-blue-400"
         />
 
@@ -147,11 +161,11 @@ const MentorshipDetailsModal = ({
         <div>
           {/* Name */}
           <h2 className="text-2xl font-semibold flex items-center gap-2">
-            <FaUserTie className="text-blue-500" /> {Mentor.name}
+            <FaUserTie className="text-blue-500" /> {Mentor?.name || "N/A"}
           </h2>
 
           {/* Position */}
-          <p className="text-sm text-gray-500">{Mentor.position}</p>
+          <p className="text-sm text-gray-500">{Mentor?.position || "N/A"}</p>
 
           {/* Bio */}
           <div className="mt-2 text-gray-700">
@@ -164,7 +178,7 @@ const MentorshipDetailsModal = ({
               title="Click to expand"
               ref={bioRef}
             >
-              {Mentor.bio}
+              {Mentor?.bio || "No bio available."}
             </div>
           </div>
         </div>
@@ -173,10 +187,15 @@ const MentorshipDetailsModal = ({
       {/* Program Title & Description */}
       <div>
         {/* Title */}
-        <h1 className="text-3xl font-bold mt-4 text-blue-600">{title}</h1>
+        <h1 className="text-3xl font-bold mt-4 text-blue-600">
+          {title || "Untitled Mentorship Program"}
+        </h1>
 
         {/* Description */}
-        <p className="mt-2 text-gray-700 whitespace-pre-line">{description}</p>
+        <p className="mt-2 text-black whitespace-pre-line">
+          {description ||
+            "No description available for this mentorship program."}
+        </p>
       </div>
 
       {/* Key Details */}
@@ -187,7 +206,9 @@ const MentorshipDetailsModal = ({
           <div>
             <h3 className="font-semibold text-lg">Category</h3>
             <p>
-              {category} / {subCategory}
+              {category
+                ? `${category} / ${subCategory || "TBD"}`
+                : "Not specified"}
             </p>
           </div>
         </div>
@@ -197,7 +218,7 @@ const MentorshipDetailsModal = ({
           <FaClock className="text-orange-500" />
           <div>
             <h3 className="font-semibold text-lg">Duration</h3>
-            <p>{durationWeeks} Weeks</p>
+            <p>{durationWeeks || "TBD"} Weeks</p>
           </div>
         </div>
 
@@ -206,14 +227,14 @@ const MentorshipDetailsModal = ({
           <FaCalendarAlt className="text-blue-400" />
           <div>
             <h3 className="font-semibold text-lg">Sessions</h3>
-            {/* Sessions Per Week & Session Length */}
             <p>
-              {sessionsPerWeek} per week, {sessionLength} each
+              {sessionsPerWeek || "TBD"} per week, {sessionLength || "TBD"} each
             </p>
-
-            {/* Session Days, Start Time & End Time */}
             <p>
-              {sessionDays.join(", ")} | {sessionStartTime} - {sessionEndTime}
+              {sessionDays?.length ? sessionDays.join(", ") : "TBD"} |{" "}
+              <p>
+                {formatTime(sessionStartTime)} - {formatTime(sessionEndTime)}
+              </p>
             </p>
           </div>
         </div>
@@ -223,11 +244,12 @@ const MentorshipDetailsModal = ({
           <FaMapMarkerAlt className="text-red-400" />
           <div>
             <h3 className="font-semibold text-lg">Location</h3>
-
-            {/* Address, City, State, Country */}
             <p>
-              {location.address}, {location.city}, {location.state},{" "}
-              {location.country}
+              {location?.address || ""}
+              {location?.city ? `, ${location.city}` : ""}
+              {location?.state ? `, ${location.state}` : ""}
+              {location?.country ? `, ${location.country}` : ""}
+              {!location && !isRemote ? "Not specified" : ""}
             </p>
           </div>
         </div>
@@ -235,29 +257,28 @@ const MentorshipDetailsModal = ({
         {/* Fee */}
         <div className="flex items-center gap-2">
           <FaMoneyBillWave className="text-yellow-500" />
-
-          {/* Fee */}
           <div>
             <h3 className="font-semibold text-lg">Fee</h3>
-            {fee.isFree ? (
+            {fee?.isFree ? (
               <p>Free</p>
-            ) : (
-              //  Fee Amount, Currency, Payment Method & Payment Link
+            ) : fee?.amount ? (
               <p>
-                {fee.amount} {fee.currency} via{" "}
-                <span className="text-black">{fee.paymentMethod}</span>
+                {fee.amount} {fee.currency || "USD"} via{" "}
+                <span className="text-black">{fee.paymentMethod || "TBD"}</span>
               </p>
+            ) : (
+              <p>Not specified</p>
             )}
           </div>
         </div>
 
-        {/* Start Date & End Date */}
+        {/* Start / End Date */}
         <div className="flex items-center gap-2">
           <FaCalendarAlt className="text-purple-400" />
           <div>
             <h3 className="font-semibold text-lg">Start / End Date</h3>
             <p>
-              {startDate} - {endDate}
+              {startDate || "TBD"} - {endDate || "TBD"}
             </p>
           </div>
         </div>
@@ -267,133 +288,203 @@ const MentorshipDetailsModal = ({
           <FaCalendarAlt className="text-gray-500" />
           <div>
             <h3 className="font-semibold text-lg">Posted At</h3>
-            <p>{new Date(postedAt).toLocaleString()}</p>
+            <p>
+              {postedAt
+                ? new Date(postedAt).toLocaleString("en-US", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })
+                : "Not specified"}
+            </p>
           </div>
         </div>
       </div>
 
       {/* Required Skills */}
       <div>
-        <h3 className="font-semibold text-xl mt-6 flex items-center gap-2 text-blue-600">
+        {/* Title */}
+        <h3 className="font-semibold text-xl mt-6 pb-3 flex items-center gap-2 text-blue-600">
           <FaTools /> Required Skills
         </h3>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-          {skills.map((tech, idx) => (
-            <li
-              key={idx}
-              className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full inline-block font-medium"
-            >
-              {tech}
-            </li>
-          ))}
-        </ul>
+
+        {/* Skill List */}
+        {skills?.length > 0 ? (
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+            {skills.map((tech, idx) => (
+              <li
+                key={idx}
+                className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full inline-block font-medium"
+              >
+                {tech}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500 mt-2">No skills specified.</p>
+        )}
       </div>
 
       {/* Prerequisites / Soft Requirements */}
       <div>
-        <h3 className="font-semibold text-xl mt-4 flex items-center gap-2 text-green-600">
+        {/* Title */}
+        <h3 className="font-semibold text-xl mt-4 pb-3 flex items-center gap-2 text-green-600">
           <FaTasks /> Prerequisites / Soft Requirements
         </h3>
-        <ul className="list-disc list-inside mt-2 text-gray-700">
-          {prerequisites.map((item, idx) => (
-            <li key={idx}>{item}</li>
-          ))}
-        </ul>
+
+        {/* Prerequisite List */}
+        {prerequisites?.length > 0 ? (
+          <ul className="list-disc list-inside mt-2 font-semibold text-gray-700">
+            {prerequisites.map((item, idx) => (
+              <li key={idx}>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500 mt-2">No prerequisites specified.</p>
+        )}
       </div>
 
       {/* Skills Covered */}
       <div>
-        <h3 className="font-semibold text-xl mt-4 flex items-center gap-2 text-purple-600">
+        {/* Title */}
+        <h3 className="font-semibold text-xl mt-4 pb-3 flex items-center gap-2 text-purple-600">
           <FaTools /> Skills You Will Learn
         </h3>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-          {skillsCovered.map((skill, idx) => (
-            <li
-              key={idx}
-              className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full inline-block font-medium"
-            >
-              {skill}
-            </li>
-          ))}
-        </ul>
+
+        {/* Skill List */}
+        {skillsCovered?.length > 0 ? (
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+            {skillsCovered.map((skill, idx) => (
+              <li
+                key={idx}
+                className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full inline-block font-medium"
+              >
+                {skill}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500 mt-2">
+            No skills specified for this program yet.
+          </p>
+        )}
       </div>
 
       {/* Attachments */}
       <div>
-        <h3 className="font-semibold text-xl mt-4 flex items-center gap-2 text-orange-600">
+        {/* Title */}
+        <h3 className="font-semibold text-xl mt-4 pb-3 flex items-center gap-2 text-orange-600">
           <FaBook /> Attachments
         </h3>
-        <ul className="list-disc list-inside mt-2 text-gray-700">
-          {attachments.map((file, idx) => (
-            <li key={idx}>{file}</li>
-          ))}
-        </ul>
+
+        {/* Attachment List */}
+        {attachments?.length > 0 ? (
+          <ul className="list-disc list-inside mt-2 font-semibold text-gray-700">
+            {attachments.map((file, idx) => (
+              <li key={idx}>{file}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500 mt-2">
+            No attachments available for this program.
+          </p>
+        )}
       </div>
 
       {/* Weekly Plan */}
       <div>
         {/* Title */}
-        <h3 className="font-semibold text-xl mt-4 flex items-center gap-2 text-teal-600">
+        <h3 className="font-semibold text-xl mt-4 pb-3 flex items-center gap-2 text-teal-600">
           <FaTasks /> Weekly Plan
         </h3>
 
         {/* Weekly Plan */}
-        <div className="space-y-4 mt-2">
-          {weeklyPlan.map((week) => (
-            <div
-              key={week.weekNo}
-              className="p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition"
-            >
-              {/* Week Number & Topic */}
-              <h4 className="font-semibold text-lg">
-                Week {week.weekNo}: {week.topic}
-              </h4>
+        {weeklyPlan && weeklyPlan.length > 0 ? (
+          <div className="space-y-4 mt-2">
+            {weeklyPlan.map((week) => (
+              <div
+                key={week.weekNo}
+                className="p-4 border-4 border-l-blue-500 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+              >
+                {/* Week Number & Topic */}
+                <h4 className="font-semibold text-lg">
+                  Week {week.weekNo}: {week.topic || "No topic provided"}
+                </h4>
 
-              {/* Objectives */}
-              <p className="text-gray-700 mt-1">
-                <strong>Objectives:</strong> {week.objectives}
-              </p>
+                {/* Objectives */}
+                <p className="text-gray-700 mt-1">
+                  <strong>Objectives:</strong>{" "}
+                  {week.objectives || "Not specified"}
+                </p>
 
-              {/* Resources */}
-              <p className="text-gray-700 mt-1">
-                <strong>Resources:</strong> {week.resources}
-              </p>
+                {/* Resources */}
+                <p className="text-gray-700 mt-1">
+                  <strong>Resources:</strong> {week.resources || "Not provided"}
+                </p>
 
-              {/* Notes */}
-              <p className="text-gray-500 mt-1 text-sm">{week.notes}</p>
-            </div>
-          ))}
-        </div>
+                {/* Notes */}
+                <p className="text-gray-500 mt-1 text-sm">
+                  {week.notes || "No additional notes"}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 mt-2">
+            No weekly plan has been provided for this program.
+          </p>
+        )}
       </div>
 
-      {/* Communication */}
+      {/* Communication & Support */}
       <div>
         {/* Title */}
-        <h3 className="font-semibold text-xl mt-4 flex items-center gap-2 text-red-600">
+        <h3 className="font-semibold text-xl mt-4 pb-3 flex items-center gap-2 text-red-600">
           <FaCommentDots /> Communication & Support
         </h3>
 
-        {/* Preferred Method */}
-        <p className="text-gray-700 mt-1">
-          <strong>Preferred Method:</strong> {communication.preferredMethod}
-        </p>
+        {/* Sessions */}
+        {communication ? (
+          <>
+            {/* Preferred Method */}
+            <p className="text-gray-700 mt-1">
+              <strong>Preferred Method:</strong>{" "}
+              {communication.preferredMethod || "Not specified"}
+            </p>
 
-        {/* One-on-One Support */}
-        <p className="text-gray-700 mt-1">
-          <strong>One-on-One Support:</strong>{" "}
-          {communication.oneOnOneSupport ? "Yes" : "No"}
-        </p>
+            {/* One-on-One Support */}
+            <p className="text-gray-700 mt-1">
+              <strong>One-on-One Support:</strong>{" "}
+              {communication.oneOnOneSupport !== undefined
+                ? communication.oneOnOneSupport
+                  ? "Yes"
+                  : "No"
+                : "Not specified"}
+            </p>
 
-        {/* Group Chat */}
-        <p className="text-gray-700 mt-1">
-          <strong>Group Chat:</strong>{" "}
-          {communication.groupChatEnabled ? "Enabled" : "Disabled"}
-        </p>
+            {/* Group Chat */}
+            <p className="text-gray-700 mt-1">
+              <strong>Group Chat:</strong>{" "}
+              {communication.groupChatEnabled !== undefined
+                ? communication.groupChatEnabled
+                  ? "Enabled"
+                  : "Disabled"
+                : "Not specified"}
+            </p>
 
-        {/* Notes */}
-        <p className="text-gray-700 mt-1 whitespace-pre-line">
-          {communication.notes}
-        </p>
+            {/* Notes */}
+            <p className="text-black mt-1 whitespace-pre-line pt-2">
+              {communication.notes || "No additional notes provided."}
+            </p>
+          </>
+        ) : (
+          <p className="text-gray-500 mt-2">
+            No communication details provided for this program.
+          </p>
+        )}
       </div>
 
       {/* Apply Button */}
@@ -409,9 +500,24 @@ const MentorshipDetailsModal = ({
       )}
 
       {/* Posted Date */}
-      <p className="text-xs text-gray-400 mt-2">
-        Posted on: {postedAt ? new Date(postedAt).toLocaleDateString() : "N/A"}
-      </p>
+      <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
+        <FaCalendarAlt className="text-gray-400" />
+        <span>
+          Posted on:{" "}
+          <p>
+            {postedAt
+              ? new Date(postedAt).toLocaleString("en-US", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })
+              : "Not specified"}
+          </p>
+        </span>
+      </div>
     </div>
   );
 };

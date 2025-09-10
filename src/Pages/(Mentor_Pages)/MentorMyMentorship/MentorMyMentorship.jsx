@@ -86,6 +86,7 @@ const MentorMyMentorship = () => {
         {activeTab === "active" && (
           <MentorMyActiveMentorship
             error={error}
+            refetch={refetch}
             isLoading={isLoading}
             MentorshipData={MentorshipData}
           />

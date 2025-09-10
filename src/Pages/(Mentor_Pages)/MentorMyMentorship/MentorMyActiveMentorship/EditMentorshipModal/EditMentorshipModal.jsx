@@ -1,17 +1,209 @@
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
+
+// Packages
+import { useFieldArray, useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
+
+// Icons
 import { ImCross } from "react-icons/im";
+
+// Shared
 import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
+import FormInput from "../../../../../Shared/FormInput/FormInput";
+
+// Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import TagInput from "../../../../../Shared/TagInput/TagInput";
+import WeeklyPlanInput from "../../CreateMentorshipModal/WeeklyPlanInput/WeeklyPlanInput";
+import Swal from "sweetalert2";
+
+// Category Options
+const CategoryOptions = [
+  {
+    value: "technology",
+    label: "Technology",
+    subcategories: [
+      "AI",
+      "Web Development",
+      "Mobile Development",
+      "Cloud Computing",
+      "DevOps",
+      "Data Science",
+      "Cybersecurity",
+      "Blockchain",
+      "Game Development",
+      "UI/UX Design",
+      "Software Engineering",
+      "IoT",
+      "AR/VR",
+      "Quantum Computing",
+    ],
+  },
+  {
+    value: "business",
+    label: "Business & Finance",
+    subcategories: [
+      "Finance",
+      "Investing",
+      "Marketing",
+      "Sales",
+      "Management",
+      "Entrepreneurship",
+      "Business Strategy",
+      "Project Management",
+      "Accounting",
+      "Economics",
+      "E-commerce",
+      "Startups",
+    ],
+  },
+  {
+    value: "arts",
+    label: "Arts & Creative",
+    subcategories: [
+      "Music",
+      "Design",
+      "Writing",
+      "Film & Media",
+      "Painting",
+      "Photography",
+      "Graphic Design",
+      "Sculpture",
+      "Fashion Design",
+      "Animation",
+      "Interior Design",
+      "Creative Writing",
+    ],
+  },
+  {
+    value: "science",
+    label: "Science & Research",
+    subcategories: [
+      "Physics",
+      "Biology",
+      "Chemistry",
+      "Astronomy",
+      "Mathematics",
+      "Engineering",
+      "Environmental Science",
+      "Geology",
+      "Research Methodology",
+      "Statistics",
+      "Genetics",
+    ],
+  },
+  {
+    value: "health",
+    label: "Health & Wellness",
+    subcategories: [
+      "Yoga",
+      "Fitness",
+      "Medicine",
+      "Nutrition",
+      "Meditation",
+      "Mental Health",
+      "Physiotherapy",
+      "Public Health",
+      "Alternative Medicine",
+      "Wellness Coaching",
+    ],
+  },
+  {
+    value: "personal_dev",
+    label: "Personal Development & Education",
+    subcategories: [
+      "Leadership",
+      "Study Skills",
+      "Career Guidance",
+      "Public Speaking",
+      "Time Management",
+      "Language Learning",
+      "Personal Development",
+      "Critical Thinking",
+      "Emotional Intelligence",
+      "Mindfulness",
+      "Goal Setting",
+    ],
+  },
+  {
+    value: "lifestyle",
+    label: "Lifestyle & Hobbies",
+    subcategories: [
+      "Travel",
+      "Sports",
+      "Gaming",
+      "Fashion",
+      "Cooking",
+      "Gardening",
+      "Photography",
+      "DIY Projects",
+      "Pets & Animal Care",
+      "Music Instruments",
+      "Crafts",
+    ],
+  },
+  {
+    value: "social_impact",
+    label: "Social Impact & Volunteering",
+    subcategories: [
+      "Nonprofit Management",
+      "Community Service",
+      "Environmental Activism",
+      "Social Entrepreneurship",
+      "Fundraising",
+      "Advocacy",
+    ],
+  },
+  {
+    value: "tech_entrepreneurship",
+    label: "Tech Entrepreneurship",
+    subcategories: [
+      "Startup Incubation",
+      "Pitching & Funding",
+      "Business Models",
+      "Product Management",
+      "Tech Innovation",
+    ],
+  },
+  {
+    value: "languages",
+    label: "Languages & Communication",
+    subcategories: [
+      "English",
+      "Spanish",
+      "French",
+      "Mandarin",
+      "Japanese",
+      "Public Speaking",
+      "Writing Skills",
+      "Communication Skills",
+    ],
+  },
+];
+
+// Helper: format yyyy-mm-dd -> yyyy-mm-dd
+const formatDateForInput = (dateStr) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  if (isNaN(date)) return "";
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};
 
 const EditMentorshipModal = ({
+  refetch,
   selectedMentorshipID,
   setSelectedMentorshipID,
 }) => {
   const axiosPublic = useAxiosPublic();
 
+  // State Management
+  const [loading, setLoading] = useState(null);
+  const [subOptions, setSubOptions] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
   // Fetch Mentorship Data
@@ -28,9 +220,12 @@ const EditMentorshipModal = ({
     enabled: !!selectedMentorshipID,
   });
 
+  // Form Management
   const {
-    register,
     handleSubmit,
+    register,
+    control,
+    watch,
     reset,
     formState: { errors },
   } = useForm({
@@ -45,6 +240,7 @@ const EditMentorshipModal = ({
       sessionDays: MentorshipData?.sessionDays || [],
       sessionStartTime: MentorshipData?.sessionStartTime || "",
       sessionEndTime: MentorshipData?.sessionEndTime || "",
+      modeToggle: MentorshipData?.modeToggle,
       location: MentorshipData?.location || {
         city: "",
         state: "",
@@ -61,8 +257,8 @@ const EditMentorshipModal = ({
         negotiable: false,
         paymentLink: "",
       },
-      startDate: MentorshipData?.startDate || "",
-      endDate: MentorshipData?.endDate || "",
+      startDate: formatDateForInput(MentorshipData?.startDate),
+      endDate: formatDateForInput(MentorshipData?.endDate),
       communication: MentorshipData?.communication || {
         preferredMethod: "",
         groupChatEnabled: false,
@@ -70,14 +266,63 @@ const EditMentorshipModal = ({
         frequency: "",
         notes: "",
       },
+      skills: MentorshipData?.skills || [],
+      prerequisites: MentorshipData?.prerequisites || [],
+      attachments: MentorshipData?.attachments || [],
+      skillsCovered: MentorshipData?.skillsCovered || [],
+      weeklyPlan: MentorshipData?.weeklyPlan || [],
     },
   });
 
-  // Close Modal
-  const handleClose = () => {
-    setSelectedMentorshipID("");
-    document.getElementById("Mentorship_Details_Modal")?.close();
-  };
+  // Skills
+  const {
+    fields: skillFields,
+    append: appendSkill,
+    remove: removeSkill,
+  } = useFieldArray({
+    control,
+    name: "skills",
+  });
+
+  // Prerequisites
+  const {
+    fields: prerequisitesFields,
+    append: appendPrerequisites,
+    remove: removePrerequisites,
+  } = useFieldArray({
+    control,
+    name: "prerequisites",
+  });
+
+  // Attachments
+  const {
+    fields: attachmentsFields,
+    append: appendAttachments,
+    remove: removeAttachments,
+  } = useFieldArray({
+    control,
+    name: "attachments",
+  });
+
+  // WeeklyPlan
+  const {
+    fields: weeklyPlanFields,
+    append: appendWeeklyPlan,
+    remove: removeWeeklyPlan,
+  } = useFieldArray({
+    control,
+    name: "weeklyPlan",
+  });
+
+  // skillsCovered
+  const {
+    fields: skillsCoveredFields,
+    append: AppendSkillsCovered,
+    remove: RemoveSkillsCovered,
+  } = useFieldArray({
+    control,
+    name: "skillsCovered",
+  });
 
   // Re-run reset whenever MentorshipData changes
   useEffect(() => {
@@ -93,6 +338,7 @@ const EditMentorshipModal = ({
         sessionDays: MentorshipData?.sessionDays || [],
         sessionStartTime: MentorshipData?.sessionStartTime || "",
         sessionEndTime: MentorshipData?.sessionEndTime || "",
+        modeToggle: MentorshipData?.modeToggle,
         location: MentorshipData?.location || {
           city: "",
           state: "",
@@ -109,8 +355,8 @@ const EditMentorshipModal = ({
           negotiable: false,
           paymentLink: "",
         },
-        startDate: MentorshipData?.startDate || "",
-        endDate: MentorshipData?.endDate || "",
+        startDate: formatDateForInput(MentorshipData?.startDate),
+        endDate: formatDateForInput(MentorshipData?.endDate),
         communication: MentorshipData?.communication || {
           preferredMethod: "",
           groupChatEnabled: false,
@@ -118,9 +364,37 @@ const EditMentorshipModal = ({
           frequency: "",
           notes: "",
         },
+        skills: MentorshipData.skills?.map((skill) => ({ value: skill })) || [],
+        prerequisites:
+          MentorshipData.prerequisites?.map((req) => ({ value: req })) || [],
+        attachments:
+          MentorshipData.attachments?.map((att) => ({ value: att })) || [],
+        skillsCovered:
+          MentorshipData.skillsCovered?.map((skill) => ({ value: skill })) ||
+          [],
+        weeklyPlan: MentorshipData?.weeklyPlan || [],
       });
     }
   }, [MentorshipData, reset]);
+
+  // Watch category selection
+  const selectedCategory = watch("category");
+
+  // Update subcategory options based on selected category
+  useEffect(() => {
+    const category = CategoryOptions.find((c) => c.value === selectedCategory);
+    setSubOptions(
+      category
+        ? category.subcategories.map((sub) => ({ value: sub, label: sub }))
+        : []
+    );
+  }, [selectedCategory]);
+
+  // Close Modal
+  const handleClose = () => {
+    setSelectedMentorshipID("");
+    document.getElementById("Edit_Mentorship_Modal")?.close();
+  };
 
   // If loading
   if (isLoading)
@@ -150,7 +424,56 @@ const EditMentorshipModal = ({
       </div>
     );
 
+  // If no Data
   if (!MentorshipData) return null;
+
+  // Form Submission
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true);
+      setErrorMessage("");
+
+      // Convert TagInput fields back to simple arrays
+      const formattedData = {
+        ...data,
+        skills: data.skills.map((s) => s.value),
+        prerequisites: data.prerequisites.map((p) => p.value),
+        attachments: data.attachments.map((a) => a.value),
+        skillsCovered: data.skillsCovered.map((s) => s.value),
+      };
+
+      // Send PUT request to update mentorship
+      const response = await axiosPublic.put(
+        `/Mentorship/${selectedMentorshipID}`,
+        formattedData
+      );
+
+      // Check if update was successful
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Mentorship updated successfully.",
+        confirmButtonColor: "#2563eb",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+
+      // Close modal and refetch updated data
+      handleClose();
+      refetch();
+
+      console.log("Mentorship updated:", response.data);
+    } catch (err) {
+      console.error("Error updating mentorship:", err);
+      setErrorMessage(
+        err.response?.data?.message ||
+          "Failed to update mentorship. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -183,7 +506,617 @@ const EditMentorshipModal = ({
 
       {/* Modal Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Inputs ---- */}
+        {/* Basic Info Section */}
+        <div className="space-y-4">
+          {/* Title */}
+          <FormInput
+            label="Title"
+            required
+            placeholder="Mentorship Title..."
+            register={register("title", { required: "Title is required" })}
+            error={errors.title}
+          />
+
+          {/* Description */}
+          <FormInput
+            as="textarea"
+            label="Description"
+            required
+            placeholder="Enter mentorship description..."
+            register={register("description", {
+              required: "Description is required",
+            })}
+            error={errors.description}
+            rows={6}
+          />
+
+          {/* Category & Subcategory */}
+          <div className="flex gap-4">
+            {/* Category */}
+            <FormInput
+              as="select"
+              label="Category"
+              required
+              placeholder="Select a Category"
+              options={CategoryOptions.map((c) => ({
+                value: c.value,
+                label: c.label,
+              }))}
+              register={register("category", {
+                required: "Category is required",
+              })}
+              error={errors.category}
+            />
+
+            {/* Subcategory */}
+            <FormInput
+              as="select"
+              label="Sub Category"
+              required
+              placeholder="Select a Sub Category"
+              options={subOptions}
+              register={register("subCategory", {
+                required: "Sub Category is required",
+              })}
+              error={errors.subCategory}
+            />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
+        {/* Skills, Prerequisites & Attachments */}
+        <div className="space-y-4">
+          {/* Skills TagInput */}
+          <TagInput
+            items={skillFields}
+            appendItem={appendSkill}
+            removeItem={removeSkill}
+            label="Skills"
+            placeholder="Add a skill"
+          />
+
+          {/* Prerequisites TagInput */}
+          <TagInput
+            items={prerequisitesFields}
+            appendItem={appendPrerequisites}
+            removeItem={removePrerequisites}
+            label="Prerequisites"
+            placeholder="Add a Prerequisites"
+          />
+
+          {/* Attachments TagInput */}
+          <TagInput
+            items={attachmentsFields}
+            appendItem={appendAttachments}
+            removeItem={removeAttachments}
+            label="Attachments"
+            placeholder="Add a Attachment"
+          />
+
+          {/* Skills Covered TagInput */}
+          <TagInput
+            items={skillsCoveredFields}
+            appendItem={AppendSkillsCovered}
+            removeItem={RemoveSkillsCovered}
+            label="Skills Covered In Mentorship"
+            placeholder="Add a Skills Covered"
+          />
+        </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
+        {/* Schedule */}
+        <div className="space-y-3">
+          {/* Header */}
+          <h3 className="font-bold text-lg">Schedule</h3>
+
+          {/* Divider */}
+          <p className="bg-gray-500 p-[1px] my-2" />
+
+          {/* Duration & Sessions Per Week */}
+          <div className="flex gap-4">
+            {/* Total Duration */}
+            <FormInput
+              label="Total Duration (Weeks)"
+              type="number"
+              placeholder="e.g., 8"
+              required
+              register={register("durationWeeks", {
+                required: "Required",
+                min: { value: 1, message: "Must be at least 1" },
+              })}
+              error={errors.durationWeeks}
+            />
+
+            {/* Sessions Per Week */}
+            <FormInput
+              label="Sessions Per Week"
+              type="number"
+              placeholder="e.g., 2"
+              required
+              register={register("sessionsPerWeek", {
+                required: "Required",
+                min: { value: 1, message: "Must be at least 1" },
+                max: { value: 7, message: "Cannot exceed 7 sessions per week" },
+              })}
+              error={errors.sessionsPerWeek}
+            />
+          </div>
+
+          {/* Session Length */}
+          <FormInput
+            label="Session Length"
+            as="select"
+            required
+            placeholder="Select length"
+            register={register("sessionLength", { required: "Required" })}
+            error={errors.sessionLength}
+            options={[
+              { value: "5min", label: "5 minutes" },
+              { value: "10min", label: "10 minutes" },
+              { value: "15min", label: "15 minutes" },
+              { value: "20min", label: "20 minutes" },
+              { value: "25min", label: "25 minutes" },
+              { value: "30min", label: "30 minutes" },
+              { value: "45min", label: "45 minutes" },
+              { value: "1hr", label: "1 hour" },
+              { value: "1.5hr", label: "1.5 hours" },
+              { value: "2hr", label: "2 hours" },
+              { value: "2.5hr", label: "2.5 hours" },
+              { value: "3hr", label: "3 hours" },
+              { value: "3.5hr", label: "3.5 hours" },
+              { value: "4hr", label: "4 hours" },
+              { value: "5hr", label: "5 hours" },
+              { value: "6hr", label: "6 hours" },
+              { value: "7hr", label: "7 hours" },
+              { value: "8hr", label: "8 hours" },
+            ]}
+          />
+
+          {/* Session Days */}
+          <div className="space-y-2">
+            {/* Label */}
+            <label className="block font-medium text-sm">Session Days</label>
+
+            {/* Days Checkboxes */}
+            <div className="grid grid-cols-7 gap-2">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
+                const selectedDays = watch("sessionDays") || [];
+                const sessionsPerWeek = Number(watch("sessionsPerWeek")) || 0;
+                const isSelected = selectedDays.includes(day);
+
+                // Disable unchecked boxes if limit reached
+                const disabled =
+                  !isSelected && selectedDays.length >= sessionsPerWeek;
+
+                return (
+                  <label
+                    key={day}
+                    className={`cursor-pointer px-2 py-2 rounded-lg border text-center transition-colors duration-200 flex items-center justify-center ${
+                      isSelected
+                        ? "bg-blue-500 text-white border-blue-500"
+                        : "bg-gray-100 text-gray-700 border-gray-300"
+                    } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    <input
+                      type="checkbox"
+                      value={day}
+                      {...register("sessionDays")}
+                      disabled={disabled}
+                      className="hidden"
+                    />
+                    {day}
+                  </label>
+                );
+              })}
+            </div>
+
+            {/* Error message if limit exceeded */}
+            {watch("sessionDays")?.length >
+              Number(watch("sessionsPerWeek")) && (
+              <p className="text-red-500 text-sm mt-1">
+                Maximum {watch("sessionsPerWeek")} sessions per week allowed.
+              </p>
+            )}
+          </div>
+
+          {/* Session Times */}
+          <div className="flex gap-4">
+            {/* Session Start Time */}
+            <FormInput
+              label="Session Start Time"
+              type="time"
+              required
+              register={register("sessionStartTime", { required: "Required" })}
+              error={errors.sessionStartTime}
+            />
+
+            {/* Session End Time */}
+            <FormInput
+              label="Session End Time"
+              type="time"
+              required
+              register={register("sessionEndTime", { required: "Required" })}
+              error={errors.sessionEndTime}
+            />
+          </div>
+
+          {/* Weekly Plan */}
+          <WeeklyPlanInput
+            register={register}
+            fields={weeklyPlanFields}
+            remove={removeWeeklyPlan}
+            append={appendWeeklyPlan}
+            errors={errors.weeklyPlan}
+          />
+        </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
+        {/* Location */}
+        <div className="space-y-3">
+          {/* Remote / On-site Toggle */}
+          <div className="flex flex-col gap-2">
+            {/* Label */}
+            <label className="block font-medium text-sm">
+              Mentorship Mode <span className="text-red-500">*</span>
+            </label>
+
+            {/* Divider */}
+            <p className="h-[2px] w-full bg-black" />
+
+            {/* Toggle */}
+            <div className="flex items-center gap-3">
+              {/* Remote Toggle */}
+              <span className="font-semibold">Remote</span>
+
+              {/* Toggle */}
+              <input
+                type="checkbox"
+                className="toggle bg-blue-400 checked:bg-blue-600"
+                {...register("modeToggle")}
+              />
+
+              {/* On-site Toggle */}
+              <span className="font-semibold">On-site</span>
+            </div>
+          </div>
+
+          {/* On-site Detailed Location (always shown, disabled if Remote) */}
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            {/* City */}
+            <FormInput
+              label="City"
+              placeholder="Enter city"
+              disabled={!watch("modeToggle")}
+              required={watch("modeToggle")}
+              register={register("location.city", {
+                required: watch("modeToggle") ? "City is required" : false,
+              })}
+              error={errors?.location?.city}
+            />
+
+            {/* State / Province */}
+            <FormInput
+              label="State / Province"
+              placeholder="Enter state or province"
+              disabled={!watch("modeToggle")}
+              required={watch("modeToggle")}
+              register={register("location.state", {
+                required: watch("modeToggle")
+                  ? "State/Province is required"
+                  : false,
+              })}
+              error={errors?.location?.state}
+            />
+
+            {/* Country */}
+            <FormInput
+              label="Country"
+              placeholder="Enter country"
+              disabled={!watch("modeToggle")}
+              required={watch("modeToggle")}
+              register={register("location.country", {
+                required: watch("modeToggle") ? "Country is required" : false,
+              })}
+              error={errors?.location?.country}
+            />
+
+            {/* Address (Optional, not required) */}
+            <FormInput
+              label="Address (optional)"
+              placeholder="Enter detailed address"
+              disabled={!watch("modeToggle")}
+              register={register("location.address")}
+              error={errors?.location?.address}
+            />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
+        {/* Fee & Payment */}
+        <div className="space-y-3">
+          {/* Header */}
+          <h3 className="font-semibold text-lg">Fee & Payment</h3>
+
+          {/* Divider */}
+          <p className="bg-gray-500 p-[1px] my-2" />
+
+          {/* Free Toggle */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="isFree"
+              {...register("fee.isFree")}
+              className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+            />
+            <label htmlFor="isFree" className="text-gray-700 font-medium">
+              Free Mentorship
+            </label>
+          </div>
+
+          {/* All fee inputs (conditionally disabled if Free) */}
+          <div className="grid grid-cols-2 items-center gap-4">
+            {/* Fee Type */}
+            <FormInput
+              label="Fee Type"
+              required
+              as="select"
+              placeholder="-- Select Fee Type --"
+              register={register("fee.type", {
+                required: !watch("fee.isFree") ? "Fee type is required" : false,
+              })}
+              error={errors?.fee?.type}
+              disabled={watch("fee.isFree")}
+              options={[
+                { value: "fixed", label: "Fixed" },
+                { value: "hourly", label: "Hourly" },
+                { value: "perSession", label: "Per Session" },
+                { value: "weekly", label: "Weekly" },
+              ]}
+            />
+
+            {/* Amount */}
+            <FormInput
+              label="Amount"
+              type="number"
+              placeholder="e.g., 50"
+              required
+              register={register("fee.amount", {
+                required: !watch("fee.isFree") ? "Amount is required" : false,
+                valueAsNumber: true,
+                min: { value: 1, message: "Amount must be greater than 0" },
+              })}
+              error={errors?.fee?.amount}
+              disabled={watch("fee.isFree")}
+            />
+
+            {/* Currency */}
+            <FormInput
+              label="Currency"
+              required
+              as="select"
+              placeholder="-- Select Currency --"
+              register={register("fee.currency", {
+                required: !watch("fee.isFree") ? "Currency is required" : false,
+              })}
+              error={errors?.fee?.currency}
+              disabled={watch("fee.isFree")}
+              options={[
+                { value: "USD", label: "USD ($)" },
+                { value: "EUR", label: "EUR (€)" },
+                { value: "GBP", label: "GBP (£)" },
+                { value: "BDT", label: "BDT (৳)" },
+                { value: "INR", label: "INR (₹)" },
+              ]}
+            />
+
+            {/* Payment Method */}
+            <FormInput
+              label="Payment Method"
+              required
+              as="select"
+              placeholder="-- Select Payment Method --"
+              register={register("fee.paymentMethod", {
+                required: !watch("fee.isFree")
+                  ? "Payment method is required"
+                  : false,
+              })}
+              error={errors?.fee?.paymentMethod}
+              disabled={watch("fee.isFree")}
+              options={[
+                { value: "paypal", label: "PayPal" },
+                { value: "stripe", label: "Stripe" },
+                { value: "bankTransfer", label: "Bank Transfer" },
+                {
+                  value: "mobilePayment",
+                  label: "Mobile Payment (bKash, Paytm, etc.)",
+                },
+                { value: "other", label: "Other" },
+              ]}
+            />
+
+            {/* Confirmation Type */}
+            <FormInput
+              label="Confirmation Type"
+              required
+              as="select"
+              placeholder="-- Select Confirmation Type --"
+              register={register("fee.confirmationType", {
+                required: !watch("fee.isFree")
+                  ? "Confirmation type is required"
+                  : false,
+              })}
+              error={errors?.fee?.confirmationType}
+              disabled={watch("fee.isFree")}
+              options={[
+                { value: "receiptLink", label: "Receipt Link (URL)" },
+                { value: "transactionId", label: "Transaction ID" },
+                { value: "screenshot", label: "Screenshot Upload" },
+                { value: "referenceNumber", label: "Bank Reference Number" },
+              ]}
+            />
+
+            {/* Negotiable */}
+            <div className="flex flex-col justify-center">
+              <label
+                htmlFor="negotiable"
+                className="block font-medium text-sm mb-1"
+              >
+                Negotiable
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="negotiable"
+                  {...register("fee.negotiable")}
+                  disabled={watch("fee.isFree")}
+                  className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+                />
+                <span className="text-gray-700 text-sm">Yes</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Link */}
+          <FormInput
+            label="Payment Link"
+            placeholder="e.g., https://paypal.me/username"
+            register={register("fee.paymentLink")}
+            error={errors?.fee?.paymentLink}
+            disabled={watch("fee.isFree")}
+          />
+        </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
+        {/* Dates */}
+        <div className="flex gap-2">
+          {/* Start Date */}
+          <FormInput
+            label="Program Start Date"
+            type="date"
+            required
+            register={register("startDate", { required: "Required" })}
+            error={errors.startDate}
+          />
+
+          {/* End Date */}
+          <FormInput
+            label="Program End Date"
+            type="date"
+            required
+            register={register("endDate", { required: "Required" })}
+            error={errors.endDate}
+          />
+        </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
+        {/* Communication Preferences */}
+        <div className="space-y-3">
+          {/* Label */}
+          <h4 className="font-semibold text-lg">Communication Preferences</h4>
+
+          {/* Preferred Method */}
+          <FormInput
+            label="Preferred Method"
+            required
+            as="select"
+            placeholder="-- Select Method --"
+            register={register("communication.preferredMethod", {
+              required: "Preferred communication method is required",
+            })}
+            error={errors?.communication?.preferredMethod}
+            options={[
+              { value: "Zoom", label: "Zoom" },
+              { value: "Google Meet", label: "Google Meet" },
+              { value: "Microsoft Teams", label: "Microsoft Teams" },
+              { value: "Slack", label: "Slack" },
+              { value: "Discord", label: "Discord" },
+              { value: "Phone", label: "Phone Call" },
+              { value: "InPerson", label: "In-Person" },
+            ]}
+          />
+
+          <div className="flex flex-row justify-between px-20 py-2">
+            {/* Group Chat Enabled */}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="groupChatEnabled"
+                {...register("communication.groupChatEnabled")}
+                className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+              />
+              <label
+                htmlFor="groupChatEnabled"
+                className="text-gray-700 font-medium leading-none"
+              >
+                Enable Group Chat
+              </label>
+            </div>
+
+            {/* One-on-One Support */}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="oneOnOneSupport"
+                {...register("communication.oneOnOneSupport")}
+                className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+              />
+              <label
+                htmlFor="oneOnOneSupport"
+                className="text-gray-700 font-medium leading-none"
+              >
+                One-on-One Support
+              </label>
+            </div>
+          </div>
+
+          {/* Communication Frequency */}
+          <FormInput
+            label="Preferred Communication Frequency"
+            as="select"
+            placeholder="-- Select Frequency --"
+            register={register("communication.frequency")}
+            error={errors?.communication?.frequency}
+            options={[
+              { value: "daily", label: "Daily" },
+              { value: "weekly", label: "Weekly" },
+              { value: "biweekly", label: "Bi-Weekly" },
+              { value: "monthly", label: "Monthly" },
+              { value: "asNeeded", label: "As Needed" },
+            ]}
+          />
+
+          {/* Notes / Special Instructions */}
+          <FormInput
+            label="Additional Notes"
+            as="textarea"
+            placeholder="Any special communication preferences..."
+            register={register("communication.notes")}
+            error={errors?.communication?.notes}
+          />
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow 
+            ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
+            `}
+        >
+          {"Create Mentor Profile"}
+        </button>
       </form>
     </div>
   );

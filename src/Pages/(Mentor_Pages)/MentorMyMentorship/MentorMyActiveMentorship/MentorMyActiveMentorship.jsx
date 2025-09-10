@@ -30,7 +30,12 @@ const calculateDaysAgo = (isoString) => {
   return days === 0 ? "Today" : `${days} day${days > 1 ? "s" : ""} ago`;
 };
 
-const MentorMyActiveMentorship = ({ error, isLoading, MentorshipData }) => {
+const MentorMyActiveMentorship = ({
+  error,
+  refetch,
+  isLoading,
+  MentorshipData,
+}) => {
   // State Variables
   const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
 
@@ -196,6 +201,7 @@ const MentorMyActiveMentorship = ({ error, isLoading, MentorshipData }) => {
       {/* Edit Mentorship Modal */}
       <dialog id="Edit_Mentorship_Modal" className="modal">
         <EditMentorshipModal
+          refetch={refetch}
           selectedMentorshipID={selectedMentorshipID}
           setSelectedMentorshipID={setSelectedMentorshipID}
         />
@@ -227,6 +233,7 @@ MentorMyActiveMentorship.propTypes = {
       postedAt: PropTypes.string,
     })
   ).isRequired,
+  refetch: PropTypes.func,
 };
 
 export default MentorMyActiveMentorship;

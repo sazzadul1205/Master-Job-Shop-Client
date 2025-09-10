@@ -7,10 +7,11 @@ import PropTypes from "prop-types";
 import { FaEye, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 
 // Shared
-import Loading from "../../../../Shared/Loading/Loading";
 import Error from "../../../../Shared/Error/Error";
+import Loading from "../../../../Shared/Loading/Loading";
 
 // Modals
+import EditMentorshipModal from "./EditMentorshipModal/EditMentorshipModal";
 import MentorshipDetailsModal from "../../../(Public_Pages)/Home/FeaturedMentorship/MentorshipDetailsModal/MentorshipDetailsModal";
 
 // Utility: Format Budget Display
@@ -123,7 +124,15 @@ const MentorMyActiveMentorship = ({ error, isLoading, MentorshipData }) => {
                 </button>
 
                 {/* Edit */}
-                <button className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 text-white font-semibold py-2 rounded hover:bg-yellow-600 transition-colors cursor-pointer">
+                <button
+                  onClick={() => {
+                    document
+                      .getElementById("Edit_Mentorship_Modal")
+                      ?.showModal();
+                    setSelectedMentorshipID(mentorship._id);
+                  }}
+                  className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 text-white font-semibold py-2 rounded hover:bg-yellow-600 transition-colors cursor-pointer"
+                >
                   <FaEdit /> Edit
                 </button>
 
@@ -179,6 +188,14 @@ const MentorMyActiveMentorship = ({ error, isLoading, MentorshipData }) => {
       <dialog id="Mentorship_Details_Modal" className="modal">
         <MentorshipDetailsModal
           isEditor={true}
+          selectedMentorshipID={selectedMentorshipID}
+          setSelectedMentorshipID={setSelectedMentorshipID}
+        />
+      </dialog>
+
+      {/* Edit Mentorship Modal */}
+      <dialog id="Edit_Mentorship_Modal" className="modal">
+        <EditMentorshipModal
           selectedMentorshipID={selectedMentorshipID}
           setSelectedMentorshipID={setSelectedMentorshipID}
         />

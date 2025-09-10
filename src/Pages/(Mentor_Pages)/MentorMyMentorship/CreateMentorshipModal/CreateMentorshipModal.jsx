@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 // Packages
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
@@ -10,12 +11,12 @@ import { ImCross } from "react-icons/im";
 
 // Shared
 import TagInput from "../../../../Shared/TagInput/TagInput";
-import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import FormInput from "../../../../Shared/FormInput/FormInput";
 import WeeklyPlanInput from "./WeeklyPlanInput/WeeklyPlanInput";
 
 // Hooks
 import useAuth from "../../../../Hooks/useAuth";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 // Category Options
 const CategoryOptions = [
@@ -218,11 +219,11 @@ const CreateMentorshipModal = ({ refetch }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      attachments: [],
-      prerequisites: [],
-      skillsCovered: [],
-      WeeklyPlan: [],
       skills: [],
+      WeeklyPlan: [],
+      attachments: [],
+      skillsCovered: [],
+      prerequisites: [],
     },
   });
 

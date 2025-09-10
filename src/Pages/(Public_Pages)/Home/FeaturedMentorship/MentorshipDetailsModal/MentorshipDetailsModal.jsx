@@ -139,7 +139,10 @@ const MentorshipDetailsModal = ({
   } = mentorship;
 
   return (
-    <div className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh]">
+    <div
+      id="Mentorship_Details_Modal"
+      className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
+    >
       {/* Close Button */}
       <button
         onClick={handleClose}
@@ -232,9 +235,9 @@ const MentorshipDetailsModal = ({
             </p>
             <p>
               {sessionDays?.length ? sessionDays.join(", ") : "TBD"} |{" "}
-              <p>
+              <span>
                 {formatTime(sessionStartTime)} - {formatTime(sessionEndTime)}
-              </p>
+              </span>
             </p>
           </div>
         </div>
@@ -504,7 +507,7 @@ const MentorshipDetailsModal = ({
         <FaCalendarAlt className="text-gray-400" />
         <span>
           Posted on:{" "}
-          <p>
+          <span>
             {postedAt
               ? new Date(postedAt).toLocaleString("en-US", {
                   day: "2-digit",
@@ -515,7 +518,7 @@ const MentorshipDetailsModal = ({
                   hour12: true,
                 })
               : "Not specified"}
-          </p>
+          </span>
         </span>
       </div>
     </div>

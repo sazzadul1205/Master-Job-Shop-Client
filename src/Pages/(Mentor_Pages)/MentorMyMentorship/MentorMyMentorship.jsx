@@ -14,6 +14,7 @@ import CreateMentorshipModal from "./CreateMentorshipModal/CreateMentorshipModal
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useAuth from "../../../Hooks/useAuth";
 import MentorMyCompletedMentorship from "./MentorMyCompletedMentorship/MentorMyCompletedMentorship";
+import MentorMyArchivedMentorship from "./MentorMyArchivedMentorship/MentorMyArchivedMentorship";
 
 const MentorMyMentorship = () => {
   const { user } = useAuth();
@@ -105,9 +106,12 @@ const MentorMyMentorship = () => {
 
         {/* Archived Tab Content */}
         {activeTab === "archived" && (
-          <p className="text-black">
-            Showing Archived Mentorship&apos;s content...
-          </p>
+          <MentorMyArchivedMentorship
+            error={error}
+            refetch={refetch}
+            isLoading={isLoading}
+            MentorshipData={MentorshipData}
+          />
         )}
       </div>
 

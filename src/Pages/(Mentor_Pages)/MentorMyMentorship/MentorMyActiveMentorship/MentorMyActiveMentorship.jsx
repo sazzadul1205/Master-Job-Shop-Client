@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 // Packages
+import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 
 // Icons
@@ -16,6 +17,9 @@ import {
 // Shared
 import Error from "../../../../Shared/Error/Error";
 import Loading from "../../../../Shared/Loading/Loading";
+
+// Hooks
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 // Modals
 import EditMentorshipModal from "./EditMentorshipModal/EditMentorshipModal";
@@ -43,17 +47,65 @@ const MentorMyActiveMentorship = ({
   isLoading,
   MentorshipData,
 }) => {
+  const axiosPublic = useAxiosPublic();
+
   // State Variables
   const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
 
   // ⭐ keep track of starred Mentorship's by ID
   const [starred, setStarred] = useState([]);
 
-  // Toggle Star
-  const toggleStar = (id) => {
+  // Optimistic Archive Toggle
+  const toggleStar = async (id) => {
+    // Optimistically toggle locally
+    const isCurrentlyStarred = starred.includes(id);
     setStarred((prev) =>
-      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
+      isCurrentlyStarred ? prev.filter((sid) => sid !== id) : [...prev, id]
     );
+
+    try {
+      // Call backend to toggle archive
+      const res = await axiosPublic.put(`/Mentorship/Archive/${id}`);
+
+      if (res?.data?.archived === undefined) {
+        throw new Error("Unexpected response from server");
+      }
+
+      // Refetch data
+      refetch();
+
+      // Show success toast
+      Swal.fire({
+        toast: true,
+        position: "top-start",
+        icon: "success",
+        title: res.data.archived ? "Archived!" : "Un-Archived!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+
+      // If backend disagrees with local toggle, correct it
+      if (res.data.archived !== !isCurrentlyStarred) {
+        setStarred((prev) =>
+          res.data.archived ? [...prev, id] : prev.filter((sid) => sid !== id)
+        );
+      }
+    } catch (error) {
+      // Rollback local toggle
+      setStarred((prev) =>
+        isCurrentlyStarred ? [...prev, id] : prev.filter((sid) => sid !== id)
+      );
+
+      // Show error alert
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to update archive status. Please try again!",
+      });
+
+      console.error("Failed to toggle archive:", error);
+    }
   };
 
   // Sort Mentorship's by postedAt (most recent first)
@@ -87,13 +139,18 @@ const MentorMyActiveMentorship = ({
               {/* ⭐ Star Toggle */}
               <button
                 onClick={() => toggleStar(mentorship._id)}
-                className="absolute top-3 right-3 text-2xl cursor-pointer transition-colors"
+                className="absolute top-3 right-3 text-2xl cursor-pointer transition-colors group"
               >
-                {starred.includes(mentorship._id) ? (
+                {mentorship.archived ? (
                   <FaStar className="text-yellow-400 drop-shadow-md" />
                 ) : (
                   <FaRegStar className="text-gray-400 hover:text-yellow-400" />
                 )}
+
+                {/* Tooltip */}
+                <span className="absolute -top-8 right-1/2 translate-x-1/2 whitespace-nowrap text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                  {mentorship.archived ? "Archived" : "Un-Archived"}
+                </span>
               </button>
 
               {/* Content */}

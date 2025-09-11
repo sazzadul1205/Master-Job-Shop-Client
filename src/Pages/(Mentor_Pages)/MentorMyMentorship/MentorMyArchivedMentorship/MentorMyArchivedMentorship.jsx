@@ -41,7 +41,7 @@ const calculateDaysAgo = (isoString) => {
   return days === 0 ? "Today" : `${days} day${days > 1 ? "s" : ""} ago`;
 };
 
-const MentorMyCompletedMentorship = ({
+const MentorMyArchivedMentorship = ({
   error,
   refetch,
   isLoading,
@@ -299,7 +299,7 @@ const MentorMyCompletedMentorship = ({
 };
 
 // Prop Validation
-MentorMyCompletedMentorship.propTypes = {
+MentorMyArchivedMentorship.propTypes = {
   error: PropTypes.bool,
   isLoading: PropTypes.bool,
   MentorshipData: PropTypes.arrayOf(
@@ -324,4 +324,4 @@ MentorMyCompletedMentorship.propTypes = {
   refetch: PropTypes.func,
 };
 
-export default MentorMyCompletedMentorship;
+export default MentorMyArchivedMentorship;

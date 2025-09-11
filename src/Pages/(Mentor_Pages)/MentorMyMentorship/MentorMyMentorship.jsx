@@ -23,21 +23,69 @@ const MentorMyMentorship = () => {
   // Track active tab
   const [activeTab, setActiveTab] = useState("active");
 
-  // Fetch Mentorship
+  // Fetching Active Mentorship
   const {
-    data: MentorshipData,
-    isLoading,
-    refetch,
-    error,
+    data: ActiveMentorshipData,
+    isLoading: ActiveMentorshipIsLoading,
+    refetch: ActiveMentorshipRefetch,
+    error: ActiveMentorshipError,
   } = useQuery({
-    queryKey: ["MentorshipData"],
+    queryKey: ["MentorshipData", "active"],
     queryFn: () =>
-      axiosPublic.get(`/Mentorship?mentorEmail=${user?.email}`).then((res) => {
-        const data = res.data;
-        // Ensure the result is always an array
-        return Array.isArray(data) ? data : [data];
-      }),
+      axiosPublic
+        .get(
+          `/Mentorship?mentorEmail=${user?.email}&status=active,open&archived=false`
+        )
+        .then((res) => {
+          const data = res.data;
+          // Ensure the result is always an array
+          return Array.isArray(data) ? data : [data];
+        }),
   });
+
+  // Fetching Completed Mentorship
+  const {
+    data: CompletedMentorshipData,
+    isLoading: CompletedMentorshipIsLoading,
+    refetch: CompletedMentorshipRefetch,
+    error: CompletedMentorshipError,
+  } = useQuery({
+    queryKey: ["MentorshipData", "completed"],
+    queryFn: () =>
+      axiosPublic
+        .get(
+          `/Mentorship?mentorEmail=${user?.email}&status=completed&archived=false`
+        )
+        .then((res) => {
+          const data = res.data;
+          // Ensure the result is always an array
+          return Array.isArray(data) ? data : [data];
+        }),
+  });
+
+  // Fetching Archived Mentorship
+  const {
+    data: ArchivedMentorshipData,
+    isLoading: ArchivedMentorshipIsLoading,
+    refetch: ArchivedMentorshipRefetch,
+    error: ArchivedMentorshipError,
+  } = useQuery({
+    queryKey: ["MentorshipData", "archived"],
+    queryFn: () =>
+      axiosPublic
+        .get(`/Mentorship?mentorEmail=${user?.email}&archived=true`)
+        .then((res) => {
+          const data = res.data;
+          // Ensure the result is always an array
+          return Array.isArray(data) ? data : [data];
+        }),
+  });
+
+  const RefetchAll = () => {
+    ActiveMentorshipRefetch();
+    CompletedMentorshipRefetch();
+    ArchivedMentorshipRefetch();
+  };
 
   // Tabs Data
   const tabs = [
@@ -87,30 +135,30 @@ const MentorMyMentorship = () => {
         {/* Active Tab Content */}
         {activeTab === "active" && (
           <MentorMyActiveMentorship
-            error={error}
-            refetch={refetch}
-            isLoading={isLoading}
-            MentorshipData={MentorshipData}
+            error={ActiveMentorshipError}
+            refetch={RefetchAll}
+            isLoading={ActiveMentorshipIsLoading}
+            MentorshipData={ActiveMentorshipData}
           />
         )}
 
         {/* Completed Tab Content */}
         {activeTab === "completed" && (
           <MentorMyCompletedMentorship
-            error={error}
-            refetch={refetch}
-            isLoading={isLoading}
-            MentorshipData={MentorshipData}
+            error={CompletedMentorshipError}
+            refetch={RefetchAll}
+            isLoading={CompletedMentorshipIsLoading}
+            MentorshipData={CompletedMentorshipData}
           />
         )}
 
         {/* Archived Tab Content */}
         {activeTab === "archived" && (
           <MentorMyArchivedMentorship
-            error={error}
-            refetch={refetch}
-            isLoading={isLoading}
-            MentorshipData={MentorshipData}
+            error={ArchivedMentorshipError}
+            refetch={RefetchAll}
+            isLoading={ArchivedMentorshipIsLoading}
+            MentorshipData={ArchivedMentorshipData}
           />
         )}
       </div>
@@ -118,7 +166,7 @@ const MentorMyMentorship = () => {
       {/* Modals */}
       {/* Create Mentorship Modal */}
       <dialog id="Create_Mentorship_Modal" className="modal">
-        <CreateMentorshipModal refetch={refetch} />
+        <CreateMentorshipModal refetch={RefetchAll} />
       </dialog>
     </div>
   );

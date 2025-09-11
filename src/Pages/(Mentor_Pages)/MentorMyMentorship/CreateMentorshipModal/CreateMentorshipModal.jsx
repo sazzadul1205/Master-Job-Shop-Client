@@ -332,6 +332,7 @@ const CreateMentorshipModal = ({ refetch }) => {
           rating: MyMentorsData?.rating || "0.0",
           position: MyMentorsData?.position || "",
         },
+        archived: false,
       };
 
       // POST Request

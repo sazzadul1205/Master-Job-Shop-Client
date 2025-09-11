@@ -18,7 +18,7 @@ import Error from "../../../../Shared/Error/Error";
 import Loading from "../../../../Shared/Loading/Loading";
 
 // Modals
-import EditMentorshipModal from "./EditMentorshipModal/EditMentorshipModal";
+import EditMentorshipModal from "../MentorMyActiveMentorship/EditMentorshipModal/EditMentorshipModal";
 import MentorshipDetailsModal from "../../../(Public_Pages)/Home/FeaturedMentorship/MentorshipDetailsModal/MentorshipDetailsModal";
 
 // Utility: Format Budget Display
@@ -37,7 +37,7 @@ const calculateDaysAgo = (isoString) => {
   return days === 0 ? "Today" : `${days} day${days > 1 ? "s" : ""} ago`;
 };
 
-const MentorMyActiveMentorship = ({
+const MentorMyCompletedMentorship = ({
   error,
   refetch,
   isLoading,
@@ -242,7 +242,7 @@ const MentorMyActiveMentorship = ({
 };
 
 // Prop Validation
-MentorMyActiveMentorship.propTypes = {
+MentorMyCompletedMentorship.propTypes = {
   error: PropTypes.bool,
   isLoading: PropTypes.bool,
   MentorshipData: PropTypes.arrayOf(
@@ -267,4 +267,4 @@ MentorMyActiveMentorship.propTypes = {
   refetch: PropTypes.func,
 };
 
-export default MentorMyActiveMentorship;
+export default MentorMyCompletedMentorship;

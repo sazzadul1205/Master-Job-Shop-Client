@@ -190,7 +190,7 @@ const formatDate = (dateStr) => {
     day: "2-digit",
     month: "short",
     year: "numeric",
-  }); // e.g. 25 Aug 2023
+  });
 };
 
 const CreateMentorshipModal = ({ refetch }) => {

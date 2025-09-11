@@ -17,7 +17,7 @@ import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 const EditJobPreferenceModal = ({ user, refetch }) => {
   const axiosPublic = useAxiosPublic();
 
-  // Initialize react-hook-form with default values from user.preferences or empty strings
+  // Form hook Control
   const {
     register,
     handleSubmit,
@@ -26,17 +26,18 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      desiredRole: user?.preferences?.desiredRole || "",
       jobType: user?.preferences?.jobType || "",
-      preferredLocation: user?.preferences?.preferredLocation || "",
-      salaryFrom: user?.preferences?.salaryFrom || "",
       salaryTo: user?.preferences?.salaryTo || "",
+      salaryFrom: user?.preferences?.salaryFrom || "",
+      desiredRole: user?.preferences?.desiredRole || "",
+      preferredLocation: user?.preferences?.preferredLocation || "",
     },
   });
 
-  const allValues = watch(); // Watch all form fields for changes
+  // Watch all form fields for changes
+  const allValues = watch();
 
-  // Local component states for loading, server error, and form change detection
+  // States Variables
   const [loading, setLoading] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [serverError, setServerError] = useState("");
@@ -44,11 +45,11 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
   // Reset the form whenever user.preferences changes
   useEffect(() => {
     reset({
-      desiredRole: user?.preferences?.desiredRole || "",
       jobType: user?.preferences?.jobType || "",
-      preferredLocation: user?.preferences?.preferredLocation || "",
-      salaryFrom: user?.preferences?.salaryFrom || "",
       salaryTo: user?.preferences?.salaryTo || "",
+      salaryFrom: user?.preferences?.salaryFrom || "",
+      desiredRole: user?.preferences?.desiredRole || "",
+      preferredLocation: user?.preferences?.preferredLocation || "",
     });
     setServerError("");
     setIsChanged(false);
@@ -76,28 +77,35 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
 
   // Close modal, reset form, clear errors and change flags
   const handleClose = () => {
-    document.getElementById("Edit_Job_Preference_Modal")?.close();
     reset();
     setServerError("");
     setIsChanged(false);
+
+    // Close modal
+    document.getElementById("Edit_Job_Preference_Modal")?.close();
   };
 
-  // Form submit handler - updates preferences on server
+  // Form submit handler
   const onSubmit = async (data) => {
+    // Check for missing user ID
     if (!user?._id) {
       setServerError("Missing user ID. Please try again.");
       return;
     }
 
+    // Try to update preferences
     try {
+      // Prepare payload to send
       setLoading(true);
       setServerError("");
 
+      // Send PUT request
       const response = await axiosPublic.put(
         `Users/EditPreferences/${user._id}`,
         data
       );
 
+      // Check if update was successful
       if (response?.data?.modifiedCount > 0 || response?.data?.acknowledged) {
         Swal.fire({
           icon: "success",
@@ -109,15 +117,23 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
           showConfirmButton: false,
         });
 
+        // Close modal and refetch data
         handleClose();
         refetch();
       } else {
+        // No changes were made
         setServerError("No changes were made.");
       }
+
+      // Catch any errors
     } catch (error) {
+      // Log error
       console.error("Update failed:", error);
       setServerError(error?.response?.data?.message || "Something went wrong.");
+
+      // Show error to user
     } finally {
+      // Reset loading state
       setLoading(false);
     }
   };
@@ -201,7 +217,10 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
 
         {/* Salary Range */}
         <div>
+          {/* Labels */}
           <label className="block font-medium mb-1">Salary Range ($)</label>
+
+          {/* Inputs */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <input
@@ -259,7 +278,7 @@ const EditJobPreferenceModal = ({ user, refetch }) => {
   );
 };
 
-// Prop validation with prop-types
+// Prop validation
 EditJobPreferenceModal.propTypes = {
   user: PropTypes.shape({
     _id: PropTypes.string.isRequired,

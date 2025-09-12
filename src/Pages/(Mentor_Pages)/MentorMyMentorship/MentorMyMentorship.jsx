@@ -34,7 +34,7 @@ const MentorMyMentorship = () => {
     queryFn: () =>
       axiosPublic
         .get(
-          `/Mentorship?mentorEmail=${user?.email}&status=active,open&archived=false`
+          `/Mentorship?mentorEmail=${user?.email}&status=active,open,closed,onHold&archived=false`
         )
         .then((res) => {
           const data = res.data;

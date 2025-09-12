@@ -13,6 +13,7 @@ import {
   FaStar,
   FaRegStar,
 } from "react-icons/fa";
+import DeleteAnimation from "../../../../assets/Animation/DeleteAnimation.gif";
 
 // Shared
 import Error from "../../../../Shared/Error/Error";
@@ -121,6 +122,58 @@ const MentorMyActiveMentorship = ({
   // Error State
   if (error) return <Error />;
 
+  // Handle Delete
+  const handleDelete = async (id) => {
+    // If Delete
+    try {
+      const confirmResult = await Swal.fire({
+        title: "Are you sure?",
+        text: "This mentorship will be permanently deleted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel",
+      });
+
+      if (confirmResult.isConfirmed) {
+        // For testing, skip actual deletion
+        await axiosPublic.delete(`/Mentorship/${id}`);
+
+        // Trashcan animation modal
+        Swal.fire({
+          title: "Deleted!",
+          html: `
+          <div style="font-size: 50px; text-align:center;">
+            <img src=${DeleteAnimation} alt="Trashcan closing" width="200" /> 
+          </div> 
+          <p>Mentorship has been removed.</p>
+          `,
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          background: "#fff",
+          didOpen: () => {
+            const content = Swal.getHtmlContainer();
+            content.style.display = "flex";
+            content.style.alignItems = "center";
+            content.style.flexDirection = "column";
+          },
+        });
+
+        refetch();
+      }
+    } catch (error) {
+      console.error("Failed to delete mentorship:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to delete. Please try again!",
+      });
+    }
+  };
+
   return (
     <div className="text-black">
       {/* Title */}
@@ -136,6 +189,35 @@ const MentorMyActiveMentorship = ({
               key={idx}
               className="relative bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-2xl"
             >
+              {/* 🔖 Status Badge */}
+              <span
+                className={`absolute -top-3 -left-3 px-5 py-1 text-sm font-semibold rounded-full shadow-xl ${
+                  ["active", "closed"].includes(
+                    mentorship?.status?.toLowerCase()
+                  )
+                    ? "bg-red-500 text-white"
+                    : mentorship?.status?.toLowerCase() === "open"
+                    ? "bg-green-500 text-white"
+                    : mentorship?.status?.toLowerCase() === "completed"
+                    ? "bg-blue-500 text-white"
+                    : mentorship?.status?.toLowerCase() === "onhold"
+                    ? "bg-yellow-500 text-white"
+                    : "bg-gray-200 text-gray-600"
+                }`}
+              >
+                {["active", "closed"].includes(
+                  mentorship?.status?.toLowerCase()
+                )
+                  ? "Closed"
+                  : mentorship?.status?.toLowerCase() === "open"
+                  ? "Open"
+                  : mentorship?.status?.toLowerCase() === "completed"
+                  ? "Completed"
+                  : mentorship?.status?.toLowerCase() === "onhold"
+                  ? "On Hold"
+                  : "Unknown"}
+              </span>
+
               {/* ⭐ Star Toggle */}
               <button
                 onClick={() => toggleStar(mentorship._id)}
@@ -230,7 +312,11 @@ const MentorMyActiveMentorship = ({
                 </button>
 
                 {/* Delete */}
-                <button className="flex-1 flex items-center justify-center gap-2 bg-red-600 text-white font-semibold py-2 rounded hover:bg-red-700 transition-colors cursor-pointer">
+                {/* Delete */}
+                <button
+                  onClick={() => handleDelete(mentorship._id)}
+                  className="flex-1 flex items-center justify-center gap-2 bg-red-600 text-white font-semibold py-2 rounded hover:bg-red-700 transition-colors cursor-pointer"
+                >
                   <FaTrash /> Delete
                 </button>
               </div>

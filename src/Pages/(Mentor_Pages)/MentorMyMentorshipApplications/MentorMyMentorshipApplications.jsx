@@ -1,14 +1,16 @@
+import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoSearchSharp } from "react-icons/io5";
-
 import DefaultX from "../../../assets/Mentor/DefaultX.jpg";
 import { IoIosEye } from "react-icons/io";
 import { ImCross } from "react-icons/im";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
+import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 
 // Format date like "22 Feb 2026 10:12 PM"
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-
   const options = {
     day: "2-digit",
     month: "short",
@@ -16,13 +18,11 @@ const formatDate = (dateString) => {
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
-    timeZone: "UTC",
   };
-
   return date.toLocaleString("en-US", options).replace(",", "");
 };
 
-// Time ago calculation with months & years
+// Time ago calculation
 const getTimeAgo = (dateString) => {
   const now = new Date();
   const past = new Date(dateString);
@@ -44,80 +44,34 @@ const getTimeAgo = (dateString) => {
 };
 
 // Demo Applicants Data
-const applicants = [
-  {
-    id: 1,
-    name: "Alice Johnson",
-    status: "Requested",
-    date: "2023-08-20T12:20:00Z",
-    avatar: "https://i.pravatar.cc/150?img=1",
-  },
-  {
-    id: 2,
-    name: "Michael Smith",
-    status: "Requested",
-    date: "2023-08-19T15:10:00Z",
-    avatar: "https://i.pravatar.cc/150?img=2",
-  },
-  {
-    id: 3,
-    name: "Sophia Brown",
-    status: "Requested",
-    date: "2023-08-18T18:00:00Z",
-    avatar: "https://i.pravatar.cc/150?img=3",
-  },
-  {
-    id: 4,
-    name: "James Wilson",
-    status: "Requested",
-    date: "2023-08-17T09:30:00Z",
-    avatar: "https://i.pravatar.cc/150?img=4",
-  },
-  {
-    id: 5,
-    name: "Emma Davis",
-    status: "Requested",
-    date: "2023-08-16T21:15:00Z",
-    avatar: "https://i.pravatar.cc/150?img=5",
-  },
-  {
-    id: 6,
-    name: "David Miller",
-    status: "Requested",
-    date: "2023-08-15T10:00:00Z",
-    avatar: "https://i.pravatar.cc/150?img=6",
-  },
-  {
-    id: 7,
-    name: "Olivia Garcia",
-    status: "Requested",
-    date: "2023-08-14T16:45:00Z",
-    avatar: "https://i.pravatar.cc/150?img=7",
-  },
-  {
-    id: 8,
-    name: "Daniel Martinez",
-    status: "Requested",
-    date: "2023-08-13T08:20:00Z",
-    avatar: "https://i.pravatar.cc/150?img=8",
-  },
-  {
-    id: 9,
-    name: "Isabella Lopez",
-    status: "Requested",
-    date: "2023-08-12T14:55:00Z",
-    avatar: "https://i.pravatar.cc/150?img=9",
-  },
-  {
-    id: 10,
-    name: "Ethan Clark",
-    status: "Requested",
-    date: "2023-08-11T19:40:00Z",
-    avatar: "https://i.pravatar.cc/150?img=10",
-  },
-];
+const applicants = Array.from({ length: 50 }, (_, i) => ({
+  id: i + 1,
+  name: `Applicant ${i + 1}`,
+  status: "Requested",
+  date: "2023-08-20T12:20:00Z",
+  avatar: `https://i.pravatar.cc/150?img=${i + 1}`,
+}));
+
+const ITEMS_PER_PAGE = 5;
 
 const MentorMyMentorshipApplications = () => {
+  // State for this table’s pagination
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Pagination logic
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedApplicants = applicants.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(applicants.length / ITEMS_PER_PAGE);
+
+  const acceptedCount = applicants.filter(
+    (a) => a.status === "Accepted"
+  ).length;
+  const rejectedCount = applicants.filter(
+    (a) => a.status === "Rejected"
+  ).length;
+
   return (
     <div className="py-7 px-8">
       {/* Title */}
@@ -166,7 +120,6 @@ const MentorMyMentorshipApplications = () => {
 
       {/* Container for Mentorship Applications */}
       <div className="py-6">
-        {/* Card-1 */}
         <div className="bg-white rounded-xl shadow-md p-6">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -191,16 +144,11 @@ const MentorMyMentorshipApplications = () => {
                 <select
                   id="statusFilter"
                   className="w-full sm:w-48 px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer"
-                  defaultValue=""
+                  defaultValue="all"
                 >
-                  <option value="" disabled>
-                    Select Status
-                  </option>
                   <option value="all">All</option>
-                  <option value="open">Open</option>
-                  <option value="completed">Completed</option>
-                  <option value="closed">Closed</option>
-                  <option value="onhold">On Hold</option>
+                  <option value="open">Accepted</option>
+                  <option value="completed">Rejected</option>
                 </select>
               </div>
 
@@ -211,10 +159,52 @@ const MentorMyMentorshipApplications = () => {
             </div>
           </div>
 
+          {/* Applicants Info */}
+          <div className="py-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Total Applicants */}
+            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
+              <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+                <IoIosEye className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Total Applicants</p>
+                <p className="text-lg font-bold text-gray-700">
+                  {applicants.length}
+                </p>
+              </div>
+            </div>
+
+            {/* Accepted Applicants */}
+            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
+              <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+                <FaCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Accepted Applicants</p>
+                <p className="text-lg font-bold text-green-600">
+                  {acceptedCount}
+                </p>
+              </div>
+            </div>
+
+            {/* Rejected Applicants */}
+            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
+              <div className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+                <ImCross className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Rejected Applicants</p>
+                <p className="text-lg font-bold text-red-600">
+                  {rejectedCount}
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Table */}
-          <div className="overflow-x-auto pt-4 text-black">
+          <div className="overflow-x-auto text-black">
             <table className="table">
-              {/* head */}
+              {/* Table Header */}
               <thead className="bg-gray-200 text-black">
                 <tr>
                   <th>#</th>
@@ -224,48 +214,87 @@ const MentorMyMentorshipApplications = () => {
                   <th className="w-96 text-center">Action</th>
                 </tr>
               </thead>
+
+              {/* Table Body */}
               <tbody>
-                {applicants.map((applicant) => (
+                {paginatedApplicants.map((applicant) => (
                   <tr key={applicant.id} className="hover:bg-gray-100">
                     <th>{applicant.id}</th>
                     <td className="flex items-center gap-4">
                       <img
-                        src={applicant.avatar}
-                        alt={applicant.name}
+                        src={applicant.avatar || DefaultX}
+                        alt={applicant.name || "N/A"}
                         className="w-16 h-16 rounded-full"
                       />
-                      <h3 className="font-bold">{applicant.name}</h3>
+                      <h3 className="font-bold">{applicant.name || "N/A"}</h3>
                     </td>
-
-                    {/* Status */}
-                    <td className="text-center">{applicant.status}</td>
-
-                    {/* Application Time */}
+                    <td className="text-center">
+                      {applicant.status || "Pending"}
+                    </td>
                     <td className="text-center">
                       {formatDate(applicant.date)}{" "}
                       <span className="text-gray-500">
                         ({getTimeAgo(applicant.date)})
                       </span>
                     </td>
-
-                    {/* Buttons */}
                     <td className="text-right w-96">
                       <div className="flex justify-end gap-2">
-                        <button className="flex gap-2 items-center border-2 py-2 px-5 rounded">
+                        {/* View Button */}
+                        <button
+                          data-tooltip-id="viewTip"
+                          data-tooltip-content="View applicant details"
+                          className="flex gap-2 items-center border-2 hover:bg-blue-600/90 bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg transition"
+                        >
                           <IoIosEye /> View
                         </button>
-                        <button className="flex gap-2 items-center border-2 py-2 px-5 rounded">
+                        <Tooltip id="viewTip" />
+
+                        {/* Accept Button */}
+                        <button
+                          data-tooltip-id="acceptTip"
+                          data-tooltip-content="Accept this application"
+                          className="flex gap-2 items-center border-2 hover:bg-green-600/90 bg-green-500 text-white font-semibold py-2 px-5 rounded-lg transition"
+                        >
                           <FaCheck /> Accept
                         </button>
-                        <button className="flex gap-2 items-center border-2 py-2 px-5 rounded">
+                        <Tooltip id="acceptTip" />
+
+                        {/* Reject Button */}
+                        <button
+                          data-tooltip-id="rejectTip"
+                          data-tooltip-content="Reject this application"
+                          className="flex gap-2 items-center border-2 hover:bg-red-600/90 bg-red-500 text-white font-semibold py-2 px-5 rounded-lg transition"
+                        >
                           <ImCross /> Reject
                         </button>
+                        <Tooltip id="rejectTip" />
                       </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+
+            {/* Pagination Controls */}
+            <div className="join flex justify-center mt-4">
+              <button
+                className="join-item bg-gray-100 hover:bg-gray-200 p-3 cursor-pointer disabled:opacity-50"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+              >
+                <FaAnglesLeft />
+              </button>
+              <button className="join-item bg-gray-100 border-x-2 px-5 border-gray-300">
+                Page {currentPage} of {totalPages}
+              </button>
+              <button
+                className="join-item bg-gray-100 hover:bg-gray-200 p-3 cursor-pointer disabled:opacity-50"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+              >
+                <FaAnglesRight />
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -45,7 +45,7 @@ const sidebarLinks = [
       },
       {
         label: "Mentorship Applications Management",
-        path: "/mentorship/applications",
+        path: "/Mentor/MentorshipApplications",
         icon: ApplicationsIcon,
         scroll: true,
       },

@@ -1,12 +1,16 @@
 import { useState } from "react";
+
+// Icons
 import { FaCheck } from "react-icons/fa";
-import { IoSearchSharp } from "react-icons/io5";
-import DefaultX from "../../../assets/Mentor/DefaultX.jpg";
-import { IoIosEye } from "react-icons/io";
 import { ImCross } from "react-icons/im";
-import { Tooltip } from "react-tooltip";
-import "react-tooltip/dist/react-tooltip.css";
+import { IoIosEye } from "react-icons/io";
+import { IoSearchSharp } from "react-icons/io5";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
+
+// Packa
+import { Tooltip } from "react-tooltip";
+import DefaultX from "../../../assets/Mentor/DefaultX.jpg";
+import "react-tooltip/dist/react-tooltip.css";
 
 // Format date like "22 Feb 2026 10:12 PM"
 const formatDate = (dateString) => {
@@ -43,34 +47,55 @@ const getTimeAgo = (dateString) => {
   return `${years} year${years > 1 ? "s" : ""} ago`;
 };
 
-// Demo Applicants Data
-const applicants = Array.from({ length: 50 }, (_, i) => ({
-  id: i + 1,
-  name: `Applicant ${i + 1}`,
-  status: "Requested",
-  date: "2023-08-20T12:20:00Z",
-  avatar: `https://i.pravatar.cc/150?img=${i + 1}`,
-}));
+// Demo mentorship Data with applicants
+const mentorshipData = [
+  {
+    id: 1,
+    title: "Software Engineering Mentorship",
+    applicants: Array.from({ length: 12 }, (_, i) => ({
+      id: i + 1,
+      name: `SE Applicant ${i + 1}`,
+      status: i % 3 === 0 ? "Accepted" : i % 2 === 0 ? "Rejected" : "Requested",
+      date: "2024-08-20T12:20:00Z",
+      avatar: `https://i.pravatar.cc/150?img=${i + 1}`,
+    })),
+  },
+  {
+    id: 2,
+    title: "Data Science Mentorship",
+    applicants: Array.from({ length: 8 }, (_, i) => ({
+      id: i + 1,
+      name: `DS Applicant ${i + 1}`,
+      status: i % 2 === 0 ? "Accepted" : "Requested",
+      date: "2024-09-01T15:30:00Z",
+      avatar: `https://i.pravatar.cc/150?img=${i + 15}`,
+    })),
+  },
+  {
+    id: 3,
+    title: "UI/UX Design Mentorship",
+    applicants: Array.from({ length: 5 }, (_, i) => ({
+      id: i + 1,
+      name: `UI/UX Applicant ${i + 1}`,
+      status: "Requested",
+      date: "2024-10-05T18:00:00Z",
+      avatar: `https://i.pravatar.cc/150?img=${i + 25}`,
+    })),
+  },
+];
 
 const ITEMS_PER_PAGE = 5;
 
 const MentorMyMentorshipApplications = () => {
-  // State for this table’s pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  // State for pagination per mentorship
+  const [pageMap, setPageMap] = useState(
+    Object.fromEntries(mentorshipData.map((m) => [m.id, 1]))
+  );
 
-  // Pagination logic
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const paginatedApplicants = applicants.slice(startIndex, endIndex);
-
-  const totalPages = Math.ceil(applicants.length / ITEMS_PER_PAGE);
-
-  const acceptedCount = applicants.filter(
-    (a) => a.status === "Accepted"
-  ).length;
-  const rejectedCount = applicants.filter(
-    (a) => a.status === "Rejected"
-  ).length;
+  // Function to handle page change
+  const handlePageChange = (mentorshipId, newPage) => {
+    setPageMap((prev) => ({ ...prev, [mentorshipId]: newPage }));
+  };
 
   return (
     <div className="py-7 px-8">
@@ -119,184 +144,221 @@ const MentorMyMentorshipApplications = () => {
       </div>
 
       {/* Container for Mentorship Applications */}
-      <div className="py-6">
-        <div className="bg-white rounded-xl shadow-md p-6">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            {/* Title */}
-            <h2 className="text-2xl font-bold text-gray-600">
-              Software Engineering Mentorship
-            </h2>
+      <div className="my-6 space-y-6">
+        {mentorshipData.map((mentorship) => {
+          const { id, title, applicants } = mentorship;
+          const currentPage = pageMap[id] || 1;
 
-            {/* Filters & Complete Button */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              {/* Status Dropdown */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
-                {/* Label */}
-                <label
-                  htmlFor="statusFilter"
-                  className="text-sm font-semibold text-gray-700"
-                >
-                  Filter by Status:
-                </label>
+          // Pagination logic
+          const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+          const endIndex = startIndex + ITEMS_PER_PAGE;
+          const paginatedApplicants = applicants.slice(startIndex, endIndex);
+          const totalPages = Math.ceil(applicants.length / ITEMS_PER_PAGE);
 
-                {/* Dropdown */}
-                <select
-                  id="statusFilter"
-                  className="w-full sm:w-48 px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer"
-                  defaultValue="all"
-                >
-                  <option value="all">All</option>
-                  <option value="open">Accepted</option>
-                  <option value="completed">Rejected</option>
-                </select>
+          // Count accepted and rejected applicants
+          const acceptedCount = applicants.filter(
+            (a) => a.status === "Accepted"
+          ).length;
+          const rejectedCount = applicants.filter(
+            (a) => a.status === "Rejected"
+          ).length;
+
+          return (
+            <div
+              key={id}
+              className="bg-white rounded-xl shadow-md p-6 border border-gray-200"
+            >
+              {/* Header */}
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                {/* Title */}
+                <h2 className="text-2xl font-bold text-gray-600">{title}</h2>
+
+                {/* Filters */}
+                <div className="flex gap-4">
+                  {/* Status Dropdown */}
+                  <select className="px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer">
+                    <option value="all">All</option>
+                    <option value="accepted">Accepted</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="requested">Requested</option>
+                  </select>
+
+                  {/* Complete Program Button */}
+                  <button className="flex items-center gap-2 text-black border border-gray-700 hover:border-green-700 px-4 py-2 rounded-lg transition-colors duration-300 hover:bg-green-500 hover:text-white cursor-pointer">
+                    <FaCheck /> Complete Program
+                  </button>
+                </div>
               </div>
 
-              {/* Complete Button */}
-              <button className="flex items-center gap-2 text-black border border-gray-700 hover:border-green-700 px-4 py-2 rounded-lg transition-colors duration-300 hover:bg-green-500 hover:text-white cursor-pointer">
-                <FaCheck /> Complete Program
-              </button>
+              {/* Applicants Info */}
+              <div className="py-4 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                {/* Total Applicants Card */}
+                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
+                  {/* Icon */}
+                  <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+                    <IoIosEye className="w-5 h-5" />
+                  </div>
+
+                  {/* length */}
+                  <div>
+                    <p className="text-sm text-gray-500">Total Applicants</p>
+                    <p className="text-lg font-bold text-gray-700">
+                      {applicants.length}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Accepted Applicants */}
+                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
+                  {/* Icon */}
+                  <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+                    <FaCheck className="w-5 h-5" />
+                  </div>
+
+                  {/* length */}
+                  <div>
+                    <p className="text-sm text-gray-500">Accepted</p>
+                    <p className="text-lg font-bold text-green-600">
+                      {acceptedCount}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Rejected Applicants */}
+                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
+                  {/* Icon */}
+                  <div className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+                    <ImCross className="w-5 h-5" />
+                  </div>
+
+                  {/* length */}
+                  <div>
+                    <p className="text-sm text-gray-500">Rejected</p>
+                    <p className="text-lg font-bold text-red-600">
+                      {rejectedCount}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Table Container */}
+              <div className="overflow-x-auto text-black">
+                {/* Table */}
+                <table className="table">
+                  {/* Table Head */}
+                  <thead className="bg-gray-200 text-black">
+                    <tr>
+                      <th>#</th>
+                      <th>Applicant Info</th>
+                      <th className="text-center">Status</th>
+                      <th className="w-96 text-center">Application Time</th>
+                      <th className="w-96 text-center">Action</th>
+                    </tr>
+                  </thead>
+
+                  {/* Table Body */}
+                  <tbody>
+                    {paginatedApplicants.map((applicant, index) => (
+                      <tr key={applicant.id} className="hover:bg-gray-100">
+                        {/* Serial Number */}
+                        <th>{startIndex + index + 1}</th>
+
+                        {/* Applicant Info */}
+                        <td className="flex items-center gap-4">
+                          {/* Avatar */}
+                          <img
+                            src={applicant.avatar || DefaultX}
+                            alt={applicant.name || "N/A"}
+                            className="w-16 h-16 rounded-full"
+                          />
+
+                          {/* Name */}
+                          <h3 className="font-bold">
+                            {applicant.name || "N/A"}
+                          </h3>
+                        </td>
+
+                        {/* Status */}
+                        <td className="text-center">
+                          {applicant.status || "Pending"}
+                        </td>
+
+                        {/* Application Time */}
+                        <td className="text-center">
+                          {formatDate(applicant.date)}{" "}
+                          <span className="text-gray-500">
+                            ({getTimeAgo(applicant.date)})
+                          </span>
+                        </td>
+
+                        {/* Action */}
+                        <td className="text-right w-96">
+                          <div className="flex justify-end gap-2">
+                            {/* View Button */}
+                            <button
+                              data-tooltip-id={`viewTip-${id}-${applicant.id}`}
+                              data-tooltip-content="View applicant details"
+                              className="flex gap-2 items-center border-2 hover:bg-blue-600/90 bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg transition"
+                            >
+                              <IoIosEye /> View
+                            </button>
+                            <Tooltip id={`viewTip-${id}-${applicant.id}`} />
+
+                            {/* Accept Buttons */}
+                            <button
+                              data-tooltip-id={`acceptTip-${id}-${applicant.id}`}
+                              data-tooltip-content="Accept this application"
+                              className="flex gap-2 items-center border-2 hover:bg-green-600/90 bg-green-500 text-white font-semibold py-2 px-5 rounded-lg transition"
+                            >
+                              <FaCheck /> Accept
+                            </button>
+                            <Tooltip id={`acceptTip-${id}-${applicant.id}`} />
+
+                            {/* Reject Button */}
+                            <button
+                              data-tooltip-id={`rejectTip-${id}-${applicant.id}`}
+                              data-tooltip-content="Reject this application"
+                              className="flex gap-2 items-center border-2 hover:bg-red-600/90 bg-red-500 text-white font-semibold py-2 px-5 rounded-lg transition"
+                            >
+                              <ImCross /> Reject
+                            </button>
+                            <Tooltip id={`rejectTip-${id}-${applicant.id}`} />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {/* Pagination */}
+                <div className="join flex justify-center mt-4">
+                  {/* Previous Button */}
+                  <button
+                    className="join-item bg-gray-100 hover:bg-gray-200 p-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={currentPage === 1}
+                    onClick={() => handlePageChange(id, currentPage - 1)}
+                  >
+                    <FaAnglesLeft />
+                  </button>
+
+                  {/* Page Number */}
+                  <button className="join-item bg-gray-100 border-x-2 px-5 border-gray-300">
+                    Page {currentPage} of {totalPages}
+                  </button>
+
+                  {/* Next Button */}
+                  <button
+                    className="join-item bg-gray-100 hover:bg-gray-200 p-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={currentPage === totalPages}
+                    onClick={() => handlePageChange(id, currentPage + 1)}
+                  >
+                    <FaAnglesRight />
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-
-          {/* Applicants Info */}
-          <div className="py-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Total Applicants */}
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
-                <IoIosEye className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Total Applicants</p>
-                <p className="text-lg font-bold text-gray-700">
-                  {applicants.length}
-                </p>
-              </div>
-            </div>
-
-            {/* Accepted Applicants */}
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
-                <FaCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Accepted Applicants</p>
-                <p className="text-lg font-bold text-green-600">
-                  {acceptedCount}
-                </p>
-              </div>
-            </div>
-
-            {/* Rejected Applicants */}
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
-                <ImCross className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Rejected Applicants</p>
-                <p className="text-lg font-bold text-red-600">
-                  {rejectedCount}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Table */}
-          <div className="overflow-x-auto text-black">
-            <table className="table">
-              {/* Table Header */}
-              <thead className="bg-gray-200 text-black">
-                <tr>
-                  <th>#</th>
-                  <th>Applicant Info</th>
-                  <th className="text-center">Status</th>
-                  <th className="w-96 text-center">Application Time</th>
-                  <th className="w-96 text-center">Action</th>
-                </tr>
-              </thead>
-
-              {/* Table Body */}
-              <tbody>
-                {paginatedApplicants.map((applicant) => (
-                  <tr key={applicant.id} className="hover:bg-gray-100">
-                    <th>{applicant.id}</th>
-                    <td className="flex items-center gap-4">
-                      <img
-                        src={applicant.avatar || DefaultX}
-                        alt={applicant.name || "N/A"}
-                        className="w-16 h-16 rounded-full"
-                      />
-                      <h3 className="font-bold">{applicant.name || "N/A"}</h3>
-                    </td>
-                    <td className="text-center">
-                      {applicant.status || "Pending"}
-                    </td>
-                    <td className="text-center">
-                      {formatDate(applicant.date)}{" "}
-                      <span className="text-gray-500">
-                        ({getTimeAgo(applicant.date)})
-                      </span>
-                    </td>
-                    <td className="text-right w-96">
-                      <div className="flex justify-end gap-2">
-                        {/* View Button */}
-                        <button
-                          data-tooltip-id="viewTip"
-                          data-tooltip-content="View applicant details"
-                          className="flex gap-2 items-center border-2 hover:bg-blue-600/90 bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg transition"
-                        >
-                          <IoIosEye /> View
-                        </button>
-                        <Tooltip id="viewTip" />
-
-                        {/* Accept Button */}
-                        <button
-                          data-tooltip-id="acceptTip"
-                          data-tooltip-content="Accept this application"
-                          className="flex gap-2 items-center border-2 hover:bg-green-600/90 bg-green-500 text-white font-semibold py-2 px-5 rounded-lg transition"
-                        >
-                          <FaCheck /> Accept
-                        </button>
-                        <Tooltip id="acceptTip" />
-
-                        {/* Reject Button */}
-                        <button
-                          data-tooltip-id="rejectTip"
-                          data-tooltip-content="Reject this application"
-                          className="flex gap-2 items-center border-2 hover:bg-red-600/90 bg-red-500 text-white font-semibold py-2 px-5 rounded-lg transition"
-                        >
-                          <ImCross /> Reject
-                        </button>
-                        <Tooltip id="rejectTip" />
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {/* Pagination Controls */}
-            <div className="join flex justify-center mt-4">
-              <button
-                className="join-item bg-gray-100 hover:bg-gray-200 p-3 cursor-pointer disabled:opacity-50"
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((p) => p - 1)}
-              >
-                <FaAnglesLeft />
-              </button>
-              <button className="join-item bg-gray-100 border-x-2 px-5 border-gray-300">
-                Page {currentPage} of {totalPages}
-              </button>
-              <button
-                className="join-item bg-gray-100 hover:bg-gray-200 p-3 cursor-pointer disabled:opacity-50"
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((p) => p + 1)}
-              >
-                <FaAnglesRight />
-              </button>
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
     </div>
   );

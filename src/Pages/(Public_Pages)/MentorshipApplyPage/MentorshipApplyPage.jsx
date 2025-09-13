@@ -21,6 +21,10 @@ import useAuth from "../../../Hooks/useAuth";
 // Modal
 import MentorshipDetailsModal from "../Home/FeaturedMentorship/MentorshipDetailsModal/MentorshipDetailsModal";
 
+// Constants for image hosting API
+const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
+
 const MentorshipApplyPage = () => {
   const axiosPublic = useAxiosPublic();
 
@@ -104,70 +108,6 @@ const MentorshipApplyPage = () => {
     }
   }, [CheckIfApplied, CheckIfAppliedIsLoading]);
 
-  // Submit handler
-  const onSubmit = async (data) => {
-    if (!user) {
-      setShowLoginModal(true);
-      return;
-    }
-
-    try {
-      // Start loading
-      setIsSubmitting(true);
-
-      // Create FormData object
-      const formData = new FormData();
-      formData.append("file", data.resume[0]);
-
-      // Upload resume to backend
-      const res = await axiosPublic.post("/PDFUpload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      // Handle errors
-      if (!res.data?.url) throw new Error("Failed to upload PDF");
-
-      // Create application data
-      const applicationData = {
-        ...data,
-        mentorshipId: mentorshipId,
-        email: UsersData?.email,
-        phone: UsersData?.phone,
-        resumeUrl: res.data.url,
-        appliedAt: new Date().toISOString(),
-      };
-
-      // Send application to backend
-      await axiosPublic.post("/MentorshipApplications", applicationData);
-
-      // Show success message
-      Swal.fire({
-        icon: "success",
-        title: "Application Submitted",
-        text: "Your application has been sent successfully!",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      });
-    } catch (err) {
-      // Handle errors
-      console.log("Error:", err);
-
-      // Handle errors
-      Swal.fire({
-        icon: "error",
-        title: "Submission Failed",
-        text: err?.message || "Something went wrong.",
-      });
-    } finally {
-      setIsSubmitting(false);
-      navigate(-1);
-      reset();
-    }
-  };
-
   // Loading/Error UI
   if (
     SelectedMentorshipIsLoading ||
@@ -180,7 +120,79 @@ const MentorshipApplyPage = () => {
   if (UsersError || SelectedMentorshipError || CheckIfAppliedError)
     return <Error />;
 
-  console.log("Mentorship Data :", SelectedMentorshipData);
+  // Submit handler
+  const onSubmit = async (data) => {
+    let confirmationValue = data.confirmation;
+
+    // Only handle file upload if confirmationType === "screenshot"
+    if (SelectedMentorshipData?.fee?.confirmationType === "screenshot") {
+      if (data.confirmation && data.confirmation[0]) {
+        const formData = new FormData();
+        formData.append("image", data.confirmation[0]);
+
+        const res = await axiosPublic.post(Image_Hosting_API, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        confirmationValue = res.data.data.display_url; // store uploaded screenshot URL
+      }
+    }
+
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      // Upload resume (PDF)
+      const resumeForm = new FormData();
+      resumeForm.append("file", data.resume[0]);
+      const res = await axiosPublic.post("/PDFUpload", resumeForm, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (!res.data?.url) throw new Error("Failed to upload PDF");
+
+      // Build application payload
+      const applicationData = {
+        ...data,
+        mentorshipId: mentorshipId,
+        userId: UsersData?._id,
+        email: UsersData?.email,
+        phone: UsersData?.phone,
+        resumeUrl: res.data.url,
+        confirmation: confirmationValue,
+        profileImage: UsersData?.profileImage,
+        appliedAt: new Date().toISOString(),
+      };
+
+      // await axiosPublic.post("/MentorshipApplications", applicationData);
+      console.log("Application Data :", applicationData);
+
+      Swal.fire({
+        icon: "success",
+        title: "Application Submitted",
+        text: "Your application has been sent successfully!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+
+      navigate(-1);
+      reset();
+    } catch (err) {
+      console.error("Error:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: err?.message || "Something went wrong.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="pb-5">
@@ -217,7 +229,7 @@ const MentorshipApplyPage = () => {
       {/* Application Form */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-8 bg-white text-black max-w-5xl mx-auto p-10 rounded "
+        className="space-y-8 bg-white text-black max-w-5xl mx-auto p-10 rounded-xl shadow-xl"
       >
         {/* Applicant Info */}
         <div className="space-y-4">
@@ -368,31 +380,98 @@ const MentorshipApplyPage = () => {
           )}
         </div>
 
-        {/* Payment Section */}
         {/* Payment & Confirmation (only if paid mentorship) */}
         {SelectedMentorshipData?.fee?.isFree === false && (
           <div className="space-y-4">
             {/* Payment Method */}
-            <div>
-              <label className="block font-medium mb-1">Payment Method</label>
-              <p className="text-gray-800 font-semibold capitalize">
-                {(() => {
-                  switch (SelectedMentorshipData?.fee?.paymentMethod) {
-                    case "paypal":
-                      return "PayPal";
-                    case "stripe":
-                      return "Stripe";
-                    case "bankTransfer":
-                      return "Bank Transfer";
-                    case "mobilePayment":
-                      return "Mobile Payment (bKash, Paytm, etc.)";
-                    case "other":
-                      return "Other";
-                    default:
-                      return "Not specified";
-                  }
-                })()}
-              </p>
+            <div className="flex justify-between">
+              <div>
+                <label className="block font-medium mb-1">Payment Method</label>
+                <p className="text-gray-800 font-semibold capitalize">
+                  {(() => {
+                    switch (SelectedMentorshipData?.fee?.paymentMethod) {
+                      case "paypal":
+                        return "PayPal";
+                      case "stripe":
+                        return "Stripe";
+                      case "bankTransfer":
+                        return "Bank Transfer";
+                      case "mobilePayment":
+                        return "Mobile Payment (bKash, Paytm, etc.)";
+                      case "other":
+                        return "Other";
+                      default:
+                        return "Not specified";
+                    }
+                  })()}
+                </p>
+              </div>
+
+              {/* Fee */}
+              <div className="flex flex-col gap-1">
+                <h3 className="font-semibold text-lg">Fee :</h3>
+                {SelectedMentorshipData?.fee?.isFree ? (
+                  <p className="text-green-600 font-semibold">Free</p>
+                ) : SelectedMentorshipData?.fee?.amount ? (
+                  (() => {
+                    const { amount, currency, type } =
+                      SelectedMentorshipData.fee;
+                    const weeks =
+                      Number(SelectedMentorshipData.durationWeeks) || 0;
+                    const sessionsPerWeek =
+                      Number(SelectedMentorshipData.sessionsPerWeek) || 0;
+                    const sessionLengthHrs =
+                      parseInt(
+                        SelectedMentorshipData.sessionLength
+                          ?.replace("hr", "")
+                          .trim()
+                      ) || 0;
+
+                    let total = amount;
+
+                    switch (type) {
+                      case "hourly":
+                        total =
+                          amount * weeks * sessionsPerWeek * sessionLengthHrs;
+                        break;
+                      case "perSession":
+                        total = amount * weeks * sessionsPerWeek;
+                        break;
+                      case "weekly":
+                        total = amount * weeks;
+                        break;
+                      case "fixed":
+                        total = amount;
+                        break;
+                      case "fullCourse":
+                        total = amount;
+                        break;
+                      default:
+                        total = amount;
+                        break;
+                    }
+
+                    return (
+                      <div className="text-sm">
+                        <p className="font-semibold text-green-700">
+                          {amount} {currency || "USD"}{" "}
+                          <span className="text-gray-600 text-xs">
+                            ({type})
+                          </span>
+                        </p>
+                        <p className="text-gray-500 text-xs">
+                          Total:{" "}
+                          <span className="font-bold text-gray-800">
+                            {total} {currency || "USD"}
+                          </span>
+                        </p>
+                      </div>
+                    );
+                  })()
+                ) : (
+                  <p className="text-gray-600">Not specified</p>
+                )}
+              </div>
             </div>
 
             {/* Payment Link (if available) */}
@@ -451,10 +530,7 @@ const MentorshipApplyPage = () => {
                   {...register("confirmation", {
                     required: "Payment screenshot is required",
                   })}
-                  className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4
-            file:rounded-full file:border-0 file:text-sm file:font-semibold
-            file:bg-green-600 file:text-white hover:file:bg-green-700 cursor-pointer
-            bg-gray-50 border border-gray-300 rounded-lg"
+                  className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-700 cursor-pointer bg-gray-50 border border-gray-300 rounded-lg"
                 />
               )}
 
@@ -481,17 +557,15 @@ const MentorshipApplyPage = () => {
 
         {/* Submit */}
         <div className="pt-6">
-          <CommonButton
+          <button
             type="submit"
-            text="Submit Application"
-            bgColor="blue"
-            textColor="text-white"
-            px="px-5"
-            py="py-2"
-            borderRadius="rounded"
-            width="full"
-            isLoading={isSubmitting}
-          />
+            disabled={isSubmitting}
+            className={`w-full px-5 py-2 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 transition ${
+              isSubmitting ? "opacity-70 cursor-not-allowed" : "cursor-pointer"
+            }`}
+          >
+            {isSubmitting ? "Submitting..." : "Submit Application"}
+          </button>
         </div>
       </form>
 

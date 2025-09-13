@@ -7,10 +7,12 @@ import { IoIosEye } from "react-icons/io";
 import { IoSearchSharp } from "react-icons/io5";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 
-// Packa
+// Packages
 import { Tooltip } from "react-tooltip";
-import DefaultX from "../../../assets/Mentor/DefaultX.jpg";
 import "react-tooltip/dist/react-tooltip.css";
+
+// Assets
+import DefaultX from "../../../assets/Mentor/DefaultX.jpg";
 
 // Format date like "22 Feb 2026 10:12 PM"
 const formatDate = (dateString) => {
@@ -84,6 +86,7 @@ const mentorshipData = [
   },
 ];
 
+// Items Per Page
 const ITEMS_PER_PAGE = 5;
 
 const MentorMyMentorshipApplications = () => {
@@ -96,6 +99,9 @@ const MentorMyMentorshipApplications = () => {
   const handlePageChange = (mentorshipId, newPage) => {
     setPageMap((prev) => ({ ...prev, [mentorshipId]: newPage }));
   };
+
+  const handleAccept = () => {};
+  const handleReject = () => {};
 
   return (
     <div className="py-7 px-8">
@@ -306,6 +312,7 @@ const MentorMyMentorshipApplications = () => {
 
                             {/* Accept Buttons */}
                             <button
+                              onClick={() => handleAccept(id, applicant.id)}
                               data-tooltip-id={`acceptTip-${id}-${applicant.id}`}
                               data-tooltip-content="Accept this application"
                               className="flex gap-2 items-center border-2 hover:bg-green-600/90 bg-green-500 text-white font-semibold py-2 px-5 rounded-lg transition"
@@ -316,6 +323,7 @@ const MentorMyMentorshipApplications = () => {
 
                             {/* Reject Button */}
                             <button
+                              onClick={() => handleReject(id, applicant.id)}
                               data-tooltip-id={`rejectTip-${id}-${applicant.id}`}
                               data-tooltip-content="Reject this application"
                               className="flex gap-2 items-center border-2 hover:bg-red-600/90 bg-red-500 text-white font-semibold py-2 px-5 rounded-lg transition"

@@ -23,15 +23,29 @@ import MentorshipDetailsModal from "../Home/FeaturedMentorship/MentorshipDetails
 
 const MentorshipApplyPage = () => {
   const axiosPublic = useAxiosPublic();
+
+  // Auth Hook
   const { user, loading } = useAuth();
+
+  // Params from URL
   const { mentorshipId } = useParams();
+
+  // Navigation
   const navigate = useNavigate();
 
-  // UI & State
+  // UI & State Variables
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
   const [showAlreadyAppliedModal, setShowAlreadyAppliedModal] = useState(false);
+
+  // React Hook Form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
 
   // Fetch selected Mentorship
   const {
@@ -89,14 +103,6 @@ const MentorshipApplyPage = () => {
       setShowAlreadyAppliedModal(true);
     }
   }, [CheckIfApplied, CheckIfAppliedIsLoading]);
-
-  // React Hook Form
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
 
   // Submit handler
   const onSubmit = async (data) => {
@@ -174,8 +180,10 @@ const MentorshipApplyPage = () => {
   if (UsersError || SelectedMentorshipError || CheckIfAppliedError)
     return <Error />;
 
+  console.log("Mentorship Data :", SelectedMentorshipData);
+
   return (
-    <>
+    <div className="pb-5">
       {/* Top bar with Back and Details */}
       <div className="flex items-center justify-between mb-4 px-20">
         <CommonButton
@@ -206,196 +214,286 @@ const MentorshipApplyPage = () => {
         />
       </div>
 
-      {/* Form  */}
-      <div className="min-h-screen py-2 px-4 sm:px-6 lg:px-8 text-black">
-        <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-          {/* Title */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-2">
-              {SelectedMentorshipData?.title}
-            </h1>
+      {/* Application Form */}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-8 bg-white text-black max-w-5xl mx-auto p-10 rounded "
+      >
+        {/* Applicant Info */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
+            Applicant Information
+          </h2>
 
-            {/* Description */}
-            <p className="mb-4">{SelectedMentorshipData?.description}</p>
-
-            {/* Details */}
-            <p className="text-sm gap-3 text-gray-600">
-              {/* Mentor */}
-              <strong>Mentor:</strong> {SelectedMentorshipData?.mentor?.name} |{" "}
-              {/* Duration */}
-              <strong>Duration:</strong> {SelectedMentorshipData?.durationWeeks}{" "}
-              {/* Fees */}
-              weeks | <strong>Fee:</strong>{" "}
-              {SelectedMentorshipData?.fee?.type === "free"
-                ? "Free"
-                : `$${SelectedMentorshipData?.fee?.amount} ${SelectedMentorshipData?.fee?.currency}`}
-            </p>
+          {/* Name */}
+          <div>
+            <label className="block font-medium mb-1">
+              Full Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              defaultValue={UsersData?.name || user?.displayName}
+              {...register("name", { required: "Name is required" })}
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            )}
           </div>
 
-          {/* Application Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Name */}
-            <div>
-              <label className="block font-medium mb-1">
-                Full Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                defaultValue={UsersData?.name || user?.displayName}
-                {...register("name", { required: "Name is required" })}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm">{errors.name.message}</p>
-              )}
-            </div>
+          {/* Portfolio */}
+          <div>
+            <label className="block font-medium mb-1">
+              Portfolio / LinkedIn / GitHub (optional)
+            </label>
+            <input
+              type="url"
+              {...register("portfolio")}
+              placeholder="https://your-portfolio.com"
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
 
-            {/* Portfolio / LinkedIn / GitHub */}
-            <div>
-              <label className="block font-medium mb-1">
-                Portfolio / LinkedIn / GitHub (optional)
-              </label>
-              <input
-                type="url"
-                {...register("portfolio")}
-                placeholder="https://your-portfolio.com"
-                className="w-full border border-gray-300 rounded px-3 py-2"
-              />
-            </div>
+        {/* Motivation */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
+            Application Details
+          </h2>
 
-            {/* Motivation */}
-            <div>
-              <label className="block font-medium mb-1">
-                Why are you applying? <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                rows={4}
-                {...register("motivation", {
-                  required: "Motivation is required",
-                })}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-                placeholder="Tell the mentor why you're a good fit."
-              />
-              {errors.motivation && (
-                <p className="text-red-500 text-sm">
-                  {errors.motivation.message}
-                </p>
-              )}
-            </div>
-
-            {/* Goals */}
-            <div>
-              <label className="block font-medium mb-1">
-                What do you want to achieve from this mentorship?
-              </label>
-              <textarea
-                rows={3}
-                {...register("goals")}
-                placeholder="Your learning goals, career objectives..."
-                className="w-full border border-gray-300 rounded px-3 py-2"
-              />
-            </div>
-
-            {/* Skills Covered - Self Check */}
-            {SelectedMentorshipData?.skillsCovered?.length > 0 && (
-              <div>
-                <label className="block font-medium mb-1">
-                  Relevant Skills
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {SelectedMentorshipData.skillsCovered.map((skill) => (
-                    <label
-                      key={skill}
-                      className="inline-flex items-center gap-2"
-                    >
-                      <input
-                        type="checkbox"
-                        {...register("skills")}
-                        value={skill}
-                        className="checkbox checkbox-lg checkbox-success"
-                      />
-                      {skill}
-                    </label>
-                  ))}
-                </div>
-              </div>
+          <div>
+            <label className="block font-medium mb-1">
+              Why are you applying? <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              rows={4}
+              {...register("motivation", {
+                required: "Motivation is required",
+              })}
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+              placeholder="Tell the mentor why you're a good fit."
+            />
+            {errors.motivation && (
+              <p className="text-red-500 text-sm">
+                {errors.motivation.message}
+              </p>
             )}
+          </div>
 
-            {/* Prerequisites Acknowledgment */}
-            {SelectedMentorshipData?.prerequisites?.length > 0 && (
-              <div>
-                <label className="block font-medium mb-1">Prerequisites</label>
-                <ul className="list-disc pl-5 text-sm text-gray-700 mb-2">
-                  {SelectedMentorshipData.prerequisites.map((pre, i) => (
-                    <li key={i}>{pre}</li>
-                  ))}
-                </ul>
-                <label className="inline-flex items-center gap-3">
+          {/* Goals */}
+          <div>
+            <label className="block font-medium mb-1">
+              What do you want to achieve from this mentorship?
+            </label>
+            <textarea
+              rows={3}
+              {...register("goals")}
+              placeholder="Your learning goals, career objectives..."
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        {/* Skills Check */}
+        {SelectedMentorshipData?.skillsCovered?.length > 0 && (
+          <div className="space-y-3">
+            <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              Relevant Skills
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {SelectedMentorshipData.skillsCovered.map((skill) => (
+                <label key={skill} className="inline-flex items-center gap-2">
                   <input
                     type="checkbox"
-                    {...register("acknowledge", {
-                      required: "You must confirm you meet the prerequisites",
-                    })}
-                    className="checkbox checkbox-lg checkbox-success"
+                    {...register("skills")}
+                    value={skill}
+                    className="checkbox checkbox-success"
                   />
-                  I meet the prerequisites listed above
+                  {skill}
                 </label>
-                {errors.acknowledge && (
-                  <p className="text-red-500 text-sm">
-                    {errors.acknowledge.message}
-                  </p>
-                )}
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Prerequisites */}
+        {SelectedMentorshipData?.prerequisites?.length > 0 && (
+          <div className="space-y-3">
+            <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              Prerequisites
+            </h2>
+            <ul className="list-disc pl-5 text-sm text-gray-700 mb-2">
+              {SelectedMentorshipData.prerequisites.map((pre, i) => (
+                <li key={i}>{pre}</li>
+              ))}
+            </ul>
+            <label className="inline-flex items-center gap-3">
+              <input
+                type="checkbox"
+                {...register("acknowledge", {
+                  required: "You must confirm you meet the prerequisites",
+                })}
+                className="checkbox checkbox-success"
+              />
+              I meet the prerequisites listed above
+            </label>
+            {errors.acknowledge && (
+              <p className="text-red-500 text-sm">
+                {errors.acknowledge.message}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Resume Upload */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
+            Resume
+          </h2>
+          <label
+            htmlFor="resume"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Upload Resume (PDF) <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="file"
+            accept=".pdf"
+            id="resume"
+            {...register("resume", { required: "Resume is required" })}
+            className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer bg-gray-50 border border-gray-300 rounded-lg"
+          />
+          {errors.resume && (
+            <p className="text-sm text-red-500 mt-1">{errors.resume.message}</p>
+          )}
+        </div>
+
+        {/* Payment Section */}
+        {/* Payment & Confirmation (only if paid mentorship) */}
+        {SelectedMentorshipData?.fee?.isFree === false && (
+          <div className="space-y-4">
+            {/* Payment Method */}
+            <div>
+              <label className="block font-medium mb-1">Payment Method</label>
+              <p className="text-gray-800 font-semibold capitalize">
+                {(() => {
+                  switch (SelectedMentorshipData?.fee?.paymentMethod) {
+                    case "paypal":
+                      return "PayPal";
+                    case "stripe":
+                      return "Stripe";
+                    case "bankTransfer":
+                      return "Bank Transfer";
+                    case "mobilePayment":
+                      return "Mobile Payment (bKash, Paytm, etc.)";
+                    case "other":
+                      return "Other";
+                    default:
+                      return "Not specified";
+                  }
+                })()}
+              </p>
+            </div>
+
+            {/* Payment Link (if available) */}
+            {SelectedMentorshipData?.fee?.paymentLink && (
+              <div>
+                <label className="block font-medium mb-1">Payment Link</label>
+                <a
+                  href={SelectedMentorshipData.fee.paymentLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  {SelectedMentorshipData.fee.paymentLink}
+                </a>
               </div>
             )}
 
-            {/* Resume Upload (Optional) */}
-            <div className="mb-4">
-              <label
-                htmlFor="resume"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Resume (PDF) <span className="text-red-500">*</span>
+            {/* Confirmation Type Input */}
+            <div>
+              <label className="block font-medium mb-1">
+                Confirmation Type:{" "}
+                <span className="text-gray-800 font-semibold capitalize">
+                  {SelectedMentorshipData?.fee?.confirmationType}
+                </span>
               </label>
 
-              <div className="relative w-full">
+              {SelectedMentorshipData?.fee?.confirmationType ===
+                "receiptLink" && (
+                <input
+                  type="url"
+                  placeholder="Enter your receipt link"
+                  {...register("confirmation", {
+                    required: "Receipt link is required",
+                  })}
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                />
+              )}
+
+              {SelectedMentorshipData?.fee?.confirmationType ===
+                "transactionId" && (
+                <input
+                  type="text"
+                  placeholder="Enter your transaction ID"
+                  {...register("confirmation", {
+                    required: "Transaction ID is required",
+                  })}
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                />
+              )}
+
+              {SelectedMentorshipData?.fee?.confirmationType ===
+                "screenshot" && (
                 <input
                   type="file"
-                  accept=".pdf"
-                  id="resume"
-                  {...register("resume", {
-                    required: "Resume is required",
+                  accept="image/*"
+                  {...register("confirmation", {
+                    required: "Payment screenshot is required",
                   })}
                   className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4
-                   file:rounded-full file:border-0
-                   file:text-sm file:font-semibold
-                   file:bg-blue-600 file:text-white
-                   hover:file:bg-blue-700
-                   cursor-pointer bg-gray-50 border border-gray-300 rounded-lg"
+            file:rounded-full file:border-0 file:text-sm file:font-semibold
+            file:bg-green-600 file:text-white hover:file:bg-green-700 cursor-pointer
+            bg-gray-50 border border-gray-300 rounded-lg"
                 />
-              </div>
+              )}
 
-              {errors.resume && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.resume.message}
+              {SelectedMentorshipData?.fee?.confirmationType ===
+                "referenceNumber" && (
+                <input
+                  type="text"
+                  placeholder="Enter your bank reference number"
+                  {...register("confirmation", {
+                    required: "Reference number is required",
+                  })}
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                />
+              )}
+
+              {errors.confirmation && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmation.message}
                 </p>
               )}
             </div>
+          </div>
+        )}
 
-            {/* Submit Button */}
-            <CommonButton
-              type="submit"
-              text="Submit Application"
-              bgColor="blue"
-              textColor="text-white"
-              px="px-5"
-              py="py-2"
-              borderRadius="rounded"
-              width="full"
-              isLoading={isSubmitting}
-            />
-          </form>
+        {/* Submit */}
+        <div className="pt-6">
+          <CommonButton
+            type="submit"
+            text="Submit Application"
+            bgColor="blue"
+            textColor="text-white"
+            px="px-5"
+            py="py-2"
+            borderRadius="rounded"
+            width="full"
+            isLoading={isSubmitting}
+          />
         </div>
-      </div>
+      </form>
 
       {/* Login Modal via State */}
       {showLoginModal && (
@@ -502,7 +600,7 @@ const MentorshipApplyPage = () => {
           setSelectedMentorshipID={setSelectedMentorshipID}
         />
       </dialog>
-    </>
+    </div>
   );
 };
 

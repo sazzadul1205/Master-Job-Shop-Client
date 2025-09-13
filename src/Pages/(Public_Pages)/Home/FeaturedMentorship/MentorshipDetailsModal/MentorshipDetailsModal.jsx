@@ -49,9 +49,11 @@ const MentorshipDetailsModal = ({
 }) => {
   const axiosPublic = useAxiosPublic();
 
-  // Bio Expand State
-  const [bioExpanded, setBioExpanded] = useState(false);
+  // Refs
   const bioRef = useRef(null);
+
+  // States Variables
+  const [bioExpanded, setBioExpanded] = useState(false);
   const [bioHeight, setBioHeight] = useState(0);
 
   // Fetch Mentorship Data
@@ -141,7 +143,7 @@ const MentorshipDetailsModal = ({
   return (
     <div
       id="Mentorship_Details_Modal"
-      className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
+      className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white text-black rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
     >
       {/* Close Button */}
       <button

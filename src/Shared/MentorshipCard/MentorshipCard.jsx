@@ -2,18 +2,10 @@ import { Link } from "react-router-dom";
 
 // Packages
 import PropTypes from "prop-types";
-
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 // Assets
 import DefaultUserLogo from "../../assets/DefaultUserLogo.jpg";
-
-// Common Button
-import CommonButton from "../../Shared/CommonButton/CommonButton";
-
-// Utility: Format Budget Display
-const formatBudget = (amount, currency = "USD", isNegotiable = false) => {
-  if (!amount) return "Free";
-  return `${currency} ${amount}${isNegotiable ? " (Negotiable)" : ""}`;
-};
 
 // Utility: Posted Time
 const calculateDaysAgo = (isoString) => {
@@ -27,36 +19,56 @@ const calculateDaysAgo = (isoString) => {
 
 const MentorshipCard = ({ mentorship, setSelectedMentorshipID }) => {
   return (
-    <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm p-6 bg-gradient-to-bl from-white to-gray-100 hover:shadow-md transition duration-200 min-h-[250px]">
+    <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm p-6 bg-gradient-to-bl from-white to-gray-100 hover:shadow-md transition duration-200 min-h-[280px]">
       {/* Mentor Info */}
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-3 mb-4">
+        {/* Avatar */}
         <img
-          src={mentorship?.mentor?.profileImage || DefaultUserLogo}
-          alt="Mentor"
-          className="w-12 h-12 rounded-full object-cover"
+          src={mentorship?.Mentor?.profileImage || DefaultUserLogo}
+          alt={mentorship?.Mentor?.name || "Mentor"}
+          className="w-12 h-12 rounded-full object-cover border"
         />
-        <span className="text-sm text-gray-700 font-medium">
-          {mentorship?.mentor?.name || "Mentor"}
-        </span>
+
+        {/* Name & Position */}
+        <div>
+          {/* Name */}
+          <p className="text-sm text-gray-800 font-semibold">
+            {mentorship?.Mentor?.name || "Mentor"}
+          </p>
+          {/* Position */}
+          <p className="text-xs text-gray-500">
+            {mentorship?.Mentor?.position}
+          </p>
+        </div>
       </div>
 
       {/* Title */}
-      <h3 className="text-lg font-semibold text-black mb-1">
-        {mentorship?.title}
-      </h3>
+      <h3 className="text-lg font-bold text-black mb-1">{mentorship?.title}</h3>
 
       {/* Category */}
-      <p className="text-sm text-gray-500 mb-1">
+      <p className="text-sm text-gray-500 mb-1 capitalize">
         {mentorship?.category} › {mentorship?.subCategory}
+      </p>
+
+      {/* Duration & Sessions */}
+      <p className="text-sm text-gray-600 mb-1">
+        Duration:{" "}
+        <span className="font-medium text-gray-800">
+          {mentorship?.durationWeeks} weeks
+        </span>{" "}
+        | Sessions:{" "}
+        <span className="font-medium text-gray-800">
+          {mentorship?.sessionsPerWeek}× per week ({mentorship?.sessionLength})
+        </span>
       </p>
 
       {/* Location */}
       <p className="text-sm text-gray-600 mb-1">
         Location:{" "}
         <span className="text-gray-800">
-          {mentorship?.location?.city
-            ? `${mentorship?.location?.city}, ${mentorship?.location?.country}`
-            : mentorship?.isRemote
+          {mentorship?.location?.city && mentorship?.location?.country
+            ? `${mentorship.location.city}, ${mentorship.location.country}`
+            : mentorship?.modeToggle
             ? "Remote"
             : "Not specified"}
         </span>
@@ -65,16 +77,17 @@ const MentorshipCard = ({ mentorship, setSelectedMentorshipID }) => {
       {/* Fee */}
       <p className="text-sm text-gray-600 mb-3">
         Fee:{" "}
-        <span className="text-green-700 font-semibold">
-          {formatBudget(
-            mentorship?.fee?.amount,
-            mentorship?.fee?.currency,
-            mentorship?.fee?.isNegotiable
-          )}
-        </span>
+        {mentorship?.fee?.isFree ? (
+          <span className="text-green-600 font-semibold">Free</span>
+        ) : (
+          <span className="text-green-700 font-semibold">
+            {mentorship?.fee?.amount} {mentorship?.fee?.currency}{" "}
+            {mentorship?.fee?.negotiable ? "(Negotiable)" : ""}
+          </span>
+        )}
       </p>
 
-      {/* Posted Time */}
+      {/* Posted Date */}
       <p className="text-xs text-gray-400 mb-3">
         Posted: {calculateDaysAgo(mentorship?.postedAt)}
       </p>
@@ -82,16 +95,21 @@ const MentorshipCard = ({ mentorship, setSelectedMentorshipID }) => {
       {/* Actions */}
       <div className="flex justify-between items-center pt-2 mt-auto">
         <Link to={`/Mentorship/Apply/${mentorship?._id}`}>
-          <CommonButton
-            text="Apply Now"
-            textColor="text-white"
-            bgColor="blue"
-            px="px-4"
-            py="py-2"
-            width="auto"
-            className="text-sm font-medium"
-          />
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition cursor-pointer"
+            data-tooltip-id={`applyTip-${mentorship?._id}`}
+            data-tooltip-content="Apply To This Mentorship Program"
+          >
+            Apply Now
+          </button>
         </Link>
+
+        {/* Tooltip component */}
+        <Tooltip
+          id={`applyTip-${mentorship?._id}`}
+          place="top"
+          effect="solid"
+        />
 
         <button
           onClick={() => {
@@ -99,9 +117,14 @@ const MentorshipCard = ({ mentorship, setSelectedMentorshipID }) => {
             setSelectedMentorshipID(mentorship?._id);
           }}
           className="text-sm text-blue-700 hover:underline cursor-pointer"
+          data-tooltip-id={`viewTip-${mentorship?._id}`}
+          data-tooltip-content="View Full Mentorship Details"
         >
           View Details
         </button>
+
+        {/* Tooltip for View Details */}
+        <Tooltip id={`viewTip-${mentorship?._id}`} place="top" effect="solid" />
       </div>
     </div>
   );
@@ -111,22 +134,27 @@ const MentorshipCard = ({ mentorship, setSelectedMentorshipID }) => {
 MentorshipCard.propTypes = {
   mentorship: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    category: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    category: PropTypes.string,
     subCategory: PropTypes.string,
+    durationWeeks: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    sessionsPerWeek: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    sessionLength: PropTypes.string,
+    modeToggle: PropTypes.bool,
     postedAt: PropTypes.string,
-    isRemote: PropTypes.bool,
     location: PropTypes.shape({
       city: PropTypes.string,
       country: PropTypes.string,
     }),
     fee: PropTypes.shape({
-      amount: PropTypes.number,
+      isFree: PropTypes.bool,
+      amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       currency: PropTypes.string,
-      isNegotiable: PropTypes.bool,
+      negotiable: PropTypes.bool,
     }),
-    mentor: PropTypes.shape({
+    Mentor: PropTypes.shape({
       name: PropTypes.string,
+      position: PropTypes.string,
       profileImage: PropTypes.string,
     }),
   }).isRequired,

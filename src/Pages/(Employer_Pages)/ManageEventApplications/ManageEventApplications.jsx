@@ -47,7 +47,6 @@ const ManageEventApplications = () => {
   // User Email State
   const [userEmail, setUserEmail] = useState("");
 
-
   // Items Per Page
   const ITEMS_PER_PAGE = 10;
 
@@ -67,7 +66,7 @@ const ManageEventApplications = () => {
         if (data && typeof data === "object") return [data];
         return [];
       } catch (err) {
-        console.log(err);
+        console.log("Error", err);
         return []; // return empty array on any error
       }
     },
@@ -91,7 +90,7 @@ const ManageEventApplications = () => {
         const res = await axiosPublic.get(`/EventApplications?${query}`);
         return Array.isArray(res.data) ? res.data : [];
       } catch (err) {
-        console.log(err);
+        console.log("Error", err);
         return []; // return empty array on any error
       }
     },
@@ -264,38 +263,38 @@ const ManageEventApplications = () => {
                     {/* Accepted Applicants */}
                     {event.Applicants.filter((app) => app.status === "Accepted")
                       .length > 0 && (
-                        <>
-                          {" | "}
-                          <p>
-                            Accepted:{" "}
-                            <span className="text-green-600 font-semibold">
-                              {
-                                event.Applicants.filter(
-                                  (app) => app.status === "Accepted"
-                                ).length
-                              }
-                            </span>
-                          </p>
-                        </>
-                      )}
+                      <>
+                        {" | "}
+                        <p>
+                          Accepted:{" "}
+                          <span className="text-green-600 font-semibold">
+                            {
+                              event.Applicants.filter(
+                                (app) => app.status === "Accepted"
+                              ).length
+                            }
+                          </span>
+                        </p>
+                      </>
+                    )}
 
                     {/* Rejected Applicants */}
                     {event.Applicants.filter((app) => app.status === "Rejected")
                       .length > 0 && (
-                        <>
-                          {" | "}
-                          <p>
-                            Rejected:{" "}
-                            <span className="text-red-600 font-semibold">
-                              {
-                                event.Applicants.filter(
-                                  (app) => app.status === "Rejected"
-                                ).length
-                              }
-                            </span>
-                          </p>
-                        </>
-                      )}
+                      <>
+                        {" | "}
+                        <p>
+                          Rejected:{" "}
+                          <span className="text-red-600 font-semibold">
+                            {
+                              event.Applicants.filter(
+                                (app) => app.status === "Rejected"
+                              ).length
+                            }
+                          </span>
+                        </p>
+                      </>
+                    )}
                   </div>
 
                   {/* Open / Close Applicants Table Button */}
@@ -321,10 +320,11 @@ const ManageEventApplications = () => {
 
                 {/* Applicants Table */}
                 <div
-                  className={`transition-all duration-500 ease-in-out overflow-hidden ${expandedEventId === event._id
-                    ? "max-h-[1000px] pt-4"
-                    : "max-h-0"
-                    }`}
+                  className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                    expandedEventId === event._id
+                      ? "max-h-[1000px] pt-4"
+                      : "max-h-0"
+                  }`}
                 >
                   {/* Applicants Table */}
                   <EventApplicantTable
@@ -405,7 +405,10 @@ const ManageEventApplications = () => {
 
       {/* View User Profile Modal */}
       <dialog id="View_Profile_Modal" className="modal">
-        <ViewMemberProfileModal userEmail={userEmail} setUserEmail={setUserEmail} />
+        <ViewMemberProfileModal
+          userEmail={userEmail}
+          setUserEmail={setUserEmail}
+        />
       </dialog>
     </>
   );

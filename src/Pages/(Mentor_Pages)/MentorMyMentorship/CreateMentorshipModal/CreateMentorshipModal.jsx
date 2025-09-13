@@ -182,6 +182,85 @@ const CategoryOptions = [
   },
 ];
 
+// Length Options
+const LengthOptions = [
+  { value: "5min", label: "5 minutes" },
+  { value: "10min", label: "10 minutes" },
+  { value: "15min", label: "15 minutes" },
+  { value: "20min", label: "20 minutes" },
+  { value: "25min", label: "25 minutes" },
+  { value: "30min", label: "30 minutes" },
+  { value: "45min", label: "45 minutes" },
+  { value: "1hr", label: "1 hour" },
+  { value: "1.5hr", label: "1.5 hours" },
+  { value: "2hr", label: "2 hours" },
+  { value: "2.5hr", label: "2.5 hours" },
+  { value: "3hr", label: "3 hours" },
+  { value: "3.5hr", label: "3.5 hours" },
+  { value: "4hr", label: "4 hours" },
+  { value: "5hr", label: "5 hours" },
+  { value: "6hr", label: "6 hours" },
+  { value: "7hr", label: "7 hours" },
+  { value: "8hr", label: "8 hours" },
+];
+
+// Fee Types Options
+const FeeTypeOptions = [
+  { value: "fixed", label: "Fixed" },
+  { value: "hourly", label: "Hourly" },
+  { value: "perSession", label: "Per Session" },
+  { value: "weekly", label: "Weekly" },
+];
+
+// Currency Options
+const CurrencyOptions = [
+  { value: "USD", label: "USD ($)" },
+  { value: "EUR", label: "EUR (€)" },
+  { value: "GBP", label: "GBP (£)" },
+  { value: "BDT", label: "BDT (৳)" },
+  { value: "INR", label: "INR (₹)" },
+];
+
+// Payment Method Options
+const PaymentMethodOptions = [
+  { value: "paypal", label: "PayPal" },
+  { value: "stripe", label: "Stripe" },
+  { value: "bankTransfer", label: "Bank Transfer" },
+  {
+    value: "mobilePayment",
+    label: "Mobile Payment (bKash, Paytm, etc.)",
+  },
+  { value: "other", label: "Other" },
+];
+
+// Confirmation Types Options
+const confirmationType = [
+  { value: "receiptLink", label: "Receipt Link (URL)" },
+  { value: "transactionId", label: "Transaction ID" },
+  { value: "screenshot", label: "Screenshot Upload" },
+  { value: "referenceNumber", label: "Bank Reference Number" },
+];
+
+// Preferred Communication Method Options
+const preferredCommunicationMethod = [
+  { value: "Zoom", label: "Zoom" },
+  { value: "Google Meet", label: "Google Meet" },
+  { value: "Microsoft Teams", label: "Microsoft Teams" },
+  { value: "Slack", label: "Slack" },
+  { value: "Discord", label: "Discord" },
+  { value: "Phone", label: "Phone Call" },
+  { value: "InPerson", label: "In-Person" },
+];
+
+// Preferred Communication Frequency Options
+const preferredCommunicationFrequency = [
+  { value: "daily", label: "Daily" },
+  { value: "weekly", label: "Weekly" },
+  { value: "biweekly", label: "Bi-Weekly" },
+  { value: "monthly", label: "Monthly" },
+  { value: "asNeeded", label: "As Needed" },
+];
+
 // Helper: format yyyy-mm-dd -> 25 Aug 2023
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
@@ -350,9 +429,9 @@ const CreateMentorshipModal = ({ refetch }) => {
         timerProgressBar: true,
         showConfirmButton: false,
       });
-    } catch (error) {
-      console.error("Error creating mentorship:", error);
-      console.log("Error data :", error?.response?.data);
+    } catch (err) {
+      console.error("Error creating mentorship:", err);
+      console.log("Error", err);
       setErrorMessage("Failed to create mentorship. Please try again.");
       setLoading(false);
     } finally {
@@ -539,26 +618,7 @@ const CreateMentorshipModal = ({ refetch }) => {
             placeholder="Select length"
             register={register("sessionLength", { required: "Required" })}
             error={errors.sessionLength}
-            options={[
-              { value: "5min", label: "5 minutes" },
-              { value: "10min", label: "10 minutes" },
-              { value: "15min", label: "15 minutes" },
-              { value: "20min", label: "20 minutes" },
-              { value: "25min", label: "25 minutes" },
-              { value: "30min", label: "30 minutes" },
-              { value: "45min", label: "45 minutes" },
-              { value: "1hr", label: "1 hour" },
-              { value: "1.5hr", label: "1.5 hours" },
-              { value: "2hr", label: "2 hours" },
-              { value: "2.5hr", label: "2.5 hours" },
-              { value: "3hr", label: "3 hours" },
-              { value: "3.5hr", label: "3.5 hours" },
-              { value: "4hr", label: "4 hours" },
-              { value: "5hr", label: "5 hours" },
-              { value: "6hr", label: "6 hours" },
-              { value: "7hr", label: "7 hours" },
-              { value: "8hr", label: "8 hours" },
-            ]}
+            options={LengthOptions}
           />
 
           {/* Session Days */}
@@ -759,12 +819,7 @@ const CreateMentorshipModal = ({ refetch }) => {
               })}
               error={errors?.fee?.type}
               disabled={watch("fee.isFree")}
-              options={[
-                { value: "fixed", label: "Fixed" },
-                { value: "hourly", label: "Hourly" },
-                { value: "perSession", label: "Per Session" },
-                { value: "weekly", label: "Weekly" },
-              ]}
+              options={FeeTypeOptions}
             />
 
             {/* Amount */}
@@ -793,13 +848,7 @@ const CreateMentorshipModal = ({ refetch }) => {
               })}
               error={errors?.fee?.currency}
               disabled={watch("fee.isFree")}
-              options={[
-                { value: "USD", label: "USD ($)" },
-                { value: "EUR", label: "EUR (€)" },
-                { value: "GBP", label: "GBP (£)" },
-                { value: "BDT", label: "BDT (৳)" },
-                { value: "INR", label: "INR (₹)" },
-              ]}
+              options={CurrencyOptions}
             />
 
             {/* Payment Method */}
@@ -815,16 +864,7 @@ const CreateMentorshipModal = ({ refetch }) => {
               })}
               error={errors?.fee?.paymentMethod}
               disabled={watch("fee.isFree")}
-              options={[
-                { value: "paypal", label: "PayPal" },
-                { value: "stripe", label: "Stripe" },
-                { value: "bankTransfer", label: "Bank Transfer" },
-                {
-                  value: "mobilePayment",
-                  label: "Mobile Payment (bKash, Paytm, etc.)",
-                },
-                { value: "other", label: "Other" },
-              ]}
+              options={PaymentMethodOptions}
             />
 
             {/* Confirmation Type */}
@@ -840,12 +880,7 @@ const CreateMentorshipModal = ({ refetch }) => {
               })}
               error={errors?.fee?.confirmationType}
               disabled={watch("fee.isFree")}
-              options={[
-                { value: "receiptLink", label: "Receipt Link (URL)" },
-                { value: "transactionId", label: "Transaction ID" },
-                { value: "screenshot", label: "Screenshot Upload" },
-                { value: "referenceNumber", label: "Bank Reference Number" },
-              ]}
+              options={confirmationType}
             />
 
             {/* Negotiable */}
@@ -921,15 +956,7 @@ const CreateMentorshipModal = ({ refetch }) => {
               required: "Preferred communication method is required",
             })}
             error={errors?.communication?.preferredMethod}
-            options={[
-              { value: "Zoom", label: "Zoom" },
-              { value: "Google Meet", label: "Google Meet" },
-              { value: "Microsoft Teams", label: "Microsoft Teams" },
-              { value: "Slack", label: "Slack" },
-              { value: "Discord", label: "Discord" },
-              { value: "Phone", label: "Phone Call" },
-              { value: "InPerson", label: "In-Person" },
-            ]}
+            options={preferredCommunicationMethod}
           />
 
           <div className="flex flex-row justify-between px-20 py-2">
@@ -973,13 +1000,7 @@ const CreateMentorshipModal = ({ refetch }) => {
             placeholder="-- Select Frequency --"
             register={register("communication.frequency")}
             error={errors?.communication?.frequency}
-            options={[
-              { value: "daily", label: "Daily" },
-              { value: "weekly", label: "Weekly" },
-              { value: "biweekly", label: "Bi-Weekly" },
-              { value: "monthly", label: "Monthly" },
-              { value: "asNeeded", label: "As Needed" },
-            ]}
+            options={preferredCommunicationFrequency}
           />
 
           {/* Notes / Special Instructions */}

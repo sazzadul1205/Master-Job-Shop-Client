@@ -124,9 +124,9 @@ const AddCompanyProfileModal = ({ CompanyRefetch }) => {
         setProfileImage(null);
         setNewFieldValues({ tags: "" });
       });
-    } catch (error) {
+    } catch (err) {
       setErrorMessage("Failed to save company profile.");
-      console.log(error);
+      console.log("Error", err);
     } finally {
       setLoading(false);
     }

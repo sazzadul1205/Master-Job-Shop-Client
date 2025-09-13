@@ -62,7 +62,6 @@ const EmployerDashboardApplicationOverview = ({
     DailyApplicationsStatus
   ]);
 
-  console.log(DailyBidsStatus);
 
 
   return (

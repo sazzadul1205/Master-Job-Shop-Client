@@ -85,7 +85,7 @@ const ProfileSettings = ({ user = {}, refetch }) => {
 
         if (refetch) refetch();
       } catch (err) {
-        console.log(err);
+       console.log("Error", err);
 
         // Revert toggle if error
         setSettings((prev) => ({ ...prev, [field]: !newValue }));

@@ -660,7 +660,7 @@ const MentorshipApplyPage = () => {
                 text="View Application"
                 clickEvent={() => {
                   setShowAlreadyAppliedModal(false);
-                  navigate(`/MentorshipApplications`);
+                  navigate(`/MyMentorshipApplication`);
                 }}
                 bgColor="blue"
                 textColor="text-white"

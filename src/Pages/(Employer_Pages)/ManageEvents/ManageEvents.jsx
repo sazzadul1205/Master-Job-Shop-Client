@@ -67,7 +67,7 @@ const ManageEvents = () => {
         return [];
       } catch (err) {
         if (err.response?.status === 404) return []; // no Gigs found
-        console.log(err);
+       console.log("Error", err);
         return []; // fallback for other cases too
       }
     },
@@ -115,9 +115,6 @@ const ManageEvents = () => {
     await UserRoleRefetch();
     await EmployerRefetch();
   };
-
-  console.log(EventsData[0]?._id);
-
 
   // Loading / Error UI
   if (CompanyIsLoading || EventsIsLoading || EmployerIsLoading || UserRoleIsLoading || loading) return <Loading />;

@@ -107,8 +107,6 @@ const Blogs = () => {
     setSelectedCategory("");
   };
 
-  console.log(BlogsData[0]);
-
   return (
     <div className="min-h-screen">
       {/* Page Header */}

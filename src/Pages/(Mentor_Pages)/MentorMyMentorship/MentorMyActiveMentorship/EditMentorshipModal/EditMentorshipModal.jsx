@@ -443,7 +443,7 @@ const EditMentorshipModal = ({
       };
 
       // Send PUT request to update mentorship
-      const response = await axiosPublic.put(
+      await axiosPublic.put(
         `/Mentorship/${selectedMentorshipID}`,
         formattedData
       );
@@ -462,8 +462,6 @@ const EditMentorshipModal = ({
       // Close modal and refetch updated data
       handleClose();
       refetch();
-
-      console.log("Mentorship updated:", response.data);
     } catch (err) {
       console.error("Error updating mentorship:", err);
       setErrorMessage(

@@ -18,8 +18,6 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 const EditInternshipModal = ({ refetch, selectedInternshipData }) => {
   const axiosPublic = useAxiosPublic();
 
-  console.log(selectedInternshipData);
-
   // New Field Values State
   const [newFieldValues, setNewFieldValues] = useState({});
 

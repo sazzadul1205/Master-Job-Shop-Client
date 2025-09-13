@@ -65,7 +65,6 @@ const Login = () => {
           `/Users/Role?email=${user.email}`
         );
         const Role = UserRole.data.role;
-        console.log(Role);
 
         if (!Role) {
           showAlert("error", "User data not found. Please contact support.");

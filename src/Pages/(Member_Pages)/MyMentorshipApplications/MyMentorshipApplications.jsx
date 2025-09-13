@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 // Packages
@@ -19,12 +20,11 @@ import { FaInfo } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 
 // Assets
-import Mentorship from "../../../assets/Navbar/Member/Mentorship.png";
+import JobApplication from "../../../assets/EmployerLayout/formWhite.png";
 
 // Modals
 import MentorshipDetailsModal from "../../(Public_Pages)/Home/FeaturedMentorship/MentorshipDetailsModal/MentorshipDetailsModal";
 import MyMentorshipApplicationModal from "./MyMentorshipApplicationModal/MyMentorshipApplicationModal";
-import { Link } from "react-router-dom";
 
 const MyMentorshipApplications = () => {
   const { user, loading } = useAuth();
@@ -149,6 +149,8 @@ const MyMentorshipApplications = () => {
     })
     .filter((item) => item.mentorship);
 
+  console.log(MentorshipApplicationsData);
+
   return (
     <section className="px-4 md:px-12 min-h-screen">
       {/* Title */}
@@ -163,157 +165,143 @@ const MyMentorshipApplications = () => {
         <span className="w-3 h-3 bg-white rounded-full"></span>
       </div>
 
-      {/* Mentorship Applications Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {mergedData.length > 0 ? (
           mergedData.map((item) => {
-            const appliedAgo = item.appliedAt
-              ? formatDistanceToNow(new Date(item.appliedAt), {
-                  addSuffix: true,
-                })
-              : "N/A";
-
-            const fee = item.mentorship?.fee;
-            const isFree = fee?.type === "free";
-            const feeDisplay = isFree
-              ? "Free"
-              : `$${fee?.amount} ${fee?.currency || ""}`;
-
             return (
               <article
                 key={item._id}
-                className="bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between p-6 min-h-[360px]"
+                className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition p-6 flex flex-col justify-between min-h-[320px]"
               >
                 {/* Title & Category */}
                 <div>
                   <h3
-                    className="text-xl font-semibold text-gray-900 mb-1 truncate"
+                    className="text-lg font-semibold text-gray-900 mb-1 truncate"
                     title={item.mentorship?.title}
                   >
                     {item.mentorship?.title || "Mentorship Title"}
                   </h3>
                   <p className="text-sm text-gray-600">
-                    {item.mentorship?.category} &gt;{" "}
-                    {item.mentorship?.subCategory}
+                    {item.mentorship?.category} • {item.mentorship?.subCategory}
                   </p>
                 </div>
 
                 {/* Mentor Info */}
-                <div className="mt-4 text-gray-700 text-sm space-y-2">
-                  <div>
-                    <span className="font-semibold text-gray-800">
-                      Mentor:{" "}
+                <div className="mt-4 text-sm text-gray-700 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={item.mentorship?.Mentor?.profileImage}
+                      alt={item.mentorship?.Mentor?.name}
+                      className="w-8 h-8 rounded-full border"
+                    />
+                    <span className="font-medium">
+                      {item.mentorship?.Mentor?.name || "N/A"}
                     </span>
-                    {item.mentorship?.mentor?.name || "N/A"} • ⭐{" "}
-                    {item.mentorship?.mentor?.rating} (
-                    {item.mentorship?.mentor?.totalMentees || 0} mentees)
                   </div>
-                  <div>
-                    <span className="font-semibold text-gray-800">Fee: </span>
-                    {feeDisplay}
-                  </div>
-                  <div>
-                    <span className="font-semibold text-gray-800">
-                      Applied:{" "}
-                    </span>
-                    {appliedAgo}
-                  </div>
-                  <div>
-                    <span className="font-semibold text-gray-800">
-                      Status:{" "}
-                    </span>
+                  <p>
+                    <span className="font-semibold">Fee:</span>{" "}
+                    {item.mentorship?.fee?.isFree
+                      ? "Free"
+                      : `$${item.mentorship?.fee?.amount} ${item.mentorship?.fee?.currency}`}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Applied:</span>{" "}
+                    {item.appliedAt
+                      ? formatDistanceToNow(new Date(item.appliedAt), {
+                          addSuffix: true,
+                        })
+                      : "N/A"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Status:</span>{" "}
                     {item.mentorship?.status || "N/A"}
-                  </div>
+                  </p>
                 </div>
 
-                {/* Skills */}
-                <div className="mt-4">
-                  <span className="font-semibold text-gray-800 block mb-1">
-                    Skills
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {item.skills?.length ? (
-                      item.skills.slice(0, 6).map((skill, idx) => (
+                {/* Key Skills (Top 3 only) */}
+                {item.skills?.length > 0 && (
+                  <div className="mt-4">
+                    <span className="font-semibold text-gray-800 block mb-1">
+                      Skills
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {item.skills.slice(0, 3).map((skill, idx) => (
                         <span
                           key={idx}
                           className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded"
                         >
                           {skill}
                         </span>
-                      ))
-                    ) : (
-                      <span className="text-gray-500 text-sm">
-                        No skills listed
-                      </span>
-                    )}
+                      ))}
+                      {item.skills.length > 3 && (
+                        <span className="text-xs text-gray-500">
+                          +{item.skills.length - 3}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Action Buttons */}
-                <div className="flex justify-end items-center gap-4 mt-6">
+                <div className="flex justify-end items-center gap-3 mt-6">
                   {/* View Application */}
                   <button
-                    id={`view-mentorship-application-${item._id}`}
-                    data-tooltip-content="View Mentorship Application"
+                    id={`view-app-${item._id}`}
+                    data-tooltip-content="View Application"
                     onClick={() => {
                       setSelectedApplicationID(item._id);
                       document
                         .getElementById("View_Mentorship_Application_Modal")
-                        .showModal();
+                        ?.showModal();
                     }}
-                    className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
-                    aria-label="View Application"
+                    className="flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow transition cursor-pointer"
                   >
-                    <img src={Mentorship} alt="View App" className="w-5" />
+                    <img
+                      src={JobApplication}
+                      alt="Job Application"
+                      className="w-5"
+                    />
                   </button>
-                  <Tooltip
-                    anchorSelect={`#view-mentorship-application-${item._id}`}
-                    place="top"
-                    className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
-                  />
+                  <Tooltip anchorSelect={`#view-app-${item._id}`} place="top" />
 
-                  {/* Delete */}
+                  {/* Cancel */}
                   <button
-                    id={`delete-mentorship-application-${item._id}`}
+                    id={`delete-app-${item._id}`}
                     data-tooltip-content="Cancel Application"
                     onClick={() => handleDeleteMentorshipApplication(item._id)}
-                    className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
-                    aria-label="Cancel Application"
+                    className="flex items-center justify-center w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition cursor-pointer"
                   >
-                    <ImCross size={18} />
+                    <ImCross size={16} />
                   </button>
                   <Tooltip
-                    anchorSelect={`#delete-mentorship-application-${item._id}`}
+                    anchorSelect={`#delete-app-${item._id}`}
                     place="top"
-                    className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
                   />
 
                   {/* Mentorship Details */}
                   <button
-                    id={`mentorship-details-btn-${item._id}`}
+                    id={`details-btn-${item._id}`}
                     data-tooltip-content="View Mentorship Details"
                     onClick={() => {
                       setSelectedMentorshipID(item?.mentorship?._id);
                       document
                         .getElementById("Mentorship_Details_Modal")
-                        .showModal();
+                        ?.showModal();
                     }}
-                    className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
-                    aria-label="View Mentorship Details"
+                    className="flex items-center justify-center w-10 h-10 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow transition cursor-pointer"
                   >
-                    <FaInfo size={18} />
+                    <FaInfo size={16} />
                   </button>
                   <Tooltip
-                    anchorSelect={`#mentorship-details-btn-${item._id}`}
+                    anchorSelect={`#details-btn-${item._id}`}
                     place="top"
-                    className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
                   />
                 </div>
               </article>
             );
           })
         ) : (
-          <div className="text-center col-span-full mt-24 px-6 max-w-xl mx-auto">
+          <div className=" text-center col-span-full mt-24 px-6 max-w-xl mx-auto">
             <p className="text-2xl font-medium text-white mb-3">
               No Mentorship Applications Found
             </p>

@@ -66,7 +66,7 @@ const ManageGigs = () => {
         return [];
       } catch (err) {
         if (err.response?.status === 404) return []; // no Gigs found
-        console.log(err);
+         console.log("Error", err);
         return []; // fallback for other cases too
       }
     },

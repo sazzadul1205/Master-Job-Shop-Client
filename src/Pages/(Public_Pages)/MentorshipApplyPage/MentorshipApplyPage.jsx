@@ -20,6 +20,7 @@ import useAuth from "../../../Hooks/useAuth";
 
 // Modal
 import MentorshipDetailsModal from "../Home/FeaturedMentorship/MentorshipDetailsModal/MentorshipDetailsModal";
+import FormInput from "../../../Shared/FormInput/FormInput";
 
 // Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
@@ -38,6 +39,7 @@ const MentorshipApplyPage = () => {
   const navigate = useNavigate();
 
   // UI & State Variables
+  const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
@@ -168,9 +170,10 @@ const MentorshipApplyPage = () => {
         appliedAt: new Date().toISOString(),
       };
 
-      // await axiosPublic.post("/MentorshipApplications", applicationData);
-      console.log("Application Data :", applicationData);
+      // Submit application to backend
+      await axiosPublic.post("/MentorshipApplications", applicationData);
 
+      // Success Message
       Swal.fire({
         icon: "success",
         title: "Application Submitted",
@@ -183,7 +186,10 @@ const MentorshipApplyPage = () => {
       navigate(-1);
       reset();
     } catch (err) {
+      setIsSubmitting(false);
       console.error("Error:", err);
+      console.log("Error data :", err?.response?.data);
+      setErrorMessage("Failed to create mentorship. Please try again.");
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
@@ -229,89 +235,84 @@ const MentorshipApplyPage = () => {
       {/* Application Form */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-8 bg-white text-black max-w-5xl mx-auto p-10 rounded-xl shadow-xl"
+        className="space-y-8 bg-white text-black max-w-4xl mx-auto p-10 rounded-xl shadow-xl"
       >
+        {/* Alert Messages */}
+        {errorMessage && (
+          <div className="bg-red-100 text-red-800 font-medium border border-red-400 px-4 py-2 rounded mb-4 text-center">
+            {errorMessage}
+          </div>
+        )}
+
         {/* Applicant Info */}
         <div className="space-y-4">
+          {/* Title */}
           <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
             Applicant Information
           </h2>
 
           {/* Name */}
-          <div>
-            <label className="block font-medium mb-1">
-              Full Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              defaultValue={UsersData?.name || user?.displayName}
-              {...register("name", { required: "Name is required" })}
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
-            )}
-          </div>
+          <FormInput
+            label="Full Name"
+            required
+            placeholder="Enter your full name"
+            register={register("name", { required: "Name is required" })}
+            error={errors.name}
+          />
 
           {/* Portfolio */}
-          <div>
-            <label className="block font-medium mb-1">
-              Portfolio / LinkedIn / GitHub (optional)
-            </label>
-            <input
-              type="url"
-              {...register("portfolio")}
-              placeholder="https://your-portfolio.com"
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <FormInput
+            label="Portfolio / LinkedIn / GitHub"
+            required
+            placeholder="https://your-portfolio.com"
+            type="url"
+            register={register("portfolio", {
+              required: "portfolio is required",
+            })}
+            error={errors.portfolio}
+          />
         </div>
 
         {/* Motivation */}
         <div className="space-y-4">
+          {/* Title */}
           <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
             Application Details
           </h2>
 
-          <div>
-            <label className="block font-medium mb-1">
-              Why are you applying? <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              rows={4}
-              {...register("motivation", {
-                required: "Motivation is required",
-              })}
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              placeholder="Tell the mentor why you're a good fit."
-            />
-            {errors.motivation && (
-              <p className="text-red-500 text-sm">
-                {errors.motivation.message}
-              </p>
-            )}
-          </div>
+          {/* Motivation */}
+          <FormInput
+            label="Why are you applying?"
+            required
+            as="textarea"
+            rows={4}
+            placeholder="Tell the mentor why you're a good fit."
+            register={register("motivation", {
+              required: "Motivation is required",
+            })}
+            error={errors.motivation}
+          />
 
           {/* Goals */}
-          <div>
-            <label className="block font-medium mb-1">
-              What do you want to achieve from this mentorship?
-            </label>
-            <textarea
-              rows={3}
-              {...register("goals")}
-              placeholder="Your learning goals, career objectives..."
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <FormInput
+            label="What do you want to achieve?"
+            as="textarea"
+            rows={3}
+            placeholder="Your learning goals, career objectives..."
+            register={register("goals")}
+            error={errors.goals}
+          />
         </div>
 
         {/* Skills Check */}
         {SelectedMentorshipData?.skillsCovered?.length > 0 && (
           <div className="space-y-3">
+            {/* Title */}
             <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
               Relevant Skills
             </h2>
+
+            {/* Skills Check List */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {SelectedMentorshipData.skillsCovered.map((skill) => (
                 <label key={skill} className="inline-flex items-center gap-2">
@@ -331,14 +332,19 @@ const MentorshipApplyPage = () => {
         {/* Prerequisites */}
         {SelectedMentorshipData?.prerequisites?.length > 0 && (
           <div className="space-y-3">
+            {/* Title */}
             <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
               Prerequisites
             </h2>
+
+            {/* Prerequisites */}
             <ul className="list-disc pl-5 text-sm text-gray-700 mb-2">
               {SelectedMentorshipData.prerequisites.map((pre, i) => (
                 <li key={i}>{pre}</li>
               ))}
             </ul>
+
+            {/* Acknowledge */}
             <label className="inline-flex items-center gap-3">
               <input
                 type="checkbox"
@@ -349,6 +355,7 @@ const MentorshipApplyPage = () => {
               />
               I meet the prerequisites listed above
             </label>
+
             {errors.acknowledge && (
               <p className="text-red-500 text-sm">
                 {errors.acknowledge.message}
@@ -359,25 +366,32 @@ const MentorshipApplyPage = () => {
 
         {/* Resume Upload */}
         <div className="space-y-4">
+          {/* Title */}
           <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
             Resume
           </h2>
-          <label
-            htmlFor="resume"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Upload Resume (PDF) <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="file"
-            accept=".pdf"
-            id="resume"
-            {...register("resume", { required: "Resume is required" })}
-            className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer bg-gray-50 border border-gray-300 rounded-lg"
-          />
-          {errors.resume && (
-            <p className="text-sm text-red-500 mt-1">{errors.resume.message}</p>
-          )}
+
+          {/* Resume Upload  */}
+          <div>
+            <label
+              htmlFor="resume"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Upload Resume (PDF) <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="file"
+              accept=".pdf"
+              id="resume"
+              {...register("resume", { required: "Resume is required" })}
+              className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer bg-gray-50 border border-gray-300 rounded-lg"
+            />
+            {errors.resume && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.resume.message}
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Payment & Confirmation (only if paid mentorship) */}
@@ -491,6 +505,7 @@ const MentorshipApplyPage = () => {
 
             {/* Confirmation Type Input */}
             <div>
+              {/* Confirmation Type */}
               <label className="block font-medium mb-1">
                 Confirmation Type:{" "}
                 <span className="text-gray-800 font-semibold capitalize">
@@ -498,30 +513,33 @@ const MentorshipApplyPage = () => {
                 </span>
               </label>
 
+              {/* Receipt Link */}
               {SelectedMentorshipData?.fee?.confirmationType ===
                 "receiptLink" && (
                 <input
                   type="url"
                   placeholder="Enter your receipt link"
-                  {...register("confirmation", {
+                  {...register("receiptLink", {
                     required: "Receipt link is required",
                   })}
                   className="w-full border border-gray-300 rounded px-3 py-2"
                 />
               )}
 
+              {/* Transaction ID */}
               {SelectedMentorshipData?.fee?.confirmationType ===
                 "transactionId" && (
                 <input
                   type="text"
                   placeholder="Enter your transaction ID"
-                  {...register("confirmation", {
+                  {...register("transactionId", {
                     required: "Transaction ID is required",
                   })}
                   className="w-full border border-gray-300 rounded px-3 py-2"
                 />
               )}
 
+              {/* Screenshot */}
               {SelectedMentorshipData?.fee?.confirmationType ===
                 "screenshot" && (
                 <input
@@ -534,12 +552,13 @@ const MentorshipApplyPage = () => {
                 />
               )}
 
+              {/* Bank Reference Number */}
               {SelectedMentorshipData?.fee?.confirmationType ===
                 "referenceNumber" && (
                 <input
                   type="text"
                   placeholder="Enter your bank reference number"
-                  {...register("confirmation", {
+                  {...register("referenceNumber", {
                     required: "Reference number is required",
                   })}
                   className="w-full border border-gray-300 rounded px-3 py-2"

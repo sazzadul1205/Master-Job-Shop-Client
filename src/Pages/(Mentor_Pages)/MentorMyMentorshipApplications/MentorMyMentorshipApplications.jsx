@@ -14,6 +14,8 @@ import Loading from "../../../Shared/Loading/Loading";
 // Hooks
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Component
 import MyMentorshipApplicationsTable from "./ApplicationsTable/MyMentorshipApplicationsTable";
 
 const MentorMyMentorshipApplications = () => {
@@ -74,7 +76,6 @@ const MentorMyMentorshipApplications = () => {
     }) || [];
 
   // Filter by search term (mentorship title)
-  // Filter by search term (mentorship title)
   const filteredMentorship = mergedMentorship.filter((mentorship) => {
     const titleMatch = mentorship.title
       ?.toLowerCase()
@@ -83,10 +84,10 @@ const MentorMyMentorshipApplications = () => {
     let statusMatch = true;
 
     if (statusFilter !== "all") {
-      if (statusFilter === "open") {
-        // "open" should match both "open" and "active"
+      if (statusFilter === "closed") {
+        // "closed" should match both "closed" and "active"
         statusMatch =
-          mentorship.status?.toLowerCase() === "open" ||
+          mentorship.status?.toLowerCase() === "closed" ||
           mentorship.status?.toLowerCase() === "active";
       } else {
         statusMatch =
@@ -96,8 +97,6 @@ const MentorMyMentorshipApplications = () => {
 
     return titleMatch && statusMatch;
   });
-
-  console.log(filteredMentorship[0]);
 
   // Page management
   const handlePageChange = (mentorshipId, newPage) => {

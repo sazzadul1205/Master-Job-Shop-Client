@@ -10,6 +10,7 @@ import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 // Assets
 import DefaultX from "../../../../assets/Mentor/DefaultX.jpg";
 import PropTypes from "prop-types";
+import Swal from "sweetalert2";
 
 // Format date like "22 Feb 2026 10:12 PM"
 const formatDate = (dateString) => {
@@ -46,6 +47,21 @@ const getTimeAgo = (dateString) => {
   return `${years} year${years > 1 ? "s" : ""} ago`;
 };
 
+const statusDisplayName = {
+  open: "Open",
+  active: "closed",
+  closed: "Closed",
+  onhold: "On Hold",
+};
+
+// Map internal status to dropdown value
+const statusMap = {
+  active: "closed",
+  open: "open",
+  closed: "closed",
+  onhold: "onhold",
+};
+
 // Items per page
 const ITEMS_PER_PAGE = 5;
 
@@ -74,8 +90,63 @@ const MyMentorshipApplicationsTable = ({
     (a) => a.status === "Rejected"
   ).length;
 
+  // Handler to change mentorship status
+  const handleStatusChange = (mentorshipId, currentStatus, newStatus) => {
+    if (newStatus === currentStatus) return; // No change
+
+    Swal.fire({
+      title: `Are you sure?`,
+      text: `Do you want to change status from "${statusDisplayName[currentStatus]}" to "${statusDisplayName[newStatus]}"?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, change it!",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Demo API Call
+        console.log(
+          `API Call: Update mentorship ${mentorshipId} status to ${newStatus}`
+        );
+
+        // Show success alert
+        Swal.fire({
+          title: "Success!",
+          text: `Status changed to "${statusDisplayName[newStatus]}"`,
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+
+        // Optionally, update local state if needed
+        // updateMentorshipStatus(mentorshipId, newStatus);
+      }
+    });
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+    <div className="relative bg-white rounded-xl shadow-md p-6 border border-gray-200">
+      {/* Status Badge */}
+      <span
+        className={`absolute -top-2 -left-4 px-3 py-1 rounded-full text-white font-semibold text-sm
+      ${
+        mentorship.status === "closed" || mentorship.status === "active"
+          ? "bg-red-500"
+          : mentorship.status === "open"
+          ? "bg-green-500"
+          : mentorship.status === "onhold"
+          ? "bg-yellow-500 text-black"
+          : "bg-gray-400"
+      }`}
+      >
+        {mentorship.status === "closed" || mentorship.status === "active"
+          ? "Closed"
+          : mentorship.status === "open"
+          ? "Active"
+          : mentorship.status === "onhold"
+          ? "On Hold"
+          : "Unknown"}
+      </span>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         {/* Title */}
@@ -83,12 +154,20 @@ const MyMentorshipApplicationsTable = ({
 
         {/* Filters */}
         <div className="flex gap-4">
-          {/* Status Dropdown */}
-          <select className="px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer">
-            <option value="all">All</option>
-            <option value="accepted">Accepted</option>
-            <option value="rejected">Rejected</option>
-            <option value="requested">Requested</option>
+          <select
+            value={statusMap[mentorship.status] || "open"} // Convert active/closed to dropdown values
+            onChange={(e) =>
+              handleStatusChange(
+                mentorship._id,
+                statusMap[mentorship.status] || "open", // Current value interpreted
+                e.target.value
+              )
+            }
+            className="px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer"
+          >
+            <option value="open">Active</option>
+            <option value="closed">Close</option>
+            <option value="onhold">On Hold</option>
           </select>
 
           {/* Complete Program Button */}
@@ -163,7 +242,10 @@ const MyMentorshipApplicationsTable = ({
           {/* Table Body */}
           <tbody>
             {paginatedApplicants.map((applicant, index) => (
-              <tr key={applicant.id} className="hover:bg-gray-100">
+              <tr
+                key={applicant.id}
+                className="hover:bg-gray-100 border-b border-gray-200"
+              >
                 {/* Serial Number */}
                 <th>{startIndex + index + 1}</th>
 

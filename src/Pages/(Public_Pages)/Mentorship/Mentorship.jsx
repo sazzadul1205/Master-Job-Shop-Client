@@ -61,9 +61,8 @@ const Mentorship = () => {
       ? mentorship.subCategory === subCategory
       : true;
 
-    // Return mentorship if it matches all filters
     return matchSearch && matchCategory && matchSubCategory;
-  });
+  }).sort((a, b) => new Date(b.postedAt) - new Date(a.postedAt));
 
   // Loading / Error UI
   if (MentorshipIsLoading) return <Loading />;

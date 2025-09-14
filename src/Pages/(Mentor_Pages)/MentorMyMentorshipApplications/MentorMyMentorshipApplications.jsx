@@ -1,5 +1,8 @@
 import { useState } from "react";
 
+// Packages
+import { useQuery } from "@tanstack/react-query";
+
 // Icons
 import { FaCheck } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
@@ -13,6 +16,14 @@ import "react-tooltip/dist/react-tooltip.css";
 
 // Assets
 import DefaultX from "../../../assets/Mentor/DefaultX.jpg";
+
+// Shared
+import Error from "../../../Shared/Error/Error";
+import Loading from "../../../Shared/Loading/Loading";
+
+// Hooks
+import useAuth from "../../../Hooks/useAuth";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Format date like "22 Feb 2026 10:12 PM"
 const formatDate = (dateString) => {
@@ -49,66 +60,102 @@ const getTimeAgo = (dateString) => {
   return `${years} year${years > 1 ? "s" : ""} ago`;
 };
 
-// Demo mentorship Data with applicants
-const mentorshipData = [
-  {
-    id: 1,
-    title: "Software Engineering Mentorship",
-    applicants: Array.from({ length: 12 }, (_, i) => ({
-      id: i + 1,
-      name: `SE Applicant ${i + 1}`,
-      status: i % 3 === 0 ? "Accepted" : i % 2 === 0 ? "Rejected" : "Requested",
-      date: "2024-08-20T12:20:00Z",
-      avatar: `https://i.pravatar.cc/150?img=${i + 1}`,
-    })),
-  },
-  {
-    id: 2,
-    title: "Data Science Mentorship",
-    applicants: Array.from({ length: 8 }, (_, i) => ({
-      id: i + 1,
-      name: `DS Applicant ${i + 1}`,
-      status: i % 2 === 0 ? "Accepted" : "Requested",
-      date: "2024-09-01T15:30:00Z",
-      avatar: `https://i.pravatar.cc/150?img=${i + 15}`,
-    })),
-  },
-  {
-    id: 3,
-    title: "UI/UX Design Mentorship",
-    applicants: Array.from({ length: 5 }, (_, i) => ({
-      id: i + 1,
-      name: `UI/UX Applicant ${i + 1}`,
-      status: "Requested",
-      date: "2024-10-05T18:00:00Z",
-      avatar: `https://i.pravatar.cc/150?img=${i + 25}`,
-    })),
-  },
-];
-
-// Items Per Page
+// Items per page
 const ITEMS_PER_PAGE = 5;
 
 const MentorMyMentorshipApplications = () => {
-  // State for pagination per mentorship
-  const [pageMap, setPageMap] = useState(
-    Object.fromEntries(mentorshipData.map((m) => [m.id, 1]))
-  );
+  const { user } = useAuth();
+  const axiosPublic = useAxiosPublic();
 
-  // Function to handle page change
+  // States Variables
+  const [pageMap, setPageMap] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  // Fetching Active Mentorship
+  const {
+    data: MyMentorshipData,
+    isLoading: MyMentorshipIsLoading,
+    refetch: MyMentorshipRefetch,
+    error: MyMentorshipError,
+  } = useQuery({
+    queryKey: ["MyMentorship"],
+    queryFn: () =>
+      axiosPublic.get(`/Mentorship?mentorEmail=${user?.email}`).then((res) => {
+        const data = res.data;
+        // Ensure the result is always an array
+        return Array.isArray(data) ? data : [data];
+      }),
+  });
+
+  // Assuming MyMentorshipData is an array of objects
+  const allMentorshipIds = MyMentorshipData?.map((item) => item._id);
+
+  // Fetching Active Mentorship
+  const {
+    data: MyMentorshipApplicationsData,
+    isLoading: MyMentorshipApplicationsIsLoading,
+    refetch: MyMentorshipApplicationsRefetch,
+    error: MyMentorshipApplicationsError,
+  } = useQuery({
+    queryKey: ["MyMentorshipApplications", allMentorshipIds],
+    queryFn: () =>
+      axiosPublic
+        .get(
+          `/MentorshipApplications/ByMentorship?mentorshipId=${allMentorshipIds}`
+        )
+        .then((res) => {
+          const data = res.data;
+          return data;
+        }),
+    enabled: !!allMentorshipIds,
+  });
+
+  // Merge mentorship with applications
+  const mergedMentorship =
+    MyMentorshipData?.map((mentorship) => {
+      return {
+        ...mentorship,
+        applications: MyMentorshipApplicationsData?.[mentorship._id] || [],
+      };
+    }) || [];
+
+  // Page management
   const handlePageChange = (mentorshipId, newPage) => {
     setPageMap((prev) => ({ ...prev, [mentorshipId]: newPage }));
   };
 
-  const handleAccept = () => {};
-  const handleReject = () => {};
+  const handleAccept = (mentorshipId, applicantId) => {
+    console.log("Accept:", mentorshipId, applicantId);
+  };
+
+  const handleReject = (mentorshipId, applicantId) => {
+    console.log("Reject:", mentorshipId, applicantId);
+  };
+
+  // Check for loading state
+  if (MyMentorshipIsLoading || MyMentorshipApplicationsIsLoading)
+    return <Loading />;
+
+  // Check for error
+  if (MyMentorshipError || MyMentorshipApplicationsError) return <Error />;
+
+  // Refetch All
+  const refetchAll = () => {
+    MyMentorshipRefetch();
+    MyMentorshipApplicationsRefetch();
+  };
 
   return (
     <div className="py-7 px-8">
-      {/* Title */}
-      <h3 className="font-bold text-3xl text-gray-700">
-        Mentorship Applications Management
-      </h3>
+      <div className="flex justify-between items-center">
+        {/* Title */}
+        <h3 className="font-bold text-3xl text-gray-700">
+          Mentorship Applications Management
+        </h3>
+
+        <button onClick={() => refetchAll()}>Refetch</button>
+      </div>
 
       {/* Filters */}
       <div className="pt-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -151,21 +198,23 @@ const MentorMyMentorshipApplications = () => {
 
       {/* Container for Mentorship Applications */}
       <div className="my-6 space-y-6">
-        {mentorshipData.map((mentorship) => {
-          const { id, title, applicants } = mentorship;
-          const currentPage = pageMap[id] || 1;
+        {mergedMentorship?.map((mentorship) => {
+          const { _id: id, title, applications = [] } = mentorship;
 
-          // Pagination logic
+          // Pagination
+          const currentPage = pageMap[id] || 1;
           const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
           const endIndex = startIndex + ITEMS_PER_PAGE;
-          const paginatedApplicants = applicants.slice(startIndex, endIndex);
-          const totalPages = Math.ceil(applicants.length / ITEMS_PER_PAGE);
 
-          // Count accepted and rejected applicants
-          const acceptedCount = applicants.filter(
+          // Safe slice
+          const paginatedApplicants = applications.slice(startIndex, endIndex);
+          const totalPages = Math.ceil(applications.length / ITEMS_PER_PAGE);
+
+          // Counts
+          const acceptedCount = applications.filter(
             (a) => a.status === "Accepted"
           ).length;
-          const rejectedCount = applicants.filter(
+          const rejectedCount = applications.filter(
             (a) => a.status === "Rejected"
           ).length;
 
@@ -209,7 +258,7 @@ const MentorMyMentorshipApplications = () => {
                   <div>
                     <p className="text-sm text-gray-500">Total Applicants</p>
                     <p className="text-lg font-bold text-gray-700">
-                      {applicants.length}
+                      {applications.length}
                     </p>
                   </div>
                 </div>

@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unknown-property */
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
@@ -7,10 +6,10 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 // Icons
-import { FaAngleLeft, FaAngleRight, FaStar, FaQuoteLeft } from "react-icons/fa";
+import { FaAngleLeft, FaAngleRight, FaQuoteLeft } from "react-icons/fa";
 
-// Packages
-import Rating from "react-rating";
+// New Rating Component
+import { Rating } from "react-simple-star-rating";
 
 // Assets
 import DefaultUserImage from "../../../..//assets/DefaultUserLogo.jpg";
@@ -133,10 +132,11 @@ const FeaturedTestimonials = ({ TestimonialsData }) => {
                   Rating:
                 </span>
                 <Rating
-                  initialRating={testimonial.rating}
                   readonly
-                  emptySymbol={<FaStar className="text-gray-300 text-lg" />}
-                  fullSymbol={<FaStar className="text-yellow-500 text-lg" />}
+                  allowFraction
+                  initialValue={testimonial.rating}
+                  size={20}
+                  SVGclassName="inline-block"
                 />
                 <span className="text-sm text-gray-700">
                   ({testimonial.rating?.toFixed(1)})
@@ -154,22 +154,6 @@ const FeaturedTestimonials = ({ TestimonialsData }) => {
           </div>
         </div>
       </div>
-
-      {/* Local CSS */}
-      <style jsx>{`
-        @keyframes floatIcon {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        .animate-float-icon {
-          animation: floatIcon 6s ease-in-out infinite;
-        }
-      `}</style>
     </section>
   );
 };

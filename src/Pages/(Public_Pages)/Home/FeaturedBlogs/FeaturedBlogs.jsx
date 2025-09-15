@@ -54,7 +54,7 @@ const FeaturedBlogs = ({ BlogsData }) => {
                 setSelectedBlog(blog);
                 document.getElementById("Blog_Details_Modal")?.showModal();
               }}
-              key={blog.id}
+              key={blog._id || blog.id || `blog-${index}`}
               data-aos="fade-up"
               data-aos-delay={index * 150}
               className="bg-white rounded-md shadow hover:shadow-2xl transition overflow-hidden group"

@@ -73,7 +73,6 @@ const MyMentorshipApplicationsTable = ({
   handleAccept,
   handleReject,
   handlePageChange,
-  selectedApplicationID,
   setSelectedApplicationID,
 }) => {
   const axiosPublic = useAxiosPublic();
@@ -374,7 +373,7 @@ MyMentorshipApplicationsTable.propTypes = {
     description: PropTypes.string,
     category: PropTypes.string,
     subCategory: PropTypes.string,
-    durationWeeks: PropTypes.string,
+    durationWeeks: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     status: PropTypes.string,
     startDate: PropTypes.string,
     endDate: PropTypes.string,
@@ -383,12 +382,12 @@ MyMentorshipApplicationsTable.propTypes = {
       email: PropTypes.string,
       profileImage: PropTypes.string,
       bio: PropTypes.string,
-      rating: PropTypes.string,
+      rating: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       position: PropTypes.string,
     }),
     applications: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.string,
+        _id: PropTypes.string.isRequired,
         name: PropTypes.string,
         email: PropTypes.string,
         avatar: PropTypes.string,
@@ -411,6 +410,9 @@ MyMentorshipApplicationsTable.propTypes = {
   handleAccept: PropTypes.func.isRequired,
   handleReject: PropTypes.func.isRequired,
   handlePageChange: PropTypes.func.isRequired,
+
+  // Application selection
+  setSelectedApplicationID: PropTypes.func.isRequired,
 };
 
 export default MyMentorshipApplicationsTable;

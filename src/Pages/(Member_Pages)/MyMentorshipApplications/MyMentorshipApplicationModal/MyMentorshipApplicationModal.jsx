@@ -41,8 +41,6 @@ const MyMentorshipApplicationModal = ({
     document.getElementById("View_Mentorship_Application_Modal")?.close();
   };
 
-  console.log("application :", application);
-
   // If Loading
   if (isLoading) {
     return (

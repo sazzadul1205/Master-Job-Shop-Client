@@ -1,3 +1,8 @@
+import { renderToStaticMarkup } from "react-dom/server";
+
+// Packages
+import Swal from "sweetalert2";
+import PropTypes from "prop-types";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
@@ -8,9 +13,11 @@ import { IoIosEye } from "react-icons/io";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 
 // Assets
-import DefaultX from "../../../../assets/Mentor/DefaultX.jpg";
-import PropTypes from "prop-types";
-import Swal from "sweetalert2";
+import DefaultApplicant from "../../../../assets/MentorshipApplications/MentorshipDefaultImage.jpeg";
+import AcceptedIcon from "../../../../assets/MentorshipApplications/AcceptedIcon.gif";
+import RejectedIcon from "../../../../assets/MentorshipApplications/RejectedIcon.gif";
+
+// Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 // Format date like "22 Feb 2026 10:12 PM"
@@ -70,13 +77,12 @@ const MyMentorshipApplicationsTable = ({
   pageMap,
   refetchAll,
   mentorship,
-  handleAccept,
-  handleReject,
   handlePageChange,
   setSelectedApplicationID,
 }) => {
   const axiosPublic = useAxiosPublic();
 
+  // Destructuring
   const { _id: id, title, applications = [] } = mentorship;
 
   // Keep applications unfiltered here
@@ -136,6 +142,99 @@ const MyMentorshipApplicationsTable = ({
         }
       }
     });
+  };
+
+  // Handler to accept an application
+  const updateApplicationStatus = async (
+    applicationId,
+    newStatus,
+    applicantName
+  ) => {
+    if (!applicationId) {
+      console.error("No application ID provided.");
+      Swal.fire({
+        title: "Error",
+        text: "No application selected.",
+        icon: "error",
+      });
+      return;
+    }
+
+    if (!["Accepted", "Rejected"].includes(newStatus)) {
+      console.error("Invalid status provided:", newStatus);
+      Swal.fire({
+        title: "Error",
+        text: "Invalid status value.",
+        icon: "error",
+      });
+      return;
+    }
+
+    try {
+      const response = await axiosPublic.put(
+        `/MentorshipApplications/Status/${applicationId}`,
+        { status: newStatus }
+      );
+
+      if (response.status >= 200 && response.status < 300) {
+        refetchAll?.();
+
+        const iconHtml =
+          newStatus === "Accepted"
+            ? renderToStaticMarkup(
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginBottom: 15,
+                  }}
+                >
+                  <img
+                    src={AcceptedIcon}
+                    alt="Accepted"
+                    style={{ width: 150, height: 150 }} // increased size
+                  />
+                </div>
+              )
+            : renderToStaticMarkup(
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginBottom: 15,
+                  }}
+                >
+                  <img
+                    src={RejectedIcon}
+                    alt="Rejected"
+                    style={{ width: 150, height: 150 }} // increased size
+                  />
+                </div>
+              );
+
+        Swal.fire({
+          title: `${newStatus} Successfully!`,
+          html: `${iconHtml}<p>${applicantName}'s application has been ${newStatus.toLowerCase()}.</p>`,
+          showConfirmButton: false,
+          timer: 1800,
+          timerProgressBar: true,
+          allowOutsideClick: false,
+          customClass: { popup: "text-center" },
+        });
+      } else {
+        throw new Error(`Unexpected response status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error updating application status to ${newStatus}:`,
+        error
+      );
+      Swal.fire({
+        title: "Error",
+        text: `Failed to update ${applicantName}'s application status to "${newStatus}".`,
+        icon: "error",
+      });
+    }
   };
 
   return (
@@ -258,7 +357,7 @@ const MyMentorshipApplicationsTable = ({
           <tbody>
             {paginatedApplicants.map((applicant, index) => (
               <tr
-                key={applicant.id}
+                key={applicant?.id || index}
                 className="hover:bg-gray-100 border-b border-gray-200"
               >
                 {/* Serial Number */}
@@ -268,23 +367,43 @@ const MyMentorshipApplicationsTable = ({
                 <td className="flex items-center gap-4">
                   {/* Avatar */}
                   <img
-                    src={applicant.avatar || DefaultX}
-                    alt={applicant.name || "N/A"}
+                    src={
+                      applicant?.avatar ||
+                      applicant?.profileImage ||
+                      DefaultApplicant
+                    }
+                    alt={applicant?.name || "N/A"}
                     className="w-16 h-16 rounded-full"
+                    onError={(e) => {
+                      e.target.onerror = null; // prevent infinite loop
+                      e.target.src = DefaultApplicant; // fallback image
+                    }}
                   />
 
                   {/* Name */}
-                  <h3 className="font-bold">{applicant.name || "N/A"}</h3>
+                  <h3 className="font-bold">{applicant?.name || "N/A"}</h3>
                 </td>
 
                 {/* Status */}
-                <td className="text-center">{applicant.status || "Pending"}</td>
+                <td className="text-center">
+                  <span
+                    className={`px-3 py-1 rounded-full text-white font-semibold text-sm ${
+                      applicant?.status === "Accepted"
+                        ? "bg-green-500"
+                        : applicant?.status === "Rejected"
+                        ? "bg-red-500"
+                        : "bg-gray-400"
+                    }`}
+                  >
+                    {applicant?.status || "Pending"}
+                  </span>
+                </td>
 
                 {/* Application Time */}
                 <td className="text-center">
-                  {formatDate(applicant.date)}{" "}
+                  {formatDate(applicant?.appliedAt)}{" "}
                   <span className="text-gray-500">
-                    ({getTimeAgo(applicant.date)})
+                    ({getTimeAgo(applicant?.appliedAt)})
                   </span>
                 </td>
 
@@ -299,35 +418,47 @@ const MyMentorshipApplicationsTable = ({
                           .getElementById("View_Mentorship_Application_Modal")
                           ?.showModal();
                       }}
-                      data-tooltip-id={`viewTip-${id}-${applicant.id}`}
+                      data-tooltip-id={`viewTip-${id}-${applicant?._id}`}
                       data-tooltip-content="View Application Details"
                       className="flex gap-2 items-center border-2 hover:bg-blue-600/90 bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
                     >
                       <IoIosEye /> View
                     </button>
-                    <Tooltip id={`viewTip-${id}-${applicant.id}`} />
+                    <Tooltip id={`viewTip-${id}-${applicant?.id}`} />
 
-                    {/* Accept Buttons */}
+                    {/* Accept Button */}
                     <button
-                      onClick={() => handleAccept(id, applicant.id)}
-                      data-tooltip-id={`acceptTip-${id}-${applicant.id}`}
+                      onClick={() =>
+                        updateApplicationStatus(
+                          applicant?._id,
+                          "Accepted",
+                          applicant?.name
+                        )
+                      }
+                      data-tooltip-id={`acceptTip-${id}-${applicant?._id}`}
                       data-tooltip-content="Accept this Application"
                       className="flex gap-2 items-center border-2 hover:bg-green-600/90 bg-green-500 text-white font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
                     >
                       <FaCheck /> Accept
                     </button>
-                    <Tooltip id={`acceptTip-${id}-${applicant.id}`} />
+                    <Tooltip id={`acceptTip-${id}-${applicant?._id}`} />
 
                     {/* Reject Button */}
                     <button
-                      onClick={() => handleReject(id, applicant.id)}
-                      data-tooltip-id={`rejectTip-${id}-${applicant.id}`}
+                      onClick={() =>
+                        updateApplicationStatus(
+                          applicant?._id,
+                          "Rejected",
+                          applicant?.name
+                        )
+                      }
+                      data-tooltip-id={`rejectTip-${id}-${applicant?._id}`}
                       data-tooltip-content="Reject this Application"
                       className="flex gap-2 items-center border-2 hover:bg-red-600/90 bg-red-500 text-white font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
                     >
                       <ImCross /> Reject
                     </button>
-                    <Tooltip id={`rejectTip-${id}-${applicant.id}`} />
+                    <Tooltip id={`rejectTip-${id}-${applicant?._id}`} />
                   </div>
                 </td>
               </tr>

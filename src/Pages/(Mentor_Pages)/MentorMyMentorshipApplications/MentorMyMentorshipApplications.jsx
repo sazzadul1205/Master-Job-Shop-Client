@@ -107,13 +107,6 @@ const MentorMyMentorshipApplications = () => {
     setPageMap((prev) => ({ ...prev, [mentorshipId]: newPage }));
   };
 
-  const handleAccept = (mentorshipId, applicantId) => {
-    console.log("Accept:", mentorshipId, applicantId);
-  };
-
-  const handleReject = (mentorshipId, applicantId) => {
-    console.log("Reject:", mentorshipId, applicantId);
-  };
 
   // Check for loading state
   if (MyMentorshipIsLoading || MyMentorshipApplicationsIsLoading)

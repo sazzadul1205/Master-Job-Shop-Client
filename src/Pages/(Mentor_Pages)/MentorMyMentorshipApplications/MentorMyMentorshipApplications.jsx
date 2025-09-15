@@ -17,10 +17,14 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Component
 import MyMentorshipApplicationsTable from "./ApplicationsTable/MyMentorshipApplicationsTable";
+import MyMentorshipApplicationModal from "../../(Member_Pages)/MyMentorshipApplications/MyMentorshipApplicationModal/MyMentorshipApplicationModal";
 
 const MentorMyMentorshipApplications = () => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
+
+  // State Variables
+  const [selectedApplicationID, setSelectedApplicationID] = useState(null);
 
   // States Variables
   const [pageMap, setPageMap] = useState({});
@@ -189,6 +193,8 @@ const MentorMyMentorshipApplications = () => {
               handleAccept={handleAccept}
               handleReject={handleReject}
               handlePageChange={handlePageChange}
+              selectedApplicationID={selectedApplicationID}
+              setSelectedApplicationID={setSelectedApplicationID}
             />
           ))
         ) : (
@@ -206,6 +212,15 @@ const MentorMyMentorshipApplications = () => {
           </div>
         )}
       </div>
+
+      {/* Modal */}
+      {/* Mentorship Application Modal */}
+      <dialog id="View_Mentorship_Application_Modal" className="modal">
+        <MyMentorshipApplicationModal
+          selectedApplicationID={selectedApplicationID}
+          setSelectedApplicationID={setSelectedApplicationID}
+        />
+      </dialog>
     </div>
   );
 };

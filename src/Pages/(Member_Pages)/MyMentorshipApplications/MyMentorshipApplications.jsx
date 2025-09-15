@@ -319,6 +319,7 @@ const MyMentorshipApplications = () => {
       </div>
 
       {/* Modal */}
+      {/* View Mentorship Application */}
       <dialog id="View_Mentorship_Application_Modal" className="modal">
         <MyMentorshipApplicationModal
           selectedApplicationID={selectedApplicationID}
@@ -326,7 +327,7 @@ const MyMentorshipApplications = () => {
         />
       </dialog>
 
-      {/* Mentorship Modal */}
+      {/* Mentorship Details Modal */}
       <dialog id="Mentorship_Details_Modal" className="modal">
         <MentorshipDetailsModal
           selectedMentorshipID={selectedMentorshipID}

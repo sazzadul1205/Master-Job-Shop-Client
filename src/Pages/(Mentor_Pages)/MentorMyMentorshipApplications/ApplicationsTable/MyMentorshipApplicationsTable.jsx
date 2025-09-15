@@ -73,6 +73,8 @@ const MyMentorshipApplicationsTable = ({
   handleAccept,
   handleReject,
   handlePageChange,
+  selectedApplicationID,
+  setSelectedApplicationID,
 }) => {
   const axiosPublic = useAxiosPublic();
 
@@ -292,9 +294,15 @@ const MyMentorshipApplicationsTable = ({
                   <div className="flex justify-end gap-2">
                     {/* View Button */}
                     <button
+                      onClick={() => {
+                        setSelectedApplicationID(applicant?._id);
+                        document
+                          .getElementById("View_Mentorship_Application_Modal")
+                          ?.showModal();
+                      }}
                       data-tooltip-id={`viewTip-${id}-${applicant.id}`}
-                      data-tooltip-content="View applicant details"
-                      className="flex gap-2 items-center border-2 hover:bg-blue-600/90 bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg transition"
+                      data-tooltip-content="View Application Details"
+                      className="flex gap-2 items-center border-2 hover:bg-blue-600/90 bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
                     >
                       <IoIosEye /> View
                     </button>
@@ -304,8 +312,8 @@ const MyMentorshipApplicationsTable = ({
                     <button
                       onClick={() => handleAccept(id, applicant.id)}
                       data-tooltip-id={`acceptTip-${id}-${applicant.id}`}
-                      data-tooltip-content="Accept this application"
-                      className="flex gap-2 items-center border-2 hover:bg-green-600/90 bg-green-500 text-white font-semibold py-2 px-5 rounded-lg transition"
+                      data-tooltip-content="Accept this Application"
+                      className="flex gap-2 items-center border-2 hover:bg-green-600/90 bg-green-500 text-white font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
                     >
                       <FaCheck /> Accept
                     </button>
@@ -315,8 +323,8 @@ const MyMentorshipApplicationsTable = ({
                     <button
                       onClick={() => handleReject(id, applicant.id)}
                       data-tooltip-id={`rejectTip-${id}-${applicant.id}`}
-                      data-tooltip-content="Reject this application"
-                      className="flex gap-2 items-center border-2 hover:bg-red-600/90 bg-red-500 text-white font-semibold py-2 px-5 rounded-lg transition"
+                      data-tooltip-content="Reject this Application"
+                      className="flex gap-2 items-center border-2 hover:bg-red-600/90 bg-red-500 text-white font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
                     >
                       <ImCross /> Reject
                     </button>

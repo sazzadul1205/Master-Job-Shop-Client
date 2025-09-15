@@ -13,7 +13,6 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import Loading from "../../../../Shared/Loading/Loading";
 import Error from "../../../../Shared/Error/Error";
 
-
 const MyMentorshipApplicationModal = ({
   selectedApplicationID,
   setSelectedApplicationID,
@@ -27,12 +26,22 @@ const MyMentorshipApplicationModal = ({
     error,
   } = useQuery({
     queryKey: ["SelectedMentorshipApplicationsData", selectedApplicationID],
-    queryFn: () =>
-      axiosPublic
-        .get(`/MentorshipApplications?id=${selectedApplicationID}`)
-        .then((res) => res.data),
+    queryFn: async () => {
+      const res = await axiosPublic.get(
+        `/MentorshipApplications?id=${selectedApplicationID}`
+      );
+      return Array.isArray(res.data) ? res.data[0] : res.data;
+    },
     enabled: !!selectedApplicationID,
   });
+
+  // Close Modal
+  const handleClose = () => {
+    setSelectedApplicationID("");
+    document.getElementById("View_Mentorship_Application_Modal")?.close();
+  };
+
+  console.log("application :", application);
 
   // If Loading
   if (isLoading) {
@@ -53,16 +62,50 @@ const MyMentorshipApplicationModal = ({
   }
 
   // If No Application Data
-  if (!application) {
+  if (
+    !isLoading &&
+    (!application || (Array.isArray(application) && application.length === 0))
+  ) {
     return (
-      <div className="modal-box bg-white rounded-xl shadow-md p-6 max-w-3xl text-center text-gray-600">
-        No application data found.
+      <div
+        id="View_Mentorship_Application_Modal"
+        className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white text-black rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
+      >
+        {/* Close Button */}
+        <button
+          onClick={() => handleClose()}
+          className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
+        >
+          <ImCross className="text-xl text-black hover:text-red-500" />
+        </button>
+
+        {/* Empty State */}
+        <div className="flex flex-col items-center justify-center text-center py-16">
+          {/* Icon */}
+          <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-100 mb-6 shadow-sm">
+            <ImCross className="text-4xl text-gray-400" />
+          </div>
+
+          {/* Title */}
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            No Data Found
+          </h3>
+
+          {/* Subtitle */}
+          <p className="text-gray-500 max-w-sm">
+            We couldn’t find any mentorship details to display right now. Please
+            check back later or refresh the page.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="modal-box bg-white rounded-xl shadow-lg p-0 max-w-3xl w-full">
+    <div
+      id="View_Mentorship_Application_Modal"
+      className="modal-box bg-white rounded-xl shadow-lg p-0 max-w-3xl w-full"
+    >
       {/* Header with Profile Image */}
       <div className="flex items-center gap-4 border-b px-6 py-4 bg-gray-50">
         {/* Profile Image */}
@@ -82,12 +125,7 @@ const MyMentorshipApplicationModal = ({
         {/* Close Button */}
         <button
           className="ml-auto text-gray-500 hover:text-red-500 p-2 rounded-full cursor-pointer"
-          onClick={() => {
-            setSelectedApplicationID(null);
-            document
-              .getElementById("View_Mentorship_Application_Modal")
-              .close();
-          }}
+          onClick={() => handleClose()}
         >
           <ImCross className="text-lg" />
         </button>

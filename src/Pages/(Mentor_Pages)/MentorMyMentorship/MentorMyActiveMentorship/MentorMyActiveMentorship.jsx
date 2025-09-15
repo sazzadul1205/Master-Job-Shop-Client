@@ -53,7 +53,7 @@ const MentorMyActiveMentorship = ({
   // State Variables
   const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
 
-  // ⭐ keep track of starred Mentorship's by ID
+  // keep track of starred Mentorship's by ID
   const [starred, setStarred] = useState([]);
 
   // Optimistic Archive Toggle
@@ -311,7 +311,6 @@ const MentorMyActiveMentorship = ({
                   <FaEdit /> Edit
                 </button>
 
-                {/* Delete */}
                 {/* Delete */}
                 <button
                   onClick={() => handleDelete(mentorship._id)}

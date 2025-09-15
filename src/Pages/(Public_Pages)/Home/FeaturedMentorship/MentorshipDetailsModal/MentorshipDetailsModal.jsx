@@ -88,7 +88,7 @@ const MentorshipDetailsModal = ({
     return (
       <div className="min-w-[600px] max-h-[90vh] relative">
         <button
-          onClick={handleClose}
+          onClick={() => handleClose()}
           className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
         >
           <ImCross className="text-xl text-black hover:text-red-500" />
@@ -102,7 +102,7 @@ const MentorshipDetailsModal = ({
     return (
       <div className="min-w-[600px] max-h-[90vh] relative">
         <button
-          onClick={handleClose}
+          onClick={() => handleClose()}
           className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
         >
           <ImCross className="text-xl text-black hover:text-red-500" />
@@ -111,7 +111,40 @@ const MentorshipDetailsModal = ({
       </div>
     );
 
-  if (!mentorship) return null;
+  if (!mentorship)
+    return (
+      <div
+        id="Mentorship_Details_Modal"
+        className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white text-black rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
+      >
+        {/* Close Button */}
+        <button
+          onClick={() => handleClose()}
+          className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
+        >
+          <ImCross className="text-xl text-black hover:text-red-500" />
+        </button>
+
+        {/* Empty State */}
+        <div className="flex flex-col items-center justify-center text-center py-16">
+          {/* Icon */}
+          <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-100 mb-6 shadow-sm">
+            <ImCross className="text-4xl text-gray-400" />
+          </div>
+
+          {/* Title */}
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            No Data Found
+          </h3>
+
+          {/* Subtitle */}
+          <p className="text-gray-500 max-w-sm">
+            We couldn’t find any mentorship details to display right now. Please
+            check back later or refresh the page.
+          </p>
+        </div>
+      </div>
+    );
 
   // Destructure Mentorship Data
   const {
@@ -147,7 +180,7 @@ const MentorshipDetailsModal = ({
     >
       {/* Close Button */}
       <button
-        onClick={handleClose}
+        onClick={() => handleClose()}
         className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
       >
         <ImCross className="text-xl text-black hover:text-red-500" />

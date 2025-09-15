@@ -11,6 +11,7 @@ import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 import DefaultX from "../../../../assets/Mentor/DefaultX.jpg";
 import PropTypes from "prop-types";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 // Format date like "22 Feb 2026 10:12 PM"
 const formatDate = (dateString) => {
@@ -67,11 +68,14 @@ const ITEMS_PER_PAGE = 5;
 
 const MyMentorshipApplicationsTable = ({
   pageMap,
+  refetchAll,
   mentorship,
   handleAccept,
   handleReject,
   handlePageChange,
 }) => {
+  const axiosPublic = useAxiosPublic();
+
   const { _id: id, title, applications = [] } = mentorship;
 
   // Keep applications unfiltered here
@@ -91,7 +95,7 @@ const MyMentorshipApplicationsTable = ({
   ).length;
 
   // Handler to change mentorship status
-  const handleStatusChange = (mentorshipId, currentStatus, newStatus) => {
+  const handleStatusChange = async (mentorshipId, currentStatus, newStatus) => {
     if (newStatus === currentStatus) return; // No change
 
     Swal.fire({
@@ -101,24 +105,34 @@ const MyMentorshipApplicationsTable = ({
       showCancelButton: true,
       confirmButtonText: "Yes, change it!",
       cancelButtonText: "Cancel",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        // Demo API Call
-        console.log(
-          `API Call: Update mentorship ${mentorshipId} status to ${newStatus}`
-        );
+        try {
+          // API call to backend
+          const res = await axiosPublic.patch(
+            `/Mentorship/Status/${mentorshipId}`,
+            { status: newStatus }
+          );
 
-        // Show success alert
-        Swal.fire({
-          title: "Success!",
-          text: `Status changed to "${statusDisplayName[newStatus]}"`,
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
+          if (res.data?.message) {
+            Swal.fire({
+              title: "Success!",
+              text: `Status changed to "${statusDisplayName[newStatus]}"`,
+              icon: "success",
+              timer: 2000,
+              showConfirmButton: false,
+            });
 
-        // Optionally, update local state if needed
-        // updateMentorshipStatus(mentorshipId, newStatus);
+            refetchAll();
+          }
+        } catch (error) {
+          console.error("Error updating status:", error);
+          Swal.fire({
+            title: "Error",
+            text: "Failed to update mentorship status.",
+            icon: "error",
+          });
+        }
       }
     });
   };
@@ -165,7 +179,7 @@ const MyMentorshipApplicationsTable = ({
             }
             className="px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer"
           >
-            <option value="open">Active</option>
+            <option value="open">Open</option>
             <option value="closed">Close</option>
             <option value="onhold">On Hold</option>
           </select>
@@ -385,6 +399,7 @@ MyMentorshipApplicationsTable.propTypes = {
   pageMap: PropTypes.objectOf(PropTypes.number).isRequired,
 
   // Handlers
+  refetchAll: PropTypes.func.isRequired,
   handleAccept: PropTypes.func.isRequired,
   handleReject: PropTypes.func.isRequired,
   handlePageChange: PropTypes.func.isRequired,

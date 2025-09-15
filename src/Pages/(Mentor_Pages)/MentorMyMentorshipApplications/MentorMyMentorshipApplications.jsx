@@ -184,6 +184,7 @@ const MentorMyMentorshipApplications = () => {
             <MyMentorshipApplicationsTable
               pageMap={pageMap}
               key={mentorship?._id}
+              refetchAll={refetchAll}
               mentorship={mentorship}
               handleAccept={handleAccept}
               handleReject={handleReject}

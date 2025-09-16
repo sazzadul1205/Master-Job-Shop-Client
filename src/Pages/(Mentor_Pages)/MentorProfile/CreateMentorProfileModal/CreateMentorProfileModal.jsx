@@ -135,9 +135,9 @@ const CreateMentorProfileModal = ({ refetch }) => {
         timerProgressBar: true,
         showConfirmButton: false,
       });
-    } catch (error) {
+    } catch (err) {
       setErrorMessage("Failed to save Mentor profile.");
-      console.log(error);
+      console.log("Error", err);
     } finally {
       setLoading(false);
     }

@@ -31,8 +31,6 @@ const NewsLetter = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
-
     const Subscriber = {
       name: data.name,
       email: data.email,

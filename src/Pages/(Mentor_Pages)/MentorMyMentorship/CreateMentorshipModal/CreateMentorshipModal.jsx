@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 
 // Packages
@@ -17,6 +18,8 @@ import WeeklyPlanInput from "./WeeklyPlanInput/WeeklyPlanInput";
 // Hooks
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import { FaPaste } from "react-icons/fa";
+import { Tooltip } from "react-tooltip";
 
 // Category Options
 const CategoryOptions = [
@@ -382,6 +385,58 @@ const CreateMentorshipModal = ({ refetch }) => {
     reset();
   };
 
+  // Inside your component
+  const handlePasteJSON = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (!text) return;
+      const jsonData = JSON.parse(text);
+
+      const { applications, ...rest } = jsonData;
+
+      // Set subcategory options first
+      const selectedCategory = rest.category || "";
+      const categoryObj = CategoryOptions.find(
+        (c) => c.value === selectedCategory
+      );
+      const newSubOptions = categoryObj
+        ? categoryObj.subcategories.map((sub) => ({ value: sub, label: sub }))
+        : [];
+      setSubOptions(newSubOptions);
+
+      // Map skills/attachments/prerequisites/skillsCovered correctly
+      const mapToOptions = (arr) =>
+        arr?.map((item) =>
+          typeof item === "string" ? { value: item, label: item } : item
+        ) || [];
+
+      // Then reset the form
+      reset({
+        ...rest,
+        category: rest.category || "",
+        subCategory:
+          newSubOptions.find((s) => s.value === rest.subCategory)?.value || "",
+        skills: mapToOptions(rest.skills),
+        attachments: mapToOptions(rest.attachments),
+        prerequisites: mapToOptions(rest.prerequisites),
+        skillsCovered: mapToOptions(rest.skillsCovered),
+        weeklyPlan: rest.weeklyPlan || [],
+        fee: rest.fee || {},
+        communication: rest.communication || {},
+        sessionDays: rest.sessionDays || [],
+        location: rest.location || {},
+        modeToggle: rest.modeToggle || false,
+      });
+    } catch (err) {
+      console.error("Failed to paste JSON:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Invalid JSON",
+        text: "Cannot parse clipboard data. Please check the format.",
+      });
+    }
+  };
+
   // Form Submission
   const onSubmit = async (data) => {
     setLoading(true);
@@ -457,6 +512,19 @@ const CreateMentorshipModal = ({ refetch }) => {
       <h3 className="font-bold text-xl text-center mb-4">
         Create Mentor Profile
       </h3>
+
+      <button
+        type="button"
+        onClick={handlePasteJSON}
+        data-tooltip-id="pasteTooltip"
+        data-tooltip-content="Paste JSON from clipboard"
+        className="flex items-center gap-2 border border-amber-400 absolute top-2 left-3 z-50 p-2 rounded-xl hover:text-red-500 cursor-pointer transition-colors duration-300"
+      >
+        <FaPaste className="text-lg" />
+        <span className="hidden sm:inline">Paste</span>
+      </button>
+
+      <Tooltip id="pasteTooltip" place="bottom" effect="solid" />
 
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-4" />

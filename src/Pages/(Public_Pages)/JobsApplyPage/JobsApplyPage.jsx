@@ -153,7 +153,7 @@ const JobsApplyPage = () => {
       reset();
     } catch (err) {
       // Handle errors
-      console.log(err);
+      console.log("Error:", err);
 
       // Show error message
       Swal.fire({

@@ -10,7 +10,7 @@ import "react-tooltip/dist/react-tooltip.css";
 // Icons
 import { ImCross } from "react-icons/im";
 import { IoIosEye } from "react-icons/io";
-import { FaCheck, FaSpinner } from "react-icons/fa";
+import { FaCheck, FaCopy, FaSpinner } from "react-icons/fa";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 import { MdPendingActions, MdRestartAlt } from "react-icons/md";
 import { AiOutlineLoading3Quarters, AiOutlineReload } from "react-icons/ai";
@@ -420,6 +420,31 @@ const MyMentorshipApplicationsTable = ({
 
         {/* Filters */}
         <div className="flex gap-4">
+          {/* Copy JSON Button */}
+          <button
+            data-tooltip-id="copyTooltip"
+            data-tooltip-content="Copy mentorship JSON (excluding applicants)"
+            onClick={() => {
+              if (!mentorship) return;
+              // eslint-disable-next-line no-unused-vars
+              const { applications, ...rest } = mentorship;
+              navigator.clipboard.writeText(JSON.stringify(rest, null, 2));
+              Swal.fire({
+                title: "Copied!",
+                text: "Mentorship JSON (without applicants) has been copied to clipboard.",
+                icon: "success",
+                timer: 1200,
+                showConfirmButton: false,
+              });
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer transition"
+          >
+            <FaCopy className="text-lg" />
+          </button>
+
+          {/* Tooltip Instance */}
+          <Tooltip id="copyTooltip" place="top" effect="solid" />
+
           {/* Status Dropdown */}
           <select
             value={

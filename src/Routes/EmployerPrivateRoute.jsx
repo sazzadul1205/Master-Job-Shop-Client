@@ -34,8 +34,6 @@ const EmployerPrivateRoute = ({
     enabled: !!user?.email,
   });
 
-  console.log(UserRole);
-
   // Redirect to login if unauthenticated
   if (!user) return <Navigate to="/Login" state={{ from: location }} replace />;
 

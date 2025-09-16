@@ -188,7 +188,7 @@ const MentorshipApplyPage = () => {
     } catch (err) {
       setIsSubmitting(false);
       console.error("Error:", err);
-      console.log("Error data :", err?.response?.data);
+      console.log("Error:", err);
       setErrorMessage("Failed to create mentorship. Please try again.");
       Swal.fire({
         icon: "error",

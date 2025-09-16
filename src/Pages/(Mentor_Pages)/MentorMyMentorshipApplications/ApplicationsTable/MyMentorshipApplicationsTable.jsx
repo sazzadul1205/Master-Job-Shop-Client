@@ -11,13 +11,14 @@ import "react-tooltip/dist/react-tooltip.css";
 import { FaCheck } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { IoIosEye } from "react-icons/io";
-import { MdPendingActions } from "react-icons/md";
+import { AiOutlineReload } from "react-icons/ai";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
+import { MdPendingActions, MdRestartAlt } from "react-icons/md";
 
 // Assets
-import DefaultApplicant from "../../../../assets/MentorshipApplications/MentorshipDefaultImage.jpeg";
 import AcceptedIcon from "../../../../assets/MentorshipApplications/AcceptedIcon.gif";
 import RejectedIcon from "../../../../assets/MentorshipApplications/RejectedIcon.gif";
+import DefaultApplicant from "../../../../assets/MentorshipApplications/MentorshipDefaultImage.jpeg";
 
 // Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
@@ -177,7 +178,7 @@ const MyMentorshipApplicationsTable = ({
     });
   };
 
-  // Handler to accept an application
+  // Handler to accept/revert/reject an application
   const updateApplicationStatus = async (
     applicationId,
     newStatus,
@@ -193,7 +194,7 @@ const MyMentorshipApplicationsTable = ({
       return;
     }
 
-    if (!["Accepted", "Rejected"].includes(newStatus)) {
+    if (!["Accepted", "Rejected", "Pending"].includes(newStatus)) {
       console.error("Invalid status provided:", newStatus);
       Swal.fire({
         title: "Error",
@@ -212,6 +213,7 @@ const MyMentorshipApplicationsTable = ({
       if (response.status >= 200 && response.status < 300) {
         refetchAll?.();
 
+        // Choose icon based on status
         const iconHtml =
           newStatus === "Accepted"
             ? renderToStaticMarkup(
@@ -225,11 +227,12 @@ const MyMentorshipApplicationsTable = ({
                   <img
                     src={AcceptedIcon}
                     alt="Accepted"
-                    style={{ width: 150, height: 150 }} // increased size
+                    style={{ width: 150, height: 150 }}
                   />
                 </div>
               )
-            : renderToStaticMarkup(
+            : newStatus === "Rejected"
+            ? renderToStaticMarkup(
                 <div
                   style={{
                     display: "flex",
@@ -240,18 +243,39 @@ const MyMentorshipApplicationsTable = ({
                   <img
                     src={RejectedIcon}
                     alt="Rejected"
-                    style={{ width: 150, height: 150 }} // increased size
+                    style={{ width: 150, height: 150 }}
                   />
+                </div>
+              )
+            : renderToStaticMarkup(
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginBottom: 15,
+                    fontSize: 80,
+                    color: "#facc15",
+                    animation: "spin 1.5s linear infinite",
+                  }}
+                >
+                  <AiOutlineReload />
                 </div>
               );
 
         Swal.fire({
-          title: `${newStatus} Successfully!`,
-          html: `${iconHtml}<p>${applicantName}'s application has been ${newStatus.toLowerCase()}.</p>`,
+          title:
+            newStatus === "Pending"
+              ? "Reverted Successfully!"
+              : `${newStatus} Successfully!`,
+          html: `${iconHtml}<p>${applicantName}'s application has been ${
+            newStatus === "Pending"
+              ? "reverted to pending"
+              : newStatus.toLowerCase()
+          }.</p>`,
           showConfirmButton: false,
           timer: 1800,
           timerProgressBar: true,
-          allowOutsideClick: false,
+          allowOutsideClick: true,
           customClass: { popup: "text-center" },
         });
       } else {
@@ -344,12 +368,9 @@ const MyMentorshipApplicationsTable = ({
 
         {/* Accepted Applicants */}
         <div
-          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer
-                  ${
-                    activeFilters.includes("Accepted")
-                      ? "bg-green-100"
-                      : "bg-gray-50"
-                  }`}
+          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer ${
+            activeFilters.includes("Accepted") ? "bg-green-100" : "bg-gray-50"
+          }`}
           onClick={() => toggleFilter("Accepted")}
         >
           <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
@@ -363,12 +384,9 @@ const MyMentorshipApplicationsTable = ({
 
         {/* Rejected Applicants */}
         <div
-          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer
-                  ${
-                    activeFilters.includes("Rejected")
-                      ? "bg-red-100"
-                      : "bg-gray-50"
-                  }`}
+          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer ${
+            activeFilters.includes("Rejected") ? "bg-red-100" : "bg-gray-50"
+          }`}
           onClick={() => toggleFilter("Rejected")}
         >
           <div className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
@@ -382,12 +400,9 @@ const MyMentorshipApplicationsTable = ({
 
         {/* Pending Applicants */}
         <div
-          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer
-                  ${
-                    activeFilters.includes("Pending")
-                      ? "bg-yellow-100"
-                      : "bg-gray-50"
-                  }`}
+          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer ${
+            activeFilters.includes("Pending") ? "bg-yellow-100" : "bg-gray-50"
+          }`}
           onClick={() => toggleFilter("Pending")}
         >
           <div className="bg-yellow-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
@@ -472,55 +487,97 @@ const MyMentorshipApplicationsTable = ({
                 {/* Action */}
                 <td className="text-right w-96">
                   <div className="flex justify-end gap-2">
-                    {/* View Button */}
-                    <button
-                      onClick={() => {
-                        setSelectedApplicationID(applicant?._id);
-                        document
-                          .getElementById("View_Mentorship_Application_Modal")
-                          ?.showModal();
-                      }}
-                      data-tooltip-id={`viewTip-${id}-${applicant?._id}`}
-                      data-tooltip-content="View Application Details"
-                      className="flex gap-2 items-center border-2 hover:bg-blue-600/90 bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
-                    >
-                      <IoIosEye /> View
-                    </button>
-                    <Tooltip id={`viewTip-${id}-${applicant?.id}`} />
+                    {(() => {
+                      const status = getStatus(applicant);
 
-                    {/* Accept Button */}
-                    <button
-                      onClick={() =>
-                        updateApplicationStatus(
-                          applicant?._id,
-                          "Accepted",
-                          applicant?.name
-                        )
-                      }
-                      data-tooltip-id={`acceptTip-${id}-${applicant?._id}`}
-                      data-tooltip-content="Accept this Application"
-                      className="flex gap-2 items-center border-2 hover:bg-green-600/90 bg-green-500 text-white font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
-                    >
-                      <FaCheck /> Accept
-                    </button>
-                    <Tooltip id={`acceptTip-${id}-${applicant?._id}`} />
+                      return (
+                        <>
+                          {/* View Button (always available) */}
+                          <button
+                            onClick={() => {
+                              setSelectedApplicationID(applicant?._id);
+                              document
+                                .getElementById(
+                                  "View_Mentorship_Application_Modal"
+                                )
+                                ?.showModal();
+                            }}
+                            data-tooltip-id={`viewTip-${id}-${applicant?._id}`}
+                            data-tooltip-content="View Application Details"
+                            className="flex gap-2 items-center border-2 hover:bg-blue-700/90 bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
+                          >
+                            <IoIosEye className="text-xl" /> View
+                          </button>
+                          <Tooltip id={`viewTip-${id}-${applicant?._id}`} />
 
-                    {/* Reject Button */}
-                    <button
-                      onClick={() =>
-                        updateApplicationStatus(
-                          applicant?._id,
-                          "Rejected",
-                          applicant?.name
-                        )
-                      }
-                      data-tooltip-id={`rejectTip-${id}-${applicant?._id}`}
-                      data-tooltip-content="Reject this Application"
-                      className="flex gap-2 items-center border-2 hover:bg-red-600/90 bg-red-500 text-white font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
-                    >
-                      <ImCross /> Reject
-                    </button>
-                    <Tooltip id={`rejectTip-${id}-${applicant?._id}`} />
+                          {/* If Pending or no status → show Accept & Reject */}
+                          {(status === "Pending" || !status) && (
+                            <>
+                              {/* Accept Button */}
+                              <button
+                                onClick={() =>
+                                  updateApplicationStatus(
+                                    applicant?._id,
+                                    "Accepted",
+                                    applicant?.name
+                                  )
+                                }
+                                data-tooltip-id={`acceptTip-${id}-${applicant?._id}`}
+                                data-tooltip-content="Accept this Application"
+                                className="flex gap-2 items-center border-2 bg-green-500 text-white hover:bg-green-700/90 font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
+                              >
+                                <FaCheck /> Accept
+                              </button>
+                              <Tooltip
+                                id={`acceptTip-${id}-${applicant?._id}`}
+                              />
+
+                              {/* Reject Button */}
+                              <button
+                                onClick={() =>
+                                  updateApplicationStatus(
+                                    applicant?._id,
+                                    "Rejected",
+                                    applicant?.name
+                                  )
+                                }
+                                data-tooltip-id={`rejectTip-${id}-${applicant?._id}`}
+                                data-tooltip-content="Reject this Application"
+                                className="flex gap-2 items-center border-2 bg-red-500 text-white hover:bg-red-700/90 font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
+                              >
+                                <ImCross /> Reject
+                              </button>
+                              <Tooltip
+                                id={`rejectTip-${id}-${applicant?._id}`}
+                              />
+                            </>
+                          )}
+
+                          {/* If Accepted or Rejected → show Revert */}
+                          {(status === "Accepted" || status === "Rejected") && (
+                            <>
+                              <button
+                                onClick={() =>
+                                  updateApplicationStatus(
+                                    applicant?._id,
+                                    "Pending",
+                                    applicant?.name
+                                  )
+                                }
+                                data-tooltip-id={`revertTip-${id}-${applicant?._id}`}
+                                data-tooltip-content="Revert to Pending"
+                                className="flex gap-2 items-center border-2 bg-yellow-500 text-white hover:bg-yellow-700/90 font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
+                              >
+                                <MdRestartAlt className="text-2xl" /> Revert
+                              </button>
+                              <Tooltip
+                                id={`revertTip-${id}-${applicant?._id}`}
+                              />
+                            </>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
                 </td>
               </tr>

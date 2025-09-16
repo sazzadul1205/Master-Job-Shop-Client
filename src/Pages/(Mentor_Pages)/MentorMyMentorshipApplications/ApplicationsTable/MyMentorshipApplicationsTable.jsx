@@ -8,12 +8,12 @@ import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
 // Icons
-import { FaCheck, FaSpinner } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { IoIosEye } from "react-icons/io";
-import { AiOutlineReload } from "react-icons/ai";
+import { FaCheck, FaSpinner } from "react-icons/fa";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 import { MdPendingActions, MdRestartAlt } from "react-icons/md";
+import { AiOutlineLoading3Quarters, AiOutlineReload } from "react-icons/ai";
 
 // Assets
 import CautionIcon from "../../../../assets/MentorshipApplications/CautionIcon.gif";
@@ -84,6 +84,7 @@ const MyMentorshipApplicationsTable = ({
   refetchAll,
   mentorship,
   handlePageChange,
+  setSelectedApplicantName,
   setSelectedApplicationID,
 }) => {
   const axiosPublic = useAxiosPublic();
@@ -92,6 +93,7 @@ const MyMentorshipApplicationsTable = ({
   const { _id: id, title, applications = [] } = mentorship;
 
   // Active filter state
+  const [loadingId, setLoadingId] = useState(null);
   const [activeFilters, setActiveFilters] = useState([]);
   const [statusLoading, setStatusLoading] = useState(false);
   const [loadingComplete, setLoadingComplete] = useState(false);
@@ -289,6 +291,8 @@ const MyMentorshipApplicationsTable = ({
       return;
     }
 
+    setLoadingId(applicationId);
+
     try {
       const response = await axiosPublic.put(
         `/MentorshipApplications/Status/${applicationId}`,
@@ -376,6 +380,8 @@ const MyMentorshipApplicationsTable = ({
         text: `Failed to update ${applicantName}'s application status to "${newStatus}".`,
         icon: "error",
       });
+    } finally {
+      setLoadingId(null);
     }
   };
 
@@ -447,27 +453,6 @@ const MyMentorshipApplicationsTable = ({
               </>
             )}
           </select>
-
-          {/* <select
-            value={
-              mentorship?.status === "Completed"
-                ? ""
-                : statusMap[mentorship.status] || "open"
-            } // Empty if completed
-            onChange={(e) =>
-              handleStatusChange(
-                mentorship?._id,
-                statusMap[mentorship.status] || "open", // Current value interpreted
-                e.target.value
-              )
-            }
-            disabled={mentorship?.status === "Completed"} // Disable if completed
-            className="px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
-          >
-            <option value="open">Open</option>
-            <option value="closed">Close</option>
-            <option value="onhold">On Hold</option>
-          </select> */}
 
           {/* Show Complete Program Button only if not Completed */}
           {mentorship?.status !== "completed" && (
@@ -603,8 +588,17 @@ const MyMentorshipApplicationsTable = ({
                     }}
                   />
 
-                  {/* Name */}
-                  <h3 className="font-bold">{applicant?.name || "N/A"}</h3>
+                  <h3
+                    className="font-bold cursor-pointer hover:text-blue-600 transition"
+                    onClick={() => {
+                      setSelectedApplicantName(applicant?.userId || "N/A");
+                      document
+                        .getElementById("View_Applicant_Profile_Modal")
+                        ?.showModal();
+                    }}
+                  >
+                    {applicant?.name || "N/A"}
+                  </h3>
                 </td>
 
                 {/* Status */}
@@ -630,12 +624,13 @@ const MyMentorshipApplicationsTable = ({
                   </span>
                 </td>
 
-                {/* Action */}
+                {/* Action Column */}
                 <td className="text-right w-96">
                   <div className="flex justify-end gap-2">
                     {(() => {
                       const status = getStatus(applicant);
-                      const isCompleted = mentorship?.status === "completed"; // check mentorship status
+                      const isCompleted =
+                        mentorship?.status?.toLowerCase() === "completed"; // check mentorship status
 
                       return (
                         <>
@@ -663,7 +658,7 @@ const MyMentorshipApplicationsTable = ({
                           </button>
                           <Tooltip id={`viewTip-${id}-${applicant?._id}`} />
 
-                          {/* If Pending or no status → show Accept & Reject */}
+                          {/* Pending Applications → Accept & Reject */}
                           {(status === "Pending" || !status) && (
                             <>
                               {/* Accept Button */}
@@ -675,16 +670,23 @@ const MyMentorshipApplicationsTable = ({
                                     applicant?.name
                                   )
                                 }
+                                disabled={
+                                  isCompleted || loadingId === applicant?._id
+                                }
                                 data-tooltip-id={`acceptTip-${id}-${applicant?._id}`}
                                 data-tooltip-content="Accept this Application"
-                                disabled={isCompleted}
                                 className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer ${
                                   isCompleted
                                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                                     : "bg-green-500 text-white hover:bg-green-700/90"
                                 }`}
                               >
-                                <FaCheck /> Accept
+                                {loadingId === applicant?._id ? (
+                                  <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                                ) : (
+                                  <FaCheck />
+                                )}
+                                Accept
                               </button>
                               <Tooltip
                                 id={`acceptTip-${id}-${applicant?._id}`}
@@ -699,16 +701,23 @@ const MyMentorshipApplicationsTable = ({
                                     applicant?.name
                                   )
                                 }
+                                disabled={
+                                  isCompleted || loadingId === applicant?._id
+                                }
                                 data-tooltip-id={`rejectTip-${id}-${applicant?._id}`}
                                 data-tooltip-content="Reject this Application"
-                                disabled={isCompleted}
                                 className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer ${
                                   isCompleted
                                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                                     : "bg-red-500 text-white hover:bg-red-700/90"
                                 }`}
                               >
-                                <ImCross /> Reject
+                                {loadingId === applicant?._id ? (
+                                  <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                                ) : (
+                                  <ImCross />
+                                )}
+                                Reject
                               </button>
                               <Tooltip
                                 id={`rejectTip-${id}-${applicant?._id}`}
@@ -716,7 +725,7 @@ const MyMentorshipApplicationsTable = ({
                             </>
                           )}
 
-                          {/* If Accepted or Rejected → show Revert */}
+                          {/* Accepted or Rejected → Revert */}
                           {(status === "Accepted" || status === "Rejected") && (
                             <>
                               <button
@@ -727,16 +736,23 @@ const MyMentorshipApplicationsTable = ({
                                     applicant?.name
                                   )
                                 }
+                                disabled={
+                                  isCompleted || loadingId === applicant?._id
+                                }
                                 data-tooltip-id={`revertTip-${id}-${applicant?._id}`}
                                 data-tooltip-content="Revert to Pending"
-                                disabled={isCompleted}
                                 className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer ${
                                   isCompleted
                                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                                     : "bg-yellow-500 text-white hover:bg-yellow-700/90"
                                 }`}
                               >
-                                <MdRestartAlt className="text-2xl" /> Revert
+                                {loadingId === applicant?._id ? (
+                                  <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                                ) : (
+                                  <MdRestartAlt className="text-2xl" />
+                                )}
+                                Revert
                               </button>
                               <Tooltip
                                 id={`revertTip-${id}-${applicant?._id}`}
@@ -831,6 +847,7 @@ MyMentorshipApplicationsTable.propTypes = {
 
   // Application selection
   setSelectedApplicationID: PropTypes.func.isRequired,
+  setSelectedApplicantName: PropTypes.func.isRequired,
 };
 
 export default MyMentorshipApplicationsTable;

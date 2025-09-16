@@ -38,7 +38,7 @@ const Mentorship = () => {
   } = useQuery({
     queryKey: ["MentorshipData"],
     queryFn: () =>
-      axiosPublic.get("/Mentorship?status=active").then((res) => res.data),
+      axiosPublic.get("/Mentorship?status=open").then((res) => res.data),
   });
 
   // Filtered mentorship based on search and selected filters

@@ -10,6 +10,7 @@ import { IoSearchSharp } from "react-icons/io5";
 // Shared
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
+import ApplicantInformationModal from "../../../Shared/ApplicantInformationModal/ApplicantInformationModal";
 
 // Hooks
 import useAuth from "../../../Hooks/useAuth";
@@ -24,6 +25,7 @@ const MentorMyMentorshipApplications = () => {
   const axiosPublic = useAxiosPublic();
 
   // State Variables
+  const [selectedApplicantName, setSelectedApplicantName] = useState("");
   const [selectedApplicationID, setSelectedApplicationID] = useState(null);
 
   // States Variables
@@ -183,7 +185,7 @@ const MentorMyMentorshipApplications = () => {
               refetchAll={refetchAll}
               mentorship={mentorship}
               handlePageChange={handlePageChange}
-              selectedApplicationID={selectedApplicationID}
+              setSelectedApplicantName={setSelectedApplicantName}
               setSelectedApplicationID={setSelectedApplicationID}
             />
           ))
@@ -209,6 +211,14 @@ const MentorMyMentorshipApplications = () => {
         <MyMentorshipApplicationModal
           selectedApplicationID={selectedApplicationID}
           setSelectedApplicationID={setSelectedApplicationID}
+        />
+      </dialog>
+
+      {/* View Applicant Profile Modal */}
+      <dialog id="View_Applicant_Profile_Modal" className="modal">
+        <ApplicantInformationModal
+          selectedApplicantName={selectedApplicantName}
+          setSelectedApplicantName={setSelectedApplicantName}
         />
       </dialog>
     </div>

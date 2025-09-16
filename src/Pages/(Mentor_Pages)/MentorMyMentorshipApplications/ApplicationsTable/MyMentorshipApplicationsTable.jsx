@@ -8,7 +8,7 @@ import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
 // Icons
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaSpinner } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { IoIosEye } from "react-icons/io";
 import { AiOutlineReload } from "react-icons/ai";
@@ -16,8 +16,10 @@ import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 import { MdPendingActions, MdRestartAlt } from "react-icons/md";
 
 // Assets
+import CautionIcon from "../../../../assets/MentorshipApplications/CautionIcon.gif";
 import AcceptedIcon from "../../../../assets/MentorshipApplications/AcceptedIcon.gif";
 import RejectedIcon from "../../../../assets/MentorshipApplications/RejectedIcon.gif";
+import CompletedIcon from "../../../../assets/MentorshipApplications/CompletedIcon.gif";
 import DefaultApplicant from "../../../../assets/MentorshipApplications/MentorshipDefaultImage.jpeg";
 
 // Hooks
@@ -91,6 +93,8 @@ const MyMentorshipApplicationsTable = ({
 
   // Active filter state
   const [activeFilters, setActiveFilters] = useState([]);
+  const [statusLoading, setStatusLoading] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
   // Normalize status (fallback to "Pending")
   const getStatus = (app) => {
@@ -135,46 +139,127 @@ const MyMentorshipApplicationsTable = ({
     );
   };
 
-  // Handler to change mentorship status
+  // Handler to change mentorship status with loading
   const handleStatusChange = async (mentorshipId, currentStatus, newStatus) => {
     if (newStatus === currentStatus) return; // No change
 
-    Swal.fire({
+    const result = await Swal.fire({
       title: `Are you sure?`,
       text: `Do you want to change status from "${statusDisplayName[currentStatus]}" to "${statusDisplayName[newStatus]}"?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes, change it!",
       cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setStatusLoading(true); // start loading
+        const res = await axiosPublic.patch(
+          `/Mentorship/Status/${mentorshipId}`,
+          { status: newStatus }
+        );
+
+        if (res.data?.message) {
+          Swal.fire({
+            title: "Success!",
+            text: `Status changed to "${statusDisplayName[newStatus]}"`,
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+
+          refetchAll?.();
+        }
+      } catch (error) {
+        console.error("Error updating status:", error);
+        Swal.fire({
+          title: "Error",
+          text: "Failed to update mentorship status.",
+          icon: "error",
+        });
+      } finally {
+        setStatusLoading(false); // stop loading
+      }
+    }
+  };
+
+  // Handler for completing the mentorship program
+  const handleCompleteProgram = async (mentorshipId) => {
+    // start loading
+    setLoadingComplete(true);
+
+    const cautionHtml = renderToStaticMarkup(
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: 15,
+        }}
+      >
+        <img
+          src={CautionIcon}
+          alt="Caution"
+          style={{ width: 150, height: 150 }}
+        />
+      </div>
+    );
+
+    Swal.fire({
+      title: "Are you sure?",
+      html: `${cautionHtml}<p>Once completed, this mentorship cannot be updated. You can only delete it later.</p>`,
+      showCancelButton: true,
+      confirmButtonText: "Yes, complete it!",
+      cancelButtonText: "Cancel",
+      customClass: { popup: "text-center" },
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // API call to backend
           const res = await axiosPublic.patch(
             `/Mentorship/Status/${mentorshipId}`,
-            { status: newStatus }
+            { status: "completed" }
           );
 
           if (res.data?.message) {
+            const completedHtml = renderToStaticMarkup(
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginBottom: 15,
+                }}
+              >
+                <img
+                  src={CompletedIcon}
+                  alt="Completed"
+                  style={{ width: 150, height: 150 }}
+                />
+              </div>
+            );
+
             Swal.fire({
-              title: "Success!",
-              text: `Status changed to "${statusDisplayName[newStatus]}"`,
-              icon: "success",
-              timer: 2000,
+              title: "Mentorship Completed!",
+              html: `${completedHtml}<p>The mentorship program has been successfully marked as completed.</p>`,
               showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              allowOutsideClick: true,
+              customClass: { popup: "text-center" },
             });
 
-            refetchAll();
+            refetchAll?.();
           }
         } catch (error) {
-          console.error("Error updating status:", error);
+          console.error("Error completing mentorship:", error);
           Swal.fire({
             title: "Error",
-            text: "Failed to update mentorship status.",
+            text: "Failed to complete the mentorship program.",
             icon: "error",
           });
         }
       }
+      // stop loading after alert resolves
+      setLoadingComplete(false);
     });
   };
 
@@ -299,20 +384,24 @@ const MyMentorshipApplicationsTable = ({
       {/* Status Badge */}
       <span
         className={`absolute -top-2 -left-4 px-3 py-1 rounded-full text-white font-semibold text-sm
-      ${
-        mentorship.status === "closed" || mentorship.status === "active"
-          ? "bg-red-500"
-          : mentorship.status === "open"
-          ? "bg-green-500"
-          : mentorship.status === "onhold"
-          ? "bg-yellow-500 text-black"
-          : "bg-gray-400"
-      }`}
+    ${
+      mentorship.status === "completed"
+        ? "bg-green-700" // completed badge color
+        : mentorship.status === "closed" || mentorship.status === "active"
+        ? "bg-red-500"
+        : mentorship.status === "open"
+        ? "bg-green-500"
+        : mentorship.status === "onhold"
+        ? "bg-yellow-500 text-black"
+        : "bg-gray-400"
+    }`}
       >
-        {mentorship.status === "closed" || mentorship.status === "active"
+        {mentorship.status === "completed"
+          ? "Completed"
+          : mentorship.status === "closed" || mentorship.status === "active"
           ? "Closed"
           : mentorship.status === "open"
-          ? "Active"
+          ? "Open"
           : mentorship.status === "onhold"
           ? "On Hold"
           : "Unknown"}
@@ -325,26 +414,83 @@ const MyMentorshipApplicationsTable = ({
 
         {/* Filters */}
         <div className="flex gap-4">
+          {/* Status Dropdown */}
           <select
-            value={statusMap[mentorship.status] || "open"} // Convert active/closed to dropdown values
+            value={
+              mentorship?.status === "completed"
+                ? "" // clear value if completed
+                : statusMap[mentorship.status] || "open"
+            }
             onChange={(e) =>
               handleStatusChange(
-                mentorship._id,
+                mentorship?._id,
+                statusMap[mentorship.status] || "open",
+                e.target.value
+              )
+            }
+            disabled={mentorship?.status === "completed" || statusLoading} // disable if completed or loading
+            className={`px-3 py-2 w-[200px] rounded-xl border transition cursor-pointer ${
+              mentorship?.status === "completed" || statusLoading
+                ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                : "bg-white text-gray-800 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            }`}
+          >
+            {statusLoading ? (
+              <option value="">Updating...</option>
+            ) : mentorship?.status === "completed" ? (
+              <option value="">Completed</option>
+            ) : (
+              <>
+                <option value="open">Open</option>
+                <option value="closed">Close</option>
+                <option value="onhold">On Hold</option>
+              </>
+            )}
+          </select>
+
+          {/* <select
+            value={
+              mentorship?.status === "Completed"
+                ? ""
+                : statusMap[mentorship.status] || "open"
+            } // Empty if completed
+            onChange={(e) =>
+              handleStatusChange(
+                mentorship?._id,
                 statusMap[mentorship.status] || "open", // Current value interpreted
                 e.target.value
               )
             }
-            className="px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer"
+            disabled={mentorship?.status === "Completed"} // Disable if completed
+            className="px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
           >
             <option value="open">Open</option>
             <option value="closed">Close</option>
             <option value="onhold">On Hold</option>
-          </select>
+          </select> */}
 
-          {/* Complete Program Button */}
-          <button className="flex items-center gap-2 text-black border border-gray-700 hover:border-green-700 px-4 py-2 rounded-lg transition-colors duration-300 hover:bg-green-500 hover:text-white cursor-pointer">
-            <FaCheck /> Complete Program
-          </button>
+          {/* Show Complete Program Button only if not Completed */}
+          {mentorship?.status !== "completed" && (
+            <button
+              onClick={() => handleCompleteProgram(mentorship?._id)}
+              disabled={loadingComplete}
+              className={`flex items-center gap-2 px-5 py-2.5 font-semibold rounded-xl shadow-md border transition-all duration-300 ease-in-out cursor-pointer ${
+                loadingComplete
+                  ? "bg-gray-400 text-gray-200 border-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-green-500 to-green-600 text-white border-green-600 hover:from-green-600 hover:to-green-700 hover:shadow-lg active:scale-95"
+              }`}
+            >
+              {loadingComplete ? (
+                <>
+                  <FaSpinner className="animate-spin text-lg" /> Processing...
+                </>
+              ) : (
+                <>
+                  <FaCheck className="text-lg" /> Complete Program
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
 
@@ -489,12 +635,14 @@ const MyMentorshipApplicationsTable = ({
                   <div className="flex justify-end gap-2">
                     {(() => {
                       const status = getStatus(applicant);
+                      const isCompleted = mentorship?.status === "completed"; // check mentorship status
 
                       return (
                         <>
-                          {/* View Button (always available) */}
+                          {/* View Button (always available, but disabled if Completed) */}
                           <button
                             onClick={() => {
+                              if (isCompleted) return;
                               setSelectedApplicationID(applicant?._id);
                               document
                                 .getElementById(
@@ -504,7 +652,12 @@ const MyMentorshipApplicationsTable = ({
                             }}
                             data-tooltip-id={`viewTip-${id}-${applicant?._id}`}
                             data-tooltip-content="View Application Details"
-                            className="flex gap-2 items-center border-2 hover:bg-blue-700/90 bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
+                            disabled={isCompleted}
+                            className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer ${
+                              isCompleted
+                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "bg-blue-500 text-white hover:bg-blue-700/90"
+                            }`}
                           >
                             <IoIosEye className="text-xl" /> View
                           </button>
@@ -524,7 +677,12 @@ const MyMentorshipApplicationsTable = ({
                                 }
                                 data-tooltip-id={`acceptTip-${id}-${applicant?._id}`}
                                 data-tooltip-content="Accept this Application"
-                                className="flex gap-2 items-center border-2 bg-green-500 text-white hover:bg-green-700/90 font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
+                                disabled={isCompleted}
+                                className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer ${
+                                  isCompleted
+                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                    : "bg-green-500 text-white hover:bg-green-700/90"
+                                }`}
                               >
                                 <FaCheck /> Accept
                               </button>
@@ -543,7 +701,12 @@ const MyMentorshipApplicationsTable = ({
                                 }
                                 data-tooltip-id={`rejectTip-${id}-${applicant?._id}`}
                                 data-tooltip-content="Reject this Application"
-                                className="flex gap-2 items-center border-2 bg-red-500 text-white hover:bg-red-700/90 font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
+                                disabled={isCompleted}
+                                className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer ${
+                                  isCompleted
+                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                    : "bg-red-500 text-white hover:bg-red-700/90"
+                                }`}
                               >
                                 <ImCross /> Reject
                               </button>
@@ -566,7 +729,12 @@ const MyMentorshipApplicationsTable = ({
                                 }
                                 data-tooltip-id={`revertTip-${id}-${applicant?._id}`}
                                 data-tooltip-content="Revert to Pending"
-                                className="flex gap-2 items-center border-2 bg-yellow-500 text-white hover:bg-yellow-700/90 font-semibold py-2 px-5 rounded-lg transition cursor-pointer"
+                                disabled={isCompleted}
+                                className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer ${
+                                  isCompleted
+                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                    : "bg-yellow-500 text-white hover:bg-yellow-700/90"
+                                }`}
                               >
                                 <MdRestartAlt className="text-2xl" /> Revert
                               </button>

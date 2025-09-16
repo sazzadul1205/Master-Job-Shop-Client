@@ -43,7 +43,6 @@ const MentorMyMentorship = () => {
         }),
   });
 
-  // Fetching Completed Mentorship
   const {
     data: CompletedMentorshipData,
     isLoading: CompletedMentorshipIsLoading,

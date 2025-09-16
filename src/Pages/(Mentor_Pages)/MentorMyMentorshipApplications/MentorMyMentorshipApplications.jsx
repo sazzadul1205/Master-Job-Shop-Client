@@ -107,7 +107,6 @@ const MentorMyMentorshipApplications = () => {
     setPageMap((prev) => ({ ...prev, [mentorshipId]: newPage }));
   };
 
-
   // Check for loading state
   if (MyMentorshipIsLoading || MyMentorshipApplicationsIsLoading)
     return <Loading />;
@@ -183,8 +182,6 @@ const MentorMyMentorshipApplications = () => {
               key={mentorship?._id}
               refetchAll={refetchAll}
               mentorship={mentorship}
-              handleAccept={handleAccept}
-              handleReject={handleReject}
               handlePageChange={handlePageChange}
               selectedApplicationID={selectedApplicationID}
               setSelectedApplicationID={setSelectedApplicationID}

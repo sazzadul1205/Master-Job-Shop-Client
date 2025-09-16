@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
 // Packages
@@ -10,6 +11,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import { FaCheck } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { IoIosEye } from "react-icons/io";
+import { MdPendingActions } from "react-icons/md";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 
 // Assets
@@ -55,6 +57,7 @@ const getTimeAgo = (dateString) => {
   return `${years} year${years > 1 ? "s" : ""} ago`;
 };
 
+// Map status to display name
 const statusDisplayName = {
   open: "Open",
   active: "closed",
@@ -85,21 +88,51 @@ const MyMentorshipApplicationsTable = ({
   // Destructuring
   const { _id: id, title, applications = [] } = mentorship;
 
-  // Keep applications unfiltered here
-  const filteredApplications = applications;
+  // Active filter state
+  const [activeFilters, setActiveFilters] = useState([]);
 
+  // Normalize status (fallback to "Pending")
+  const getStatus = (app) => {
+    const raw = app?.status;
+    return raw === "Accepted"
+      ? "Accepted"
+      : raw === "Rejected"
+      ? "Rejected"
+      : "Pending";
+  };
+
+  // Filtered applications based on active filters
+  const filteredApplications = activeFilters.length
+    ? applications.filter((app) => activeFilters.includes(getStatus(app)))
+    : applications;
+
+  // Pagination
   const currentPage = pageMap[id] || 1;
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const paginatedApplicants = filteredApplications.slice(startIndex, endIndex);
   const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE);
 
+  // Counts (based on full applications, not filtered)
   const acceptedCount = applications.filter(
-    (a) => a.status === "Accepted"
+    (a) => getStatus(a) === "Accepted"
   ).length;
   const rejectedCount = applications.filter(
-    (a) => a.status === "Rejected"
+    (a) => getStatus(a) === "Rejected"
   ).length;
+  const pendingCount = applications.filter(
+    (a) => getStatus(a) === "Pending"
+  ).length;
+
+  // Toggle handler for filters
+  const toggleFilter = (status) => {
+    setActiveFilters(
+      (prev) =>
+        prev.includes(status)
+          ? prev.filter((s) => s !== status) // remove if active
+          : [...prev, status] // add if not active
+    );
+  };
 
   // Handler to change mentorship status
   const handleStatusChange = async (mentorshipId, currentStatus, newStatus) => {
@@ -292,15 +325,15 @@ const MyMentorshipApplicationsTable = ({
       </div>
 
       {/* Applicants Info */}
-      <div className="py-4 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div className="py-4 grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
         {/* Total Applicants Card */}
-        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
-          {/* Icon */}
+        <div
+          className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200 cursor-pointer"
+          onClick={() => setActiveFilters([])}
+        >
           <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
             <IoIosEye className="w-5 h-5" />
           </div>
-
-          {/* length */}
           <div>
             <p className="text-sm text-gray-500">Total Applicants</p>
             <p className="text-lg font-bold text-gray-700">
@@ -310,13 +343,18 @@ const MyMentorshipApplicationsTable = ({
         </div>
 
         {/* Accepted Applicants */}
-        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
-          {/* Icon */}
+        <div
+          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer
+                  ${
+                    activeFilters.includes("Accepted")
+                      ? "bg-green-100"
+                      : "bg-gray-50"
+                  }`}
+          onClick={() => toggleFilter("Accepted")}
+        >
           <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
             <FaCheck className="w-5 h-5" />
           </div>
-
-          {/* length */}
           <div>
             <p className="text-sm text-gray-500">Accepted</p>
             <p className="text-lg font-bold text-green-600">{acceptedCount}</p>
@@ -324,16 +362,40 @@ const MyMentorshipApplicationsTable = ({
         </div>
 
         {/* Rejected Applicants */}
-        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
-          {/* Icon */}
+        <div
+          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer
+                  ${
+                    activeFilters.includes("Rejected")
+                      ? "bg-red-100"
+                      : "bg-gray-50"
+                  }`}
+          onClick={() => toggleFilter("Rejected")}
+        >
           <div className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
             <ImCross className="w-5 h-5" />
           </div>
-
-          {/* length */}
           <div>
             <p className="text-sm text-gray-500">Rejected</p>
             <p className="text-lg font-bold text-red-600">{rejectedCount}</p>
+          </div>
+        </div>
+
+        {/* Pending Applicants */}
+        <div
+          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer
+                  ${
+                    activeFilters.includes("Pending")
+                      ? "bg-yellow-100"
+                      : "bg-gray-50"
+                  }`}
+          onClick={() => toggleFilter("Pending")}
+        >
+          <div className="bg-yellow-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+            <MdPendingActions className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Pending</p>
+            <p className="text-lg font-bold text-yellow-600">{pendingCount}</p>
           </div>
         </div>
       </div>

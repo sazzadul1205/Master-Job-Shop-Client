@@ -12,6 +12,7 @@ const TagInput = ({
   removeItem,
   label = "Items",
   placeholder = "Add new item",
+  showNumbers = false, // NEW: directive from parent
 }) => {
   // Local State
   const [newValue, setNewValue] = useState("");
@@ -41,6 +42,8 @@ const TagInput = ({
               onClick={() => removeItem(index)}
               className="flex items-center border border-gray-600 font-semibold text-gray-800 gap-2 px-5 py-1 rounded-full cursor-pointer hover:bg-gray-100 transition-all duration-200 text-sm"
             >
+              {/* Conditionally render number */}
+              {showNumbers && <span>{index + 1}.</span>}
               {item.value || `${label} #${index + 1}`} <RxCross2 />
             </div>
           ))
@@ -85,6 +88,7 @@ TagInput.propTypes = {
   removeItem: PropTypes.func.isRequired,
   label: PropTypes.string,
   placeholder: PropTypes.string,
+  showNumbers: PropTypes.bool, // NEW
 };
 
 export default TagInput;

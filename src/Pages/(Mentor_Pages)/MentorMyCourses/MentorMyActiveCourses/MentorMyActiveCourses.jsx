@@ -8,8 +8,6 @@ const MentorMyActiveCourses = ({ error, refetch, CoursesData, isLoading }) => {
   // Error State
   if (error) return <Error />;
 
-  console.log(CoursesData[9]);
-
   return (
     <div className="text-black">
       {/* Title */}

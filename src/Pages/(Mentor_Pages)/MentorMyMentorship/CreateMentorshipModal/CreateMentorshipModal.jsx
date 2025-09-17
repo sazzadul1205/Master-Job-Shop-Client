@@ -929,7 +929,7 @@ const CreateMentorshipModal = ({ refetch }) => {
             ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
             `}
         >
-          {"Create Mentor Profile"}
+          {loading ? "Creating..." : "Create Mentorship"}
         </button>
       </form>
     </div>

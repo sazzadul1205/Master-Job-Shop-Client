@@ -64,6 +64,46 @@ const CreateCourseModal = ({ refetch }) => {
     name: "tags",
   });
 
+  // Modules
+  const {
+    fields: modulesFields,
+    append: appendModules,
+    remove: removeModules,
+  } = useFieldArray({
+    control,
+    name: "modules",
+  });
+
+  // Skills Covered
+  const {
+    fields: skillsCoveredFields,
+    append: appendSkillsCovered,
+    remove: removeSkillsCovered,
+  } = useFieldArray({
+    control,
+    name: "skillsCovered",
+  });
+
+  // Learning Activity
+  const {
+    fields: learningActivityFields,
+    append: appendLearningActivity,
+    remove: removeLearningActivity,
+  } = useFieldArray({
+    control,
+    name: "learningActivity",
+  });
+
+  // Prerequisites
+  const {
+    fields: PrerequisitesFields,
+    append: appendPrerequisites,
+    remove: removePrerequisites,
+  } = useFieldArray({
+    control,
+    name: "Prerequisites",
+  });
+
   // Close Modal and Clear Errors
   const handleClose = () => {
     // Close Modal after success
@@ -253,6 +293,95 @@ const CreateCourseModal = ({ refetch }) => {
             </div>
           </div>
         </div>
+
+        {/* Course Structure */}
+        <div className="space-y-4">
+          {/* Title */}
+          <h3 className="text-lg font-semibold pb-0 mb-0">Course Structure</h3>
+
+          {/* Divider */}
+          <p className="bg-gray-500 p-[1px] mt-2 mb-5" />
+
+          {/* Duration & Modules */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+            {/* Total Duration (In Hours) */}
+            <FormInput
+              label="Total Duration (In Hours)"
+              type="number"
+              required
+              placeholder="Enter total Hours"
+              register={register("durationHours", {
+                required: "Total duration is required",
+                min: { value: 1, message: "Duration must be at least 1 hour" },
+              })}
+              error={errors.durationHours}
+            />
+
+            {/* Number Of Modules */}
+            <FormInput
+              label="Number Of Modules"
+              type="number"
+              required
+              placeholder="Enter Number of Modules"
+              register={register("modulesNumber", {
+                required: "Modules are required",
+                min: { value: 1, message: "There must be at least 1 module" },
+              })}
+              error={errors.modules}
+            />
+          </div>
+
+          {/* Modules TagInput */}
+          <TagInput
+            items={modulesFields}
+            appendItem={appendModules}
+            removeItem={removeModules}
+            showNumbers={true}
+            label="Modules Name"
+            placeholder="Add a Module"
+          />
+
+          {/* Skills Covered TagInput */}
+          <TagInput
+            items={skillsCoveredFields}
+            appendItem={appendSkillsCovered}
+            removeItem={removeSkillsCovered}
+            showNumbers={true}
+            label="Skills Covered"
+            placeholder="Add a Covered Skilled"
+          />
+
+          {/* Learning Activity TagInput */}
+          <TagInput
+            items={learningActivityFields}
+            appendItem={appendLearningActivity}
+            removeItem={removeLearningActivity}
+            showNumbers={true}
+            label="Learning Activity"
+            placeholder="Add a Learning Activity"
+          />
+
+          {/* Prerequisites TagInput */}
+          <TagInput
+            items={PrerequisitesFields}
+            appendItem={appendPrerequisites}
+            removeItem={removePrerequisites}
+            showNumbers={true}
+            label="Prerequisites"
+            placeholder="Add a Prerequisite"
+          />
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow 
+            ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
+            `}
+        >
+          {loading ? "Creating..." : "Create Course"}
+        </button>
       </form>
     </div>
   );

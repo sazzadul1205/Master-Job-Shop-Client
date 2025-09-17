@@ -18,6 +18,7 @@ import FormInput from "../../../../Shared/FormInput/FormInput";
 import { LevelOptions } from "../../../../Shared/Lists/LevelOptions ";
 import { LanguageOptions } from "../../../../Shared/Lists/LanguageOptions";
 import { CategoryOptions } from "../../../../Shared/Lists/CategoryOptions";
+import { TypeOptions } from "../../../../Shared/Lists/TypeOptions";
 
 // eslint-disable-next-line react/prop-types
 const CreateCourseModal = ({ refetch }) => {
@@ -35,6 +36,7 @@ const CreateCourseModal = ({ refetch }) => {
     reset,
     control,
     register,
+    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -370,6 +372,160 @@ const CreateCourseModal = ({ refetch }) => {
             label="Prerequisites"
             placeholder="Add a Prerequisite"
           />
+        </div>
+
+        {/* Schedule */}
+        <div className="space-y-4">
+          {/* Title */}
+          <h3 className="text-lg font-semibold pb-0 mb-0">Course Schedule</h3>
+
+          {/* Divider */}
+          <p className="bg-gray-500 p-[1px] mt-2 mb-5" />
+
+          {/* Type & Sessions Per Week */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Type */}
+            <FormInput
+              as="select"
+              label="Type"
+              required
+              placeholder="Select a Type"
+              options={TypeOptions}
+              register={register("type", {
+                required: "Type is required",
+              })}
+              error={errors.type}
+            />
+
+            {/* Sessions Per Week */}
+            <FormInput
+              label="Sessions Per Week"
+              type="number"
+              placeholder="e.g., 2"
+              required
+              register={register("sessionsPerWeek", {
+                required: "Required",
+                min: { value: 1, message: "Must be at least 1" },
+                max: { value: 7, message: "Cannot exceed 7 sessions per week" },
+              })}
+              error={errors.sessionsPerWeek}
+            />
+          </div>
+
+          {/* Session Days */}
+          <div className="space-y-2">
+            {/* Label */}
+            <label className="block font-medium text-sm">Session Days</label>
+
+            {/* Days Checkboxes */}
+            <div className="grid grid-cols-7 gap-2">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
+                const selectedDays = watch("sessionDays") || [];
+                const sessionsPerWeek = Number(watch("sessionsPerWeek")) || 0;
+                const isSelected = selectedDays.includes(day);
+
+                // Disable unchecked boxes if limit reached
+                const disabled =
+                  !isSelected && selectedDays.length >= sessionsPerWeek;
+
+                return (
+                  <label
+                    key={day}
+                    className={`cursor-pointer px-2 py-2 rounded-lg border text-center transition-colors duration-200 flex items-center justify-center ${
+                      isSelected
+                        ? "bg-blue-500 text-white border-blue-500"
+                        : "bg-gray-100 text-gray-700 border-gray-300"
+                    } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    <input
+                      type="checkbox"
+                      value={day}
+                      {...register("sessionDays")}
+                      disabled={disabled}
+                      className="hidden"
+                    />
+                    {day}
+                  </label>
+                );
+              })}
+            </div>
+
+            {/* Error message if limit exceeded */}
+            {watch("sessionDays")?.length >
+              Number(watch("sessionsPerWeek")) && (
+              <p className="text-red-500 text-sm mt-1">
+                Maximum {watch("sessionsPerWeek")} sessions per week allowed.
+              </p>
+            )}
+          </div>
+
+          {/* Start & End Time */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Start Time */}
+            <FormInput
+              label="Start Time"
+              required
+              type="time"
+              placeholder="Select Start Time..."
+              register={register("startTime", {
+                required: "Start Time is required",
+              })}
+              error={errors.startTime}
+            />
+
+            {/* End Time */}
+            <FormInput
+              label="End Time"
+              required
+              type="time"
+              placeholder="Select End Time..."
+              register={register("endTime", {
+                required: "End Time is required",
+              })}
+              error={errors.endTime}
+            />
+          </div>
+
+          {/* Start & End Date */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Start Date */}
+            <FormInput
+              label="Start Date"
+              required
+              type="date"
+              placeholder="Select Start Date..."
+              register={register("startDate", {
+                required: "Start Date is required",
+              })}
+              error={errors.startDate}
+            />
+
+            {/* End Date (Estimated) */}
+            <FormInput
+              label="End Date (Estimated)"
+              required
+              type="date"
+              placeholder="Select End Date..."
+              register={register("endDate", {
+                required: "End Date is required",
+                validate: (value) => {
+                  const start = new Date(getValues("startDate"));
+                  const end = new Date(value);
+                  return end >= start || "End Date cannot be before Start Date";
+                },
+              })}
+              error={errors.endDate}
+            />
+          </div>
+        </div>
+
+        {/* Schedule */}
+        <div className="space-y-4">
+          {/* Title */}
+          <h3 className="text-lg font-semibold pb-0 mb-0">Course Schedule</h3>
+
+          {/* Divider */}
+          <p className="bg-gray-500 p-[1px] mt-2 mb-5" />
         </div>
 
         {/* Submit Button */}

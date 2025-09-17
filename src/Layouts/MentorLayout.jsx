@@ -69,7 +69,7 @@ const sidebarLinks = [
   {
     title: "Course Management",
     links: [
-      { label: "My Course's", path: "/courses/my", icon: MyCoursesIcon },
+      { label: "My Course's", path: "/Mentor/MyCourses", icon: MyCoursesIcon },
       {
         label: "Course Applications Management",
         path: "/courses/applications",

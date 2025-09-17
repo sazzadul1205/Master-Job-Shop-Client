@@ -129,8 +129,6 @@ const MentorMyMentorshipApplications = () => {
         <h3 className="font-bold text-3xl text-gray-700">
           Mentorship Applications Management
         </h3>
-
-        <button onClick={() => refetchAll()}>Refetch</button>
       </div>
 
       {/* Filters */}

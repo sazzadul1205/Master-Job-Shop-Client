@@ -98,6 +98,7 @@ import MentorLayout from "./Layouts/MentorLayout";
 import MentorMyMentorship from "./Pages/(Mentor_Pages)/MentorMyMentorship/MentorMyMentorship";
 import MentorProfile from "./Pages/(Mentor_Pages)/MentorProfile/MentorProfile";
 import MentorMyMentorshipApplications from "./Pages/(Mentor_Pages)/MentorMyMentorshipApplications/MentorMyMentorshipApplications";
+import MentorMyCourses from "./Pages/(Mentor_Pages)/MentorMyCourses/MentorMyCourses";
 
 const queryClient = new QueryClient();
 
@@ -408,6 +409,8 @@ createRoot(document.getElementById("root")).render(
                 path="/Mentor/MentorshipApplications"
                 element={<MentorMyMentorshipApplications />}
               />
+
+              <Route path="/Mentor/MyCourses" element={<MentorMyCourses />} />
 
               {/* Mentor Profile */}
               <Route path="/Mentor/Profile" element={<MentorProfile />} />

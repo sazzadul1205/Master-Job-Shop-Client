@@ -9,181 +9,19 @@ import { useFieldArray, useForm } from "react-hook-form";
 
 // Icons
 import { ImCross } from "react-icons/im";
+import { FaPaste } from "react-icons/fa";
 
 // Shared
 import TagInput from "../../../../Shared/TagInput/TagInput";
 import FormInput from "../../../../Shared/FormInput/FormInput";
+import { CategoryOptions } from "../../../../Shared/Lists/CategoryOptions";
 import WeeklyPlanInput from "./WeeklyPlanInput/WeeklyPlanInput";
 
 // Hooks
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import { FaPaste } from "react-icons/fa";
-import { Tooltip } from "react-tooltip";
 
-// Category Options
-const CategoryOptions = [
-  {
-    value: "technology",
-    label: "Technology",
-    subcategories: [
-      "AI",
-      "Web Development",
-      "Mobile Development",
-      "Cloud Computing",
-      "DevOps",
-      "Data Science",
-      "Cybersecurity",
-      "Blockchain",
-      "Game Development",
-      "UI/UX Design",
-      "Software Engineering",
-      "IoT",
-      "AR/VR",
-      "Quantum Computing",
-    ],
-  },
-  {
-    value: "business",
-    label: "Business & Finance",
-    subcategories: [
-      "Finance",
-      "Investing",
-      "Marketing",
-      "Sales",
-      "Management",
-      "Entrepreneurship",
-      "Business Strategy",
-      "Project Management",
-      "Accounting",
-      "Economics",
-      "E-commerce",
-      "Startups",
-    ],
-  },
-  {
-    value: "arts",
-    label: "Arts & Creative",
-    subcategories: [
-      "Music",
-      "Design",
-      "Writing",
-      "Film & Media",
-      "Painting",
-      "Photography",
-      "Graphic Design",
-      "Sculpture",
-      "Fashion Design",
-      "Animation",
-      "Interior Design",
-      "Creative Writing",
-    ],
-  },
-  {
-    value: "science",
-    label: "Science & Research",
-    subcategories: [
-      "Physics",
-      "Biology",
-      "Chemistry",
-      "Astronomy",
-      "Mathematics",
-      "Engineering",
-      "Environmental Science",
-      "Geology",
-      "Research Methodology",
-      "Statistics",
-      "Genetics",
-    ],
-  },
-  {
-    value: "health",
-    label: "Health & Wellness",
-    subcategories: [
-      "Yoga",
-      "Fitness",
-      "Medicine",
-      "Nutrition",
-      "Meditation",
-      "Mental Health",
-      "Physiotherapy",
-      "Public Health",
-      "Alternative Medicine",
-      "Wellness Coaching",
-    ],
-  },
-  {
-    value: "personal_dev",
-    label: "Personal Development & Education",
-    subcategories: [
-      "Leadership",
-      "Study Skills",
-      "Career Guidance",
-      "Public Speaking",
-      "Time Management",
-      "Language Learning",
-      "Personal Development",
-      "Critical Thinking",
-      "Emotional Intelligence",
-      "Mindfulness",
-      "Goal Setting",
-    ],
-  },
-  {
-    value: "lifestyle",
-    label: "Lifestyle & Hobbies",
-    subcategories: [
-      "Travel",
-      "Sports",
-      "Gaming",
-      "Fashion",
-      "Cooking",
-      "Gardening",
-      "Photography",
-      "DIY Projects",
-      "Pets & Animal Care",
-      "Music Instruments",
-      "Crafts",
-    ],
-  },
-  {
-    value: "social_impact",
-    label: "Social Impact & Volunteering",
-    subcategories: [
-      "Nonprofit Management",
-      "Community Service",
-      "Environmental Activism",
-      "Social Entrepreneurship",
-      "Fundraising",
-      "Advocacy",
-    ],
-  },
-  {
-    value: "tech_entrepreneurship",
-    label: "Tech Entrepreneurship",
-    subcategories: [
-      "Startup Incubation",
-      "Pitching & Funding",
-      "Business Models",
-      "Product Management",
-      "Tech Innovation",
-    ],
-  },
-  {
-    value: "languages",
-    label: "Languages & Communication",
-    subcategories: [
-      "English",
-      "Spanish",
-      "French",
-      "Mandarin",
-      "Japanese",
-      "Public Speaking",
-      "Writing Skills",
-      "Communication Skills",
-    ],
-  },
-];
+import { Tooltip } from "react-tooltip";
 
 // Length Options
 const LengthOptions = [
@@ -512,7 +350,7 @@ const CreateMentorshipModal = ({ refetch }) => {
 
       {/* Modal Title */}
       <h3 className="font-bold text-xl text-center mb-4">
-        Create Mentor Profile
+        Create New Mentorship
       </h3>
 
       <button

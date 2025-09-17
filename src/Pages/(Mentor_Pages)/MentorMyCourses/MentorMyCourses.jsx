@@ -1,8 +1,19 @@
 import { useState } from "react";
+
+// Packages
+import { useQuery } from "@tanstack/react-query";
+
+// Icons
 import { FaPlus } from "react-icons/fa6";
+
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
+
+// Components
+import CreateCourseModal from "./CreateCourseModal/CreateCourseModal";
+
+// Modals
 import MentorMyActiveCourses from "./MentorMyActiveCourses/MentorMyActiveCourses";
 
 const MentorMyCourses = () => {
@@ -27,6 +38,11 @@ const MentorMyCourses = () => {
         return Array.isArray(data) ? data : [data];
       }),
   });
+
+  // Refetch All
+  const RefetchAll = () => {
+    ActiveCoursesRefetch();
+  };
 
   // Tabs Data
   const tabs = [
@@ -102,6 +118,12 @@ const MentorMyCourses = () => {
           <p>Comment ......</p>
         )}
       </div>
+
+      {/* Modals */}
+      {/* Create Course Modal */}
+      <dialog id="Create_Course_Modal" className="modal">
+        <CreateCourseModal refetch={RefetchAll} />
+      </dialog>
     </div>
   );
 };

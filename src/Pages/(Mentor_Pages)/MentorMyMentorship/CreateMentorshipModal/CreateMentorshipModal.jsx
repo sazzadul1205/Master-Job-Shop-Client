@@ -390,9 +390,11 @@ const CreateMentorshipModal = ({ refetch }) => {
     try {
       const text = await navigator.clipboard.readText();
       if (!text) return;
-      const jsonData = JSON.parse(text);
 
-      const { applications, ...rest } = jsonData;
+      let jsonData = JSON.parse(text);
+
+      // Remove any 'id' or '_id' fields
+      const { id, _id, applications, ...rest } = jsonData;
 
       // Set subcategory options first
       const selectedCategory = rest.category || "";
@@ -410,7 +412,7 @@ const CreateMentorshipModal = ({ refetch }) => {
           typeof item === "string" ? { value: item, label: item } : item
         ) || [];
 
-      // Then reset the form
+      // Reset the form without id/_id
       reset({
         ...rest,
         category: rest.category || "",

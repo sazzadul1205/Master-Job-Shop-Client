@@ -40,7 +40,7 @@ const MentorMyMentorshipApplications = () => {
     refetch: MyMentorshipRefetch,
     error: MyMentorshipError,
   } = useQuery({
-    queryKey: ["MyMentorship"],
+    queryKey: ["MyMentorshipData"],
     queryFn: () =>
       axiosPublic.get(`/Mentorship?mentorEmail=${user?.email}`).then((res) => {
         const data = res.data;

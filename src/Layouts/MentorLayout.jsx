@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 
+// Packages
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
 // Icons
 import {
   IoAddSharp,
@@ -20,11 +23,17 @@ import MyCoursesIcon from "../assets/MentorLayoutIcons/MyCoursesIcon";
 import DashboardIcon from "../assets/MentorLayoutIcons/DashboardIcon";
 import MyMentorshipIcon from "../assets/MentorLayoutIcons/MyMentorshipIcon";
 import ApplicationsIcon from "../assets/MentorLayoutIcons/ApplicationsIcon";
-import useAuth from "../Hooks/useAuth";
-import useAxiosPublic from "../Hooks/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
+
+// Modal
+import CreateMentorshipModal from "../Pages/(Mentor_Pages)/MentorMyMentorship/CreateMentorshipModal/CreateMentorshipModal";
+
+// Shared
 import Loading from "../Shared/Loading/Loading";
 import Error from "../Shared/Error/Error";
+
+// Hooks
+import useAuth from "../Hooks/useAuth";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 // Sidebar Links
 const sidebarLinks = [
@@ -51,8 +60,9 @@ const sidebarLinks = [
       },
       {
         label: "Create Mentorship",
-        path: "/mentorship/create",
         icon: IoAddSharp,
+        onClick: () =>
+          document.getElementById("Create_Mentorship_Modal").showModal(),
       },
     ],
   },
@@ -96,6 +106,14 @@ const sidebarLinks = [
 const MentorLayout = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
+  const queryClient = useQueryClient();
+
+  // Helper to invalidate all mentorship queries
+  const RefetchAll = () => {
+    queryClient.invalidateQueries({ queryKey: ["MentorshipData"] });
+    queryClient.invalidateQueries({ queryKey: ["MyMentorshipData"] });
+    queryClient.invalidateQueries({ queryKey: ["MyMentorshipApplications"] });
+  };
 
   // State for dropdown visibility
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -115,7 +133,6 @@ const MentorLayout = () => {
     data: MentorData,
     isLoading,
     error,
-    // refetch,
   } = useQuery({
     queryKey: ["MentorData", user?.email],
     queryFn: () =>
@@ -310,66 +327,89 @@ const MentorLayout = () => {
             <div key={i} className="mb-4">
               {section.title && (
                 <h3 className="flex items-center gap-2 font-semibold text-gray-600 pt-3 pb-2 px-2 uppercase">
-                  {/* <GoDotFill /> */}
                   {section.title}
                 </h3>
               )}
 
               <div className="space-y-2">
-                {section.links.map(({ label, path, icon: Icon, scroll }, j) => (
-                  <NavLink
-                    key={j}
-                    to={path}
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden group
-                  ${
-                    isActive
-                      ? "bg-gray-200 text-blue-500"
-                      : "text-gray-700 hover:bg-gray-200"
-                  }`
-                    }
-                  >
-                    {({ isActive }) => (
-                      <>
+                {section.links.map(
+                  ({ label, path, icon: Icon, scroll, onClick }, j) =>
+                    onClick ? (
+                      // Button for links with onClick (like "Create Mentorship")
+                      <button
+                        key={j}
+                        onClick={onClick}
+                        className="flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden group text-gray-700 hover:bg-gray-200 w-full text-left cursor-pointer"
+                      >
                         {/* Icon */}
-                        <Icon
-                          className={`w-[20px] h-[20px] transition-colors duration-300 ${
-                            isActive
-                              ? "text-blue-500 fill-blue-500"
-                              : "text-gray-700 fill-black group-hover:text-blue-500 group-hover:fill-blue-500"
-                          }`}
-                        />
+                        <Icon className="w-[20px] h-[20px] text-gray-700 group-hover:text-blue-500 group-hover:fill-blue-500" />
 
                         {/* Label */}
                         {scroll ? (
                           <div className="relative overflow-hidden w-[220px]">
-                            <p
-                              className={`font-semibold whitespace-nowrap transition-colors duration-300 scroll-text
-                          ${
-                            isActive
-                              ? "text-blue-500"
-                              : "group-hover:text-blue-500"
-                          }`}
-                            >
+                            <p className="font-semibold whitespace-nowrap transition-colors duration-300 group-hover:text-blue-500">
                               {label}
                             </p>
                           </div>
                         ) : (
-                          <p
-                            className={`font-semibold transition-colors duration-300
-                        ${
-                          isActive
-                            ? "text-blue-500"
-                            : "group-hover:text-blue-500"
-                        }`}
-                          >
+                          <p className="font-semibold transition-colors duration-300 group-hover:text-blue-500">
                             {label}
                           </p>
                         )}
-                      </>
-                    )}
-                  </NavLink>
-                ))}
+                      </button>
+                    ) : (
+                      // Default NavLink for normal navigation
+                      <NavLink
+                        key={j}
+                        to={path}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden group ${
+                            isActive
+                              ? "bg-gray-200 text-blue-500"
+                              : "text-gray-700 hover:bg-gray-200"
+                          }`
+                        }
+                      >
+                        {({ isActive }) => (
+                          <>
+                            {/* Icon */}
+                            <Icon
+                              className={`w-[20px] h-[20px] transition-colors duration-300 ${
+                                isActive
+                                  ? "text-blue-500 fill-blue-500"
+                                  : "text-gray-700 fill-black group-hover:text-blue-500 group-hover:fill-blue-500"
+                              }`}
+                            />
+
+                            {/* Label */}
+                            {scroll ? (
+                              <div className="relative overflow-hidden w-[220px]">
+                                <p
+                                  className={`font-semibold whitespace-nowrap transition-colors duration-300 scroll-text ${
+                                    isActive
+                                      ? "text-blue-500"
+                                      : "group-hover:text-blue-500"
+                                  }`}
+                                >
+                                  {label}
+                                </p>
+                              </div>
+                            ) : (
+                              <p
+                                className={`font-semibold transition-colors duration-300 ${
+                                  isActive
+                                    ? "text-blue-500"
+                                    : "group-hover:text-blue-500"
+                                }`}
+                              >
+                                {label}
+                              </p>
+                            )}
+                          </>
+                        )}
+                      </NavLink>
+                    )
+                )}
               </div>
             </div>
           ))}
@@ -380,6 +420,11 @@ const MentorLayout = () => {
           <Outlet />
         </div>
       </div>
+
+      {/* Modals */}
+      <dialog id="Create_Mentorship_Modal" className="modal">
+        <CreateMentorshipModal refetch={RefetchAll} />
+      </dialog>
     </div>
   );
 };

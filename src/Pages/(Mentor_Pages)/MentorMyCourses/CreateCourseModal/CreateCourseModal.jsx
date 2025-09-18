@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
+
 // Packages
+import Swal from "sweetalert2";
+import PropTypes from "prop-types";
+import { Tooltip } from "react-tooltip";
+import { useQuery } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 
 // Icons
-import { FaChevronRight, FaPaste } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
-
-import { Tooltip } from "react-tooltip";
+import { FaChevronRight, FaPaste } from "react-icons/fa";
 
 // Hooks
 import useAuth from "../../../../Hooks/useAuth";
@@ -15,15 +18,12 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 // Shared
 import TagInput from "../../../../Shared/TagInput/TagInput";
 import FormInput from "../../../../Shared/FormInput/FormInput";
+import { TypeOptions } from "../../../../Shared/Lists/TypeOptions";
 import { LevelOptions } from "../../../../Shared/Lists/LevelOptions ";
 import { LanguageOptions } from "../../../../Shared/Lists/LanguageOptions";
 import { CategoryOptions } from "../../../../Shared/Lists/CategoryOptions";
-import { TypeOptions } from "../../../../Shared/Lists/TypeOptions";
 import { CurrencyOptions } from "../../../../Shared/Lists/CurrencyOptions";
 import { PaymentMethodOptions } from "../../../../Shared/Lists/PaymentMethodOptions";
-import { useQuery } from "@tanstack/react-query";
-import Swal from "sweetalert2";
-import PropTypes from "prop-types";
 
 // Helper: format yyyy-mm-dd -> 25 Aug 2023
 const formatDate = (dateStr) => {
@@ -179,7 +179,7 @@ const CreateCourseModal = ({ refetch }) => {
       };
 
       // POST Request
-      await axiosPublic.post("/Courses", payload);
+      await axiosPublic.post("/Course", payload);
 
       // Close Modal and Reset
       handleClose();

@@ -1,6 +1,7 @@
-import PropTypes from "prop-types";
+import { useEffect, useRef, useState } from "react";
 
 // Packages
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
@@ -9,6 +10,7 @@ import DefaultUserLogo from "../../../../../assets/DefaultUserLogo.jpg";
 
 // Icons
 import { ImCross } from "react-icons/im";
+import { FaCalendarAlt, FaUserTie } from "react-icons/fa";
 
 // Shared
 import Error from "../../../../../Shared/Error/Error";
@@ -17,8 +19,6 @@ import CommonButton from "../../../../../Shared/CommonButton/CommonButton";
 
 // Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
-import { FaUserTie } from "react-icons/fa";
-import { useEffect, useRef, useState } from "react";
 
 // Utilities
 const formatPrice = (fee) => {
@@ -106,6 +106,7 @@ const CourseDetailsModal = ({
       </div>
     );
 
+  // If no data
   if (!SelectedCourseData)
     return (
       <div
@@ -211,7 +212,7 @@ const CourseDetailsModal = ({
         <h3 className="text-lg font-semibold text-gray-800 mb-2">
           Description
         </h3>
-        
+
         {/* Description */}
         <p className="text-md text-gray-700 leading-relaxed">
           {SelectedCourseData.description}
@@ -220,44 +221,80 @@ const CourseDetailsModal = ({
 
       {/* Core Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-sm text-gray-700">
+        {/* Category */}
         <p>
-          <strong>Category:</strong> {SelectedCourseData.category} ›{" "}
-          {SelectedCourseData.subCategory}
+          <strong>Category:</strong> {SelectedCourseData?.category ?? "N/A"} ›{" "}
+          {SelectedCourseData?.subCategory ?? "N/A"}
         </p>
+
+        {/* Level */}
         <p>
-          <strong>Level:</strong> {SelectedCourseData.level}
+          <strong>Level:</strong> {SelectedCourseData?.level ?? "N/A"}
         </p>
+
+        {/* Duration */}
         <p>
-          <strong>Duration:</strong> {SelectedCourseData.durationHours} hours
+          <strong>Duration:</strong>{" "}
+          {SelectedCourseData?.durationHours
+            ? `${SelectedCourseData.durationHours} hours`
+            : "Not specified"}
         </p>
+
+        {/* Modules */}
         <p>
-          <strong>Modules:</strong> {SelectedCourseData.modulesNumber}
+          <strong>Modules:</strong>{" "}
+          {SelectedCourseData?.modulesNumber ?? "Not specified"}
         </p>
+
+        {/* Language */}
         <p>
-          <strong>Language:</strong> {SelectedCourseData.language}
+          <strong>Language:</strong> {SelectedCourseData?.language ?? "N/A"}
         </p>
+
+        {/* Certificates */}
         <p>
           <strong>Certificate:</strong>{" "}
-          {SelectedCourseData.certificateAvailability
+          {SelectedCourseData?.certificateAvailability
             ? "Available"
             : "Not included"}
         </p>
+
+        {/* Sessions/Week */}
         <p>
-          <strong>Sessions/Week:</strong> {SelectedCourseData.sessionsPerWeek} •{" "}
-          {SelectedCourseData.sessionDays?.join(", ")}
+          <strong>Sessions/Week:</strong>{" "}
+          {SelectedCourseData?.sessionsPerWeek
+            ? `${SelectedCourseData.sessionsPerWeek} • ${
+                SelectedCourseData?.sessionDays?.join(", ") ||
+                "Days not specified"
+              }`
+            : "Not specified"}
         </p>
+
+        {/* Time */}
         <p>
-          <strong>Time:</strong> {SelectedCourseData.startTime} -{" "}
-          {SelectedCourseData.endTime}
+          <strong>Time:</strong>{" "}
+          {SelectedCourseData?.startTime && SelectedCourseData?.endTime
+            ? `${SelectedCourseData.startTime} - ${SelectedCourseData.endTime}`
+            : "Not specified"}
         </p>
+
+        {/* Schedule */}
         <p>
-          <strong>Schedule:</strong> {formatDate(SelectedCourseData.startDate)}{" "}
-          → {formatDate(SelectedCourseData.endDate)}
+          <strong>Schedule:</strong>{" "}
+          {SelectedCourseData?.startDate && SelectedCourseData?.endDate
+            ? `${formatDate(SelectedCourseData.startDate)} → ${formatDate(
+                SelectedCourseData.endDate
+              )}`
+            : "Not scheduled"}
         </p>
+
+        {/* Fee */}
         <p>
           <strong>Fee:</strong>{" "}
           <span className="text-green-700 font-medium">
-            {formatPrice(SelectedCourseData.fee)}
+            {SelectedCourseData?.fee
+              ? formatPrice(SelectedCourseData.fee)
+              : "Free / Not specified"}
           </span>
         </p>
       </div>
@@ -356,9 +393,28 @@ const CourseDetailsModal = ({
           </Link>
         )}
 
-        <p className="text-xs text-gray-400">
-          Posted: {formatDate(SelectedCourseData.postedAt)}
-        </p>
+        {/* Posted Date */}
+        <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
+          <FaCalendarAlt className="text-gray-400" />
+          <span>
+            Posted on:{" "}
+            <span>
+              {SelectedCourseData?.postedAt
+                ? new Date(SelectedCourseData?.postedAt).toLocaleString(
+                    "en-US",
+                    {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    }
+                  )
+                : "Not specified"}
+            </span>
+          </span>
+        </div>
       </div>
     </div>
   );

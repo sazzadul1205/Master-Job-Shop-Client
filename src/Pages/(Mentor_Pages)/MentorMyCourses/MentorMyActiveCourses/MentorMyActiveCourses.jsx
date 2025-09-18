@@ -1,3 +1,9 @@
+import { useState } from "react";
+
+// Packages
+import Swal from "sweetalert2";
+
+// Icons
 import {
   FaEdit,
   FaEye,
@@ -6,13 +12,19 @@ import {
   FaStar,
   FaTrash,
 } from "react-icons/fa";
+import { GoDot } from "react-icons/go";
+
+// Shared
 import Error from "../../../../Shared/Error/Error";
 import Loading from "../../../../Shared/Loading/Loading";
-import { GoDot } from "react-icons/go";
+
+// Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import { useState } from "react";
-import Swal from "sweetalert2";
+
+// Modal
 import CourseDetailsModal from "../../../(Public_Pages)/Home/FeaturedCourses/CourseDetailsModal/CourseDetailsModal";
+import EditCourseModal from "./EditCourseModal/EditCourseModal";
+import PropTypes from "prop-types";
 
 // Utility: Format Budget Display
 const formatBudget = (amount, currency = "USD", isNegotiable = false) => {
@@ -304,8 +316,68 @@ const MentorMyActiveCourses = ({ error, refetch, CoursesData, isLoading }) => {
           setSelectedCourseID={setSelectedCourseID}
         />
       </dialog>
+
+      {/* Edit Course Modal */}
+      <dialog id="Edit_Course_Modal" className="modal">
+        <EditCourseModal
+          refetch={refetch}
+          selectedCourseID={selectedCourseID}
+          setSelectedCourseID={setSelectedCourseID}
+        />
+      </dialog>
     </div>
   );
+};
+
+// Prop Validation
+MentorMyActiveCourses.propTypes = {
+  error: PropTypes.any, // Can be an error object or message
+  refetch: PropTypes.func.isRequired, // Function to refetch courses
+  CoursesData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string,
+      title: PropTypes.string,
+      subTitle: PropTypes.string,
+      description: PropTypes.string,
+      category: PropTypes.string,
+      subCategory: PropTypes.string,
+      level: PropTypes.string,
+      language: PropTypes.string,
+      certificateAvailability: PropTypes.bool,
+      durationHours: PropTypes.string,
+      modulesNumber: PropTypes.string,
+      type: PropTypes.string,
+      sessionsPerWeek: PropTypes.string,
+      sessionDays: PropTypes.arrayOf(PropTypes.string),
+      startTime: PropTypes.string,
+      endTime: PropTypes.string,
+      fee: PropTypes.shape({
+        isFree: PropTypes.bool,
+        amount: PropTypes.number,
+        discount: PropTypes.number,
+        currency: PropTypes.string,
+        paymentMethod: PropTypes.string,
+        negotiable: PropTypes.bool,
+        paymentLink: PropTypes.string,
+      }),
+      tags: PropTypes.arrayOf(PropTypes.string),
+      modules: PropTypes.arrayOf(PropTypes.string),
+      skillsCovered: PropTypes.arrayOf(PropTypes.string),
+      prerequisites: PropTypes.arrayOf(PropTypes.string),
+      status: PropTypes.string,
+      postedAt: PropTypes.string,
+      Mentor: PropTypes.shape({
+        name: PropTypes.string,
+        email: PropTypes.string,
+        profileImage: PropTypes.string,
+        bio: PropTypes.string,
+        rating: PropTypes.string,
+        position: PropTypes.string,
+      }),
+      archived: PropTypes.bool,
+    })
+  ),
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default MentorMyActiveCourses;

@@ -1,9 +1,9 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 
 // Packages
-import { useFieldArray, useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
+import { useFieldArray, useForm } from "react-hook-form";
 
 // Icons
 import { ImCross } from "react-icons/im";
@@ -12,176 +12,13 @@ import { ImCross } from "react-icons/im";
 import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
 import FormInput from "../../../../../Shared/FormInput/FormInput";
+import { CategoryOptions } from "../../../../../Shared/Lists/CategoryOptions";
 
 // Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 import TagInput from "../../../../../Shared/TagInput/TagInput";
 import WeeklyPlanInput from "../../CreateMentorshipModal/WeeklyPlanInput/WeeklyPlanInput";
-import Swal from "sweetalert2";
-
-// Category Options
-const CategoryOptions = [
-  {
-    value: "technology",
-    label: "Technology",
-    subcategories: [
-      "AI",
-      "Web Development",
-      "Mobile Development",
-      "Cloud Computing",
-      "DevOps",
-      "Data Science",
-      "Cybersecurity",
-      "Blockchain",
-      "Game Development",
-      "UI/UX Design",
-      "Software Engineering",
-      "IoT",
-      "AR/VR",
-      "Quantum Computing",
-    ],
-  },
-  {
-    value: "business",
-    label: "Business & Finance",
-    subcategories: [
-      "Finance",
-      "Investing",
-      "Marketing",
-      "Sales",
-      "Management",
-      "Entrepreneurship",
-      "Business Strategy",
-      "Project Management",
-      "Accounting",
-      "Economics",
-      "E-commerce",
-      "Startups",
-    ],
-  },
-  {
-    value: "arts",
-    label: "Arts & Creative",
-    subcategories: [
-      "Music",
-      "Design",
-      "Writing",
-      "Film & Media",
-      "Painting",
-      "Photography",
-      "Graphic Design",
-      "Sculpture",
-      "Fashion Design",
-      "Animation",
-      "Interior Design",
-      "Creative Writing",
-    ],
-  },
-  {
-    value: "science",
-    label: "Science & Research",
-    subcategories: [
-      "Physics",
-      "Biology",
-      "Chemistry",
-      "Astronomy",
-      "Mathematics",
-      "Engineering",
-      "Environmental Science",
-      "Geology",
-      "Research Methodology",
-      "Statistics",
-      "Genetics",
-    ],
-  },
-  {
-    value: "health",
-    label: "Health & Wellness",
-    subcategories: [
-      "Yoga",
-      "Fitness",
-      "Medicine",
-      "Nutrition",
-      "Meditation",
-      "Mental Health",
-      "Physiotherapy",
-      "Public Health",
-      "Alternative Medicine",
-      "Wellness Coaching",
-    ],
-  },
-  {
-    value: "personal_dev",
-    label: "Personal Development & Education",
-    subcategories: [
-      "Leadership",
-      "Study Skills",
-      "Career Guidance",
-      "Public Speaking",
-      "Time Management",
-      "Language Learning",
-      "Personal Development",
-      "Critical Thinking",
-      "Emotional Intelligence",
-      "Mindfulness",
-      "Goal Setting",
-    ],
-  },
-  {
-    value: "lifestyle",
-    label: "Lifestyle & Hobbies",
-    subcategories: [
-      "Travel",
-      "Sports",
-      "Gaming",
-      "Fashion",
-      "Cooking",
-      "Gardening",
-      "Photography",
-      "DIY Projects",
-      "Pets & Animal Care",
-      "Music Instruments",
-      "Crafts",
-    ],
-  },
-  {
-    value: "social_impact",
-    label: "Social Impact & Volunteering",
-    subcategories: [
-      "Nonprofit Management",
-      "Community Service",
-      "Environmental Activism",
-      "Social Entrepreneurship",
-      "Fundraising",
-      "Advocacy",
-    ],
-  },
-  {
-    value: "tech_entrepreneurship",
-    label: "Tech Entrepreneurship",
-    subcategories: [
-      "Startup Incubation",
-      "Pitching & Funding",
-      "Business Models",
-      "Product Management",
-      "Tech Innovation",
-    ],
-  },
-  {
-    value: "languages",
-    label: "Languages & Communication",
-    subcategories: [
-      "English",
-      "Spanish",
-      "French",
-      "Mandarin",
-      "Japanese",
-      "Public Speaking",
-      "Writing Skills",
-      "Communication Skills",
-    ],
-  },
-];
+import PropTypes from "prop-types";
 
 // Helper: format yyyy-mm-dd -> yyyy-mm-dd
 const formatDateForInput = (dateStr) => {
@@ -1109,15 +946,22 @@ const EditMentorshipModal = ({
         <button
           type="submit"
           disabled={loading}
-          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow 
-            ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
-            `}
+          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow ${
+            loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+          }`}
         >
-          {"Create Mentor Profile"}
+          {loading ? "Updating..." : "Update Mentorship"}
         </button>
       </form>
     </div>
   );
+};
+
+// Prop Types
+EditMentorshipModal.propTypes = {
+  refetch: PropTypes.func.isRequired,
+  selectedMentorshipID: PropTypes.string,
+  setSelectedMentorshipID: PropTypes.func.isRequired,
 };
 
 export default EditMentorshipModal;

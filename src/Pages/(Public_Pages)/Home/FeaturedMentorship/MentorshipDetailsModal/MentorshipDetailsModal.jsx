@@ -111,6 +111,7 @@ const MentorshipDetailsModal = ({
       </div>
     );
 
+  // If no data
   if (!mentorship)
     return (
       <div

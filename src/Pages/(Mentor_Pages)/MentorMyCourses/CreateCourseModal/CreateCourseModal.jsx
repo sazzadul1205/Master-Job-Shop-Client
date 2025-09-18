@@ -23,6 +23,7 @@ import { CurrencyOptions } from "../../../../Shared/Lists/CurrencyOptions";
 import { PaymentMethodOptions } from "../../../../Shared/Lists/PaymentMethodOptions";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import PropTypes from "prop-types";
 
 // Helper: format yyyy-mm-dd -> 25 Aug 2023
 const formatDate = (dateStr) => {
@@ -34,7 +35,6 @@ const formatDate = (dateStr) => {
     year: "numeric",
   });
 };
-
 
 const CreateCourseModal = ({ refetch }) => {
   const axiosPublic = useAxiosPublic();
@@ -179,7 +179,7 @@ const CreateCourseModal = ({ refetch }) => {
       };
 
       // POST Request
-      await axiosPublic.post("/Mentorship", payload);
+      await axiosPublic.post("/Courses", payload);
 
       // Close Modal and Reset
       handleClose();
@@ -746,6 +746,10 @@ const CreateCourseModal = ({ refetch }) => {
       </form>
     </div>
   );
+};
+
+CreateCourseModal.propTypes = {
+  refetch: PropTypes.func.isRequired,
 };
 
 export default CreateCourseModal;

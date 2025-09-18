@@ -32,7 +32,7 @@ const MentorMyCourses = () => {
   } = useQuery({
     queryKey: ["CoursesData", "active"],
     queryFn: () =>
-      axiosPublic.get(`/Courses`).then((res) => {
+      axiosPublic.get(`/Courses?mentorEmail=${user?.email}`).then((res) => {
         const data = res.data;
         // Ensure the result is always an array
         return Array.isArray(data) ? data : [data];

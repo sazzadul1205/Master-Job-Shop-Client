@@ -1,6 +1,6 @@
 export const CategoryOptions = [
   {
-    value: "technology",
+    value: "Technology",
     label: "Technology",
     subcategories: [
       "AI",
@@ -20,7 +20,7 @@ export const CategoryOptions = [
     ],
   },
   {
-    value: "business",
+    value: "Business",
     label: "Business & Finance",
     subcategories: [
       "Finance",
@@ -38,7 +38,7 @@ export const CategoryOptions = [
     ],
   },
   {
-    value: "arts",
+    value: "Arts",
     label: "Arts & Creative",
     subcategories: [
       "Music",
@@ -56,7 +56,7 @@ export const CategoryOptions = [
     ],
   },
   {
-    value: "science",
+    value: "Science",
     label: "Science & Research",
     subcategories: [
       "Physics",
@@ -73,7 +73,7 @@ export const CategoryOptions = [
     ],
   },
   {
-    value: "health",
+    value: "Health",
     label: "Health & Wellness",
     subcategories: [
       "Yoga",
@@ -89,7 +89,7 @@ export const CategoryOptions = [
     ],
   },
   {
-    value: "personal_dev",
+    value: "Personal Dev",
     label: "Personal Development & Education",
     subcategories: [
       "Leadership",
@@ -106,7 +106,7 @@ export const CategoryOptions = [
     ],
   },
   {
-    value: "lifestyle",
+    value: "Life Style",
     label: "Lifestyle & Hobbies",
     subcategories: [
       "Travel",
@@ -123,7 +123,7 @@ export const CategoryOptions = [
     ],
   },
   {
-    value: "social_impact",
+    value: "Social Impact",
     label: "Social Impact & Volunteering",
     subcategories: [
       "Nonprofit Management",
@@ -135,7 +135,7 @@ export const CategoryOptions = [
     ],
   },
   {
-    value: "tech_entrepreneurship",
+    value: "Tech Entrepreneurship",
     label: "Tech Entrepreneurship",
     subcategories: [
       "Startup Incubation",
@@ -146,7 +146,7 @@ export const CategoryOptions = [
     ],
   },
   {
-    value: "languages",
+    value: "Languages",
     label: "Languages & Communication",
     subcategories: [
       "English",

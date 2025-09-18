@@ -189,7 +189,7 @@ const MentorMyActiveMentorship = ({
               key={idx}
               className="relative bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-2xl"
             >
-              {/* 🔖 Status Badge */}
+              {/* Status Badge */}
               <span
                 className={`absolute -top-3 -left-3 px-5 py-1 text-sm font-semibold rounded-full shadow-xl ${
                   ["active", "closed"].includes(
@@ -218,7 +218,7 @@ const MentorMyActiveMentorship = ({
                   : "Unknown"}
               </span>
 
-              {/* ⭐ Star Toggle */}
+              {/* Star Toggle */}
               <button
                 onClick={() => toggleStar(mentorship._id)}
                 className="absolute top-3 right-3 text-2xl cursor-pointer transition-colors group"

@@ -51,6 +51,8 @@ const MentorMyCourses = () => {
     { id: "archived", label: "Archived Courses" },
   ];
 
+  // console.log(ActiveCoursesData[0]);
+
   return (
     <div>
       {/* Header */}

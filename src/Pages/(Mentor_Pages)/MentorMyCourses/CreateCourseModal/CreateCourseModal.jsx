@@ -35,7 +35,7 @@ const formatDate = (dateStr) => {
   });
 };
 
-// eslint-disable-next-line react/prop-types
+
 const CreateCourseModal = ({ refetch }) => {
   const axiosPublic = useAxiosPublic();
   const { user } = useAuth();
@@ -138,7 +138,7 @@ const CreateCourseModal = ({ refetch }) => {
     setLoading(false);
     setSubOptions([]);
     refetch();
-    // reset();
+    reset();
   };
 
   const onSubmit = async (data) => {
@@ -149,21 +149,20 @@ const CreateCourseModal = ({ refetch }) => {
     const formattedStart = formatDate(data.startDate);
     const formattedEnd = formatDate(data.endDate);
 
+    // Helper: map values
+    const formatArray = (fields, showNumbers = false) =>
+      fields.map((item, idx) =>
+        showNumbers ? `${idx + 1}. ${item.value}` : item.value
+      );
     try {
       // Prepare payload
       const payload = {
         ...data,
-        tags: data.tags?.map((item) => ({ value: item.value })) || [],
-        skills: data.skills?.map((item) => ({ value: item.value })) || [],
-        attachments:
-          data.attachments?.map((item) => ({ value: item.value })) || [],
-        modules: modulesFields?.map((item) => ({ value: item.value })) || [],
-        skillsCovered:
-          skillsCoveredFields?.map((item) => ({ value: item.value })) || [],
-        learningActivity:
-          learningActivityFields?.map((item) => ({ value: item.value })) || [],
-        prerequisites:
-          PrerequisitesFields?.map((item) => ({ value: item.value })) || [],
+        tags: formatArray(tagsFields),
+        modules: formatArray(modulesFields),
+        skillsCovered: formatArray(skillsCoveredFields),
+        prerequisites: formatArray(PrerequisitesFields),
+        learningActivity: formatArray(learningActivityFields),
         endDate: formattedEnd,
         startDate: formattedStart,
         status: "closed",
@@ -180,8 +179,7 @@ const CreateCourseModal = ({ refetch }) => {
       };
 
       // POST Request
-      // await axiosPublic.post("/Mentorship", payload);
-      console.log("Payload :", payload);
+      await axiosPublic.post("/Mentorship", payload);
 
       // Close Modal and Reset
       handleClose();
@@ -246,6 +244,137 @@ const CreateCourseModal = ({ refetch }) => {
 
       {/* Modal Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Course Information */}
+        <div className="space-y-4">
+          {/* Title */}
+          <FormInput
+            label="Title"
+            required
+            placeholder="Course Title..."
+            register={register("title", { required: "Title is required" })}
+            error={errors.title}
+          />
+
+          {/* Sub Title */}
+          <FormInput
+            label="Sub Title"
+            required
+            placeholder="Course Sub Title..."
+            register={register("subTitle", {
+              required: "Sub Title is required",
+            })}
+            error={errors.subTitle}
+          />
+
+          {/* Description */}
+          <FormInput
+            as="textarea"
+            label="Description"
+            required
+            placeholder="Enter Course description..."
+            register={register("description", {
+              required: "Description is required",
+            })}
+            error={errors.description}
+            rows={6}
+          />
+
+          {/* Category & Subcategory */}
+          <div className="flex gap-4">
+            {/* Category */}
+            <FormInput
+              as="select"
+              label="Category"
+              required
+              placeholder="Select a Category"
+              options={CategoryOptions.map((c) => ({
+                value: c.value,
+                label: c.label,
+              }))}
+              register={register("category", {
+                required: "Category is required",
+              })}
+              error={errors.category}
+            />
+
+            {/* Subcategory */}
+            <FormInput
+              as="select"
+              label="Sub Category"
+              required
+              placeholder="Select a Sub Category"
+              options={subOptions}
+              register={register("subCategory", {
+                required: "Sub Category is required",
+              })}
+              error={errors.subCategory}
+            />
+          </div>
+
+          {/* Level & Language */}
+          <div className="flex gap-4">
+            {/* Level */}
+            <FormInput
+              as="select"
+              label="Level"
+              required
+              placeholder="Select a Level"
+              options={LevelOptions}
+              register={register("level", {
+                required: "Level is required",
+              })}
+              error={errors.level}
+            />
+
+            {/* Language */}
+            <FormInput
+              as="select"
+              label="Language"
+              required
+              placeholder="Select a Language"
+              options={LanguageOptions}
+              register={register("language", {
+                required: "Language is required",
+              })}
+              error={errors.language}
+            />
+          </div>
+
+          {/* Tags TagInput */}
+          <TagInput
+            items={tagsFields}
+            appendItem={appendTags}
+            removeItem={removeTags}
+            label="Tags"
+            placeholder="Add a Tag"
+          />
+
+          {/* Certificate Availability */}
+          <div className="flex flex-col md:flex-row md:items-center gap-3">
+            {/* Label */}
+            <label className="block font-medium text-gray-700 md:w-48">
+              Certificate Available <span className="text-red-500">*</span>
+            </label>
+
+            {/* Toggle */}
+            <div className="flex items-center gap-3">
+              <span className="font-semibold text-gray-600">No</span>
+
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  {...register("certificateAvailability")}
+                />
+                <div className="w-12 h-6 bg-gray-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-300"></div>
+                <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md peer-checked:translate-x-6 transition-transform duration-300"></div>
+              </label>
+
+              <span className="font-semibold text-gray-600">Yes</span>
+            </div>
+          </div>
+        </div>
+
         {/* Course Structure */}
         <div className="space-y-4">
           {/* Title */}
@@ -258,7 +387,7 @@ const CreateCourseModal = ({ refetch }) => {
 
           {/* Duration & Modules */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-            {/* Duration */}
+            {/* Total Duration (In Hours) */}
             <FormInput
               label="Total Duration (In Hours)"
               type="number"
@@ -271,7 +400,7 @@ const CreateCourseModal = ({ refetch }) => {
               error={errors.durationHours}
             />
 
-            {/* Number of Modules */}
+            {/* Number Of Modules */}
             <FormInput
               label="Number Of Modules"
               type="number"
@@ -324,6 +453,284 @@ const CreateCourseModal = ({ refetch }) => {
             label="Prerequisites"
             placeholder="Add a Prerequisite"
           />
+        </div>
+
+        {/* Schedule */}
+        <div className="space-y-4">
+          {/* Title */}
+          <h3 className="flex items-center gap-2 text-lg font-semibold pb-0 mb-0">
+            <FaChevronRight className="text-gray-500s" /> Course Schedule
+          </h3>
+
+          {/* Divider */}
+          <p className="bg-gray-500 p-[1px] mt-2 mb-5" />
+
+          {/* Type & Sessions Per Week */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Type */}
+            <FormInput
+              as="select"
+              label="Type"
+              required
+              placeholder="Select a Type"
+              options={TypeOptions}
+              register={register("type", {
+                required: "Type is required",
+              })}
+              error={errors.type}
+            />
+
+            {/* Sessions Per Week */}
+            <FormInput
+              label="Sessions Per Week"
+              type="number"
+              placeholder="e.g., 2"
+              required
+              register={register("sessionsPerWeek", {
+                required: "Required",
+                min: { value: 1, message: "Must be at least 1" },
+                max: { value: 7, message: "Cannot exceed 7 sessions per week" },
+              })}
+              error={errors.sessionsPerWeek}
+            />
+          </div>
+
+          {/* Session Days */}
+          <div className="space-y-2">
+            {/* Label */}
+            <label className="block font-medium text-sm">Session Days</label>
+
+            {/* Days Checkboxes */}
+            <div className="grid grid-cols-7 gap-2">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
+                const selectedDays = watch("sessionDays") || [];
+                const sessionsPerWeek = Number(watch("sessionsPerWeek")) || 0;
+                const isSelected = selectedDays.includes(day);
+
+                // Disable unchecked boxes if limit reached
+                const disabled =
+                  !isSelected && selectedDays.length >= sessionsPerWeek;
+
+                return (
+                  <label
+                    key={day}
+                    className={`cursor-pointer px-2 py-2 rounded-lg border text-center transition-colors duration-200 flex items-center justify-center ${
+                      isSelected
+                        ? "bg-blue-500 text-white border-blue-500"
+                        : "bg-gray-100 text-gray-700 border-gray-300"
+                    } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    <input
+                      type="checkbox"
+                      value={day}
+                      {...register("sessionDays")}
+                      disabled={disabled}
+                      className="hidden"
+                    />
+                    {day}
+                  </label>
+                );
+              })}
+            </div>
+
+            {/* Error message if limit exceeded */}
+            {watch("sessionDays")?.length >
+              Number(watch("sessionsPerWeek")) && (
+              <p className="text-red-500 text-sm mt-1">
+                Maximum {watch("sessionsPerWeek")} sessions per week allowed.
+              </p>
+            )}
+          </div>
+
+          {/* Start & End Time */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Start Time */}
+            <FormInput
+              label="Start Time"
+              required
+              type="time"
+              placeholder="Select Start Time..."
+              register={register("startTime", {
+                required: "Start Time is required",
+              })}
+              error={errors.startTime}
+            />
+
+            {/* End Time */}
+            <FormInput
+              label="End Time"
+              required
+              type="time"
+              placeholder="Select End Time..."
+              register={register("endTime", {
+                required: "End Time is required",
+              })}
+              error={errors.endTime}
+            />
+          </div>
+
+          {/* Start & End Date */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Start Date */}
+            <FormInput
+              label="Start Date"
+              required
+              type="date"
+              placeholder="Select Start Date..."
+              register={register("startDate", {
+                required: "Start Date is required",
+              })}
+              error={errors.startDate}
+            />
+
+            {/* End Date (Estimated) */}
+            <FormInput
+              label="End Date (Estimated)"
+              required
+              type="date"
+              placeholder="Select End Date..."
+              register={register("endDate", {
+                required: "End Date is required",
+                validate: (value) => {
+                  const start = new Date(getValues("startDate"));
+                  const end = new Date(value);
+                  return end >= start || "End Date cannot be before Start Date";
+                },
+              })}
+              error={errors.endDate}
+            />
+          </div>
+        </div>
+
+        {/* Pricing */}
+        <div className="space-y-4">
+          {/* Title */}
+          <h3 className="flex items-center gap-2 text-lg font-semibold pb-0 mb-0">
+            <FaChevronRight className="text-gray-500s" /> Course Pricing
+          </h3>
+
+          {/* Divider */}
+          <p className="bg-gray-500 p-[1px] mt-2 mb-5" />
+
+          {/* Free Toggle */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="isFree"
+              {...register("fee.isFree")}
+              className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+            />
+            <label htmlFor="isFree" className="text-gray-700 font-medium">
+              Free Course
+            </label>
+          </div>
+
+          {/* Fee Inputs */}
+          <div className="grid grid-cols-2 items-center gap-4">
+            {/* Amount */}
+            <FormInput
+              label="Price"
+              type="number"
+              placeholder="e.g., 29.99"
+              required
+              register={register("fee.amount", {
+                required: !watch("fee.isFree") ? "Price is required" : false,
+                valueAsNumber: true,
+                min: { value: 1, message: "Price must be greater than 0" },
+              })}
+              error={errors?.fee?.amount}
+              disabled={watch("fee.isFree")}
+            />
+
+            {/* Discount (%) */}
+            <FormInput
+              label="Discount (%)"
+              type="number"
+              placeholder="e.g., 10"
+              register={register("fee.discount", {
+                valueAsNumber: true,
+                min: { value: 0, message: "Discount cannot be negative" },
+                max: { value: 100, message: "Discount cannot exceed 100%" },
+              })}
+              error={errors?.fee?.discount}
+              disabled={watch("fee.isFree")}
+            />
+
+            {/* Currency */}
+            <FormInput
+              label="Currency"
+              required
+              as="select"
+              placeholder="-- Select Currency --"
+              register={register("fee.currency", {
+                required: !watch("fee.isFree") ? "Currency is required" : false,
+              })}
+              error={errors?.fee?.currency}
+              disabled={watch("fee.isFree")}
+              options={CurrencyOptions}
+            />
+
+            {/* Payment Method */}
+            <FormInput
+              label="Payment Method"
+              required
+              as="select"
+              placeholder="-- Select Payment Method --"
+              register={register("fee.paymentMethod", {
+                required: !watch("fee.isFree")
+                  ? "Payment method is required"
+                  : false,
+              })}
+              error={errors?.fee?.paymentMethod}
+              disabled={watch("fee.isFree")}
+              options={PaymentMethodOptions}
+            />
+
+            {/* Negotiable */}
+            <div className="flex flex-col justify-center">
+              <label
+                htmlFor="negotiable"
+                className="block font-medium text-sm mb-1"
+              >
+                Negotiable
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="negotiable"
+                  {...register("fee.negotiable")}
+                  disabled={watch("fee.isFree")}
+                  className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+                />
+                <span className="text-gray-700 text-sm">Yes</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Link */}
+          <FormInput
+            label="Payment Link"
+            placeholder="e.g., https://paypal.me/username"
+            register={register("fee.paymentLink")}
+            error={errors?.fee?.paymentLink}
+            disabled={watch("fee.isFree")}
+          />
+
+          {/* Final Price Display */}
+          {!watch("fee.isFree") && (
+            <div className="bg-gray-100 p-3 rounded-md">
+              <p className="font-semibold text-sm text-gray-700">
+                Final Price:{" "}
+                <span className="text-blue-700">
+                  {(
+                    (watch("fee.amount") || 0) *
+                    (1 - (watch("fee.discount") || 0) / 100)
+                  ).toFixed(2)}{" "}
+                  {watch("fee.currency") || "USD"}
+                </span>
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Submit Button */}

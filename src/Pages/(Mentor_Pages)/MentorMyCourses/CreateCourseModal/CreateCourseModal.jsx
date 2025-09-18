@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
 // Icons
-import { FaPaste } from "react-icons/fa";
+import { FaChevronRight, FaPaste } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 
 import { Tooltip } from "react-tooltip";
@@ -19,6 +19,21 @@ import { LevelOptions } from "../../../../Shared/Lists/LevelOptions ";
 import { LanguageOptions } from "../../../../Shared/Lists/LanguageOptions";
 import { CategoryOptions } from "../../../../Shared/Lists/CategoryOptions";
 import { TypeOptions } from "../../../../Shared/Lists/TypeOptions";
+import { CurrencyOptions } from "../../../../Shared/Lists/CurrencyOptions";
+import { PaymentMethodOptions } from "../../../../Shared/Lists/PaymentMethodOptions";
+import { useQuery } from "@tanstack/react-query";
+import Swal from "sweetalert2";
+
+// Helper: format yyyy-mm-dd -> 25 Aug 2023
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
 
 // eslint-disable-next-line react/prop-types
 const CreateCourseModal = ({ refetch }) => {
@@ -45,6 +60,13 @@ const CreateCourseModal = ({ refetch }) => {
 
   // Watch category selection
   const selectedCategory = watch("category");
+
+  // Fetch Mentors
+  const { data: MyMentorsData } = useQuery({
+    queryKey: ["MentorsData"],
+    queryFn: () =>
+      axiosPublic.get(`/Mentors?email=${user?.email}`).then((res) => res.data),
+  });
 
   // Update subcategory options based on selected category
   useEffect(() => {
@@ -103,7 +125,7 @@ const CreateCourseModal = ({ refetch }) => {
     remove: removePrerequisites,
   } = useFieldArray({
     control,
-    name: "Prerequisites",
+    name: "prerequisites",
   });
 
   // Close Modal and Clear Errors
@@ -120,7 +142,67 @@ const CreateCourseModal = ({ refetch }) => {
   };
 
   const onSubmit = async (data) => {
-    console.log("Submitted Data :", data);
+    setLoading(true);
+    setErrorMessage("");
+
+    // Format dates before saving
+    const formattedStart = formatDate(data.startDate);
+    const formattedEnd = formatDate(data.endDate);
+
+    try {
+      // Prepare payload
+      const payload = {
+        ...data,
+        tags: data.tags?.map((item) => ({ value: item.value })) || [],
+        skills: data.skills?.map((item) => ({ value: item.value })) || [],
+        attachments:
+          data.attachments?.map((item) => ({ value: item.value })) || [],
+        modules: modulesFields?.map((item) => ({ value: item.value })) || [],
+        skillsCovered:
+          skillsCoveredFields?.map((item) => ({ value: item.value })) || [],
+        learningActivity:
+          learningActivityFields?.map((item) => ({ value: item.value })) || [],
+        prerequisites:
+          PrerequisitesFields?.map((item) => ({ value: item.value })) || [],
+        endDate: formattedEnd,
+        startDate: formattedStart,
+        status: "closed",
+        postedAt: new Date().toISOString(),
+        Mentor: {
+          name: MyMentorsData?.name || "",
+          email: MyMentorsData?.email || "",
+          profileImage: MyMentorsData?.avatar || "",
+          bio: MyMentorsData?.description || "",
+          rating: MyMentorsData?.rating || "0.0",
+          position: MyMentorsData?.position || "",
+        },
+        archived: false,
+      };
+
+      // POST Request
+      // await axiosPublic.post("/Mentorship", payload);
+      console.log("Payload :", payload);
+
+      // Close Modal and Reset
+      handleClose();
+
+      // Success Message
+      Swal.fire({
+        icon: "success",
+        title: "Mentor Profile Created",
+        text: "Your Mentor profile was saved successfully.",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+    } catch (err) {
+      console.error("Error creating mentorship:", err);
+      console.log("Error", err);
+      setErrorMessage("Failed to create mentorship. Please try again.");
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -142,7 +224,6 @@ const CreateCourseModal = ({ refetch }) => {
 
       <button
         type="button"
-        // onClick={handlePasteJSON}
         data-tooltip-id="pasteTooltip"
         data-tooltip-content="Paste JSON from clipboard"
         className="flex items-center gap-2 border border-amber-400 absolute top-2 left-3 z-50 p-2 rounded-xl hover:text-red-500 cursor-pointer transition-colors duration-300"
@@ -165,148 +246,19 @@ const CreateCourseModal = ({ refetch }) => {
 
       {/* Modal Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Course Information */}
-        <div className="space-y-4">
-          {/* Title */}
-          <FormInput
-            label="Title"
-            required
-            placeholder="Course Title..."
-            register={register("title", { required: "Title is required" })}
-            error={errors.title}
-          />
-
-          {/* Sub Title */}
-          <FormInput
-            label="Sub Title"
-            required
-            placeholder="Course Sub Title..."
-            register={register("subTitle", {
-              required: "Sub Title is required",
-            })}
-            error={errors.subTitle}
-          />
-
-          {/* Description */}
-          <FormInput
-            as="textarea"
-            label="Description"
-            required
-            placeholder="Enter Course description..."
-            register={register("description", {
-              required: "Description is required",
-            })}
-            error={errors.description}
-            rows={6}
-          />
-
-          {/* Category & Subcategory */}
-          <div className="flex gap-4">
-            {/* Category */}
-            <FormInput
-              as="select"
-              label="Category"
-              required
-              placeholder="Select a Category"
-              options={CategoryOptions.map((c) => ({
-                value: c.value,
-                label: c.label,
-              }))}
-              register={register("category", {
-                required: "Category is required",
-              })}
-              error={errors.category}
-            />
-
-            {/* Subcategory */}
-            <FormInput
-              as="select"
-              label="Sub Category"
-              required
-              placeholder="Select a Sub Category"
-              options={subOptions}
-              register={register("subCategory", {
-                required: "Sub Category is required",
-              })}
-              error={errors.subCategory}
-            />
-          </div>
-
-          {/* Level & Language */}
-          <div className="flex gap-4">
-            {/* Level */}
-            <FormInput
-              as="select"
-              label="Level"
-              required
-              placeholder="Select a Level"
-              options={LevelOptions}
-              register={register("level", {
-                required: "Level is required",
-              })}
-              error={errors.level}
-            />
-
-            {/* Language */}
-            <FormInput
-              as="select"
-              label="Language"
-              required
-              placeholder="Select a Language"
-              options={LanguageOptions}
-              register={register("language", {
-                required: "Language is required",
-              })}
-              error={errors.language}
-            />
-          </div>
-
-          {/* Tags TagInput */}
-          <TagInput
-            items={tagsFields}
-            appendItem={appendTags}
-            removeItem={removeTags}
-            label="Tags"
-            placeholder="Add a Tag"
-          />
-
-          {/* Certificate Availability */}
-          <div className="flex flex-col md:flex-row md:items-center gap-3">
-            {/* Label */}
-            <label className="block font-medium text-gray-700 md:w-48">
-              Certificate Available <span className="text-red-500">*</span>
-            </label>
-
-            {/* Toggle */}
-            <div className="flex items-center gap-3">
-              <span className="font-semibold text-gray-600">No</span>
-
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  {...register("certificateAvailability")}
-                />
-                <div className="w-12 h-6 bg-gray-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-300"></div>
-                <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md peer-checked:translate-x-6 transition-transform duration-300"></div>
-              </label>
-
-              <span className="font-semibold text-gray-600">Yes</span>
-            </div>
-          </div>
-        </div>
-
         {/* Course Structure */}
         <div className="space-y-4">
           {/* Title */}
-          <h3 className="text-lg font-semibold pb-0 mb-0">Course Structure</h3>
+          <h3 className="flex items-center gap-2 text-lg font-semibold pb-0 mb-0">
+            <FaChevronRight className="text-gray-500s" /> Course Structure
+          </h3>
 
           {/* Divider */}
           <p className="bg-gray-500 p-[1px] mt-2 mb-5" />
 
           {/* Duration & Modules */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-            {/* Total Duration (In Hours) */}
+            {/* Duration */}
             <FormInput
               label="Total Duration (In Hours)"
               type="number"
@@ -319,7 +271,7 @@ const CreateCourseModal = ({ refetch }) => {
               error={errors.durationHours}
             />
 
-            {/* Number Of Modules */}
+            {/* Number of Modules */}
             <FormInput
               label="Number Of Modules"
               type="number"
@@ -372,160 +324,6 @@ const CreateCourseModal = ({ refetch }) => {
             label="Prerequisites"
             placeholder="Add a Prerequisite"
           />
-        </div>
-
-        {/* Schedule */}
-        <div className="space-y-4">
-          {/* Title */}
-          <h3 className="text-lg font-semibold pb-0 mb-0">Course Schedule</h3>
-
-          {/* Divider */}
-          <p className="bg-gray-500 p-[1px] mt-2 mb-5" />
-
-          {/* Type & Sessions Per Week */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Type */}
-            <FormInput
-              as="select"
-              label="Type"
-              required
-              placeholder="Select a Type"
-              options={TypeOptions}
-              register={register("type", {
-                required: "Type is required",
-              })}
-              error={errors.type}
-            />
-
-            {/* Sessions Per Week */}
-            <FormInput
-              label="Sessions Per Week"
-              type="number"
-              placeholder="e.g., 2"
-              required
-              register={register("sessionsPerWeek", {
-                required: "Required",
-                min: { value: 1, message: "Must be at least 1" },
-                max: { value: 7, message: "Cannot exceed 7 sessions per week" },
-              })}
-              error={errors.sessionsPerWeek}
-            />
-          </div>
-
-          {/* Session Days */}
-          <div className="space-y-2">
-            {/* Label */}
-            <label className="block font-medium text-sm">Session Days</label>
-
-            {/* Days Checkboxes */}
-            <div className="grid grid-cols-7 gap-2">
-              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
-                const selectedDays = watch("sessionDays") || [];
-                const sessionsPerWeek = Number(watch("sessionsPerWeek")) || 0;
-                const isSelected = selectedDays.includes(day);
-
-                // Disable unchecked boxes if limit reached
-                const disabled =
-                  !isSelected && selectedDays.length >= sessionsPerWeek;
-
-                return (
-                  <label
-                    key={day}
-                    className={`cursor-pointer px-2 py-2 rounded-lg border text-center transition-colors duration-200 flex items-center justify-center ${
-                      isSelected
-                        ? "bg-blue-500 text-white border-blue-500"
-                        : "bg-gray-100 text-gray-700 border-gray-300"
-                    } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    <input
-                      type="checkbox"
-                      value={day}
-                      {...register("sessionDays")}
-                      disabled={disabled}
-                      className="hidden"
-                    />
-                    {day}
-                  </label>
-                );
-              })}
-            </div>
-
-            {/* Error message if limit exceeded */}
-            {watch("sessionDays")?.length >
-              Number(watch("sessionsPerWeek")) && (
-              <p className="text-red-500 text-sm mt-1">
-                Maximum {watch("sessionsPerWeek")} sessions per week allowed.
-              </p>
-            )}
-          </div>
-
-          {/* Start & End Time */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Start Time */}
-            <FormInput
-              label="Start Time"
-              required
-              type="time"
-              placeholder="Select Start Time..."
-              register={register("startTime", {
-                required: "Start Time is required",
-              })}
-              error={errors.startTime}
-            />
-
-            {/* End Time */}
-            <FormInput
-              label="End Time"
-              required
-              type="time"
-              placeholder="Select End Time..."
-              register={register("endTime", {
-                required: "End Time is required",
-              })}
-              error={errors.endTime}
-            />
-          </div>
-
-          {/* Start & End Date */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Start Date */}
-            <FormInput
-              label="Start Date"
-              required
-              type="date"
-              placeholder="Select Start Date..."
-              register={register("startDate", {
-                required: "Start Date is required",
-              })}
-              error={errors.startDate}
-            />
-
-            {/* End Date (Estimated) */}
-            <FormInput
-              label="End Date (Estimated)"
-              required
-              type="date"
-              placeholder="Select End Date..."
-              register={register("endDate", {
-                required: "End Date is required",
-                validate: (value) => {
-                  const start = new Date(getValues("startDate"));
-                  const end = new Date(value);
-                  return end >= start || "End Date cannot be before Start Date";
-                },
-              })}
-              error={errors.endDate}
-            />
-          </div>
-        </div>
-
-        {/* Schedule */}
-        <div className="space-y-4">
-          {/* Title */}
-          <h3 className="text-lg font-semibold pb-0 mb-0">Course Schedule</h3>
-
-          {/* Divider */}
-          <p className="bg-gray-500 p-[1px] mt-2 mb-5" />
         </div>
 
         {/* Submit Button */}

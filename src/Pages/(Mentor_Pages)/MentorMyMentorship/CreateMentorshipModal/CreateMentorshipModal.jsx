@@ -22,6 +22,8 @@ import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 import { Tooltip } from "react-tooltip";
+import { CurrencyOptions } from "../../../../Shared/Lists/CurrencyOptions";
+import { PaymentMethodOptions } from "../../../../Shared/Lists/PaymentMethodOptions";
 
 // Length Options
 const LengthOptions = [
@@ -51,27 +53,6 @@ const FeeTypeOptions = [
   { value: "hourly", label: "Hourly" },
   { value: "perSession", label: "Per Session" },
   { value: "weekly", label: "Weekly" },
-];
-
-// Currency Options
-const CurrencyOptions = [
-  { value: "USD", label: "USD ($)" },
-  { value: "EUR", label: "EUR (€)" },
-  { value: "GBP", label: "GBP (£)" },
-  { value: "BDT", label: "BDT (৳)" },
-  { value: "INR", label: "INR (₹)" },
-];
-
-// Payment Method Options
-const PaymentMethodOptions = [
-  { value: "paypal", label: "PayPal" },
-  { value: "stripe", label: "Stripe" },
-  { value: "bankTransfer", label: "Bank Transfer" },
-  {
-    value: "mobilePayment",
-    label: "Mobile Payment (bKash, Paytm, etc.)",
-  },
-  { value: "other", label: "Other" },
 ];
 
 // Confirmation Types Options
@@ -296,7 +277,7 @@ const CreateMentorshipModal = ({ refetch }) => {
         skillsCovered: data.skillsCovered?.map((item) => item.value) || [],
         endDate: formattedEnd,
         startDate: formattedStart,
-        status: "active",
+        status: "closed",
         postedAt: new Date().toISOString(),
         Mentor: {
           name: MyMentorsData?.name || "",

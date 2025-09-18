@@ -1,9 +1,5 @@
 import { useState } from "react";
-
-// Packages
 import PropTypes from "prop-types";
-
-// Icons
 import { RxCross2 } from "react-icons/rx";
 
 const TagInput = ({
@@ -14,37 +10,37 @@ const TagInput = ({
   placeholder = "Add new item",
   showNumbers = false, // NEW: directive from parent
 }) => {
-  // Local State
   const [newValue, setNewValue] = useState("");
 
   // Handle Add New Tag
   const handleAdd = () => {
     const value = newValue.trim();
     if (value) {
-      appendItem({ value }); // for useFieldArray or array of objects
+      // If showNumbers=true, send index automatically
+      const payload = showNumbers
+        ? { index: items.length + 1, value }
+        : { value };
+      appendItem(payload);
       setNewValue("");
     }
   };
 
   return (
     <div className="mb-3">
-      {/* Label */}
       <label className="block font-semibold text-sm mb-2 capitalize">
         {label}
       </label>
 
-      {/* Tags */}
       <div className="flex flex-wrap gap-2 rounded border border-gray-700 mb-3 px-2 py-2">
         {items.length > 0 ? (
-          items.map((item, index) => (
+          items.map((item, idx) => (
             <div
-              key={item.id || index} // fallback key if id is missing
-              onClick={() => removeItem(index)}
+              key={item.id || idx}
+              onClick={() => removeItem(idx)}
               className="flex items-center border border-gray-600 font-semibold text-gray-800 gap-2 px-5 py-1 rounded-full cursor-pointer hover:bg-gray-100 transition-all duration-200 text-sm"
             >
-              {/* Conditionally render number */}
-              {showNumbers && <span>{index + 1}.</span>}
-              {item.value || `${label} #${index + 1}`} <RxCross2 />
+              {showNumbers && <span>{item.index || idx + 1}.</span>}
+              {item.value || `${label} #${idx + 1}`} <RxCross2 />
             </div>
           ))
         ) : (
@@ -54,7 +50,6 @@ const TagInput = ({
         )}
       </div>
 
-      {/* Add New Tag */}
       <div className="flex justify-end gap-2">
         <input
           type="text"
@@ -81,14 +76,13 @@ const TagInput = ({
   );
 };
 
-// Prop Types
 TagInput.propTypes = {
   items: PropTypes.array,
   appendItem: PropTypes.func.isRequired,
   removeItem: PropTypes.func.isRequired,
   label: PropTypes.string,
   placeholder: PropTypes.string,
-  showNumbers: PropTypes.bool, // NEW
+  showNumbers: PropTypes.bool,
 };
 
 export default TagInput;

@@ -1,9 +1,18 @@
-import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import {
+  FaEdit,
+  FaEye,
+  FaPlus,
+  FaRegStar,
+  FaStar,
+  FaTrash,
+} from "react-icons/fa";
 import Error from "../../../../Shared/Error/Error";
 import Loading from "../../../../Shared/Loading/Loading";
 import { GoDot } from "react-icons/go";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import { useState } from "react";
+import Swal from "sweetalert2";
+import CourseDetailsModal from "../../../(Public_Pages)/Home/FeaturedCourses/CourseDetailsModal/CourseDetailsModal";
 
 // Utility: Format Budget Display
 const formatBudget = (amount, currency = "USD", isNegotiable = false) => {
@@ -30,6 +39,62 @@ const MentorMyActiveCourses = ({ error, refetch, CoursesData, isLoading }) => {
 
   // State Variables
   const [selectedCourseID, setSelectedCourseID] = useState(null);
+
+  // keep track of starred Course's by ID
+  const [starred, setStarred] = useState([]);
+
+  // Optimistic Archive Toggle
+  const toggleStar = async (id) => {
+    // Optimistically toggle locally
+    const isCurrentlyStarred = starred.includes(id);
+    setStarred((prev) =>
+      isCurrentlyStarred ? prev.filter((sid) => sid !== id) : [...prev, id]
+    );
+
+    try {
+      // Call backend to toggle archive
+      const res = await axiosPublic.put(`/Courses/Archive/${id}`);
+
+      if (res?.data?.archived === undefined) {
+        throw new Error("Unexpected response from server");
+      }
+
+      // Refetch data
+      refetch();
+
+      // Show success toast
+      Swal.fire({
+        toast: true,
+        position: "top-start",
+        icon: "success",
+        title: res.data.archived ? "Archived!" : "Un-Archived!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+
+      // If backend disagrees with local toggle, correct it
+      if (res.data.archived !== !isCurrentlyStarred) {
+        setStarred((prev) =>
+          res.data.archived ? [...prev, id] : prev.filter((sid) => sid !== id)
+        );
+      }
+    } catch (error) {
+      // Rollback local toggle
+      setStarred((prev) =>
+        isCurrentlyStarred ? [...prev, id] : prev.filter((sid) => sid !== id)
+      );
+
+      // Show error alert
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to update archive status. Please try again!",
+      });
+
+      console.error("Failed to toggle archive:", error);
+    }
+  };
 
   // Sort Course's by postedAt (most recent first)
   const sortedCourse = CoursesData
@@ -84,55 +149,75 @@ const MentorMyActiveCourses = ({ error, refetch, CoursesData, isLoading }) => {
                   : "Unknown"}
               </span>
 
-              {/* Title & Subtitle */}
-              <div>
-                {/* Title */}
-                <h4 className="text-xl font-bold text-gray-900">
-                  {course.title}
-                </h4>
-                {/* Subtitle */}
-                <p className="text-gray-600 text-sm">{course.subTitle}</p>
+              {/* Star Toggle */}
+              <button
+                onClick={() => toggleStar(course?._id)}
+                className="absolute top-3 right-3 text-2xl cursor-pointer transition-colors group"
+              >
+                {course?.archived ? (
+                  <FaStar className="text-yellow-400 drop-shadow-md" />
+                ) : (
+                  <FaRegStar className="text-gray-400 hover:text-yellow-400" />
+                )}
 
-                {/* Category & Subcategory */}
-                <p className="text-gray-600 text-sm">
-                  {course.category} {">"} {course.subCategory}
+                {/* Tooltip */}
+                <span className="absolute -top-8 right-1/2 translate-x-1/2 whitespace-nowrap text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                  {course?.archived ? "Archived" : "Un-Archived"}
+                </span>
+              </button>
+
+              {/* Course Info */}
+              <div>
+                {/* Title & Subtitle */}
+                <div>
+                  {/* Title */}
+                  <h4 className="text-xl font-bold text-gray-900">
+                    {course.title}
+                  </h4>
+                  {/* Subtitle */}
+                  <p className="text-gray-600 text-sm">{course.subTitle}</p>
+
+                  {/* Category & Subcategory */}
+                  <p className="text-gray-600 text-sm">
+                    {course.category} {">"} {course.subCategory}
+                  </p>
+                </div>
+
+                {/* Level */}
+                <p className="text-sm mt-1">
+                  <span className="font-semibold">Level:</span> {course.level}
+                </p>
+
+                {/* Duration */}
+                <p className="text-sm flex items-center gap-2">
+                  <span className="font-semibold">Duration:</span>{" "}
+                  <span>{course.durationHours} hrs</span>{" "}
+                  <GoDot className="mt-1" />{" "}
+                  <span>{course?.modulesNumber} Modules</span>
+                </p>
+
+                {/* Fee */}
+                <p className="text-sm">
+                  <span className="font-semibold">Fee:</span>{" "}
+                  <span className="text-green-600 font-semibold">
+                    {course?.fee
+                      ? formatBudget(
+                          course?.fee?.amount,
+                          course?.fee?.currency,
+                          course?.fee?.isNegotiable
+                        )
+                      : "Not specified"}
+                  </span>
+                </p>
+
+                {/* Posted Date */}
+                <p className="text-sm text-gray-400 mt-1">
+                  Posted:{" "}
+                  {course?.postedAt
+                    ? calculateDaysAgo(course.postedAt)
+                    : "Unknown"}
                 </p>
               </div>
-
-              {/* Level */}
-              <p className="text-sm mt-1">
-                <span className="font-semibold">Level:</span> {course.level}
-              </p>
-
-              {/* Duration */}
-              <p className="text-sm flex items-center gap-2">
-                <span className="font-semibold">Duration:</span>{" "}
-                <span>{course.durationHours} hrs</span>{" "}
-                <GoDot className="mt-1" />{" "}
-                <span>{course?.modulesNumber} Modules</span>
-              </p>
-
-              {/* Fee */}
-              <p className="text-sm">
-                <span className="font-semibold">Fee:</span>{" "}
-                <span className="text-green-600 font-semibold">
-                  {course?.fee
-                    ? formatBudget(
-                        course?.fee?.amount,
-                        course?.fee?.currency,
-                        course?.fee?.isNegotiable
-                      )
-                    : "Not specified"}
-                </span>
-              </p>
-
-              {/* Posted Date */}
-              <p className="text-sm text-gray-400 mt-1">
-                Posted:{" "}
-                {course?.postedAt
-                  ? calculateDaysAgo(course.postedAt)
-                  : "Unknown"}
-              </p>
 
               {/* Action Buttons */}
               <div className="flex justify-between items-center mt-4 gap-2">
@@ -209,6 +294,16 @@ const MentorMyActiveCourses = ({ error, refetch, CoursesData, isLoading }) => {
           </div>
         )}
       </div>
+
+      {/* Modal */}
+      {/* Course Details Modal */}
+      <dialog id="Course_Details_Modal" className="modal">
+        <CourseDetailsModal
+          isEditor={true}
+          selectedCourseID={selectedCourseID}
+          setSelectedCourseID={setSelectedCourseID}
+        />
+      </dialog>
     </div>
   );
 };

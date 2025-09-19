@@ -212,7 +212,9 @@ const MentorMyActiveCourses = ({ error, refetch, CoursesData, isLoading }) => {
                 <p className="text-sm">
                   <span className="font-semibold">Fee:</span>{" "}
                   <span className="text-green-600 font-semibold">
-                    {course?.fee
+                    {course?.fee?.isFree
+                      ? "Free"
+                      : course?.fee
                       ? formatBudget(
                           course?.fee?.amount,
                           course?.fee?.currency,

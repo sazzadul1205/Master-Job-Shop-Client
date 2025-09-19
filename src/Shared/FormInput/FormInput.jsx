@@ -21,8 +21,9 @@ const FormInput = ({
   rows = 4,
   options = [],
   disabled = false,
-  watch, // NEW: pass watch from react-hook-form
-  name, // NEW: input name
+  watch,
+  name,
+  step,
 }) => {
   // Watch the value for formatting (only for date type)
   const value = watch && name ? watch(name) : "";
@@ -68,6 +69,7 @@ const FormInput = ({
       ) : (
         <input
           type={type}
+          step={step}
           {...register}
           placeholder={placeholder}
           disabled={disabled}
@@ -90,24 +92,26 @@ const FormInput = ({
   );
 };
 
+// PropTypes
 FormInput.propTypes = {
-  rows: PropTypes.number,
-  type: PropTypes.string,
-  error: PropTypes.object,
+  label: PropTypes.string.isRequired,
   required: PropTypes.bool,
   placeholder: PropTypes.string,
-  label: PropTypes.string.isRequired,
-  register: PropTypes.object.isRequired,
+  type: PropTypes.string,
   as: PropTypes.oneOf(["input", "textarea", "select"]),
+  rows: PropTypes.number,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.any.isRequired,
       label: PropTypes.string.isRequired,
     })
   ),
+  register: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
+  error: PropTypes.object,
   disabled: PropTypes.bool,
   watch: PropTypes.func,
   name: PropTypes.string,
+  step: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default FormInput;

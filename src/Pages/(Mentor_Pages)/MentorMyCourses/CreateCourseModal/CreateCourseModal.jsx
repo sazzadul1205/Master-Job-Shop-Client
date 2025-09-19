@@ -631,12 +631,13 @@ const CreateCourseModal = ({ refetch }) => {
             <FormInput
               label="Price"
               type="number"
+              step="0.01"
               placeholder="e.g., 29.99"
               required
               register={register("fee.amount", {
                 required: !watch("fee.isFree") ? "Price is required" : false,
                 valueAsNumber: true,
-                min: { value: 1, message: "Price must be greater than 0" },
+                min: { value: 0.01, message: "Price must be greater than 0" },
               })}
               error={errors?.fee?.amount}
               disabled={watch("fee.isFree")}

@@ -16,6 +16,7 @@ import CreateCourseModal from "./CreateCourseModal/CreateCourseModal";
 // Modals
 import MentorMyActiveCourses from "./MentorMyActiveCourses/MentorMyActiveCourses";
 import MentorMyArchivedCourses from "./MentorMyArchivedCourses/MentorMyArchivedCourses";
+import MentorMyCompletedCourses from "./MentorMyCompletedCourses/MentorMyCompletedCourses";
 
 const MentorMyCourses = () => {
   const { user } = useAuth();
@@ -36,6 +37,26 @@ const MentorMyCourses = () => {
       axiosPublic
         .get(
           `/Courses?mentorEmail=${user?.email}&status=active,open,closed,onHold&archived=false`
+        )
+        .then((res) => {
+          const data = res.data;
+          // Ensure the result is always an array
+          return Array.isArray(data) ? data : [data];
+        }),
+  });
+
+  // Fetching Completed Course
+  const {
+    data: CompletedCoursesData,
+    isLoading: CompletedCoursesIsLoading,
+    refetch: CompletedCoursesRefetch,
+    error: CompletedCoursesError,
+  } = useQuery({
+    queryKey: ["CoursesData", "completed"],
+    queryFn: () =>
+      axiosPublic
+        .get(
+          `/Courses?mentorEmail=${user?.email}&status=completed&archived=false`
         )
         .then((res) => {
           const data = res.data;
@@ -66,6 +87,7 @@ const MentorMyCourses = () => {
   const RefetchAll = async () => {
     await ActiveCoursesRefetch();
     await ArchivedCourseRefetch();
+    await CompletedCoursesRefetch();
   };
 
   // Tabs Data
@@ -123,13 +145,12 @@ const MentorMyCourses = () => {
         )}
         {/* Completed Tab Content */}
         {activeTab === "completed" && (
-          //   <MentorMyCompletedMentorship
-          //     error={CompletedMentorshipError}
-          //     refetch={RefetchAll}
-          //     isLoading={CompletedMentorshipIsLoading}
-          //     MentorshipData={CompletedMentorshipData}
-          //   />
-          <p>Comment ......</p>
+          <MentorMyCompletedCourses
+            refetch={RefetchAll}
+            error={CompletedCoursesError}
+            CoursesData={CompletedCoursesData}
+            isLoading={CompletedCoursesIsLoading}
+          />
         )}
         {/* Archived Tab Content */}
         {activeTab === "archived" && (

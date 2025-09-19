@@ -1,25 +1,30 @@
-import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Packages
-import { useQuery } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-
-// Hooks
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import useAuth from "../../../Hooks/useAuth";
-
-// Shared
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
-import Loading from "../../../Shared/Loading/Loading";
-import Error from "../../../Shared/Error/Error";
+import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 
 // Icons
 import { FaArrowLeft, FaInfo } from "react-icons/fa";
-import CourseDetailsModal from "../Home/FeaturedCourses/CourseDetailsModal/CourseDetailsModal";
+
+// Hooks
+import useAuth from "../../../Hooks/useAuth";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
+import Error from "../../../Shared/Error/Error";
+import Loading from "../../../Shared/Loading/Loading";
+import FormInput from "../../../Shared/FormInput/FormInput";
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
 
 // Modals
+import CourseDetailsModal from "../Home/FeaturedCourses/CourseDetailsModal/CourseDetailsModal";
+
+// Constants for image hosting API
+const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
 
 const CoursesApplyPage = () => {
   const axiosPublic = useAxiosPublic();
@@ -28,10 +33,19 @@ const CoursesApplyPage = () => {
   const navigate = useNavigate();
 
   // UI & State
+  const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedCourseID, setSelectedCourseID] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [selectedCourseID, setSelectedCourseID] = useState(null);
   const [showAlreadyAppliedModal, setShowAlreadyAppliedModal] = useState(false);
+
+  // React Hook Form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
 
   // Fetch selected course
   const {
@@ -90,71 +104,6 @@ const CoursesApplyPage = () => {
     }
   }, [CheckIfApplied, CheckIfAppliedIsLoading]);
 
-  // React Hook Form
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-
-  // Submit handler
-  const onSubmit = async (data) => {
-    if (!user) {
-      setShowLoginModal(true);
-      return;
-    }
-
-    try {
-      setIsSubmitting(true);
-
-      // Create application data
-      const applicationData = {
-        courseId: courseId,
-        applicantName: data.name,
-        email: UsersData.email,
-        motivation: data.motivation || "",
-        appliedAt: new Date().toISOString(),
-        status: "pending",
-      };
-
-      // Send application to backend
-      await axiosPublic.post("/CourseApplications", applicationData);
-
-      // Show success message
-      Swal.fire({
-        icon: "success",
-        title: "Application Submitted",
-        text: "Your application has been sent successfully!",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      });
-    } catch (err) {
-
-      // Handle errors
-      console.error(
-        "Application Submit Error:",
-        err?.response?.data || err.message
-      );
-
-      // Show error message
-      Swal.fire({
-        icon: "error",
-        title: "Submission Failed",
-        text:
-          err?.response?.data?.message ||
-          err.message ||
-          "Something went wrong.",
-      });
-    } finally {
-      // Reset form and navigate
-      reset();
-      navigate(-1);
-      setIsSubmitting(false);
-    }
-  };
-
   // Loading/Error UI
   if (
     CheckIfAppliedIsLoading ||
@@ -166,11 +115,87 @@ const CoursesApplyPage = () => {
   if (SelectedCourseError || UsersError || CheckIfAppliedError)
     return <Error />;
 
-  // Course Details
-  const { title, description, category, level, language } = SelectedCourseData;
+  // Submit handler
+  const onSubmit = async (data) => {
+    let confirmationValue = data.confirmation;
+
+    // Only handle file upload if confirmationType === "screenshot"
+    if (SelectedCourseData?.fee?.confirmationType === "screenshot") {
+      if (data.confirmation && data.confirmation[0]) {
+        const formData = new FormData();
+        formData.append("image", data.confirmation[0]);
+
+        const res = await axiosPublic.post(Image_Hosting_API, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        confirmationValue = res.data.data.display_url; // store uploaded screenshot URL
+      }
+    }
+
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      // Upload resume (PDF)
+      const resumeForm = new FormData();
+      resumeForm.append("file", data.resume[0]);
+      const res = await axiosPublic.post("/PDFUpload", resumeForm, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (!res.data?.url) throw new Error("Failed to upload PDF");
+
+      // Create application data
+      const applicationData = {
+        ...data,
+        status: "pending",
+        courseId: courseId,
+        userId: UsersData?._id,
+        email: UsersData?.email,
+        phone: UsersData?.phone,
+        resumeUrl: res.data.url,
+        confirmation: confirmationValue,
+        appliedAt: new Date().toISOString(),
+        profileImage: UsersData?.profileImage,
+      };
+
+      // Send application to backend
+      await axiosPublic.post("/CourseApplications", applicationData);
+
+      // Success Message
+      Swal.fire({
+        icon: "success",
+        title: "Application Submitted",
+        text: "Your application has been sent successfully!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+
+      navigate(-1);
+      reset();
+    } catch (err) {
+      setIsSubmitting(false);
+      console.error("Error:", err);
+      console.log("Error:", err);
+      setErrorMessage("Failed to create mentorship. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: err?.message || "Something went wrong.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <>
+    <div className="pb-5">
       {/* Top bar with Back and Details */}
       <div className="flex items-center justify-between mb-4 px-20">
         <CommonButton
@@ -203,71 +228,211 @@ const CoursesApplyPage = () => {
 
       {/* Form  */}
       <div className="min-h-screen py-2 px-4 sm:px-6 lg:px-8 text-black">
-        <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-          {/* Title */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-2">{title}</h1>
-            <p className="mb-4">{description}</p>
-            <p>
-              <strong>Category:</strong> {category} | <strong>Level:</strong>{" "}
-              {level} | <strong>Language:</strong> {language}
-            </p>
+        {/* Application Form */}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-8 bg-white text-black max-w-4xl mx-auto p-10 rounded-xl shadow-xl"
+        >
+          {/* Alert Messages */}
+          {errorMessage && (
+            <div className="bg-red-100 text-red-800 font-medium border border-red-400 px-4 py-2 rounded mb-4 text-center">
+              {errorMessage}
+            </div>
+          )}
+
+          {/* Applicant Info */}
+          <div className="space-y-4">
+            {/* Title */}
+            <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              Applicant Information
+            </h2>
+
+            {/* Name */}
+            <FormInput
+              label="Full Name"
+              required
+              placeholder="Enter your full name"
+              register={register("name", { required: "Name is required" })}
+              error={errors.name}
+            />
+
+            {/* Portfolio */}
+            <FormInput
+              label="Portfolio / LinkedIn / GitHub"
+              required
+              placeholder="https://your-portfolio.com"
+              type="url"
+              register={register("portfolio", {
+                required: "Portfolio is required",
+              })}
+              error={errors.portfolio}
+            />
           </div>
 
-          {/* Application Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Full Name */}
-            <div>
-              <label className="block font-medium mb-1">
-                Full Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                defaultValue={UsersData?.name || user?.displayName}
-                {...register("name", { required: "Name is required" })}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm">{errors.name.message}</p>
-              )}
-            </div>
+          {/* Application Details */}
+          <div className="space-y-4">
+            {/* Title */}
+            <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              Application Details
+            </h2>
 
             {/* Motivation */}
-            <div>
-              <label className="block font-medium mb-1">
-                Motivation (optional)
-              </label>
-              <textarea
-                rows={4}
-                placeholder="Why do you want to join this course?"
-                {...register("motivation")}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-              />
-            </div>
-
-            {/* Apply Button */}
-            <CommonButton
-              type="submit"
-              text="Submit Application"
-              bgColor="blue"
-              textColor="text-white"
-              px="px-5"
-              py="py-2"
-              borderRadius="rounded"
-              width="full"
-              isLoading={isSubmitting}
+            <FormInput
+              label="Why are you applying?"
+              required
+              as="textarea"
+              rows={4}
+              placeholder="Tell the mentor why you're a good fit."
+              register={register("motivation", {
+                required: "Motivation is required",
+              })}
+              error={errors.motivation}
             />
-          </form>
-        </div>
+
+            {/* Goals */}
+            <FormInput
+              label="What do you want to achieve?"
+              as="textarea"
+              rows={3}
+              placeholder="Your learning goals, career objectives..."
+              register={register("goals")}
+              error={errors.goals}
+            />
+          </div>
+
+          {/* Payment Section (only if paid mentorship) */}
+          {SelectedCourseData?.fee?.isFree === false && (
+            <div className="space-y-4">
+              {/* Title */}
+              <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
+                Payment Information
+              </h2>
+
+              {/* Payment Information */}
+              <div className="flex justify-between">
+                {/* Payment Method */}
+                <div>
+                  <label className="block font-medium mb-1">
+                    Payment Method
+                  </label>
+                  <p className="text-gray-800 font-semibold capitalize">
+                    {(() => {
+                      switch (SelectedCourseData?.fee?.paymentMethod) {
+                        case "paypal":
+                          return "PayPal";
+                        case "stripe":
+                          return "Stripe";
+                        case "bankTransfer":
+                          return "Bank Transfer";
+                        case "mobilePayment":
+                          return "Mobile Payment (bKash, Paytm, etc.)";
+                        default:
+                          return "Not specified";
+                      }
+                    })()}
+                  </p>
+                </div>
+
+                {/* Fee */}
+                <div className="flex flex-col gap-1 text-right">
+                  <h3 className="font-semibold text-lg">Fee :</h3>
+                  <p className="font-semibold text-green-700">
+                    {SelectedCourseData?.fee?.amount}{" "}
+                    {SelectedCourseData?.fee?.currency || "USD"}
+                  </p>
+
+                  {SelectedCourseData?.fee?.discount > 0 && (
+                    <p className="text-sm text-gray-600">
+                      Discount: {SelectedCourseData.fee.discount}%
+                    </p>
+                  )}
+
+                  {SelectedCourseData?.fee?.negotiable && (
+                    <p className="text-xs text-yellow-600 italic">
+                      * Negotiable
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Payment Link (if available) */}
+              {SelectedCourseData?.fee?.paymentLink && (
+                <div>
+                  <label className="block font-medium mb-1">Payment Link</label>
+                  <a
+                    href={SelectedCourseData.fee.paymentLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline break-words"
+                  >
+                    {SelectedCourseData.fee.paymentLink}
+                  </a>
+                </div>
+              )}
+
+              {/* Proof of Payment */}
+              <div>
+                <label className="block font-medium mb-1">
+                  Upload Proof of Payment
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  {...register("paymentProof", {
+                    required: "Payment proof is required",
+                  })}
+                  className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4  file:rounded-full file:border-0 file:text-sm file:font-semibold  file:bg-green-600 file:text-white hover:file:bg-green-700 cursor-pointer  bg-gray-50 border border-gray-300 rounded-lg"
+                />
+                {errors.paymentProof && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.paymentProof.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Free Mentorship Message */}
+          {SelectedCourseData?.fee?.isFree === true && (
+            <div className="text-green-600 font-semibold text-lg">
+              This mentorship is Free
+            </div>
+          )}
+
+          {/* Submit */}
+          <div className="pt-6">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full px-5 py-2 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 transition ${
+                isSubmitting
+                  ? "opacity-70 cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+            >
+              {isSubmitting ? "Submitting..." : "Submit Application"}
+            </button>
+          </div>
+        </form>
       </div>
 
       {/* Login Modal */}
       {showLoginModal && (
-        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-          <div className="bg-white max-w-md w-full p-6 rounded-xl shadow-lg text-black space-y-5">
-            <h3 className="text-lg font-bold">🔒 Login Required</h3>
-            <p>You must be logged in to apply for this course.</p>
+        <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+            {/* Title */}
+            <h3 className="text-lg font-bold text-black mb-2">
+              🔒 Login Required
+            </h3>
+
+            {/* Sub Title */}
+            <p className="text-black font-semibold mb-4">
+              You must be logged in to apply for this Course.
+            </p>
+
+            {/* Buttons */}
             <div className="flex justify-end gap-3">
+              {/* Login Button */}
               <CommonButton
                 text="Login"
                 clickEvent={() => {
@@ -281,6 +446,8 @@ const CoursesApplyPage = () => {
                 borderRadius="rounded"
                 width="auto"
               />
+
+              {/* Cancel Button */}
               <CommonButton
                 text="Cancel"
                 clickEvent={() => {
@@ -301,11 +468,21 @@ const CoursesApplyPage = () => {
 
       {/* Already Applied Modal */}
       {showAlreadyAppliedModal && (
-        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-          <div className="bg-white max-w-md w-full p-6 rounded-xl shadow-lg text-black space-y-5">
-            <h3 className="text-lg font-bold">Already Applied</h3>
-            <p>You have already applied for this course.</p>
+        <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+            {/* Title */}
+            <h3 className="text-lg font-bold text-black mb-2">
+              Already Applied
+            </h3>
+
+            {/* Sub Title */}
+            <p className="text-black font-semibold mb-4">
+              You have already applied for this Course.
+            </p>
+
+            {/* Buttons */}
             <div className="flex justify-end gap-3">
+              {/* View ApplicationS Button */}
               <CommonButton
                 text="View Application"
                 clickEvent={() => {
@@ -318,6 +495,8 @@ const CoursesApplyPage = () => {
                 py="py-2"
                 borderRadius="rounded"
               />
+
+              {/* Back Button */}
               <CommonButton
                 text="Back"
                 clickEvent={() => {
@@ -342,7 +521,7 @@ const CoursesApplyPage = () => {
           setSelectedCourseID={setSelectedCourseID}
         />
       </dialog>
-    </>
+    </div>
   );
 };
 

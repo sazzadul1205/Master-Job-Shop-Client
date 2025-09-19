@@ -59,7 +59,7 @@ const MyMentorshipApplications = () => {
   );
   const uniqueMentorshipIds = [...new Set(mentorshipIds)];
 
-  //   Step 3: Fetch Mentorship Data
+  // Step 3: Fetch Mentorship Data
   const {
     data: MentorshipData = [],
     isLoading: MentorshipIsLoading,
@@ -77,6 +77,7 @@ const MyMentorshipApplications = () => {
     enabled: !!user?.email && uniqueMentorshipIds.length > 0,
   });
 
+  // Sync fetched data to local state
   useEffect(() => {
     if (MentorshipApplicationsData.length > 0) {
       setApplicationList(MentorshipApplicationsData);

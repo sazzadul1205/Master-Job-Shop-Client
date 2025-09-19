@@ -6,19 +6,15 @@ import PropTypes from "prop-types";
 // Assets
 import DefaultUserLogo from "../../assets/DefaultUserLogo.jpg";
 
-// Shared
-import CommonButton from "../CommonButton/CommonButton";
-
-// Price Formatting
-const formatPrice = (price) => {
-  if (!price || price.isFree) return "Free";
-  return `${price.currency} ${price.amount}${
-    price.discount ? ` (−${price.discount}%)` : ""
-  }`;
+// Format price
+const formatPrice = (fee) => {
+  if (!fee || fee.isFree) return "Free";
+  return `${fee.currency} ${fee.amount}${
+    fee.discount ? ` (−${fee.discount}%)` : ""
+  }${fee.negotiable ? " • Negotiable" : ""}`;
 };
 
-
-// Calculate the Days Ago
+// Calculate days ago
 const calculateDaysAgo = (isoString) => {
   if (!isoString) return "Unknown";
   const postedDate = new Date(isoString);
@@ -30,65 +26,80 @@ const calculateDaysAgo = (isoString) => {
 
 const CourseCard = ({ course, setSelectedCourseID }) => {
   return (
-    <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-sm p-6 bg-gradient-to-bl from-white to-gray-100 hover:shadow-md transition duration-200 min-h-[250px]">
-      {/* Instructor Info */}
-      <div className="flex items-center gap-2 mb-4">
+    <div className="flex flex-col justify-between border border-gray-200 rounded-xl shadow-md hover:shadow-2xl p-6 bg-white transition duration-300 min-h-[280px] relative ">
+      {/* Posted Time (Top Left) */}
+      <p className="absolute top-3 right-4 text-xs text-gray-400">
+        Posted: {calculateDaysAgo(course?.postedAt)}
+      </p>
+
+      {/* Mentor Info */}
+      <div className="flex items-center gap-3 mb-4">
+        {/* Avatar */}
         <img
-          src={course?.instructor?.profileImage || DefaultUserLogo}
-          alt="Instructor"
-          className="w-12 h-12 rounded-full object-cover"
+          src={course?.Mentor?.profileImage || DefaultUserLogo}
+          alt={course?.Mentor?.name || "Mentor"}
+          className="w-12 h-12 rounded-full object-cover border"
         />
-        <span className="text-sm text-gray-700 font-medium">
-          {course?.instructor?.name || "Instructor"}
-        </span>
+
+        {/* Name & Position */}
+        <div>
+          {/* Name */}
+          <p className="text-sm font-semibold text-gray-800">
+            {course?.Mentor?.name || "Mentor"}
+          </p>
+
+          {/* Position */}
+          <p className="text-xs text-gray-500">{course?.Mentor?.position}</p>
+        </div>
       </div>
 
-      {/* Course Title */}
-      <h3 className="text-lg font-semibold text-black mb-1">{course.title}</h3>
+      {/* Course Title & Subtitle */}
+      <div className="mb-2">
+        {/* Title */}
+        <h3 className="text-lg font-bold text-gray-900">{course.title}</h3>
 
-      {/* Category & Subcategory */}
-      <p className="text-sm text-gray-500 mb-1">
-        {course.category} › {course.subCategory}
-      </p>
+        {/* Subtitle */}
+        {course.subTitle && (
+          <p className="text-sm text-gray-800 italic">{course.subTitle}</p>
+        )}
 
-      {/* Level */}
-      <p className="text-sm text-gray-600 mb-1">
-        Level: <span className="text-gray-800">{course.level}</span>
-      </p>
+        {/* Category */}
+        <p className="text-sm text-gray-600">
+          {course.category} › {course.subCategory}
+        </p>
+      </div>
 
-      {/* Duration */}
-      <p className="text-sm text-gray-600 mb-1">
-        Duration:{" "}
-        <span className="text-gray-800">
-          {course.durationHours} hours • {course.modules} modules
-        </span>
-      </p>
+      {/* Category & Level */}
+      <div className="flex gap-5 items-center text-sm text-gray-600 mb-2">
+        {/* Level */}
+        <p>
+          <span className="font-medium">Level:</span> {course.level}
+        </p>
+
+        {/* Separator */}
+        <p className=""> || </p>
+
+        {/* Duration & Modules */}
+        <p>
+          <span className="font-medium">Duration:</span> {course.durationHours}{" "}
+          hours • {course.modulesNumber || course.modules?.length || 0} modules
+        </p>
+      </div>
 
       {/* Price */}
       <p className="text-sm text-gray-600 mb-3">
-        Price:{" "}
+        <span className="font-medium text-gray-700">Price:</span>{" "}
         <span className="text-green-700 font-semibold">
-          {formatPrice(course.price)}
+          {formatPrice(course.fee)}
         </span>
       </p>
 
-      {/* Posted Time */}
-      <p className="text-xs text-gray-400 mb-3">
-        Posted: {calculateDaysAgo(course?.publishedAt)}
-      </p>
-
       {/* Action Buttons */}
-      <div className="flex justify-between items-center pt-2 mt-auto">
+      <div className="flex justify-between items-center mt-auto pt-2">
         <Link to={`/Courses/Apply/${course?._id}`}>
-          <CommonButton
-            text="Enroll Now"
-            textColor="text-white"
-            bgColor="blue"
-            px="px-4"
-            py="py-2"
-            width="auto"
-            className="text-sm font-medium"
-          />
+          <button className="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium cursor-pointer">
+            Enroll Now
+          </button>
         </Link>
 
         <button
@@ -106,7 +117,33 @@ const CourseCard = ({ course, setSelectedCourseID }) => {
 };
 
 CourseCard.propTypes = {
-  course: PropTypes.object.isRequired,
+  course: PropTypes.shape({
+    _id: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    title: PropTypes.string.isRequired,
+    subTitle: PropTypes.string,
+    category: PropTypes.string,
+    subCategory: PropTypes.string,
+    level: PropTypes.string,
+    durationHours: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    modulesNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    modules: PropTypes.array,
+    postedAt: PropTypes.string,
+    fee: PropTypes.shape({
+      isFree: PropTypes.bool,
+      amount: PropTypes.number,
+      discount: PropTypes.number,
+      currency: PropTypes.string,
+      negotiable: PropTypes.bool,
+    }),
+    Mentor: PropTypes.shape({
+      name: PropTypes.string,
+      email: PropTypes.string,
+      profileImage: PropTypes.string,
+      bio: PropTypes.string,
+      rating: PropTypes.string,
+      position: PropTypes.string,
+    }),
+  }).isRequired,
   setSelectedCourseID: PropTypes.func.isRequired,
 };
 

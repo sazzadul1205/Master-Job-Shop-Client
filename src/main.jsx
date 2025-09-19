@@ -95,10 +95,11 @@ import EmployerPrivateRoute from "./Routes/EmployerPrivateRoute";
 import MentorLayout from "./Layouts/MentorLayout";
 
 // Mentor Pages
-import MentorMyMentorship from "./Pages/(Mentor_Pages)/MentorMyMentorship/MentorMyMentorship";
 import MentorProfile from "./Pages/(Mentor_Pages)/MentorProfile/MentorProfile";
-import MentorMyMentorshipApplications from "./Pages/(Mentor_Pages)/MentorMyMentorshipApplications/MentorMyMentorshipApplications";
 import MentorMyCourses from "./Pages/(Mentor_Pages)/MentorMyCourses/MentorMyCourses";
+import MentorMyMentorship from "./Pages/(Mentor_Pages)/MentorMyMentorship/MentorMyMentorship";
+import MentorMyMentorshipApplications from "./Pages/(Mentor_Pages)/MentorMyMentorshipApplications/MentorMyMentorshipApplications";
+import MentorCourseApplications from "./Pages/(Mentor_Pages)/MentorCourseApplications/MentorCourseApplications";
 
 const queryClient = new QueryClient();
 
@@ -404,13 +405,20 @@ createRoot(document.getElementById("root")).render(
                 element={<MentorMyMentorship />}
               />
 
-              {/* Mentorship */}
+              {/* Mentorship Applications */}
               <Route
                 path="/Mentor/MentorshipApplications"
                 element={<MentorMyMentorshipApplications />}
               />
 
+              {/* Mentor My Courses */}
               <Route path="/Mentor/MyCourses" element={<MentorMyCourses />} />
+
+              {/* Mentor Course Applications */}
+              <Route
+                path="/Mentor/CourseApplications"
+                element={<MentorCourseApplications />}
+              />
 
               {/* Mentor Profile */}
               <Route path="/Mentor/Profile" element={<MentorProfile />} />

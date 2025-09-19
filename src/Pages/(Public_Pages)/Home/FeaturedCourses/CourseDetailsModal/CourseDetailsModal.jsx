@@ -15,7 +15,6 @@ import { FaCalendarAlt, FaUserTie } from "react-icons/fa";
 // Shared
 import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
-import CommonButton from "../../../../../Shared/CommonButton/CommonButton";
 
 // Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
@@ -145,7 +144,7 @@ const CourseDetailsModal = ({
   return (
     <div
       id="Course_Details_Modal"
-      className="modal-box min-w-5xl relative bg-white rounded-2xl shadow-2xl w-full mx-auto overflow-y-auto max-h-[90vh] p-8 transition-all"
+      className="modal-box min-w-5xl relative bg-white text-black rounded-2xl shadow-2xl w-full mx-auto overflow-y-auto max-h-[90vh] p-8 transition-all"
     >
       {/* Close Button */}
       <div
@@ -367,20 +366,6 @@ const CourseDetailsModal = ({
 
       {/* Action */}
       <div className="flex items-center justify-between mt-8">
-        {SelectedCourseData.fee?.paymentLink && (
-          <a href={SelectedCourseData.fee.paymentLink} target="_blank">
-            <CommonButton
-              text="Enroll Now"
-              textColor="text-white"
-              bgColor="blue"
-              px="px-6"
-              py="py-3"
-              width="auto"
-              className="text-sm font-medium"
-            />
-          </a>
-        )}
-
         {/* Apply Button */}
         {!isEditor && (
           <Link to={`/Course/Apply/${SelectedCourseData?._id}`}>

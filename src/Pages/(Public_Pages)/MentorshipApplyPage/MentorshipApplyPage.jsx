@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { FaArrowLeft, FaInfo } from "react-icons/fa";
 
 // Packages
-import { useQuery } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
+import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 
 // Shared
 import CommonButton from "../../../Shared/CommonButton/CommonButton";
@@ -160,14 +160,15 @@ const MentorshipApplyPage = () => {
       // Build application payload
       const applicationData = {
         ...data,
-        mentorshipId: mentorshipId,
+        status: "pending",
         userId: UsersData?._id,
         email: UsersData?.email,
         phone: UsersData?.phone,
         resumeUrl: res.data.url,
+        mentorshipId: mentorshipId,
         confirmation: confirmationValue,
-        profileImage: UsersData?.profileImage,
         appliedAt: new Date().toISOString(),
+        profileImage: UsersData?.profileImage,
       };
 
       // Submit application to backend
@@ -686,7 +687,7 @@ const MentorshipApplyPage = () => {
         </div>
       )}
 
-      {/* Mentorship Modal */}
+      {/* Mentorship Details Modal */}
       <dialog id="Mentorship_Details_Modal" className="modal">
         <MentorshipDetailsModal
           selectedMentorshipID={selectedMentorshipID}

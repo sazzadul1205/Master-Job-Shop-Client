@@ -15,6 +15,7 @@ import CreateCourseModal from "./CreateCourseModal/CreateCourseModal";
 
 // Modals
 import MentorMyActiveCourses from "./MentorMyActiveCourses/MentorMyActiveCourses";
+import MentorMyArchivedCourses from "./MentorMyArchivedCourses/MentorMyArchivedCourses";
 
 const MentorMyCourses = () => {
   const { user } = useAuth();
@@ -32,16 +33,39 @@ const MentorMyCourses = () => {
   } = useQuery({
     queryKey: ["CoursesData", "active"],
     queryFn: () =>
-      axiosPublic.get(`/Courses?mentorEmail=${user?.email}`).then((res) => {
-        const data = res.data;
-        // Ensure the result is always an array
-        return Array.isArray(data) ? data : [data];
-      }),
+      axiosPublic
+        .get(
+          `/Courses?mentorEmail=${user?.email}&status=active,open,closed,onHold&archived=false`
+        )
+        .then((res) => {
+          const data = res.data;
+          // Ensure the result is always an array
+          return Array.isArray(data) ? data : [data];
+        }),
+  });
+
+  // Fetching Archived Course
+  const {
+    data: ArchivedCourseData,
+    isLoading: ArchivedCourseIsLoading,
+    refetch: ArchivedCourseRefetch,
+    error: ArchivedCourseError,
+  } = useQuery({
+    queryKey: ["CourseData", "archived"],
+    queryFn: () =>
+      axiosPublic
+        .get(`/Courses?mentorEmail=${user?.email}&archived=true`)
+        .then((res) => {
+          const data = res.data;
+          // Ensure the result is always an array
+          return Array.isArray(data) ? data : [data];
+        }),
   });
 
   // Refetch All
-  const RefetchAll = () => {
-    ActiveCoursesRefetch();
+  const RefetchAll = async () => {
+    await ActiveCoursesRefetch();
+    await ArchivedCourseRefetch();
   };
 
   // Tabs Data
@@ -109,13 +133,12 @@ const MentorMyCourses = () => {
         )}
         {/* Archived Tab Content */}
         {activeTab === "archived" && (
-          //   <MentorMyArchivedMentorship
-          //     error={ArchivedMentorshipError}
-          //     refetch={RefetchAll}
-          //     isLoading={ArchivedMentorshipIsLoading}
-          //     MentorshipData={ArchivedMentorshipData}
-          //   />
-          <p>Comment ......</p>
+          <MentorMyArchivedCourses
+            refetch={RefetchAll}
+            error={ArchivedCourseError}
+            isLoading={ArchivedCourseIsLoading}
+            CoursesData={ArchivedCourseData}
+          />
         )}
       </div>
 

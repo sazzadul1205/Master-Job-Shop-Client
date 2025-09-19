@@ -24,10 +24,8 @@ import Loading from "../../../../Shared/Loading/Loading";
 
 // Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-
-// Modal
-import EditCourseModal from "./EditCourseModal/EditCourseModal";
 import CourseDetailsModal from "../../../(Public_Pages)/Home/FeaturedCourses/CourseDetailsModal/CourseDetailsModal";
+import EditCourseModal from "../MentorMyActiveCourses/EditCourseModal/EditCourseModal";
 
 // Utility: Format Budget Display
 const formatBudget = (amount, currency = "USD", isNegotiable = false) => {
@@ -49,7 +47,12 @@ const calculateDaysAgo = (isoString) => {
   return days === 0 ? "Today" : `${days} day${days > 1 ? "s" : ""} ago`;
 };
 
-const MentorMyActiveCourses = ({ error, refetch, CoursesData, isLoading }) => {
+const MentorMyArchivedCourses = ({
+  error,
+  refetch,
+  CoursesData,
+  isLoading,
+}) => {
   const axiosPublic = useAxiosPublic();
 
   // State Variables
@@ -387,7 +390,7 @@ const MentorMyActiveCourses = ({ error, refetch, CoursesData, isLoading }) => {
 };
 
 // Prop Validation
-MentorMyActiveCourses.propTypes = {
+MentorMyArchivedCourses.propTypes = {
   error: PropTypes.any,
   refetch: PropTypes.func.isRequired,
   CoursesData: PropTypes.arrayOf(
@@ -437,4 +440,4 @@ MentorMyActiveCourses.propTypes = {
   isLoading: PropTypes.bool.isRequired,
 };
 
-export default MentorMyActiveCourses;
+export default MentorMyArchivedCourses;

@@ -13,6 +13,8 @@ import {
   FaStar,
   FaRegStar,
 } from "react-icons/fa";
+
+// Assets
 import DeleteAnimation from "../../../../assets/Animation/DeleteAnimation.gif";
 
 // Shared

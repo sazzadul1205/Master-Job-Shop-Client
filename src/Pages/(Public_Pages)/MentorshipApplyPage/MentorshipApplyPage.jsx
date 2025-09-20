@@ -140,11 +140,13 @@ const MentorshipApplyPage = () => {
       }
     }
 
+    // Validate that user is logged in
     if (!user) {
       setShowLoginModal(true);
       return;
     }
 
+    // Handle form submission
     try {
       setIsSubmitting(true);
 

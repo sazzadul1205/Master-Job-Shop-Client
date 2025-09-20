@@ -135,6 +135,7 @@ const MyMentorshipApplications = () => {
   //   UI Error / Loading
   if (loading || MentorshipApplicationsIsLoading || MentorshipIsLoading)
     return <Loading />;
+
   if (MentorshipApplicationsError || MentorshipError) return <Error />;
 
   // Merge mentorship and applications
@@ -149,6 +150,8 @@ const MyMentorshipApplications = () => {
       };
     })
     .filter((item) => item.mentorship);
+
+  console.log(mergedData[0]);
 
   return (
     <section className="px-4 md:px-12 min-h-screen">
@@ -165,16 +168,33 @@ const MyMentorshipApplications = () => {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {mergedData.length > 0 ? (
           mergedData.map((item) => {
             return (
               <article
                 key={item._id}
-                className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition p-6 flex flex-col justify-between min-h-[320px]"
+                className="relative bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition p-6 flex flex-col justify-between min-h-[320px]"
               >
+                {/* Application Status Badge */}
+                {item.status && (
+                  <span
+                    className={`absolute -top-3 -left-3 px-4 py-1 text-sm font-semibold rounded-full shadow-xl ${
+                      item.status.toLowerCase() === "accepted"
+                        ? "bg-green-500 text-white"
+                        : item.status.toLowerCase() === "rejected"
+                        ? "bg-red-500 text-white"
+                        : item.status.toLowerCase() === "pending"
+                        ? "bg-yellow-500 text-white"
+                        : "bg-gray-200 text-gray-600"
+                    }`}
+                  >
+                    {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                  </span>
+                )}
+
                 {/* Title & Category */}
-                <div>
+                <div className="mt-2">
                   <h3
                     className="text-lg font-semibold text-gray-900 mb-1 truncate"
                     title={item.mentorship?.title}
@@ -211,10 +231,6 @@ const MyMentorshipApplications = () => {
                           addSuffix: true,
                         })
                       : "N/A"}
-                  </p>
-                  <p>
-                    <span className="font-semibold">Status:</span>{" "}
-                    {item.mentorship?.status || "N/A"}
                   </p>
                 </div>
 

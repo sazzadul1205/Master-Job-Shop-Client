@@ -134,6 +134,7 @@ const MyCourseApplications = () => {
   // UI Loading / Error States
   if (loading || CourseApplicationsIsLoading || CoursesIsLoading)
     return <Loading />;
+
   if (CourseApplicationsError || CoursesError) return <Error />;
 
   // Merge Application with Course
@@ -162,52 +163,40 @@ const MyCourseApplications = () => {
       </div>
 
       {/* Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {mergedData.length > 0 ? (
           mergedData.map(({ course, appliedAt, status, _id }) => (
             <article
               key={_id}
-              className="bg-white border border-gray-200 rounded-xl shadow hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between p-6"
-              style={{ minHeight: "340px" }}
+              className="relative bg-white border border-gray-200 rounded-xl shadow hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between p-6"
+              style={{ minHeight: "250px" }}
             >
+              {/* Status Badge */}
+              <span
+                className={`absolute -top-3 -left-3 px-4 py-1 text-sm font-semibold rounded-full shadow-xl ${
+                  status === "accepted"
+                    ? "bg-green-500 text-white"
+                    : status === "rejected"
+                    ? "bg-red-500 text-white"
+                    : "bg-yellow-500 text-white"
+                }`}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </span>
+
               {/* Course Info */}
-              <div>
+              <div className="mt-2">
                 <h4
-                  className="text-2xl font-bold text-gray-900 mb-1 truncate"
+                  className="text-xl font-bold text-gray-900 mb-1 truncate"
                   title={course?.title}
                 >
                   {course?.title || "Untitled Course"}
                 </h4>
-                <p
-                  className="text-sm text-gray-500 font-medium mb-4 truncate"
-                  title={course?.instructor?.name}
-                >
-                  Instructor: {course?.instructor?.name || "Unknown"}
+                <p className="text-sm text-gray-600 mb-2">
+                  Instructor: {course?.Mentor?.name || "Unknown"}
                 </p>
 
-                {/* Details */}
-                <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-gray-700 mb-6">
-                  <div>
-                    <dt className="font-semibold text-gray-800">Category</dt>
-                    <dd className="mt-0.5">{course?.category || "N/A"}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold text-gray-800">Level</dt>
-                    <dd className="mt-0.5">{course?.level || "N/A"}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold text-gray-800">Modules</dt>
-                    <dd className="mt-0.5">{course?.modules ?? "N/A"}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold text-gray-800">Lessons</dt>
-                    <dd className="mt-0.5">{course?.lessons ?? "N/A"}</dd>
-                  </div>
-                </dl>
-              </div>
-
-              {/* Applied & Status */}
-              <div className="mb-6">
+                {/* Applied Date */}
                 <p className="text-sm text-gray-500 mb-2">
                   Applied{" "}
                   <time dateTime={appliedAt}>
@@ -218,75 +207,69 @@ const MyCourseApplications = () => {
                       : "N/A"}
                   </time>
                 </p>
-                <span
-                  className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
-                    status === "approved"
-                      ? "bg-green-100 text-green-700"
-                      : status === "rejected"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-yellow-100 text-yellow-700"
-                  }`}
-                >
-                  {status}
-                </span>
+
+                {/* Course Category & Level */}
+                <div className="text-sm text-gray-700">
+                  <p>
+                    <span className="font-semibold">Category:</span>{" "}
+                    {course?.category} › {course?.subCategory}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Level:</span>{" "}
+                    {course?.level}
+                  </p>
+                </div>
               </div>
 
-              {/* Actions */}
-              <div className="flex justify-end items-center gap-4">
+              {/* Action Buttons */}
+              <div className="flex justify-end items-center gap-3 mt-2">
                 {/* View Application */}
                 <button
                   id={`course-app-btn-${_id}`}
                   data-tooltip-content="View Application"
-                  className="flex items-center justify-center w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                  className="flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow transition cursor-pointer"
                   onClick={() => {
                     setSelectedApplicationID(_id);
                     document
                       .getElementById("View_Course_Application_Modal")
-                      .showModal();
+                      ?.showModal();
                   }}
-                  aria-label="View Application"
                 >
                   <img src={Courses} alt="View" className="w-5" />
                 </button>
-                <Tooltip
-                  anchorSelect={`#course-app-btn-${_id}`}
-                  place="top"
-                  className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
-                />
+                <Tooltip anchorSelect={`#course-app-btn-${_id}`} place="top" />
 
-                {/* Delete */}
+                {/* Cancel Application */}
                 <button
                   id={`course-app-cross-${_id}`}
                   data-tooltip-content="Cancel Application"
-                  className="flex items-center justify-center w-11 h-11 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                  className="flex items-center justify-center w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition cursor-pointer"
                   onClick={() => handleDeleteCourseApplication(_id)}
-                  aria-label="Cancel Application"
                 >
-                  <ImCross size={18} />
+                  <ImCross size={16} />
                 </button>
                 <Tooltip
                   anchorSelect={`#course-app-cross-${_id}`}
                   place="top"
-                  className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
                 />
 
-                {/* View Details */}
+                {/* View Course Details */}
                 <button
                   id={`course-details-btn-${_id}`}
                   data-tooltip-content="View Course Details"
-                  className="flex items-center justify-center w-11 h-11 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
+                  className="flex items-center justify-center w-10 h-10 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg shadow transition cursor-pointer"
                   onClick={() => {
                     setSelectedCourseID(course?._id);
-                    document.getElementById("Course_Details_Modal").showModal();
+                    document
+                      .getElementById("Course_Details_Modal")
+                      ?.showModal();
                   }}
-                  aria-label="View Course Details"
                 >
-                  <FaInfo size={18} />
+                  <FaInfo size={16} />
                 </button>
                 <Tooltip
                   anchorSelect={`#course-details-btn-${_id}`}
                   place="top"
-                  className="!text-sm !bg-gray-900 !text-white !py-1 !px-3 !rounded"
                 />
               </div>
             </article>

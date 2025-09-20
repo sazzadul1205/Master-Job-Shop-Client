@@ -126,125 +126,139 @@ createRoot(document.getElementById("root")).render(
             {/* Public Pages */}
             <Route element={<PublicLayout />}>
               {/* Jobs Part */}
-              <Route path="/Jobs" element={<Jobs />} />
-              <Route
-                path="/Jobs/Apply/:jobId"
-                element={
-                  <MemberPrivateRoute>
-                    <JobsApplyPage />
-                  </MemberPrivateRoute>
-                }
-              />
-              <Route
-                path="/MyJobApplications"
-                element={
-                  <MemberPrivateRoute>
-                    <MyJobApplications />
-                  </MemberPrivateRoute>
-                }
-              />
+              <>
+                <Route path="/Jobs" element={<Jobs />} />
+                <Route
+                  path="/Jobs/Apply/:jobId"
+                  element={
+                    <MemberPrivateRoute>
+                      <JobsApplyPage />
+                    </MemberPrivateRoute>
+                  }
+                />
+                <Route
+                  path="/MyJobApplications"
+                  element={
+                    <MemberPrivateRoute>
+                      <MyJobApplications />
+                    </MemberPrivateRoute>
+                  }
+                />
+              </>
 
               {/* Gigs Part */}
-              <Route path="/Gigs" element={<Gigs />} />
-              <Route
-                path="/Gigs/Bidding/:gigId"
-                element={
-                  <MemberPrivateRoute>
-                    <GigBiddingpage />
-                  </MemberPrivateRoute>
-                }
-              />
-              <Route
-                path="/MyGigBids"
-                element={
-                  <MemberPrivateRoute>
-                    <MyGigBids />
-                  </MemberPrivateRoute>
-                }
-              />
+              <>
+                <Route path="/Gigs" element={<Gigs />} />
+                <Route
+                  path="/Gigs/Bidding/:gigId"
+                  element={
+                    <MemberPrivateRoute>
+                      <GigBiddingpage />
+                    </MemberPrivateRoute>
+                  }
+                />
+                <Route
+                  path="/MyGigBids"
+                  element={
+                    <MemberPrivateRoute>
+                      <MyGigBids />
+                    </MemberPrivateRoute>
+                  }
+                />
+              </>
+
+              {/* Courses */}
+              <>
+                <Route path="/Courses" element={<Courses />} />
+                <Route
+                  path="/Courses/Apply/:courseId"
+                  element={
+                    <MemberPrivateRoute>
+                      <CoursesApplyPage />
+                    </MemberPrivateRoute>
+                  }
+                />
+                <Route
+                  path="/MyCourseApplications"
+                  element={
+                    <MemberPrivateRoute>
+                      <MyCourseApplications />
+                    </MemberPrivateRoute>
+                  }
+                />
+              </>
+
+              {/* Mentorship */}
+              <>
+                <Route path="/Mentorship" element={<Mentorship />} />
+                <Route
+                  path="/Mentorship/Apply/:mentorshipId"
+                  element={
+                    <MemberPrivateRoute>
+                      <MentorshipApplyPage />
+                    </MemberPrivateRoute>
+                  }
+                />
+                <Route
+                  path="/MyMentorshipApplication"
+                  element={
+                    <MemberPrivateRoute>
+                      <MyMentorshipApplications />
+                    </MemberPrivateRoute>
+                  }
+                />
+              </>
+
+              {/* Internship */}
+              <>
+                <Route path="/Internship" element={<Internship />} />
+                <Route
+                  path="/Internship/Apply/:internshipId"
+                  element={
+                    <MemberPrivateRoute>
+                      <InternshipApplyPage />
+                    </MemberPrivateRoute>
+                  }
+                />
+                <Route
+                  path="/MyInternshipApplications"
+                  element={
+                    <MemberPrivateRoute>
+                      <MyInternshipApplications />
+                    </MemberPrivateRoute>
+                  }
+                />
+              </>
+
+              {/* Events */}
+              <>
+                <Route path="/Events" element={<Events />} />
+                <Route
+                  path="/Events/Apply/:eventId"
+                  element={<EventApplicationPage />}
+                />
+                <Route
+                  path="/MyEventApplications"
+                  element={
+                    <MemberPrivateRoute>
+                      <MyEventApplications />
+                    </MemberPrivateRoute>
+                  }
+                />
+              </>
+
+              {/* Company Profiles */}
+              <>
+                <Route path="/CompanyProfiles" element={<CompanyProfiles />} />
+
+                <Route
+                  path="/CompanyProfiles/:companyId"
+                  element={<CompanyProfilesDetails />}
+                />
+              </>
 
               {/* Blogs Part */}
               <Route path="/Blogs" element={<Blogs />} />
-
-              {/* Courses */}
-              <Route path="/Courses" element={<Courses />} />
-              <Route
-                path="/Courses/Apply/:courseId"
-                element={
-                  <MemberPrivateRoute>
-                    <CoursesApplyPage />
-                  </MemberPrivateRoute>
-                }
-              />
-              <Route
-                path="/MyCourseApplications"
-                element={
-                  <MemberPrivateRoute>
-                    <MyCourseApplications />
-                  </MemberPrivateRoute>
-                }
-              />
-
-              {/* Mentorship */}
-              <Route path="/Mentorship" element={<Mentorship />} />
-              <Route
-                path="/Mentorship/Apply/:mentorshipId"
-                element={
-                  <MemberPrivateRoute>
-                    <MentorshipApplyPage />
-                  </MemberPrivateRoute>
-                }
-              />
-              <Route
-                path="/MyMentorshipApplication"
-                element={
-                  <MemberPrivateRoute>
-                    <MyMentorshipApplications />
-                  </MemberPrivateRoute>
-                }
-              />
-
-              {/* Internship */}
-              <Route path="/Internship" element={<Internship />} />
-              <Route
-                path="/Internship/Apply/:internshipId"
-                element={
-                  <MemberPrivateRoute>
-                    <InternshipApplyPage />
-                  </MemberPrivateRoute>
-                }
-              />
-              <Route
-                path="/MyInternshipApplications"
-                element={
-                  <MemberPrivateRoute>
-                    <MyInternshipApplications />
-                  </MemberPrivateRoute>
-                }
-              />
-
-              {/* Events */}
-              <Route path="/Events" element={<Events />} />
-              <Route
-                path="/Events/Apply/:eventId"
-                element={<EventApplicationPage />}
-              />
-              <Route
-                path="/MyEventApplications"
-                element={
-                  <MemberPrivateRoute>
-                    <MyEventApplications />
-                  </MemberPrivateRoute>
-                }
-              />
-
-              {/* Company Profiles */}
-              <Route path="/CompanyProfiles" element={<CompanyProfiles />} />
-
-              <Route
-                path="/CompanyProfiles/:companyId"
-                element={<CompanyProfilesDetails />}
-              />
 
               {/* Testimonials */}
               <Route path="/Testimonials" element={<Testimonials />} />

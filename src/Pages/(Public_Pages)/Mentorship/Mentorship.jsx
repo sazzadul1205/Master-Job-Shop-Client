@@ -26,9 +26,9 @@ const Mentorship = () => {
   const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
 
   // Filter States
-  const [subCategory, setSubCategory] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [subCategory, setSubCategory] = useState("");
 
   // Fetch Mentorship
   const {

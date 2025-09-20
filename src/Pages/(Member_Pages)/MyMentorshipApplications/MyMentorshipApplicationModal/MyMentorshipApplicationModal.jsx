@@ -91,8 +91,8 @@ const MyMentorshipApplicationModal = ({
 
           {/* Subtitle */}
           <p className="text-gray-500 max-w-sm">
-            We couldn’t find any mentorship details to display right now. Please
-            check back later or refresh the page.
+            We couldn’t find any Mentorship Application details to display right
+            now. Please check back later or refresh the page.
           </p>
         </div>
       </div>

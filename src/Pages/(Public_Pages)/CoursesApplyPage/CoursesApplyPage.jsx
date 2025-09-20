@@ -28,8 +28,14 @@ const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Ke
 
 const CoursesApplyPage = () => {
   const axiosPublic = useAxiosPublic();
+
+  // Auth Hook
   const { user, loading } = useAuth();
+
+  // Params from URL
   const { courseId } = useParams();
+
+  // Navigation
   const navigate = useNavigate();
 
   // UI & State
@@ -112,6 +118,7 @@ const CoursesApplyPage = () => {
     loading
   )
     return <Loading />;
+
   if (SelectedCourseError || UsersError || CheckIfAppliedError)
     return <Error />;
 
@@ -133,22 +140,15 @@ const CoursesApplyPage = () => {
       }
     }
 
+    // Validate that user is logged in
     if (!user) {
       setShowLoginModal(true);
       return;
     }
 
+    // Handle form submission
     try {
       setIsSubmitting(true);
-
-      // Upload resume (PDF)
-      const resumeForm = new FormData();
-      resumeForm.append("file", data.resume[0]);
-      const res = await axiosPublic.post("/PDFUpload", resumeForm, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      if (!res.data?.url) throw new Error("Failed to upload PDF");
 
       // Create application data
       const applicationData = {
@@ -158,7 +158,6 @@ const CoursesApplyPage = () => {
         userId: UsersData?._id,
         email: UsersData?.email,
         phone: UsersData?.phone,
-        resumeUrl: res.data.url,
         confirmation: confirmationValue,
         appliedAt: new Date().toISOString(),
         profileImage: UsersData?.profileImage,
@@ -312,9 +311,12 @@ const CoursesApplyPage = () => {
               <div className="flex justify-between">
                 {/* Payment Method */}
                 <div>
+                  {/* Payment Method Label */}
                   <label className="block font-medium mb-1">
                     Payment Method
                   </label>
+
+                  {/* Payment Method */}
                   <p className="text-gray-800 font-semibold capitalize">
                     {(() => {
                       switch (SelectedCourseData?.fee?.paymentMethod) {
@@ -335,18 +337,23 @@ const CoursesApplyPage = () => {
 
                 {/* Fee */}
                 <div className="flex flex-col gap-1 text-right">
+                  {/* Fee Label */}
                   <h3 className="font-semibold text-lg">Fee :</h3>
+
+                  {/* Amount */}
                   <p className="font-semibold text-green-700">
                     {SelectedCourseData?.fee?.amount}{" "}
                     {SelectedCourseData?.fee?.currency || "USD"}
                   </p>
 
+                  {/* Discount */}
                   {SelectedCourseData?.fee?.discount > 0 && (
                     <p className="text-sm text-gray-600">
                       Discount: {SelectedCourseData.fee.discount}%
                     </p>
                   )}
 
+                  {/* Negotiable */}
                   {SelectedCourseData?.fee?.negotiable && (
                     <p className="text-xs text-yellow-600 italic">
                       * Negotiable

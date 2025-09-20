@@ -41,57 +41,62 @@ const Courses = () => {
     queryFn: () => axiosPublic.get("/Courses").then((res) => res.data),
   });
 
-  // Generate dynamic dropdown options
+  // always declare before using
   const allCategories = useMemo(() => {
-    // Extract unique course categories
+    if (!CoursesData) return ["All"];
     const set = new Set(CoursesData.map((c) => c.category));
     return ["All", ...Array.from(set)];
   }, [CoursesData]);
 
   const allLevels = useMemo(() => {
-    // Extract unique course levels
+    if (!CoursesData) return ["All"];
     const set = new Set(CoursesData.map((c) => c.level));
     return ["All", ...Array.from(set)];
   }, [CoursesData]);
 
   const allLanguages = useMemo(() => {
-    // Extract unique course languages
+    if (!CoursesData) return ["All"];
     const set = new Set(CoursesData.map((c) => c.language));
     return ["All", ...Array.from(set)];
   }, [CoursesData]);
 
-  // Filter courses based on search and selected filters
+  // Filter + sort courses
   const filteredCourses = useMemo(() => {
-    return CoursesData.filter((course) => {
-      // Match title, tags, or instructor name with search term
+    if (!CoursesData) return [];
+    const result = CoursesData.filter((course) => {
       const keywordMatch =
         searchTerm === "" ||
         course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         course.tags?.some((tag) =>
           tag.toLowerCase().includes(searchTerm.toLowerCase())
         ) ||
-        course.instructor?.name
+        course.Mentor?.name // 👈 fixed: your data has "Mentor", not "instructor"
           ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
 
-      // Match selected category
       const categoryMatch =
         category === "All" ||
         course.category.toLowerCase() === category.toLowerCase();
 
-      // Match selected level
       const levelMatch =
         level === "All" || course.level.toLowerCase() === level.toLowerCase();
 
-      // Match selected language
       const languageMatch =
         language === "All" ||
         course.language.toLowerCase() === language.toLowerCase();
 
-      // Include course if all filters match
       return keywordMatch && categoryMatch && levelMatch && languageMatch;
     });
+
+    return result.sort((a, b) => {
+      const dateA = new Date(a.postedAt || a.startDate || 0);
+      const dateB = new Date(b.postedAt || b.startDate || 0);
+      return dateB - dateA;
+    });
   }, [searchTerm, category, level, language, CoursesData]);
+  // Loading / Error UI
+  if (CoursesIsLoading) return <Loading />;
+  if (CoursesError) return <Error />;
 
   // Reset filters
   const handleClear = () => {
@@ -100,10 +105,6 @@ const Courses = () => {
     setCategory("All");
     setLanguage("All");
   };
-
-  // Loading / Error UI
-  if (CoursesIsLoading) return <Loading />;
-  if (CoursesError) return <Error />;
 
   return (
     <div className="min-h-screen">

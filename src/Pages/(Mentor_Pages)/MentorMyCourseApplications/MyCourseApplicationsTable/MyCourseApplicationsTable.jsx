@@ -1,7 +1,29 @@
-import React, { useState } from "react";
-import { FaCheck, FaCopy, FaSpinner } from "react-icons/fa";
-import { Tooltip } from "react-tooltip";
+import { useState } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+
+// Packages
 import Swal from "sweetalert2";
+import PropTypes from "prop-types";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
+
+// Icons
+import { ImCross } from "react-icons/im";
+import { IoIosEye } from "react-icons/io";
+import { FaCheck, FaCopy, FaSpinner } from "react-icons/fa";
+import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
+import { MdPendingActions, MdRestartAlt } from "react-icons/md";
+import { AiOutlineLoading3Quarters, AiOutlineReload } from "react-icons/ai";
+
+// Assets
+import CautionIcon from "../../../../assets/MentorshipApplications/CautionIcon.gif";
+import AcceptedIcon from "../../../../assets/MentorshipApplications/AcceptedIcon.gif";
+import RejectedIcon from "../../../../assets/MentorshipApplications/RejectedIcon.gif";
+import CompletedIcon from "../../../../assets/MentorshipApplications/CompletedIcon.gif";
+import DefaultApplicant from "../../../../assets/MentorshipApplications/MentorshipDefaultImage.jpeg";
+
+// Hooks
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 // Format date like "22 Feb 2026 10:12 PM"
 const formatDate = (dateString) => {
@@ -65,13 +87,16 @@ const MyCourseApplicationsTable = ({
   setSelectedApplicantName,
   setSelectedApplicationID,
 }) => {
+  const axiosPublic = useAxiosPublic();
+
   // Destructuring
   const { _id: id, title, applications = [] } = course;
 
   // Active filter state
-
+  const [loadingId, setLoadingId] = useState(null);
   const [activeFilters, setActiveFilters] = useState([]);
   const [statusLoading, setStatusLoading] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
   // Normalize status (fallback to "Pending")
   const getStatus = (app) => {
@@ -106,10 +131,21 @@ const MyCourseApplicationsTable = ({
     (a) => getStatus(a) === "Pending"
   ).length;
 
-  // Handler to change mentorship status with loading
-  const handleStatusChange = async (mentorshipId, currentStatus, newStatus) => {
-    if (newStatus === currentStatus) return; // No change
+  const toggleFilter = (status) => {
+    setActiveFilters((prev) => {
+      const newFilters = prev.includes(status)
+        ? prev.filter((s) => s !== status) // remove
+        : [...prev, status]; // add
 
+      //   setCurrentPage(1);
+      return newFilters;
+    });
+  };
+  // Handler to change Course status with loading
+  const handleStatusChange = async (courseId, currentStatus, newStatus) => {
+    if (newStatus === currentStatus) return;
+
+    // Confirmation
     const result = await Swal.fire({
       title: `Are you sure?`,
       text: `Do you want to change status from "${statusDisplayName[currentStatus]}" to "${statusDisplayName[newStatus]}"?`,
@@ -122,10 +158,9 @@ const MyCourseApplicationsTable = ({
     if (result.isConfirmed) {
       try {
         setStatusLoading(true); // start loading
-        const res = await axiosPublic.patch(
-          `/Mentorship/Status/${mentorshipId}`,
-          { status: newStatus }
-        );
+        const res = await axiosPublic.patch(`/Courses/Status/${courseId}`, {
+          status: newStatus,
+        });
 
         if (res.data?.message) {
           Swal.fire({
@@ -142,12 +177,210 @@ const MyCourseApplicationsTable = ({
         console.error("Error updating status:", error);
         Swal.fire({
           title: "Error",
-          text: "Failed to update mentorship status.",
+          text: "Failed to update Courses status.",
           icon: "error",
         });
       } finally {
         setStatusLoading(false); // stop loading
       }
+    }
+  };
+
+  // Handler for completing the mentorship program
+  const handleCompleteProgram = async (courseId) => {
+    // start loading
+    setLoadingComplete(true);
+
+    const cautionHtml = renderToStaticMarkup(
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: 15,
+        }}
+      >
+        <img
+          src={CautionIcon}
+          alt="Caution"
+          style={{ width: 150, height: 150 }}
+        />
+      </div>
+    );
+
+    Swal.fire({
+      title: "Are you sure?",
+      html: `${cautionHtml}<p>Once completed, this Course cannot be updated. You can only delete it later.</p>`,
+      showCancelButton: true,
+      confirmButtonText: "Yes, complete it!",
+      cancelButtonText: "Cancel",
+      customClass: { popup: "text-center" },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axiosPublic.patch(`/Courses/Status/${courseId}`, {
+            status: "completed",
+          });
+
+          if (res.data?.message) {
+            const completedHtml = renderToStaticMarkup(
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginBottom: 15,
+                }}
+              >
+                <img
+                  src={CompletedIcon}
+                  alt="Completed"
+                  style={{ width: 150, height: 150 }}
+                />
+              </div>
+            );
+
+            Swal.fire({
+              title: "Course Completed!",
+              html: `${completedHtml}<p>The Course program has been successfully marked as completed.</p>`,
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              allowOutsideClick: true,
+              customClass: { popup: "text-center" },
+            });
+
+            refetchAll?.();
+          }
+        } catch (error) {
+          console.error("Error completing Course:", error);
+          Swal.fire({
+            title: "Error",
+            text: "Failed to complete the Course program.",
+            icon: "error",
+          });
+        }
+      }
+      // stop loading after alert resolves
+      setLoadingComplete(false);
+    });
+  };
+
+  // Handler to accept/revert/reject an application
+  const updateApplicationStatus = async (
+    applicationId,
+    newStatus,
+    applicantName
+  ) => {
+    if (!applicationId) {
+      console.error("No application ID provided.");
+      Swal.fire({
+        title: "Error",
+        text: "No application selected.",
+        icon: "error",
+      });
+      return;
+    }
+
+    if (!["Accepted", "Rejected", "Pending"].includes(newStatus)) {
+      console.error("Invalid status provided:", newStatus);
+      Swal.fire({
+        title: "Error",
+        text: "Invalid status value.",
+        icon: "error",
+      });
+      return;
+    }
+
+    setLoadingId(applicationId);
+
+    try {
+      const response = await axiosPublic.put(
+        `/CourseApplications/Status/${applicationId}`,
+        { status: newStatus }
+      );
+
+      if (response.status >= 200 && response.status < 300) {
+        refetchAll?.();
+
+        // Choose icon based on status
+        const iconHtml =
+          newStatus === "Accepted"
+            ? renderToStaticMarkup(
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginBottom: 15,
+                  }}
+                >
+                  <img
+                    src={AcceptedIcon}
+                    alt="Accepted"
+                    style={{ width: 150, height: 150 }}
+                  />
+                </div>
+              )
+            : newStatus === "Rejected"
+            ? renderToStaticMarkup(
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginBottom: 15,
+                  }}
+                >
+                  <img
+                    src={RejectedIcon}
+                    alt="Rejected"
+                    style={{ width: 150, height: 150 }}
+                  />
+                </div>
+              )
+            : renderToStaticMarkup(
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginBottom: 15,
+                    fontSize: 80,
+                    color: "#facc15",
+                    animation: "spin 1.5s linear infinite",
+                  }}
+                >
+                  <AiOutlineReload />
+                </div>
+              );
+
+        Swal.fire({
+          title:
+            newStatus === "Pending"
+              ? "Reverted Successfully!"
+              : `${newStatus} Successfully!`,
+          html: `${iconHtml}<p>${applicantName}'s application has been ${
+            newStatus === "Pending"
+              ? "reverted to pending"
+              : newStatus.toLowerCase()
+          }.</p>`,
+          showConfirmButton: false,
+          timer: 1800,
+          timerProgressBar: true,
+          allowOutsideClick: true,
+          customClass: { popup: "text-center" },
+        });
+      } else {
+        throw new Error(`Unexpected response status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error updating application status to ${newStatus}:`,
+        error
+      );
+      Swal.fire({
+        title: "Error",
+        text: `Failed to update ${applicantName}'s application status to "${newStatus}".`,
+        icon: "error",
+      });
+    } finally {
+      setLoadingId(null);
     }
   };
 
@@ -269,8 +502,374 @@ const MyCourseApplicationsTable = ({
           )}
         </div>
       </div>
+
+      {/* Applicants Info */}
+      <div className="py-4 grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
+        {/* Total Applicants Card */}
+        <div
+          className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200 cursor-pointer"
+          onClick={() => setActiveFilters([])}
+        >
+          <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+            <IoIosEye className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Total Applicants</p>
+            <p className="text-lg font-bold text-gray-700">
+              {applications.length}
+            </p>
+          </div>
+        </div>
+
+        {/* Accepted Applicants */}
+        <div
+          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer ${
+            activeFilters.includes("Accepted") ? "bg-green-100" : "bg-gray-50"
+          }`}
+          onClick={() => toggleFilter("Accepted")}
+        >
+          <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+            <FaCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Accepted</p>
+            <p className="text-lg font-bold text-green-600">{acceptedCount}</p>
+          </div>
+        </div>
+
+        {/* Rejected Applicants */}
+        <div
+          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer ${
+            activeFilters.includes("Rejected") ? "bg-red-100" : "bg-gray-50"
+          }`}
+          onClick={() => toggleFilter("Rejected")}
+        >
+          <div className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+            <ImCross className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Rejected</p>
+            <p className="text-lg font-bold text-red-600">{rejectedCount}</p>
+          </div>
+        </div>
+
+        {/* Pending Applicants */}
+        <div
+          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer ${
+            activeFilters.includes("Pending") ? "bg-yellow-100" : "bg-gray-50"
+          }`}
+          onClick={() => toggleFilter("Pending")}
+        >
+          <div className="bg-yellow-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+            <MdPendingActions className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Pending</p>
+            <p className="text-lg font-bold text-yellow-600">{pendingCount}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Table Container */}
+      <div className="overflow-x-auto text-black">
+        {/* Table */}
+        <table className="table">
+          {/* Table Head */}
+          <thead className="bg-gray-200 text-black">
+            <tr>
+              <th>#</th>
+              <th>Applicant Info</th>
+              <th className="text-center">Status</th>
+              <th className="w-96 text-center">Application Time</th>
+              <th className="w-96 text-center">Action</th>
+            </tr>
+          </thead>
+
+          {/* Table Body */}
+          <tbody>
+            {paginatedApplicants.map((applicant, index) => (
+              <tr
+                key={applicant?.id || index}
+                className="hover:bg-gray-100 border-b border-gray-200"
+              >
+                {/* Serial Number */}
+                <th>{startIndex + index + 1}</th>
+
+                {/* Applicant Info */}
+                <td className="flex items-center gap-4">
+                  {/* Avatar */}
+                  <img
+                    src={
+                      applicant?.avatar ||
+                      applicant?.profileImage ||
+                      DefaultApplicant
+                    }
+                    alt={applicant?.name || "N/A"}
+                    className="w-16 h-16 rounded-full"
+                    onError={(e) => {
+                      e.target.onerror = null; // prevent infinite loop
+                      e.target.src = DefaultApplicant; // fallback image
+                    }}
+                  />
+
+                  <h3
+                    className="font-bold cursor-pointer hover:text-blue-600 transition"
+                    onClick={() => {
+                      setSelectedApplicantName(applicant?.userId || "N/A");
+                      document
+                        .getElementById("View_Applicant_Profile_Modal")
+                        ?.showModal();
+                    }}
+                  >
+                    {applicant?.name || "N/A"}
+                  </h3>
+                </td>
+
+                {/* Status */}
+                <td className="text-center">
+                  <span
+                    className={`px-3 py-1 rounded-full text-white font-semibold text-sm ${
+                      applicant?.status === "Accepted"
+                        ? "bg-green-500"
+                        : applicant?.status === "Rejected"
+                        ? "bg-red-500"
+                        : "bg-gray-400"
+                    }`}
+                  >
+                    {applicant?.status || "Pending"}
+                  </span>
+                </td>
+
+                {/* Application Time */}
+                <td className="text-center">
+                  {formatDate(applicant?.appliedAt)}{" "}
+                  <span className="text-gray-500">
+                    ({getTimeAgo(applicant?.appliedAt)})
+                  </span>
+                </td>
+
+                {/* Action Column */}
+                <td className="text-right w-96">
+                  <div className="flex justify-end gap-2">
+                    {(() => {
+                      const status = getStatus(applicant);
+                      const isCompleted =
+                        course?.status?.toLowerCase() === "completed"; // check course status
+
+                      return (
+                        <>
+                          {/* View Button (always available, but disabled if Completed) */}
+                          <button
+                            onClick={() => {
+                              if (isCompleted) return;
+                              setSelectedApplicationID(applicant?._id);
+                              document
+                                .getElementById("View_Course_Application_Modal")
+                                ?.showModal();
+                            }}
+                            data-tooltip-id={`viewTip-${id}-${applicant?._id}`}
+                            data-tooltip-content="View Application Details"
+                            disabled={isCompleted}
+                            className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer ${
+                              isCompleted
+                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "bg-blue-500 text-white hover:bg-blue-700/90"
+                            }`}
+                          >
+                            <IoIosEye className="text-xl" /> View
+                          </button>
+                          <Tooltip id={`viewTip-${id}-${applicant?._id}`} />
+
+                          {/* Pending Applications → Accept & Reject */}
+                          {(status === "Pending" || !status) && (
+                            <>
+                              {/* Accept Button */}
+                              <button
+                                onClick={() =>
+                                  updateApplicationStatus(
+                                    applicant?._id,
+                                    "Accepted",
+                                    applicant?.name
+                                  )
+                                }
+                                disabled={
+                                  isCompleted || loadingId === applicant?._id
+                                }
+                                data-tooltip-id={`acceptTip-${id}-${applicant?._id}`}
+                                data-tooltip-content="Accept this Application"
+                                className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer ${
+                                  isCompleted
+                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                    : "bg-green-500 text-white hover:bg-green-700/90"
+                                }`}
+                              >
+                                {loadingId === applicant?._id ? (
+                                  <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                                ) : (
+                                  <FaCheck />
+                                )}
+                                Accept
+                              </button>
+                              <Tooltip
+                                id={`acceptTip-${id}-${applicant?._id}`}
+                              />
+
+                              {/* Reject Button */}
+                              <button
+                                onClick={() =>
+                                  updateApplicationStatus(
+                                    applicant?._id,
+                                    "Rejected",
+                                    applicant?.name
+                                  )
+                                }
+                                disabled={
+                                  isCompleted || loadingId === applicant?._id
+                                }
+                                data-tooltip-id={`rejectTip-${id}-${applicant?._id}`}
+                                data-tooltip-content="Reject this Application"
+                                className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer ${
+                                  isCompleted
+                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                    : "bg-red-500 text-white hover:bg-red-700/90"
+                                }`}
+                              >
+                                {loadingId === applicant?._id ? (
+                                  <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                                ) : (
+                                  <ImCross />
+                                )}
+                                Reject
+                              </button>
+                              <Tooltip
+                                id={`rejectTip-${id}-${applicant?._id}`}
+                              />
+                            </>
+                          )}
+
+                          {/* Accepted or Rejected → Revert */}
+                          {(status === "Accepted" || status === "Rejected") && (
+                            <>
+                              <button
+                                onClick={() =>
+                                  updateApplicationStatus(
+                                    applicant?._id,
+                                    "Pending",
+                                    applicant?.name
+                                  )
+                                }
+                                disabled={
+                                  isCompleted || loadingId === applicant?._id
+                                }
+                                data-tooltip-id={`revertTip-${id}-${applicant?._id}`}
+                                data-tooltip-content="Revert to Pending"
+                                className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer ${
+                                  isCompleted
+                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                    : "bg-yellow-500 text-white hover:bg-yellow-700/90"
+                                }`}
+                              >
+                                {loadingId === applicant?._id ? (
+                                  <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                                ) : (
+                                  <MdRestartAlt className="text-2xl" />
+                                )}
+                                Revert
+                              </button>
+                              <Tooltip
+                                id={`revertTip-${id}-${applicant?._id}`}
+                              />
+                            </>
+                          )}
+                        </>
+                      );
+                    })()}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Pagination */}
+        <div className="join flex justify-center mt-4">
+          {/* Previous Button */}
+          <button
+            className="join-item bg-gray-100 hover:bg-gray-200 p-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={currentPage === 1}
+            onClick={() => handlePageChange(id, currentPage - 1)}
+          >
+            <FaAnglesLeft />
+          </button>
+
+          {/* Page Number */}
+          <button className="join-item bg-gray-100 border-x-2 px-5 border-gray-300">
+            Page {currentPage} of {totalPages}
+          </button>
+
+          {/* Next Button */}
+          <button
+            className="join-item bg-gray-100 hover:bg-gray-200 p-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={currentPage === totalPages}
+            onClick={() => handlePageChange(id, currentPage + 1)}
+          >
+            <FaAnglesRight />
+          </button>
+        </div>
+      </div>
     </div>
   );
+};
+
+// Prop Validation
+MyCourseApplicationsTable.propTypes = {
+  course: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    category: PropTypes.string,
+    subCategory: PropTypes.string,
+    durationWeeks: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    status: PropTypes.string,
+    startDate: PropTypes.string,
+    endDate: PropTypes.string,
+    Mentor: PropTypes.shape({
+      name: PropTypes.string,
+      email: PropTypes.string,
+      profileImage: PropTypes.string,
+      bio: PropTypes.string,
+      rating: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      position: PropTypes.string,
+    }),
+    applications: PropTypes.arrayOf(
+      PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        email: PropTypes.string,
+        avatar: PropTypes.string,
+        profileImage: PropTypes.string,
+        portfolio: PropTypes.string,
+        motivation: PropTypes.string,
+        goals: PropTypes.string,
+        date: PropTypes.string,
+        status: PropTypes.string,
+        appliedAt: PropTypes.string,
+      })
+    ),
+  }).isRequired,
+
+  // Pagination state
+  pageMap: PropTypes.objectOf(PropTypes.number).isRequired,
+
+  // Handlers
+  refetchAll: PropTypes.func.isRequired,
+  handleAccept: PropTypes.func.isRequired,
+  handleReject: PropTypes.func.isRequired,
+  handlePageChange: PropTypes.func.isRequired,
+
+  // Application selection
+  setSelectedApplicationID: PropTypes.func.isRequired,
+  setSelectedApplicantName: PropTypes.func.isRequired,
 };
 
 export default MyCourseApplicationsTable;

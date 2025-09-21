@@ -1,12 +1,24 @@
+import { useState } from "react";
+
+// Packages
+import { useQuery } from "@tanstack/react-query";
+
+// Icons
 import { ImCross } from "react-icons/im";
 import { IoSearchSharp } from "react-icons/io5";
+
+// Shared
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import ApplicantInformationModal from "../../../Shared/ApplicantInformationModal/ApplicantInformationModal";
+
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Component
 import MyCourseApplicationsTable from "./MyCourseApplicationsTable/MyCourseApplicationsTable";
+import MyCourseApplicationsModal from "../../(Member_Pages)/MyCourseApplications/MyCourseApplicationsModal/MyCourseApplicationsModal";
 
 const MentorMyCourseApplications = () => {
   const { user } = useAuth();
@@ -127,8 +139,8 @@ const MentorMyCourseApplications = () => {
           <input
             type="text"
             placeholder="Search mentorship..."
-            // value={searchTerm}
-            // onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           />
         </div>
@@ -143,8 +155,8 @@ const MentorMyCourseApplications = () => {
           </label>
           <select
             id="statusFilter"
-            // value={statusFilter}
-            // onChange={(e) => setStatusFilter(e.target.value)}
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
             className="w-full sm:w-48 px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           >
             <option value="" disabled>
@@ -188,6 +200,23 @@ const MentorMyCourseApplications = () => {
           </div>
         )}
       </div>
+
+      {/* Modal */}
+      {/* Course Application Modal */}
+      <dialog id="View_Course_Application_Modal" className="modal">
+        <MyCourseApplicationsModal
+          selectedApplicationID={selectedApplicationID}
+          setSelectedApplicationID={setSelectedApplicationID}
+        />
+      </dialog>
+
+      {/* View Applicant Profile Modal */}
+      <dialog id="View_Applicant_Profile_Modal" className="modal">
+        <ApplicantInformationModal
+          selectedApplicantName={selectedApplicantName}
+          setSelectedApplicantName={setSelectedApplicantName}
+        />
+      </dialog>
     </div>
   );
 };

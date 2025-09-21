@@ -122,9 +122,10 @@ const MentorMyMentorshipApplications = () => {
     MyMentorshipApplicationsRefetch();
   };
 
+  console.log(MyMentorshipData);
+
   return (
     <div className="py-7 px-8">
-      
       <div className="flex justify-between items-center">
         {/* Title */}
         <h3 className="font-bold text-3xl text-gray-700">

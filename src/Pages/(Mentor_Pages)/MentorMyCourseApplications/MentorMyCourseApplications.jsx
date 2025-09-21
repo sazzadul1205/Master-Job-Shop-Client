@@ -1,26 +1,14 @@
-import { useState } from "react";
-
-// Packages
-import { useQuery } from "@tanstack/react-query";
-
-// Icons
 import { ImCross } from "react-icons/im";
 import { IoSearchSharp } from "react-icons/io5";
-
-// Shared
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
-import ApplicantInformationModal from "../../../Shared/ApplicantInformationModal/ApplicantInformationModal";
-
-// Hooks
-import useAuth from "../../../Hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import useAuth from "../../../Hooks/useAuth";
+import MyCourseApplicationsTable from "./MyCourseApplicationsTable/MyCourseApplicationsTable";
 
-// Component
-import MyMentorshipApplicationsTable from "./ApplicationsTable/MyMentorshipApplicationsTable";
-import MyMentorshipApplicationModal from "../../(Member_Pages)/MyMentorshipApplications/MyMentorshipApplicationModal/MyMentorshipApplicationModal";
-
-const MentorMyMentorshipApplications = () => {
+const MentorMyCourseApplications = () => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
 
@@ -33,57 +21,55 @@ const MentorMyMentorshipApplications = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // Fetching Active Mentorship
+  // Fetching Active Courses
   const {
-    data: MyMentorshipData,
-    isLoading: MyMentorshipIsLoading,
-    refetch: MyMentorshipRefetch,
-    error: MyMentorshipError,
+    data: MyCoursesData,
+    isLoading: MyCoursesIsLoading,
+    refetch: MyCoursesRefetch,
+    error: MyCoursesError,
   } = useQuery({
-    queryKey: ["MyMentorshipData"],
+    queryKey: ["MyCoursesData"],
     queryFn: () =>
-      axiosPublic.get(`/Mentorship?mentorEmail=${user?.email}`).then((res) => {
+      axiosPublic.get(`/Courses?mentorEmail=${user?.email}`).then((res) => {
         const data = res.data;
         // Ensure the result is always an array
         return Array.isArray(data) ? data : [data];
       }),
   });
 
-  // Assuming MyMentorshipData is an array of objects
-  const allMentorshipIds = MyMentorshipData?.map((item) => item._id);
+  // Assuming MyCoursesData is an array of objects
+  const allCoursesIds = MyCoursesData?.map((item) => item._id);
 
-  // Fetching Active Mentorship
+  // Fetching Active Courses
   const {
-    data: MyMentorshipApplicationsData,
-    isLoading: MyMentorshipApplicationsIsLoading,
-    refetch: MyMentorshipApplicationsRefetch,
-    error: MyMentorshipApplicationsError,
+    data: MyCoursesApplicationsData,
+    isLoading: MyCoursesApplicationsIsLoading,
+    refetch: MyCoursesApplicationsRefetch,
+    error: MyCoursesApplicationsError,
   } = useQuery({
-    queryKey: ["MyMentorshipApplications", allMentorshipIds],
+    queryKey: ["MyCoursesApplications", allCoursesIds],
     queryFn: () =>
       axiosPublic
-        .get(
-          `/MentorshipApplications/ByMentorship?mentorshipId=${allMentorshipIds}`
-        )
+        .get(`/CourseApplications/ByCourse?courseId=${allCoursesIds}`)
         .then((res) => {
           const data = res.data;
           return data;
         }),
-    enabled: !!allMentorshipIds,
+    enabled: !!allCoursesIds,
   });
 
-  // Merge mentorship with applications
-  const mergedMentorship =
-    MyMentorshipData?.map((mentorship) => {
+  // Merge Courses with applications
+  const mergedCourses =
+    MyCoursesData?.map((course) => {
       return {
-        ...mentorship,
-        applications: MyMentorshipApplicationsData?.[mentorship._id] || [],
+        ...course,
+        applications: MyCoursesApplicationsData?.[course._id] || [],
       };
     }) || [];
 
-  // Filter by search term (mentorship title)
-  const filteredMentorship = mergedMentorship.filter((mentorship) => {
-    const titleMatch = mentorship.title
+  // Filter by search term (course title)
+  const filteredCourse = mergedCourses.filter((course) => {
+    const titleMatch = course.title
       ?.toLowerCase()
       .includes(searchTerm.toLowerCase());
 
@@ -93,11 +79,11 @@ const MentorMyMentorshipApplications = () => {
       if (statusFilter === "closed") {
         // "closed" should match both "closed" and "active"
         statusMatch =
-          mentorship.status?.toLowerCase() === "closed" ||
-          mentorship.status?.toLowerCase() === "active";
+          course.status?.toLowerCase() === "closed" ||
+          course.status?.toLowerCase() === "active";
       } else {
         statusMatch =
-          mentorship.status?.toLowerCase() === statusFilter.toLowerCase();
+          course.status?.toLowerCase() === statusFilter.toLowerCase();
       }
     }
 
@@ -105,30 +91,29 @@ const MentorMyMentorshipApplications = () => {
   });
 
   // Page management
-  const handlePageChange = (mentorshipId, newPage) => {
-    setPageMap((prev) => ({ ...prev, [mentorshipId]: newPage }));
+  const handlePageChange = (courseId, newPage) => {
+    setPageMap((prev) => ({ ...prev, [courseId]: newPage }));
   };
 
   // Check for loading state
-  if (MyMentorshipIsLoading || MyMentorshipApplicationsIsLoading)
-    return <Loading />;
+  if (MyCoursesIsLoading || MyCoursesApplicationsIsLoading) return <Loading />;
 
   // Check for error
-  if (MyMentorshipError || MyMentorshipApplicationsError) return <Error />;
+  if (MyCoursesError || MyCoursesApplicationsError) return <Error />;
 
   // Refetch All
   const refetchAll = () => {
-    MyMentorshipRefetch();
-    MyMentorshipApplicationsRefetch();
+    MyCoursesRefetch();
+    MyCoursesApplicationsRefetch();
   };
 
   return (
     <div className="py-7 px-8">
-      
+      {/* Header */}
       <div className="flex justify-between items-center">
         {/* Title */}
         <h3 className="font-bold text-3xl text-gray-700">
-          Mentorship Applications Management
+          Course Applications Management
         </h3>
       </div>
 
@@ -142,8 +127,8 @@ const MentorMyMentorshipApplications = () => {
           <input
             type="text"
             placeholder="Search mentorship..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            // value={searchTerm}
+            // onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           />
         </div>
@@ -158,8 +143,8 @@ const MentorMyMentorshipApplications = () => {
           </label>
           <select
             id="statusFilter"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            // value={statusFilter}
+            // onChange={(e) => setStatusFilter(e.target.value)}
             className="w-full sm:w-48 px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           >
             <option value="" disabled>
@@ -174,15 +159,15 @@ const MentorMyMentorshipApplications = () => {
         </div>
       </div>
 
-      {/* Container for Mentorship Applications */}
+      {/* Container for Course Applications */}
       <div className="my-6 space-y-6">
-        {filteredMentorship && filteredMentorship.length > 0 ? (
-          filteredMentorship.map((mentorship) => (
-            <MyMentorshipApplicationsTable
+        {filteredCourse && filteredCourse.length > 0 ? (
+          filteredCourse.map((course) => (
+            <MyCourseApplicationsTable
+              course={course}
               pageMap={pageMap}
-              key={mentorship?._id}
+              key={course?._id}
               refetchAll={refetchAll}
-              mentorship={mentorship}
               handlePageChange={handlePageChange}
               setSelectedApplicantName={setSelectedApplicantName}
               setSelectedApplicationID={setSelectedApplicationID}
@@ -195,7 +180,7 @@ const MentorMyMentorshipApplications = () => {
               <ImCross className="w-12 h-12" />
             </div>
             <h3 className="text-lg font-semibold text-gray-600">
-              No Mentorship&apos;s or Applications Found
+              No Courses or Applications Found
             </h3>
             <p className="text-gray-500 mt-2">
               Try adjusting your filters or check back later.
@@ -203,25 +188,8 @@ const MentorMyMentorshipApplications = () => {
           </div>
         )}
       </div>
-
-      {/* Modal */}
-      {/* Mentorship Application Modal */}
-      <dialog id="View_Mentorship_Application_Modal" className="modal">
-        <MyMentorshipApplicationModal
-          selectedApplicationID={selectedApplicationID}
-          setSelectedApplicationID={setSelectedApplicationID}
-        />
-      </dialog>
-
-      {/* View Applicant Profile Modal */}
-      <dialog id="View_Applicant_Profile_Modal" className="modal">
-        <ApplicantInformationModal
-          selectedApplicantName={selectedApplicantName}
-          setSelectedApplicantName={setSelectedApplicantName}
-        />
-      </dialog>
     </div>
   );
 };
 
-export default MentorMyMentorshipApplications;
+export default MentorMyCourseApplications;

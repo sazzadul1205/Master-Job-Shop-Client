@@ -99,7 +99,7 @@ import MentorProfile from "./Pages/(Mentor_Pages)/MentorProfile/MentorProfile";
 import MentorMyCourses from "./Pages/(Mentor_Pages)/MentorMyCourses/MentorMyCourses";
 import MentorMyMentorship from "./Pages/(Mentor_Pages)/MentorMyMentorship/MentorMyMentorship";
 import MentorMyMentorshipApplications from "./Pages/(Mentor_Pages)/MentorMyMentorshipApplications/MentorMyMentorshipApplications";
-import MentorCourseApplications from "./Pages/(Mentor_Pages)/MentorCourseApplications/MentorCourseApplications";
+import MentorMyCourseApplications from "./Pages/(Mentor_Pages)/MentorMyCourseApplications/MentorMyCourseApplications";
 
 const queryClient = new QueryClient();
 
@@ -410,6 +410,9 @@ createRoot(document.getElementById("root")).render(
                 element={<Navigate to="/Mentor/Dashboard" replace />}
               />
 
+              {/* Mentor Profile */}
+              <Route path="/Mentor/Profile" element={<MentorProfile />} />
+
               {/* Mentor Dashboard */}
               <Route path="/Mentor/Dashboard" element={<MentorDashboard />} />
 
@@ -431,11 +434,8 @@ createRoot(document.getElementById("root")).render(
               {/* Mentor Course Applications */}
               <Route
                 path="/Mentor/CourseApplications"
-                element={<MentorCourseApplications />}
+                element={<MentorMyCourseApplications />}
               />
-
-              {/* Mentor Profile */}
-              <Route path="/Mentor/Profile" element={<MentorProfile />} />
             </Route>
           </Routes>
         </BrowserRouter>

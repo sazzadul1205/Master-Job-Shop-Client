@@ -7,6 +7,7 @@ import Error from "../../../Shared/Error/Error";
 import MentorMenteesCard from "./MentorMenteesCard/MentorMenteesCard";
 import { FaSearch } from "react-icons/fa";
 import { FaRegMessage } from "react-icons/fa6";
+import MentorMenteesTable from "./MentorMenteesTable/MentorMenteesTable";
 
 const MentorMentees = () => {
   const { user, loading } = useAuth();
@@ -151,9 +152,7 @@ const MentorMentees = () => {
               type="search"
               required
               placeholder="Search by Mentees Name..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white 
-       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-       placeholder-gray-400 text-sm text-black transition duration-200"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500placeholder-gray-400 text-sm text-black transition duration-200"
             />
           </div>
 
@@ -164,9 +163,7 @@ const MentorMentees = () => {
               type="search"
               required
               placeholder="Search by Course / Mentorship Name..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white 
-       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-       placeholder-gray-400 text-sm text-black transition duration-200"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 text-sm text-black transition duration-200"
             />
           </div>
 
@@ -174,9 +171,7 @@ const MentorMentees = () => {
           <select
             name="filter"
             id="filter"
-            className="min-w-[150px] rounded-lg border border-gray-300 bg-white px-3 py-2 
-     text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:ring-2 
-     focus:ring-blue-500 focus:outline-none transition duration-200"
+            className="min-w-[150px] rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200"
           >
             <option value="">Select Option</option>
             <option value="courses">Courses</option>
@@ -187,17 +182,14 @@ const MentorMentees = () => {
           <div className="flex items-center gap-3">
             <button
               type="button"
-              className="px-4 py-2 bg-gray-100 border border-gray-300 text-sm text-gray-700 rounded-lg 
-       hover:bg-gray-200 transition-colors cursor-pointer"
+              className="px-4 py-2 bg-gray-100 border border-gray-300 text-sm text-gray-700 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
             >
               Clear Filter
             </button>
 
             <button
               type="button"
-              className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 
-       border border-blue-600 text-sm text-white font-medium rounded-lg 
-       transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 border border-blue-600 text-sm text-white font-medium rounded-lg transition-colors cursor-pointer"
             >
               <FaRegMessage className="text-base" />
               <span>Bulk Message</span>
@@ -206,6 +198,13 @@ const MentorMentees = () => {
           </div>
         </div>
       </div>
+
+      {/* Table */}
+      <MentorMenteesTable
+        refetchAll={refetchAll}
+        courseApplications={courseApplications}
+        mentorshipApplications={mentorshipApplications}
+      />
     </div>
   );
 };

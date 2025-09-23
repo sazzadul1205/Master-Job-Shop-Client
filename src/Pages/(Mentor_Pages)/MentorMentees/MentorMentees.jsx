@@ -4,6 +4,8 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
 
+import MentorMenteesCard from "./MentorMenteesCard/MentorMenteesCard";
+
 const MentorMentees = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
@@ -126,7 +128,21 @@ const MentorMentees = () => {
   console.log("Course :", courseApplications);
   console.log("Mentorship :", mentorshipApplications);
 
-  return <div></div>;
+  return (
+    <div>
+      {/* Header */}
+      <h3 className="text-black text-3xl font-bold py-7 px-9">
+        All Mentors Mentees
+      </h3>
+
+      {/* Cards */}
+      <MentorMenteesCard
+        refetchAll={refetchAll}
+        courseApplications={courseApplications}
+        mentorshipApplications={mentorshipApplications}
+      />
+    </div>
+  );
 };
 
 export default MentorMentees;

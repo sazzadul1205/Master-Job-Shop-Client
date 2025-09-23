@@ -34,6 +34,7 @@ import Error from "../Shared/Error/Error";
 // Hooks
 import useAuth from "../Hooks/useAuth";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
+import CreateCourseModal from "../Pages/(Mentor_Pages)/MentorMyCourses/CreateCourseModal/CreateCourseModal";
 
 // Sidebar Links
 const sidebarLinks = [
@@ -76,13 +77,18 @@ const sidebarLinks = [
         icon: ApplicationsIcon,
         scroll: true,
       },
-      { label: "Create Course", path: "/courses/create", icon: IoAddSharp },
+      {
+        label: "Create Course",
+        icon: IoAddSharp,
+        onClick: () =>
+          document.getElementById("Create_Course_Modal").showModal(),
+      },
     ],
   },
   {
     title: "Mentees & Sessions",
     links: [
-      { label: "Mentees", path: "/mentees", icon: MenteesIcon },
+      { label: "Mentees", path: "/Mentor/Mentees", icon: MenteesIcon },
       { label: "Sessions & Schedule", path: "/sessions", icon: SessionsIcon },
     ],
   },
@@ -424,6 +430,12 @@ const MentorLayout = () => {
       {/* Modals */}
       <dialog id="Create_Mentorship_Modal" className="modal">
         <CreateMentorshipModal refetch={RefetchAll} />
+      </dialog>
+
+      {/* Modals */}
+      {/* Create Course Modal */}
+      <dialog id="Create_Course_Modal" className="modal">
+        <CreateCourseModal refetch={RefetchAll} />
       </dialog>
     </div>
   );

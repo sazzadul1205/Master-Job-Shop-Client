@@ -9,6 +9,26 @@ import { FaSearch } from "react-icons/fa";
 import { FaRegMessage } from "react-icons/fa6";
 import MentorMenteesTable from "./MentorMenteesTable/MentorMenteesTable";
 
+// Function to get all course IDs from all applications in MyCoursesData
+const getAllCourseIds = (coursesData) => {
+  if (!coursesData || typeof coursesData !== "object") return [];
+
+  return Object.values(coursesData)
+    .flat()
+    .map((app) => app?.courseId)
+    .filter(Boolean);
+};
+
+// Function to get all mentorship IDs from MyMentorshipData
+const getAllMentorshipIds = (mentorshipData) => {
+  if (!mentorshipData || typeof mentorshipData !== "object") return [];
+
+  return Object.values(mentorshipData)
+    .flat()
+    .map((app) => app?.mentorshipId)
+    .filter(Boolean);
+};
+
 const MentorMentees = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
@@ -91,11 +111,46 @@ const MentorMentees = () => {
     enabled: allMentorshipIds?.length > 0,
   });
 
+  const MyCourseIds = getAllCourseIds(MyCoursesApplicationsData);
+  const MyMentorshipIds = getAllMentorshipIds(MyMentorshipApplicationsData);
+
+  // Fetching Course Titles
+  const {
+    data: MyCourseTitles,
+    isLoading: MyCourseTitlesIsLoading,
+    refetch: MyCourseTitlesRefetch,
+    error: MyCourseTitlesError,
+  } = useQuery({
+    queryKey: ["MyCourseTitles", MyCourseIds],
+    queryFn: () =>
+      axiosPublic
+        .get(`/Courses/Title?ids=${JSON.stringify(MyCourseIds)}`)
+        .then((res) => res.data),
+    enabled: MyCourseIds?.length > 0,
+  });
+
+  // Fetching Mentorship Titles
+  const {
+    data: MyMentorshipTitles,
+    isLoading: MyMentorshipTitlesIsLoading,
+    refetch: MyMentorshipTitlesRefetch,
+    error: MyMentorshipTitlesError,
+  } = useQuery({
+    queryKey: ["MyMentorshipTitles", MyMentorshipIds],
+    queryFn: () =>
+      axiosPublic
+        .get(`/Mentorship/Title?ids=${JSON.stringify(MyMentorshipIds)}`)
+        .then((res) => res.data),
+    enabled: MyMentorshipIds?.length > 0,
+  });
+
   // Check for loading state
   if (
     loading ||
     MyCoursesIsLoading ||
+    MyCourseTitlesError ||
     MyMentorshipIsLoading ||
+    MyMentorshipTitlesError ||
     MyCoursesApplicationsIsLoading ||
     MyMentorshipApplicationsIsLoading
   )
@@ -105,7 +160,9 @@ const MentorMentees = () => {
   if (
     MyCoursesError ||
     MyMentorshipError ||
+    MyCourseTitlesIsLoading ||
     MyCoursesApplicationsError ||
+    MyMentorshipTitlesIsLoading ||
     MyMentorshipApplicationsError
   )
     return <Error />;
@@ -114,9 +171,14 @@ const MentorMentees = () => {
   const refetchAll = () => {
     MyCoursesRefetch();
     MyMentorshipRefetch();
+    MyCourseTitlesRefetch();
+    MyMentorshipTitlesRefetch();
     MyCoursesApplicationsRefetch();
     MyMentorshipApplicationsRefetch();
   };
+
+  console.log("My Course Title :", MyCourseTitles);
+  console.log("My Mentorship Title :", MyMentorshipTitles);
 
   // Flatten Course Applications
   const courseApplications = MyCoursesApplicationsData

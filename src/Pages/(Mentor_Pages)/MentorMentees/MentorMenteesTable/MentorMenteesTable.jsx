@@ -9,6 +9,7 @@ const MentorMenteesTable = ({
 }) => {
   const [selectedApplicants, setSelectedApplicants] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+
   const itemsPerPage = 10; // You can adjust for bigger or smaller page size
 
   // Merge and sort applications

@@ -51,7 +51,7 @@ const MMTCMIdentifier = ({ type, courseId, mentorshipId }) => {
     );
   }
 
-  // UI Loading / Error State
+  //
   if (coursesLoading || mentorshipLoading)
     return <p className="text-yellow-700 font-semibold">Loading...</p>;
   if (coursesError || mentorshipError)

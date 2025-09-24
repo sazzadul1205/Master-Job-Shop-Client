@@ -19,6 +19,7 @@ import Error from "../../../Shared/Error/Error";
 import MentorMenteesCard from "./MentorMenteesCard/MentorMenteesCard";
 import MentorMenteesTable from "./MentorMenteesTable/MentorMenteesTable";
 import ApplicantInformationModal from "../../../Shared/ApplicantInformationModal/ApplicantInformationModal";
+import MentorMenteesMessageModal from "./MentorMenteesMessageModal/MentorMenteesMessageModal";
 
 // Function to get all course IDs from all applications in MyCoursesData
 const getAllCourseIds = (coursesData) => {
@@ -292,11 +293,27 @@ const MentorMentees = () => {
           {/* Bulk Message */}
           <button
             type="button"
-            className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 border border-blue-600 text-sm text-white font-medium rounded-lg transition-colors cursor-pointer"
+            disabled={selectedApplicants.length === 0}
+            className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg transition-colors cursor-pointer ${
+              selectedApplicants.length === 0
+                ? "bg-blue-500/80 border-blue-300 text-white cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600 border-blue-600 text-white"
+            }`}
+            onClick={() => {
+              document
+                .getElementById("Mentor_Mentees_Message_Modal")
+                ?.showModal();
+            }}
           >
             <FaRegMessage className="text-base" />
             <span>Bulk Message</span>
-            <span className="opacity-80">(None)</span>
+            <span className="opacity-80">
+              (
+              {selectedApplicants.length > 0
+                ? selectedApplicants.length
+                : "None"}
+              )
+            </span>
           </button>
         </div>
       </div>
@@ -310,12 +327,18 @@ const MentorMentees = () => {
         setSelectedApplicantName={setSelectedApplicantName}
       />
 
+      {/* Modal */}
       {/* View Applicant Profile Modal */}
       <dialog id="View_Applicant_Profile_Modal" className="modal">
         <ApplicantInformationModal
           selectedApplicantName={selectedApplicantName}
           setSelectedApplicantName={setSelectedApplicantName}
         />
+      </dialog>
+
+      {/* View Applicant Profile Modal */}
+      <dialog id="Mentor_Mentees_Message_Modal" className="modal">
+        <MentorMenteesMessageModal />
       </dialog>
     </div>
   );

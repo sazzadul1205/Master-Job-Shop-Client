@@ -1,18 +1,27 @@
+import { useState } from "react";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
+
+// Icons
+import { FaSearch } from "react-icons/fa";
+import { FaRegMessage } from "react-icons/fa6";
+
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
 
+// Components
 import MentorMenteesCard from "./MentorMenteesCard/MentorMenteesCard";
-import { FaSearch } from "react-icons/fa";
-import { FaRegMessage } from "react-icons/fa6";
 import MentorMenteesTable from "./MentorMenteesTable/MentorMenteesTable";
 
 // Function to get all course IDs from all applications in MyCoursesData
 const getAllCourseIds = (coursesData) => {
   if (!coursesData || typeof coursesData !== "object") return [];
-
   return Object.values(coursesData)
     .flat()
     .map((app) => app?.courseId)
@@ -22,18 +31,31 @@ const getAllCourseIds = (coursesData) => {
 // Function to get all mentorship IDs from MyMentorshipData
 const getAllMentorshipIds = (mentorshipData) => {
   if (!mentorshipData || typeof mentorshipData !== "object") return [];
-
   return Object.values(mentorshipData)
     .flat()
     .map((app) => app?.mentorshipId)
     .filter(Boolean);
 };
 
+// Utility: remove duplicates by id
+const dedupeById = (arr) => {
+  const seen = new Set();
+  return arr.filter((item) => {
+    if (seen.has(item.id)) return false;
+    seen.add(item.id);
+    return true;
+  });
+};
+
 const MentorMentees = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
-
   const statusFilter = "Accepted";
+
+  // Local filter states
+  const [searchName, setSearchName] = useState("");
+  const [selectedProgramId, setSelectedProgramId] = useState("");
+  const [selectedType, setSelectedType] = useState("");
 
   // Fetching Active Courses
   const {
@@ -44,17 +66,14 @@ const MentorMentees = () => {
   } = useQuery({
     queryKey: ["MyCoursesData"],
     queryFn: () =>
-      axiosPublic.get(`/Courses?mentorEmail=${user?.email}`).then((res) => {
-        const data = res.data;
-        // Ensure the result is always an array
-        return Array.isArray(data) ? data : [data];
-      }),
+      axiosPublic
+        .get(`/Courses?mentorEmail=${user?.email}`)
+        .then((res) => (Array.isArray(res.data) ? res.data : [res.data])),
   });
 
-  // Assuming MyCoursesData is an array of objects
   const allCoursesIds = MyCoursesData?.map((item) => item._id);
 
-  // Active Courses
+  // Active Courses Applications
   const {
     data: MyCoursesApplicationsData,
     isLoading: MyCoursesApplicationsIsLoading,
@@ -82,17 +101,14 @@ const MentorMentees = () => {
   } = useQuery({
     queryKey: ["MyMentorshipData"],
     queryFn: () =>
-      axiosPublic.get(`/Mentorship?mentorEmail=${user?.email}`).then((res) => {
-        const data = res.data;
-        // Ensure the result is always an array
-        return Array.isArray(data) ? data : [data];
-      }),
+      axiosPublic
+        .get(`/Mentorship?mentorEmail=${user?.email}`)
+        .then((res) => (Array.isArray(res.data) ? res.data : [res.data])),
   });
 
-  // Assuming MyMentorshipData is an array of objects
   const allMentorshipIds = MyMentorshipData?.map((item) => item._id);
 
-  // Active Mentorship
+  // Active Mentorship Applications
   const {
     data: MyMentorshipApplicationsData,
     isLoading: MyMentorshipApplicationsIsLoading,
@@ -111,16 +127,12 @@ const MentorMentees = () => {
     enabled: allMentorshipIds?.length > 0,
   });
 
+  // Get all course and mentorship IDs
   const MyCourseIds = getAllCourseIds(MyCoursesApplicationsData);
   const MyMentorshipIds = getAllMentorshipIds(MyMentorshipApplicationsData);
 
   // Fetching Course Titles
-  const {
-    data: MyCourseTitles,
-    isLoading: MyCourseTitlesIsLoading,
-    refetch: MyCourseTitlesRefetch,
-    error: MyCourseTitlesError,
-  } = useQuery({
+  const { data: MyCourseTitles } = useQuery({
     queryKey: ["MyCourseTitles", MyCourseIds],
     queryFn: () =>
       axiosPublic
@@ -130,12 +142,7 @@ const MentorMentees = () => {
   });
 
   // Fetching Mentorship Titles
-  const {
-    data: MyMentorshipTitles,
-    isLoading: MyMentorshipTitlesIsLoading,
-    refetch: MyMentorshipTitlesRefetch,
-    error: MyMentorshipTitlesError,
-  } = useQuery({
+  const { data: MyMentorshipTitles } = useQuery({
     queryKey: ["MyMentorshipTitles", MyMentorshipIds],
     queryFn: () =>
       axiosPublic
@@ -144,128 +151,153 @@ const MentorMentees = () => {
     enabled: MyMentorshipIds?.length > 0,
   });
 
-  // Check for loading state
+  // Flatten Applications
+  const courseApplications = MyCoursesApplicationsData
+    ? Object.values(MyCoursesApplicationsData).flat()
+    : [];
+  const mentorshipApplications = MyMentorshipApplicationsData
+    ? Object.values(MyMentorshipApplicationsData).flat()
+    : [];
+
+  // Merge applications
+  const mergedApplications = [
+    ...courseApplications.map((app) => ({ ...app, type: "Course" })),
+    ...mentorshipApplications.map((app) => ({ ...app, type: "Mentorship" })),
+  ];
+
+  // Get unique course and mentorship titles
+  const uniqueCourseTitles = dedupeById(MyCourseTitles || []);
+  const uniqueMentorshipTitles = dedupeById(MyMentorshipTitles || []);
+
+  // Apply Filters
+  const filteredApplications = mergedApplications.filter((app) => {
+    const matchesName = app.name
+      ?.toLowerCase()
+      .includes(searchName.toLowerCase());
+    const matchesProgram =
+      !selectedProgramId ||
+      app.courseId === selectedProgramId ||
+      app.mentorshipId === selectedProgramId;
+    const matchesType =
+      !selectedType || app.type.toLowerCase() === selectedType.toLowerCase();
+
+    return matchesName && matchesProgram && matchesType;
+  });
+
+  // Loading State
   if (
     loading ||
     MyCoursesIsLoading ||
-    MyCourseTitlesError ||
     MyMentorshipIsLoading ||
-    MyMentorshipTitlesError ||
     MyCoursesApplicationsIsLoading ||
     MyMentorshipApplicationsIsLoading
   )
     return <Loading />;
 
-  // Check for error
+  // Error State
   if (
     MyCoursesError ||
     MyMentorshipError ||
-    MyCourseTitlesIsLoading ||
     MyCoursesApplicationsError ||
-    MyMentorshipTitlesIsLoading ||
     MyMentorshipApplicationsError
   )
     return <Error />;
 
-  // Refetch All
-  const refetchAll = () => {
-    MyCoursesRefetch();
-    MyMentorshipRefetch();
-    MyCourseTitlesRefetch();
-    MyMentorshipTitlesRefetch();
-    MyCoursesApplicationsRefetch();
-    MyMentorshipApplicationsRefetch();
-  };
-
-  console.log("My Course Title :", MyCourseTitles);
-  console.log("My Mentorship Title :", MyMentorshipTitles);
-
-  // Flatten Course Applications
-  const courseApplications = MyCoursesApplicationsData
-    ? Object.values(MyCoursesApplicationsData).flat()
-    : [];
-
-  // Flatten Mentorship Applications
-  const mentorshipApplications = MyMentorshipApplicationsData
-    ? Object.values(MyMentorshipApplicationsData).flat()
-    : [];
-
   return (
     <div>
-      {/* Header */}
+      {/* Page Title */}
       <h3 className="text-black text-3xl font-bold py-7 px-9">
         All Mentors Mentees
       </h3>
 
-      {/* Cards */}
+      {/* Mentors Mentees Card */}
       <MentorMenteesCard
-        refetchAll={refetchAll}
+        refetchAll={() => {
+          MyCoursesRefetch();
+          MyMentorshipRefetch();
+          MyCourseTitles?.refetch?.();
+          MyMentorshipTitles?.refetch?.();
+          MyCoursesApplicationsRefetch();
+          MyMentorshipApplicationsRefetch();
+        }}
         courseApplications={courseApplications}
         mentorshipApplications={mentorshipApplications}
       />
 
-      {/* Filter */}
+      {/* Filters */}
       <div className="mx-7 my-9">
         <div className="w-full flex flex-wrap items-center gap-4 rounded-xl bg-white border border-gray-300 p-5 shadow-sm">
-          {/* Search By Mentees Name */}
-          <div className="relative flex-1 min-w-[220px]">
+          {/* Search by name */}
+          <div className="relative flex-1 min-w-[200px] max-w-[500px]">
             <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
             <input
               type="search"
-              required
               placeholder="Search by Mentees Name..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500placeholder-gray-400 text-sm text-black transition duration-200"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm text-black"
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
             />
           </div>
 
-          {/* Search By Course / Mentorship Name */}
-          <div className="relative flex-1 min-w-[220px]">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
-            <input
-              type="search"
-              required
-              placeholder="Search by Course / Mentorship Name..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 text-sm text-black transition duration-200"
-            />
-          </div>
-
-          {/* Dropdown Filter */}
+          {/* Program filter */}
           <select
-            name="filter"
-            id="filter"
-            className="min-w-[150px] rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200"
+            value={selectedProgramId}
+            onChange={(e) => setSelectedProgramId(e.target.value)}
+            className="min-w-[400px] max-w-[400px] rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">Select Option</option>
-            <option value="courses">Courses</option>
-            <option value="mentorship">Mentorship</option>
+            <option value="">Select Program</option>
+            {uniqueCourseTitles.map((course) => (
+              <option key={course.id} value={course.id}>
+                {course.title}
+              </option>
+            ))}
+            {uniqueMentorshipTitles.map((mentorship) => (
+              <option key={mentorship.id} value={mentorship.id}>
+                {mentorship.title}
+              </option>
+            ))}
           </select>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              className="px-4 py-2 bg-gray-100 border border-gray-300 text-sm text-gray-700 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
-            >
-              Clear Filter
-            </button>
+          {/* Type filter */}
+          <select
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+            className="min-w-[150px] rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">All Types</option>
+            <option value="Course">Courses</option>
+            <option value="Mentorship">Mentorship</option>
+          </select>
 
-            <button
-              type="button"
-              className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 border border-blue-600 text-sm text-white font-medium rounded-lg transition-colors cursor-pointer"
-            >
-              <FaRegMessage className="text-base" />
-              <span>Bulk Message</span>
-              <span className="opacity-80">(None)</span>
-            </button>
-          </div>
+          {/* Clear Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setSearchName("");
+              setSelectedProgramId("");
+              setSelectedType("");
+            }}
+            className="px-4 py-2 bg-gray-100 border border-gray-300 text-sm text-gray-700 rounded-lg hover:bg-gray-200"
+          >
+            Clear Filter
+          </button>
+
+          {/* Bulk Message */}
+          <button
+            type="button"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 border border-blue-600 text-sm text-white font-medium rounded-lg transition-colors cursor-pointer"
+          >
+            <FaRegMessage className="text-base" />
+            <span>Bulk Message</span>
+            <span className="opacity-80">(None)</span>
+          </button>
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table with filtered apps */}
       <MentorMenteesTable
-        refetchAll={refetchAll}
-        courseApplications={courseApplications}
-        mentorshipApplications={mentorshipApplications}
+        refetchAll={() => {}}
+        mergedApplications={filteredApplications}
       />
     </div>
   );

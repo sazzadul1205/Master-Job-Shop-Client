@@ -3,23 +3,11 @@ import MMTCMIdentifier from "./MMTCMIdentifier/MMTCMIdentifier";
 import { FaArrowLeft, FaArrowRight, FaRegMessage } from "react-icons/fa6";
 import PropTypes from "prop-types";
 
-const MentorMenteesTable = ({
-  courseApplications = [],
-  mentorshipApplications = [],
-}) => {
+const MentorMenteesTable = ({ mergedApplications }) => {
   const [selectedApplicants, setSelectedApplicants] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const itemsPerPage = 10; // You can adjust for bigger or smaller page size
-
-  // Merge and sort applications
-  const mergedApplications = [
-    ...(courseApplications || []).map((app) => ({ ...app, type: "Course" })),
-    ...(mentorshipApplications || []).map((app) => ({
-      ...app,
-      type: "Mentorship",
-    })),
-  ];
 
   const sortedApplications = mergedApplications.sort(
     (a, b) => new Date(b.appliedAt) - new Date(a.appliedAt)
@@ -102,6 +90,7 @@ const MentorMenteesTable = ({
                       : "bg-white hover:bg-gray-50"
                   }`}
                 >
+                  {/* Checkbox column */}
                   <td className="p-3">
                     <input
                       type="checkbox"
@@ -112,6 +101,7 @@ const MentorMenteesTable = ({
                     />
                   </td>
 
+                  {/* Applicant */}
                   <td className="p-3 flex items-center gap-3">
                     <img
                       src={
@@ -123,6 +113,7 @@ const MentorMenteesTable = ({
                     <span>{app.name || "N/A"}</span>
                   </td>
 
+                  {/* Email & Phone */}
                   <td className="p-3">
                     <div>{app.email || "N/A"}</div>
                     <div className="text-gray-500">
@@ -130,6 +121,7 @@ const MentorMenteesTable = ({
                     </div>
                   </td>
 
+                  {/* Mentorship / Course Name */}
                   <td className="p-3">
                     <MMTCMIdentifier
                       type={app.type}
@@ -137,6 +129,8 @@ const MentorMenteesTable = ({
                       mentorshipId={app.mentorshipId}
                     />
                   </td>
+
+                  {/* Applied At */}
                   <td className="p-3">
                     {app.appliedAt
                       ? new Date(app.appliedAt).toLocaleString("en-GB", {
@@ -149,6 +143,8 @@ const MentorMenteesTable = ({
                         })
                       : "N/A"}
                   </td>
+
+                  {/* Message Button */}
                   <td className="p-3">
                     <button className="flex items-center gap-2 px-3 py-3 font-semibold bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer">
                       <FaRegMessage className="text-base" />
@@ -159,8 +155,13 @@ const MentorMenteesTable = ({
               );
             })
           ) : (
+            // No applicants message
             <tr>
-              <td colSpan={6} className="text-center py-10 text-gray-500">
+              <td
+                colSpan={6}
+                rowSpan={3}
+                className="text-center py-10 text-gray-500"
+              >
                 No applicants added yet.
               </td>
             </tr>
@@ -171,11 +172,14 @@ const MentorMenteesTable = ({
       {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex justify-between items-center mt-5 text-sm text-gray-700">
+          {/* Page Info */}
           <span>
             Page {currentPage} of {totalPages}
           </span>
 
+          {/* Pagination Buttons */}
           <div className="flex gap-2">
+            {/* Prev Button */}
             <button
               onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
@@ -205,6 +209,7 @@ const MentorMenteesTable = ({
                 </button>
               ))}
 
+            {/* Next Button */}
             <button
               onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
               disabled={currentPage === totalPages}
@@ -222,28 +227,19 @@ const MentorMenteesTable = ({
 
 // Prop Validation
 MentorMenteesTable.propTypes = {
-  courseApplications: PropTypes.arrayOf(
+  mergedApplications: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
       name: PropTypes.string,
       email: PropTypes.string,
-      phone: PropTypes.string,
+      phone: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       profileImage: PropTypes.string,
+      type: PropTypes.oneOf(["Course", "Mentorship"]).isRequired,
       courseId: PropTypes.string,
-      appliedAt: PropTypes.string,
-    })
-  ),
-  mentorshipApplications: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string,
-      email: PropTypes.string,
-      phone: PropTypes.string,
-      profileImage: PropTypes.string,
       mentorshipId: PropTypes.string,
       appliedAt: PropTypes.string,
     })
-  ),
+  ).isRequired,
 };
 
 export default MentorMenteesTable;

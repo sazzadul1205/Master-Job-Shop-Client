@@ -2,18 +2,26 @@ import { useState } from "react";
 import MMTCMIdentifier from "./MMTCMIdentifier/MMTCMIdentifier";
 import { FaArrowLeft, FaArrowRight, FaRegMessage } from "react-icons/fa6";
 import PropTypes from "prop-types";
+import { MdEmail, MdPhone } from "react-icons/md";
 
-const MentorMenteesTable = ({ mergedApplications }) => {
-  const [selectedApplicants, setSelectedApplicants] = useState([]);
+const MentorMenteesTable = ({
+  selectedApplicants,
+  mergedApplications,
+  setSelectedApplicants,
+  setSelectedApplicantName,
+}) => {
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
 
-  const itemsPerPage = 10; // You can adjust for bigger or smaller page size
+  // Items Per Page
+  const itemsPerPage = 10;
 
+  // Sort by Date
   const sortedApplications = mergedApplications.sort(
     (a, b) => new Date(b.appliedAt) - new Date(a.appliedAt)
   );
 
-  // Pagination logic
+  // Pagination Config
   const totalPages = Math.ceil(sortedApplications.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedApplications = sortedApplications.slice(
@@ -21,27 +29,38 @@ const MentorMenteesTable = ({ mergedApplications }) => {
     startIndex + itemsPerPage
   );
 
-  // Toggle selection
-  const toggleApplicant = (appId) => {
-    setSelectedApplicants((prev) =>
-      prev.includes(appId)
-        ? prev.filter((id) => id !== appId)
-        : [...prev, appId]
-    );
+  // Toggle selection (store full applicant object)
+  const toggleApplicant = (app) => {
+    setSelectedApplicants((prev) => {
+      const exists = prev.find((p) => p._id === app._id);
+      if (exists) {
+        return prev.filter((p) => p._id !== app._id);
+      }
+      return [
+        ...prev,
+        {
+          _id: app._id,
+          name: app.name || "N/A",
+          email: app.email || "N/A",
+          phone: app.phone || "N/A",
+        },
+      ];
+    });
   };
 
   // Check if all are selected
   const allSelected =
     paginatedApplications.length > 0 &&
-    paginatedApplications.every((a) => selectedApplicants.includes(a._id));
+    paginatedApplications.every((a) =>
+      selectedApplicants.some((p) => p._id === a._id)
+    );
 
   return (
     <div className="mx-7 my-9 overflow-x-auto text-black">
       <table className="w-full rounded-xl overflow-hidden border border-black">
-        {/* Table Header */}
         <thead className="bg-gray-200 ">
           <tr className="items-center text-left">
-            {/* Checkbox column */}
+            {/* Select All */}
             <th className="p-3 text-center w-12">
               <input
                 type="checkbox"
@@ -50,22 +69,28 @@ const MentorMenteesTable = ({ mergedApplications }) => {
                   setSelectedApplicants(
                     allSelected
                       ? selectedApplicants.filter(
-                          (id) =>
-                            !paginatedApplications.find((a) => a._id === id)
+                          (s) =>
+                            !paginatedApplications.some((a) => a._id === s._id)
                         )
                       : [
                           ...selectedApplicants,
                           ...paginatedApplications
-                            .filter((a) => !selectedApplicants.includes(a._id))
-                            .map((a) => a._id),
+                            .filter(
+                              (a) =>
+                                !selectedApplicants.some((s) => s._id === a._id)
+                            )
+                            .map((a) => ({
+                              _id: a._id,
+                              name: a.name || "N/A",
+                              email: a.email || "N/A",
+                              phone: a.phone || "N/A",
+                            })),
                         ]
                   )
                 }
                 checked={allSelected}
               />
             </th>
-
-            {/* Other columns */}
             <th className="p-3 py-5">Applicant</th>
             <th className="p-3 py-5">Email & Phone</th>
             <th className="p-3 py-5">Mentorship / Course Name</th>
@@ -74,28 +99,29 @@ const MentorMenteesTable = ({ mergedApplications }) => {
           </tr>
         </thead>
 
-        {/* Table Body */}
         <tbody>
           {paginatedApplications.length > 0 ? (
             paginatedApplications.map((app) => {
-              const isSelected = selectedApplicants.includes(app._id);
+              const isSelected = selectedApplicants.some(
+                (p) => p._id === app._id
+              );
 
               return (
                 <tr
                   key={app._id}
-                  onClick={() => toggleApplicant(app._id)}
+                  onClick={() => toggleApplicant(app)}
                   className={`border-t-2 border-b-black border-gray-200 cursor-pointer transition-colors duration-200 px-4 ${
                     isSelected
                       ? "bg-blue-200 hover:bg-blue-300"
                       : "bg-white hover:bg-gray-50"
                   }`}
                 >
-                  {/* Checkbox column */}
+                  {/* Checkbox */}
                   <td className="p-3">
                     <input
                       type="checkbox"
                       checked={isSelected}
-                      onChange={() => toggleApplicant(app._id)}
+                      onChange={() => toggleApplicant(app)}
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
                       onClick={(e) => e.stopPropagation()}
                     />
@@ -110,18 +136,32 @@ const MentorMenteesTable = ({ mergedApplications }) => {
                       alt={app.name || "Applicant"}
                       className="w-10 h-10 rounded-full object-cover"
                     />
-                    <span>{app.name || "N/A"}</span>
+                    <h3
+                      className="font-bold cursor-pointer hover:text-blue-600 transition"
+                      onClick={() => {
+                        setSelectedApplicantName(app?.userId || "N/A");
+                        document
+                          .getElementById("View_Applicant_Profile_Modal")
+                          ?.showModal();
+                      }}
+                    >
+                      {app?.name || "N/A"}
+                    </h3>
                   </td>
 
                   {/* Email & Phone */}
                   <td className="p-3">
-                    <div>{app.email || "N/A"}</div>
-                    <div className="text-gray-500">
-                      {app.phone ? `+${app.phone}` : "N/A"}
+                    <div className="flex items-center gap-2">
+                      <MdEmail className="text-gray-600" />
+                      <span>{app.email || "N/A"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-500">
+                      <MdPhone className="text-gray-600" />
+                      <span>{app.phone ? `+${app.phone}` : "N/A"}</span>
                     </div>
                   </td>
 
-                  {/* Mentorship / Course Name */}
+                  {/* Mentorship / Course */}
                   <td className="p-3">
                     <MMTCMIdentifier
                       type={app.type}
@@ -155,7 +195,6 @@ const MentorMenteesTable = ({ mergedApplications }) => {
               );
             })
           ) : (
-            // No applicants message
             <tr>
               <td
                 colSpan={6}
@@ -169,10 +208,10 @@ const MentorMenteesTable = ({ mergedApplications }) => {
         </tbody>
       </table>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex justify-between items-center mt-5 text-sm text-gray-700">
-          {/* Page Info */}
+          {/* Page Numbers */}
           <span>
             Page {currentPage} of {totalPages}
           </span>
@@ -185,11 +224,10 @@ const MentorMenteesTable = ({ mergedApplications }) => {
               disabled={currentPage === 1}
               className="flex gap-2 items-center px-5 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-bold hover:bg-gray-100 bg-white"
             >
-              <FaArrowLeft />
-              Prev
+              <FaArrowLeft /> Prev
             </button>
 
-            {/* Dynamic page numbers (show 5 pages window) */}
+            {/* Page Number Buttons */}
             {Array.from({ length: totalPages }, (_, i) => i + 1)
               .slice(
                 Math.max(0, currentPage - 3),
@@ -202,7 +240,7 @@ const MentorMenteesTable = ({ mergedApplications }) => {
                   className={`px-3 py-1 border rounded-lg cursor-pointer ${
                     currentPage === page
                       ? "bg-blue-500 text-white"
-                      : "hover:bg-gray-100 bg-white "
+                      : "hover:bg-gray-100 bg-white"
                   }`}
                 >
                   {page}
@@ -215,8 +253,7 @@ const MentorMenteesTable = ({ mergedApplications }) => {
               disabled={currentPage === totalPages}
               className="flex gap-2 items-center px-5 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-bold hover:bg-gray-100 bg-white"
             >
-              Next
-              <FaArrowRight />
+              Next <FaArrowRight />
             </button>
           </div>
         </div>
@@ -227,6 +264,13 @@ const MentorMenteesTable = ({ mergedApplications }) => {
 
 // Prop Validation
 MentorMenteesTable.propTypes = {
+  selectedApplicants: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string,
+      email: PropTypes.string,
+    })
+  ).isRequired,
   mergedApplications: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
@@ -240,6 +284,8 @@ MentorMenteesTable.propTypes = {
       appliedAt: PropTypes.string,
     })
   ).isRequired,
+  setSelectedApplicants: PropTypes.func.isRequired,
+  setSelectedApplicantName: PropTypes.func.isRequired,
 };
 
 export default MentorMenteesTable;

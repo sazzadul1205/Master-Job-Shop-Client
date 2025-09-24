@@ -18,6 +18,7 @@ import Error from "../../../Shared/Error/Error";
 // Components
 import MentorMenteesCard from "./MentorMenteesCard/MentorMenteesCard";
 import MentorMenteesTable from "./MentorMenteesTable/MentorMenteesTable";
+import ApplicantInformationModal from "../../../Shared/ApplicantInformationModal/ApplicantInformationModal";
 
 // Function to get all course IDs from all applications in MyCoursesData
 const getAllCourseIds = (coursesData) => {
@@ -52,10 +53,16 @@ const MentorMentees = () => {
   const axiosPublic = useAxiosPublic();
   const statusFilter = "Accepted";
 
-  // Local filter states
+  // Modal State
+  const [selectedApplicantName, setSelectedApplicantName] = useState("");
+
+  // Selected Applicants State
+  const [selectedApplicants, setSelectedApplicants] = useState([]);
+
+  // Local filter States
   const [searchName, setSearchName] = useState("");
-  const [selectedProgramId, setSelectedProgramId] = useState("");
   const [selectedType, setSelectedType] = useState("");
+  const [selectedProgramId, setSelectedProgramId] = useState("");
 
   // Fetching Active Courses
   const {
@@ -297,8 +304,19 @@ const MentorMentees = () => {
       {/* Table with filtered apps */}
       <MentorMenteesTable
         refetchAll={() => {}}
+        selectedApplicants={selectedApplicants}
         mergedApplications={filteredApplications}
+        setSelectedApplicants={setSelectedApplicants}
+        setSelectedApplicantName={setSelectedApplicantName}
       />
+
+      {/* View Applicant Profile Modal */}
+      <dialog id="View_Applicant_Profile_Modal" className="modal">
+        <ApplicantInformationModal
+          selectedApplicantName={selectedApplicantName}
+          setSelectedApplicantName={setSelectedApplicantName}
+        />
+      </dialog>
     </div>
   );
 };

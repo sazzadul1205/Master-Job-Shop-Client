@@ -1,4 +1,6 @@
 import { useState } from "react";
+
+// Icons
 import { ImCross } from "react-icons/im";
 import {
   FaRegEnvelope,
@@ -6,26 +8,36 @@ import {
   FaPaperPlane,
   FaArrowLeft,
 } from "react-icons/fa6";
+
+// Packages
+import PropTypes from "prop-types";
+
+// Components
 import EmailFormView from "./EmailFormView/EmailFormView";
 
-const MentorMenteesMessageModal = () => {
-  const [view, setView] = useState("options"); // "options" | "message" | "email"
+const MentorMenteesMessageModal = ({
+  selectedApplicants,
+  setSelectedApplicants,
+}) => {
+  // State
+  const [view, setView] = useState("options");
   const [message, setMessage] = useState("");
 
   // Close Modal
   const handleClose = () => {
+    setView("options");
+    setSelectedApplicants([]);
     document.getElementById("Mentor_Mentees_Message_Modal")?.close();
-    setView("options"); // reset when closing
   };
 
   return (
     <div
       id="Mentor_Mentees_Message_Modal"
-      className="modal-box bg-white rounded-xl shadow-lg p-0 max-w-3xl w-full h-[75vh] flex flex-col"
+      className="modal-box bg-white rounded-2xl shadow-2xl p-0 max-w-3xl w-full h-[75vh] flex flex-col overflow-hidden"
     >
       {/* Header */}
       <div className="flex items-center gap-4 border-b px-6 py-4 bg-gray-50">
-        <h2 className="text-lg font-semibold text-gray-700">
+        <h2 className="text-lg font-semibold text-gray-800">
           {view === "options"
             ? "Choose Communication Method"
             : view === "message"
@@ -33,24 +45,65 @@ const MentorMenteesMessageModal = () => {
             : "Send Email"}
         </h2>
         <button
-          className="ml-auto text-gray-500 hover:text-red-500 p-2 rounded-full cursor-pointer"
+          className="ml-auto text-gray-500 hover:text-red-500 p-2 rounded-full cursor-pointer transition"
           onClick={handleClose}
         >
           <ImCross className="text-lg" />
         </button>
       </div>
 
+      {/* Selected Applicants Preview */}
+      {selectedApplicants?.length > 0 && (
+        <div className="px-6 py-3 border-b bg-gray-100 text-sm text-gray-700">
+          <p className="font-medium mb-2">Recipients:</p>
+          <div className="grid grid-cols-2 gap-4 max-h-28 overflow-y-auto pr-2">
+            {selectedApplicants.map((app) => (
+              <div
+                key={app._id}
+                className="p-3 bg-white rounded-xl border shadow-sm hover:shadow-md transition"
+              >
+                <p className="font-semibold text-gray-800">{app.name}</p>
+
+                {/* Email for email view */}
+                {view === "email" && (
+                  <p className="text-gray-600 mt-1 text-sm">
+                    <span className="font-medium">Email:</span>{" "}
+                    {app.email ? (
+                      <span className="text-gray-700">{app.email}</span>
+                    ) : (
+                      <span className="text-gray-400 italic">None</span>
+                    )}
+                  </p>
+                )}
+
+                {/* Phone for message view */}
+                {view === "message" && (
+                  <p className="text-gray-600 mt-1 text-sm">
+                    <span className="font-medium">Phone:</span>{" "}
+                    {app.phone ? (
+                      <span className="text-gray-700">{app.phone}</span>
+                    ) : (
+                      <span className="text-gray-400 italic">None</span>
+                    )}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Options View */}
       {view === "options" && (
-        <div className="flex-1 flex items-center justify-center gap-10 p-8">
+        <div className="flex-1 flex items-center justify-center gap-10 p-10">
           {/* Message Card */}
           <div
             onClick={() => setView("message")}
-            className="w-64 h-52 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition transform cursor-pointer flex flex-col items-center justify-center gap-3"
+            className="w-64 h-56 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition transform cursor-pointer flex flex-col items-center justify-center gap-3 text-center"
           >
             <FaRegCommentDots className="text-5xl text-blue-600" />
             <h3 className="text-lg font-semibold text-gray-800">Message</h3>
-            <p className="text-base text-gray-500 text-center">
+            <p className="text-sm text-gray-500 px-4">
               Send quick in-app messages to applicants
             </p>
           </div>
@@ -58,35 +111,34 @@ const MentorMenteesMessageModal = () => {
           {/* Email Card */}
           <div
             onClick={() => setView("email")}
-            className="w-64 h-52 bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition transform cursor-pointer flex flex-col items-center justify-center gap-3"
+            className="w-64 h-56 bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition transform cursor-pointer flex flex-col items-center justify-center gap-3 text-center"
           >
             <FaRegEnvelope className="text-5xl text-green-600" />
             <h3 className="text-lg font-semibold text-gray-800">Email</h3>
-            <p className="text-base text-gray-500 text-center">
-              Send professional email directly to applicants
+            <p className="text-sm text-gray-500 px-4">
+              Send professional emails directly to applicants
             </p>
           </div>
         </div>
       )}
 
       {/* Message Form View */}
-      {/* Pre-written Professional Messages */}
       {view === "message" && (
-        <div className="flex-1 p-6 flex flex-col">
+        <div className="flex-1 p-6 flex flex-col gap-4">
           {/* Message Textarea */}
           <textarea
             placeholder="Type your message here..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="flex-1 w-full border rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none resize-none"
+            className="flex-1 w-full border rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none resize-none shadow-sm"
           />
 
-          {/* Pre-written Messages */}
-          <div className="mb-4">
+          {/* Pre-written Templates */}
+          <div>
             <h4 className="text-gray-700 font-semibold mb-2">
               Quick Message Templates:
             </h4>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
               {[
                 {
                   ref: "Greeting & Update",
@@ -113,7 +165,7 @@ const MentorMenteesMessageModal = () => {
                   key={idx}
                   type="button"
                   onClick={() => setMessage(msg.text)}
-                  className="px-4 py-2 bg-gray-100 text-gray-800 rounded-lg border border-gray-300 hover:bg-gray-200 transition cursor-pointer"
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg border hover:bg-gray-200 transition cursor-pointer text-sm"
                 >
                   {msg.ref}
                 </button>
@@ -122,11 +174,11 @@ const MentorMenteesMessageModal = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between mt-auto pt-4 border-t">
             <button
               type="button"
               onClick={() => setView("options")}
-              className="flex items-center gap-2 px-5 py-2 border border-gray-300 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition cursor-pointer"
+              className="flex items-center gap-2 px-5 py-2 border border-gray-300 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition"
             >
               <FaArrowLeft /> Back
             </button>
@@ -145,9 +197,27 @@ const MentorMenteesMessageModal = () => {
       )}
 
       {/* Email Form View */}
-      {view === "email" && <EmailFormView setView={setView} />}
+      {view === "email" && (
+        <EmailFormView
+          setView={setView}
+          selectedApplicants={selectedApplicants}
+        />
+      )}
     </div>
   );
+};
+
+// Prop Validation
+MentorMenteesMessageModal.propTypes = {
+  selectedApplicants: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string,
+      phone: PropTypes.string,
+    })
+  ).isRequired,
+  setSelectedApplicants: PropTypes.func.isRequired,
 };
 
 export default MentorMenteesMessageModal;

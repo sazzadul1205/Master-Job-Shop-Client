@@ -1,8 +1,15 @@
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { FaArrowLeft, FaPaperPlane } from "react-icons/fa6";
-import emailjs from "@emailjs/browser";
+
+// Packages
 import Swal from "sweetalert2";
+import PropTypes from "prop-types";
+import emailjs from "@emailjs/browser";
+import { useForm } from "react-hook-form";
+
+// Icons
+import { FaArrowLeft, FaPaperPlane } from "react-icons/fa6";
+
+// Input Components
 import FormInput from "../../../../../Shared/FormInput/FormInput";
 
 const EmailFormView = ({ setView, selectedApplicants }) => {
@@ -138,7 +145,6 @@ Warm regards,
 
   const watchMessage = watch("message");
 
-  // Ensure PREFIX always exists
   useEffect(() => {
     if (!watchMessage.startsWith(PREFIX)) {
       setValue("message", PREFIX + watchMessage.replace(/^.*?\n\n/, ""));
@@ -147,6 +153,7 @@ Warm regards,
 
   const onSubmit = async (data) => {
     try {
+      // Send email to all selected applicants
       await Promise.all(
         selectedApplicants.map((app) =>
           emailjs.send(
@@ -156,7 +163,7 @@ Warm regards,
               from_name: data.name,
               from_email: data.email,
               subject: data.subject,
-              message: data.message,
+              message: data.message.replace("[Applicant Name]", app.name),
               to_name: app.name,
               to_email: app.email,
             },
@@ -170,7 +177,7 @@ Warm regards,
       Swal.fire({
         icon: "success",
         title: "Emails Sent!",
-        text: "Professional emails have been sent successfully to all selected applicants.",
+        text: `Professional emails have been sent successfully to ${selectedApplicants.length} applicants.`,
         confirmButtonColor: "#3b82f6",
       });
 
@@ -193,8 +200,22 @@ Warm regards,
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex-1 p-6 flex flex-col gap-4 text-black"
+      className="flex-1 p-6 flex flex-col gap-4 text-black overflow-y-auto max-h-[calc(100vh-150px)]"
     >
+      {/* Recipients Preview */}
+      {selectedApplicants.length > 0 && (
+        <div className="p-3 bg-gray-100 rounded border mb-4">
+          <p className="font-medium mb-2">Recipients:</p>
+          <ul className="list-disc pl-5 text-gray-700">
+            {selectedApplicants.map((app) => (
+              <li key={app._id}>
+                {app.name} ({app.email || "No Email"})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* Name Input */}
       <FormInput
         label="Your Name"
@@ -260,7 +281,7 @@ Warm regards,
       </div>
 
       {/* Action Buttons */}
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between mt-4 sticky bottom-0 bg-white py-3">
         <button
           type="button"
           onClick={() => setView("options")}
@@ -278,6 +299,19 @@ Warm regards,
       </div>
     </form>
   );
+};
+
+// Prop Vallation
+EmailFormView.propTypes = {
+  setView: PropTypes.func.isRequired,
+  selectedApplicants: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string,
+      phone: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 export default EmailFormView;

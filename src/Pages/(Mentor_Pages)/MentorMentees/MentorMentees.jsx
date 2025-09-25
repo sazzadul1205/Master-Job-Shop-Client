@@ -338,7 +338,10 @@ const MentorMentees = () => {
 
       {/* View Applicant Profile Modal */}
       <dialog id="Mentor_Mentees_Message_Modal" className="modal">
-        <MentorMenteesMessageModal />
+        <MentorMenteesMessageModal
+          selectedApplicants={selectedApplicants}
+          setSelectedApplicants={setSelectedApplicants}
+        />
       </dialog>
     </div>
   );

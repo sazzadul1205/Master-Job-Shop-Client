@@ -33,7 +33,7 @@ const MentorMenteesMessageModal = ({
   return (
     <div
       id="Mentor_Mentees_Message_Modal"
-      className="modal-box bg-white rounded-2xl shadow-2xl p-0 max-w-3xl w-full h-[75vh] flex flex-col overflow-hidden"
+      className="modal-box bg-white rounded-2xl shadow-2xl p-0 max-w-3xl w-full h-[90vh] flex flex-col overflow-hidden"
     >
       {/* Header */}
       <div className="flex items-center gap-4 border-b px-6 py-4 bg-gray-50">

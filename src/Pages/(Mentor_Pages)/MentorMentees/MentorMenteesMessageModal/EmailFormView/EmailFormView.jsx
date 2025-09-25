@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 // Packages
 import Swal from "sweetalert2";
@@ -11,121 +11,195 @@ import { FaArrowLeft, FaPaperPlane } from "react-icons/fa6";
 
 // Input Components
 import FormInput from "../../../../../Shared/FormInput/FormInput";
+import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
+import useAuth from "../../../../../Hooks/useAuth";
 
-const EmailFormView = ({ setView, selectedApplicants }) => {
-  const PREFIX = "Dear [Applicant Name],\n\n";
+// Pre-written options moved outside to avoid recreation on each render
+const PRE_WRITTEN_OPTIONS = [
+  {
+    value: "welcome_message",
+    name: "Welcome Message",
+    label: `Welcome to our mentorship program! We are thrilled to have you on board and look forward to supporting your learning journey.
 
-  const [preWrittenOptions] = useState([
-    {
-      value: "followup_details",
-      name: "Followup Details",
-      label: `I hope this message finds you well.
+Please review the following points to get started:
 
-Following your recent application, we would like to provide you with additional details regarding the next steps in our selection process. Kindly review the information carefully to ensure a smooth and timely progression:
+1. Join the orientation session scheduled for [Insert Date & Time].
+2. Familiarize yourself with the program resources shared in your portal.
+3. Reach out to your assigned mentor for guidance and questions.
 
-1. Ensure that all the documents you submitted are complete and accurate.
-2. Our team may request additional clarifications or information during the evaluation phase.
-3. We will contact you regarding scheduled interviews, assessments, or other relevant activities.
-4. Timely responses to any correspondence will help maintain your active status in the application process.
-
-We greatly appreciate your interest in joining our organization and your continued engagement throughout this process. Should you have any questions, please do not hesitate to reach out.
+We are excited to see your growth and achievements throughout this program.
 
 Best regards,
 [Your Name]
 [Your Position]
-[Your Organization]`,
-    },
-    {
-      value: "thank_you",
-      name: "Thank You",
-      label: `Thank you for taking the time to submit your application to [Organization Name]. We genuinely appreciate your interest, effort, and dedication in applying for the position.
+[Organization Name]`,
+  },
+  {
+    value: "session_reminder",
+    name: "Session Reminder",
+    label: `This is a friendly reminder about your upcoming mentorship session:
 
-Our team is carefully reviewing all applications to ensure a thorough evaluation of each candidate. You can expect to receive feedback or next steps within [X] business days. 
+- Date & Time: [Insert Date & Time]
+- Mentor: [Mentor Name]
+- Topic: [Session Topic]
 
-In the meantime, if you have any questions or need further information, please feel free to reach out. We are here to support you throughout this process.
+Please ensure you are prepared and have completed any pre-session activities. Timely attendance will help you get the most out of the session.
+
+Looking forward to your participation!
+
+Best regards,
+[Your Name]
+[Your Position]
+[Organization Name]`,
+  },
+  {
+    value: "feedback_request",
+    name: "Feedback Request",
+    label: `We hope you enjoyed your recent mentorship session. Your feedback is important to us and helps improve the program.
+
+Please take a few minutes to complete the feedback form: [Insert Link]
+
+Thank you for your time and valuable insights.
 
 Warm regards,
 [Your Name]
 [Your Position]
-[Your Organization]`,
-    },
-    {
-      value: "next_steps",
-      name: "Next Steps",
-      label: `We are pleased to inform you that you have been shortlisted for the next stage of the application process at [Organization Name].
+[Organization Name]`,
+  },
+  {
+    value: "progress_update",
+    name: "Progress Update",
+    label: `We are pleased to share your progress update in the mentorship program:
 
-Please review the following important points to ensure you are prepared:
+- Completed Sessions: [Number]
+- Assignments Submitted: [Number]
+- Key Achievements: [List Highlights]
 
-1. Complete any outstanding documentation or requirements at your earliest convenience.
-2. Stay attentive to communications from our team, which may include interview schedules, assessments, or additional requests.
-3. Respond promptly to any emails to maintain your position in the selection process.
-4. Prepare any materials or information requested for upcoming stages.
-
-Your application demonstrates promise, and we are excited to continue engaging with you throughout this process. Should you require any clarification, please do not hesitate to contact us.
-
-Kind regards,
-[Your Name]
-[Your Position]
-[Your Organization]`,
-    },
-    {
-      value: "interview_invite",
-      name: "Interview Invite",
-      label: `We are pleased to invite you to an interview for the position you applied for at [Organization Name]. 
-
-Please review the following details carefully:
-
-1. Interview Date & Time: [Insert Date & Time]
-2. Mode: [In-person / Online – include link if online]
-3. Required Documents: Please bring or prepare [list documents or materials].
-4. Contact: For any questions, reach out to [Contact Name/Email].
-
-We look forward to speaking with you and learning more about your experience and skills.
+Keep up the excellent work! Your dedication is making a positive impact on your learning journey.
 
 Best regards,
 [Your Name]
 [Your Position]
-[Your Organization]`,
-    },
-    {
-      value: "document_request",
-      name: "Document Request",
-      label: `We noticed that some documents or information are missing from your application at [Organization Name]. 
+[Organization Name]`,
+  },
+  {
+    value: "resource_share",
+    name: "Resource Share",
+    label: `We would like to share some additional resources to support your growth in the mentorship program:
 
-To ensure your application is fully considered, please provide the following by [Deadline]:
+1. [Resource 1 – Link/Description]
+2. [Resource 2 – Link/Description]
+3. [Resource 3 – Link/Description]
 
-1. [Document / Information 1]
-2. [Document / Information 2]
-3. Any other relevant details as requested.
+Feel free to explore these resources and let your mentor know if you have any questions.
 
-Timely submission will help us proceed with the review process without delays. If you have any questions, please do not hesitate to contact us.
-
-Kind regards,
+Warm regards,
 [Your Name]
 [Your Position]
-[Your Organization]`,
-    },
-    {
-      value: "congratulations_shortlist",
-      name: "Congratulations Shortlist",
-      label: `Congratulations! 
-
-We are excited to inform you that you have been shortlisted for the next stage of the recruitment process at [Organization Name]. 
+[Organization Name]`,
+  },
+  {
+    value: "congratulations_completion",
+    name: "Congratulations Completion",
+    label: `Congratulations on successfully completing the mentorship program! Your commitment and effort have been remarkable.
 
 Next Steps:
 
-1. Prepare for the upcoming interview/assessment scheduled on [Insert Date].
-2. Review any materials or instructions shared by our team.
-3. Ensure all your contact details are up-to-date.
+1. Download your certificate of completion: [Insert Link]
+2. Continue engaging with your mentor for further guidance.
+3. Share your experience with peers or upcoming participants.
 
-We appreciate your continued interest in joining [Organization Name] and look forward to engaging with you further.
+We are proud of your achievements and look forward to seeing your continued growth.
 
-Warm regards,
+Best regards,
 [Your Name]
 [Your Position]
-[Your Organization]`,
-    },
-  ]);
+[Organization Name]`,
+  },
+  {
+    value: "motivational_message",
+    name: "Motivational Message",
+    label: `We wanted to send a quick message to encourage you in your mentorship journey. Remember that growth takes time, and every small step counts toward your success.
+
+Keep up the great work, stay consistent, and don't hesitate to reach out to your mentor for guidance.
+
+You’ve got this!
+
+Best regards,
+[Your Name]
+[Your Position]
+[Organization Name]`,
+  },
+  {
+    value: "upcoming_event",
+    name: "Upcoming Event",
+    label: `We are excited to announce an upcoming event in our mentorship program:
+
+- Event: [Event Name]
+- Date & Time: [Insert Date & Time]
+- Location/Link: [Insert Link or Venue]
+
+This is a wonderful opportunity to connect with peers, mentors, and learn new skills. We encourage your participation.
+
+Best regards,
+[Your Name]
+[Your Position]
+[Organization Name]`,
+  },
+  {
+    value: "missed_session_followup",
+    name: "Missed Session Follow-up",
+    label: `We noticed that you missed your recent mentorship session on [Date]. We understand that schedules can be busy, but staying on track is important for your growth.
+
+Please reach out to your mentor to reschedule or catch up on the session materials.
+
+Looking forward to seeing you in the next session!
+
+Best regards,
+[Your Name]
+[Your Position]
+[Organization Name]`,
+  },
+  {
+    value: "assignment_reminder",
+    name: "Assignment Reminder",
+    label: `This is a reminder to complete the following assignment/task:
+
+- Assignment: [Assignment Name]
+- Due Date: [Insert Date]
+
+Completing this task on time will help you stay on track with the mentorship program and gain the most value from your sessions.
+
+If you have any questions or need support, please contact your mentor.
+
+Best regards,
+[Your Name]
+[Your Position]
+[Organization Name]`,
+  },
+  {
+    value: "program_announcement",
+    name: "Program Announcement",
+    label: `We are excited to share some updates regarding our mentorship program:
+
+- [Update 1]
+- [Update 2]
+- [Update 3]
+
+These changes aim to enhance your experience and provide better support throughout your journey.
+
+Best regards,
+[Your Name]
+[Your Position]
+[Organization Name]`,
+  },
+];
+
+const EmailFormView = ({ setView, selectedApplicants }) => {
+  const { user } = useAuth(); // user.email
+  const axiosPublic = useAxiosPublic();
+
+  const PREFIX = "Dear [Participant Name],\n\n";
 
   const {
     register,
@@ -136,8 +210,8 @@ Warm regards,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      name: "",
-      email: "",
+      name: user?.name || "",
+      email: user?.email || "",
       subject: "",
       message: PREFIX,
     },
@@ -145,15 +219,18 @@ Warm regards,
 
   const watchMessage = watch("message");
 
+  // Ensure PREFIX always exists
   useEffect(() => {
     if (!watchMessage.startsWith(PREFIX)) {
       setValue("message", PREFIX + watchMessage.replace(/^.*?\n\n/, ""));
     }
   }, [watchMessage, setValue]);
 
+  const insertPreWritten = (text) => setValue("message", PREFIX + text);
+
   const onSubmit = async (data) => {
     try {
-      // Send email to all selected applicants
+      // Send emails with mail merge
       await Promise.all(
         selectedApplicants.map((app) =>
           emailjs.send(
@@ -163,7 +240,7 @@ Warm regards,
               from_name: data.name,
               from_email: data.email,
               subject: data.subject,
-              message: data.message.replace("[Applicant Name]", app.name),
+              message: data.message.replace("[Participant Name]", app.name),
               to_name: app.name,
               to_email: app.email,
             },
@@ -172,18 +249,39 @@ Warm regards,
         )
       );
 
+      // Reset form
       reset({ message: PREFIX });
 
       Swal.fire({
         icon: "success",
         title: "Emails Sent!",
-        text: `Professional emails have been sent successfully to ${selectedApplicants.length} applicants.`,
+        text: `Emails successfully sent to ${selectedApplicants.length} participants.`,
         confirmButtonColor: "#3b82f6",
       });
 
+      // Prepare payload for server
+      const payload = {
+        name: user?.name || data.name,
+        email: user?.email || data.email,
+        phone: user?.phone || "", // optional if you track phone
+        subject: data.subject,
+        message_raw: data.message, // raw draft
+        recipients: selectedApplicants.map((app) => ({
+          to_name: app.name,
+          to_id: app._id,
+          to_email: app.email,
+          message_sent: data.message.replace("[Participant Name]", app.name), // mail-merged
+        })),
+        sentAt: new Date().toISOString(),
+      };
+
+      // POST to your backend
+      await axiosPublic.post("/MentorEmails", payload);
+
+      // Close modal
       document.getElementById("Mentor_Mentees_Message_Modal")?.close();
     } catch (error) {
-      console.error("Email send failed:", error);
+      console.error("Email send or logging failed:", error);
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -193,29 +291,11 @@ Warm regards,
     }
   };
 
-  const insertPreWritten = (text) => {
-    setValue("message", PREFIX + text);
-  };
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex-1 p-6 flex flex-col gap-4 text-black overflow-y-auto max-h-[calc(100vh-150px)]"
     >
-      {/* Recipients Preview */}
-      {selectedApplicants.length > 0 && (
-        <div className="p-3 bg-gray-100 rounded border mb-4">
-          <p className="font-medium mb-2">Recipients:</p>
-          <ul className="list-disc pl-5 text-gray-700">
-            {selectedApplicants.map((app) => (
-              <li key={app._id}>
-                {app.name} ({app.email || "No Email"})
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       {/* Name Input */}
       <FormInput
         label="Your Name"
@@ -225,17 +305,15 @@ Warm regards,
         error={errors.name}
       />
 
-      {/* Email Input */}
+      {/* Email Input - read-only */}
       <FormInput
         label="Your Email"
         required
         type="email"
         placeholder="Your Email"
-        register={register("email", {
-          required: "Email is required",
-          pattern: { value: /^\S+@\S+$/i, message: "Invalid email address" },
-        })}
+        register={register("email", { required: "Email is required" })}
         error={errors.email}
+        readOnly
       />
 
       {/* Subject Input */}
@@ -259,16 +337,16 @@ Warm regards,
         watch={watch}
         name="message"
         onChange={(e) => {
-          let value = e.target.value;
-          if (!value.startsWith(PREFIX))
-            value = PREFIX + value.replace(/^.*?\n\n/, "");
+          const value = e.target.value.startsWith(PREFIX)
+            ? e.target.value
+            : PREFIX + e.target.value.replace(/^.*?\n\n/, "");
           setValue("message", value);
         }}
       />
 
       {/* Pre-written options */}
       <div className="flex flex-wrap gap-2 mt-2">
-        {preWrittenOptions.map((opt) => (
+        {PRE_WRITTEN_OPTIONS.map((opt) => (
           <button
             key={opt.value}
             type="button"
@@ -301,7 +379,7 @@ Warm regards,
   );
 };
 
-// Prop Vallation
+// Prop Validation
 EmailFormView.propTypes = {
   setView: PropTypes.func.isRequired,
   selectedApplicants: PropTypes.arrayOf(

@@ -99,7 +99,7 @@ const sidebarLinks = [
   {
     title: "Communications",
     links: [
-      { label: "Messages", path: "/messages", icon: FaRegMessage },
+      { label: "Messages", path: "/Mentor/Messages", icon: FaRegMessage },
       {
         label: "Notifications",
         path: "/notifications",

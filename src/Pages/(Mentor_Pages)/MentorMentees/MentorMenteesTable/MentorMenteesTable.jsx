@@ -186,7 +186,14 @@ const MentorMenteesTable = ({
 
                   {/* Message Button */}
                   <td className="p-3">
-                    <button className="flex items-center gap-2 px-3 py-3 font-semibold bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer">
+                    <button
+                      onClick={() => {
+                        document
+                          .getElementById("Mentor_Mentees_Message_Modal")
+                          ?.showModal();
+                      }}
+                      className="flex items-center gap-2 px-3 py-3 font-semibold bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer"
+                    >
                       <FaRegMessage className="text-base" />
                       Message
                     </button>

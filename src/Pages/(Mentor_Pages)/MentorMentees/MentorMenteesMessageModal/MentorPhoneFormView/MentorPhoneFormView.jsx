@@ -92,9 +92,7 @@ const MentorPhoneFormView = ({ setView, handleClose, selectedApplicants }) => {
         recipients: selectedApplicants.map((p) => ({
           to_id: p._id,
           to_name: p.name,
-          to_email: p.email || "",
           to_phone: p.phone || "",
-          message_sent: message.replace("[Participant Name]", p.name),
         })),
         sentAt: new Date().toISOString(),
       };

@@ -9,7 +9,7 @@ import { FaRegEnvelope, FaRegCommentDots } from "react-icons/fa6";
 
 // Components
 import MentorPhoneFormView from "./MentorPhoneFormView/MentorPhoneFormView";
-import MentorEmailFormView from "./MentorMentorEmailFormView/MentorMentorEmailFormView";
+import MentorEmailFormView from "./MentorEmailFormView/MentorEmailFormView";
 
 const MentorMenteesMessageModal = ({
   selectedApplicants,

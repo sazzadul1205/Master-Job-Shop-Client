@@ -278,7 +278,6 @@ const MentorEmailFormView = ({ setView, handleClose, selectedApplicants }) => {
           to_name: app.name,
           to_id: app._id,
           to_email: app.email,
-          message_sent: data.message.replace("[Participant Name]", app.name), // mail-merged
         })),
         sentAt: new Date().toISOString(),
       };

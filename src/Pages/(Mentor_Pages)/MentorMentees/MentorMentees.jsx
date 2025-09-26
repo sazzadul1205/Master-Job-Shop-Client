@@ -12,14 +12,17 @@ import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Shared
-import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+import Loading from "../../../Shared/Loading/Loading";
+import ApplicantInformationModal from "../../../Shared/ApplicantInformationModal/ApplicantInformationModal";
 
 // Components
 import MentorMenteesCard from "./MentorMenteesCard/MentorMenteesCard";
 import MentorMenteesTable from "./MentorMenteesTable/MentorMenteesTable";
-import ApplicantInformationModal from "../../../Shared/ApplicantInformationModal/ApplicantInformationModal";
+
+// Modals
 import MentorMenteesMessageModal from "./MentorMenteesMessageModal/MentorMenteesMessageModal";
+import { FiRefreshCw } from "react-icons/fi";
 
 // Function to get all course IDs from all applications in MyCoursesData
 const getAllCourseIds = (coursesData) => {
@@ -52,6 +55,8 @@ const dedupeById = (arr) => {
 const MentorMentees = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
+
+  // States Filters Accepted
   const statusFilter = "Accepted";
 
   // Modal State
@@ -64,6 +69,8 @@ const MentorMentees = () => {
   const [searchName, setSearchName] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [selectedProgramId, setSelectedProgramId] = useState("");
+
+  // --------- Courses APIs ---------
 
   // Fetching Active Courses
   const {
@@ -100,6 +107,8 @@ const MentorMentees = () => {
     enabled: allCoursesIds?.length > 0,
   });
 
+  // --------- Mentorship APIs ---------
+
   // Fetching Active Mentorship
   const {
     data: MyMentorshipData,
@@ -133,6 +142,40 @@ const MentorMentees = () => {
         )
         .then((res) => res.data),
     enabled: allMentorshipIds?.length > 0,
+  });
+
+  // --------- Messages / Emails ---------
+
+  // Example: You can set these dynamically based on state or props
+  const queryType = "Mentor";
+  const queryEmail = user?.email || "";
+
+  // Fetching Mentor Emails
+  const {
+    data: MentorEmailsData,
+    isLoading: MentorEmailsIsLoading,
+    refetch: MentorEmailsRefetch,
+    error: MentorEmailsError,
+  } = useQuery({
+    queryKey: ["MentorEmailsData", queryType, queryEmail],
+    queryFn: () =>
+      axiosPublic
+        .get(`/MentorEmails?type=${queryType}&email=${queryEmail}`)
+        .then((res) => (Array.isArray(res.data) ? res.data : [res.data])),
+  });
+
+  // Fetching Mentor Messages
+  const {
+    data: MentorMessagesData,
+    isLoading: MentorMessagesIsLoading,
+    refetch: MentorMessagesRefetch,
+    error: MentorMessagesError,
+  } = useQuery({
+    queryKey: ["MentorMessagesData", queryType, queryEmail],
+    queryFn: () =>
+      axiosPublic
+        .get(`/MentorMessages?type=${queryType}&email=${queryEmail}`)
+        .then((res) => (Array.isArray(res.data) ? res.data : [res.data])),
   });
 
   // Get all course and mentorship IDs
@@ -197,6 +240,8 @@ const MentorMentees = () => {
     loading ||
     MyCoursesIsLoading ||
     MyMentorshipIsLoading ||
+    MentorEmailsIsLoading ||
+    MentorMessagesIsLoading ||
     MyCoursesApplicationsIsLoading ||
     MyMentorshipApplicationsIsLoading
   )
@@ -206,28 +251,75 @@ const MentorMentees = () => {
   if (
     MyCoursesError ||
     MyMentorshipError ||
+    MentorEmailsError ||
+    MentorMessagesError ||
     MyCoursesApplicationsError ||
     MyMentorshipApplicationsError
   )
     return <Error />;
 
+  // Refetch All
+  const RefetchAll = () => {
+    MyCoursesRefetch();
+    MentorEmailsRefetch();
+    MyMentorshipRefetch();
+    MentorMessagesRefetch();
+    MyCoursesApplicationsRefetch();
+    MyMentorshipApplicationsRefetch();
+  };
+
   return (
     <div>
-      {/* Page Title */}
-      <h3 className="text-black text-3xl font-bold py-7 px-9">
-        All Mentors Mentees
-      </h3>
+      {/* Header */}
+      <div className="flex items-center justify-between py-7 px-9">
+        {/* Page Title */}
+        <h3 className="text-black text-3xl font-bold">All Mentors Mentees</h3>
+
+        {/* Refresh Button */}
+        <button
+          className={`flex items-center gap-2 bg-white border border-gray-300 
+                hover:bg-blue-50 hover:border-blue-300 text-gray-800 font-medium 
+                px-4 py-2 rounded-lg shadow-sm transition-all duration-200 cursor-pointer`}
+          onClick={RefetchAll}
+          title="Refresh Data"
+          disabled={
+            MyCoursesIsLoading ||
+            MyMentorshipIsLoading ||
+            MentorEmailsIsLoading ||
+            MentorMessagesIsLoading ||
+            MyCoursesApplicationsIsLoading ||
+            MyMentorshipApplicationsIsLoading
+          } // disable while loading
+        >
+          <FiRefreshCw
+            className={`text-base ${
+              MyCoursesIsLoading ||
+              MyMentorshipIsLoading ||
+              MentorEmailsIsLoading ||
+              MentorMessagesIsLoading ||
+              MyCoursesApplicationsIsLoading ||
+              MyMentorshipApplicationsIsLoading
+                ? "animate-spin"
+                : ""
+            }`}
+          />
+          <span>
+            {MyCoursesIsLoading ||
+            MyMentorshipIsLoading ||
+            MentorEmailsIsLoading ||
+            MentorMessagesIsLoading ||
+            MyCoursesApplicationsIsLoading ||
+            MyMentorshipApplicationsIsLoading
+              ? "Refreshing..."
+              : "Refresh"}
+          </span>
+        </button>
+      </div>
 
       {/* Mentors Mentees Card */}
       <MentorMenteesCard
-        refetchAll={() => {
-          MyCoursesRefetch();
-          MyMentorshipRefetch();
-          MyCourseTitles?.refetch?.();
-          MyMentorshipTitles?.refetch?.();
-          MyCoursesApplicationsRefetch();
-          MyMentorshipApplicationsRefetch();
-        }}
+        MentorEmailsData={MentorEmailsData}
+        MentorMessagesData={MentorMessagesData}
         courseApplications={courseApplications}
         mentorshipApplications={mentorshipApplications}
       />
@@ -282,8 +374,8 @@ const MentorMentees = () => {
             type="button"
             onClick={() => {
               setSearchName("");
-              setSelectedProgramId("");
               setSelectedType("");
+              setSelectedProgramId("");
             }}
             className="px-4 py-2 bg-gray-100 border border-gray-300 text-sm text-gray-700 rounded-lg hover:bg-gray-200"
           >
@@ -320,7 +412,6 @@ const MentorMentees = () => {
 
       {/* Table with filtered apps */}
       <MentorMenteesTable
-        refetchAll={() => {}}
         selectedApplicants={selectedApplicants}
         mergedApplications={filteredApplications}
         setSelectedApplicants={setSelectedApplicants}

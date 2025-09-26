@@ -1,17 +1,26 @@
+// Icons
+import { FiRefreshCcw } from "react-icons/fi";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
+
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
+// Components
+import MentorScheduleTable from "./MentorScheduleTable/MentorScheduleTable";
+import MentorScheduleCalender from "./MentorScheduleCalender/MentorScheduleCalender";
 
 const MentorScheduledSessions = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
   // --------- Courses APIs ---------
-
-  // Fetching Active Courses
   const {
     data: MyCoursesData,
     isLoading: MyCoursesIsLoading,
@@ -26,8 +35,6 @@ const MentorScheduledSessions = () => {
   });
 
   // --------- Mentorship APIs ---------
-
-  // Fetching Active Mentorship
   const {
     data: MyMentorshipData,
     isLoading: MyMentorshipIsLoading,
@@ -54,50 +61,36 @@ const MentorScheduledSessions = () => {
     MyMentorshipRefetch();
   };
 
-  console.log("My Courses Data :", MyCoursesData);
-  console.log("My Mentorship Data :", MyMentorshipData);
-
   return (
     <div>
       {/* Header */}
       <div className="flex items-center justify-between py-7 px-9">
         {/* Page Title */}
         <h3 className="text-black text-3xl font-bold">Sessions & Schedule</h3>
+
+        {/* Refresh Button */}
+        <button
+          onClick={RefetchAll}
+          className={`flex items-center gap-2 bg-white border border-gray-300 
+                hover:bg-blue-50 hover:border-blue-300 text-gray-800 font-medium 
+                px-4 py-2 rounded-lg shadow-sm transition-all duration-200 cursor-pointer`}
+        >
+          <FiRefreshCcw className="w-5 h-5" />
+          <span className="font-medium">Refresh</span>
+        </button>
       </div>
 
       {/* Calendar */}
-      <div className="bg-white border border-gray-200 rounded-xl mx-8 shadow-sm">
-        {/* Header */}
-        <div className="flex items-center justify-between px-8 py-4">
-          {/* Prev Button */}
-          <button
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
-            title="Previous Month"
-          >
-            <FaChevronLeft className="text-gray-600 text-lg" />
-          </button>
+      <MentorScheduleCalender
+        MyCoursesData={MyCoursesData}
+        MyMentorshipData={MyMentorshipData}
+      />
 
-          {/* Month + Today */}
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-800">
-              September 2025
-            </h3>
-            <p className="text-sm text-blue-600 font-medium cursor-pointer hover:underline">
-              Today
-            </p>
-          </div>
-
-          {/* Next Button */}
-          <button
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
-            title="Next Month"
-          >
-            <FaChevronRight className="text-gray-600 text-lg" />
-          </button>
-        </div>
-
-        <p className="bg-gray-600 h-0.5 my-1 mx-8" />
-      </div>
+      {/* Table */}
+      <MentorScheduleTable
+        MyCoursesData={MyCoursesData}
+        MyMentorshipData={MyMentorshipData}
+      />
     </div>
   );
 };

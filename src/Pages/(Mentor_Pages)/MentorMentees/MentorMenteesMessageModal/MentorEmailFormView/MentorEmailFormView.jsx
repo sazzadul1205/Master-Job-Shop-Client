@@ -10,9 +10,11 @@ import { useForm } from "react-hook-form";
 import { FaArrowLeft, FaPaperPlane } from "react-icons/fa6";
 
 // Input Components
-import FormInput from "../../../../../Shared/FormInput/FormInput";
-import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 import useAuth from "../../../../../Hooks/useAuth";
+import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
+
+// Shared
+import FormInput from "../../../../../Shared/FormInput/FormInput";
 
 // Pre-written options moved outside to avoid recreation on each render
 const PRE_WRITTEN_OPTIONS = [
@@ -195,12 +197,14 @@ Best regards,
   },
 ];
 
-const EmailFormView = ({ setView, selectedApplicants }) => {
-  const { user } = useAuth(); // user.email
+const MentorEmailFormView = ({ setView, handleClose, selectedApplicants }) => {
+  const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
 
+  // Pre-written Header
   const PREFIX = "Dear [Participant Name],\n\n";
 
+  // Form Control
   const {
     register,
     handleSubmit,
@@ -217,6 +221,7 @@ const EmailFormView = ({ setView, selectedApplicants }) => {
     },
   });
 
+  // Watch Message
   const watchMessage = watch("message");
 
   // Ensure PREFIX always exists
@@ -228,6 +233,7 @@ const EmailFormView = ({ setView, selectedApplicants }) => {
 
   const insertPreWritten = (text) => setValue("message", PREFIX + text);
 
+  // On Submit Handler
   const onSubmit = async (data) => {
     try {
       // Send emails with mail merge
@@ -252,6 +258,7 @@ const EmailFormView = ({ setView, selectedApplicants }) => {
       // Reset form
       reset({ message: PREFIX });
 
+      // Success Pop Up
       Swal.fire({
         icon: "success",
         title: "Emails Sent!",
@@ -264,6 +271,7 @@ const EmailFormView = ({ setView, selectedApplicants }) => {
         name: user?.name || data.name,
         email: user?.email || data.email,
         phone: user?.phone || "", // optional if you track phone
+        type: "Mentor",
         subject: data.subject,
         message_raw: data.message, // raw draft
         recipients: selectedApplicants.map((app) => ({
@@ -277,6 +285,9 @@ const EmailFormView = ({ setView, selectedApplicants }) => {
 
       // POST to your backend
       await axiosPublic.post("/MentorEmails", payload);
+
+      // Reset selected applicants
+      handleClose();
 
       // Close modal
       document.getElementById("Mentor_Mentees_Message_Modal")?.close();
@@ -370,7 +381,7 @@ const EmailFormView = ({ setView, selectedApplicants }) => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex items-center gap-2 px-5 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 px-5 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           <FaPaperPlane /> {isSubmitting ? "Sending..." : "Send Email"}
         </button>
@@ -380,16 +391,16 @@ const EmailFormView = ({ setView, selectedApplicants }) => {
 };
 
 // Prop Validation
-EmailFormView.propTypes = {
+MentorEmailFormView.propTypes = {
   setView: PropTypes.func.isRequired,
+  handleClose: PropTypes.func.isRequired,
   selectedApplicants: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       email: PropTypes.string,
-      phone: PropTypes.string,
     })
-  ).isRequired,
+  ),
 };
 
-export default EmailFormView;
+export default MentorEmailFormView;

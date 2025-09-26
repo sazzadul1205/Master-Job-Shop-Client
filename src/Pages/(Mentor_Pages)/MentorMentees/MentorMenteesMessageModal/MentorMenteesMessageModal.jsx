@@ -1,19 +1,15 @@
 import { useState } from "react";
 
-// Icons
-import { ImCross } from "react-icons/im";
-import {
-  FaRegEnvelope,
-  FaRegCommentDots,
-  FaPaperPlane,
-  FaArrowLeft,
-} from "react-icons/fa6";
-
 // Packages
 import PropTypes from "prop-types";
 
+// Icons
+import { ImCross } from "react-icons/im";
+import { FaRegEnvelope, FaRegCommentDots } from "react-icons/fa6";
+
 // Components
-import EmailFormView from "./EmailFormView/EmailFormView";
+import MentorPhoneFormView from "./MentorPhoneFormView/MentorPhoneFormView";
+import MentorEmailFormView from "./MentorMentorEmailFormView/MentorMentorEmailFormView";
 
 const MentorMenteesMessageModal = ({
   selectedApplicants,
@@ -21,7 +17,6 @@ const MentorMenteesMessageModal = ({
 }) => {
   // State
   const [view, setView] = useState("options");
-  const [message, setMessage] = useState("");
 
   // Close Modal
   const handleClose = () => {
@@ -124,82 +119,18 @@ const MentorMenteesMessageModal = ({
 
       {/* Message Form View */}
       {view === "message" && (
-        <div className="flex-1 p-6 flex flex-col gap-4">
-          {/* Message Textarea */}
-          <textarea
-            placeholder="Type your message here..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="flex-1 w-full border rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none resize-none shadow-sm"
-          />
-
-          {/* Pre-written Templates */}
-          <div>
-            <h4 className="text-gray-700 font-semibold mb-2">
-              Quick Message Templates:
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {[
-                {
-                  ref: "Greeting & Update",
-                  text: "Hello [Applicant Name], I hope this message finds you well. We wanted to provide you with an update regarding your application and next steps.",
-                },
-                {
-                  ref: "Reminder",
-                  text: "Dear [Applicant Name], this is a friendly reminder to complete your pending tasks on your application. Please let us know if you require any assistance.",
-                },
-                {
-                  ref: "Acceptance",
-                  text: "Congratulations [Applicant Name]! We are pleased to inform you that you have been accepted into the program. Further instructions will follow shortly.",
-                },
-                {
-                  ref: "Follow-Up",
-                  text: "Hi [Applicant Name], we wanted to follow up regarding your recent application. Kindly confirm receipt of this message and feel free to ask any questions.",
-                },
-                {
-                  ref: "Thank You",
-                  text: "Thank you [Applicant Name] for your interest in our program. We appreciate your time and effort, and will update you as soon as possible.",
-                },
-              ].map((msg, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setMessage(msg.text)}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg border hover:bg-gray-200 transition cursor-pointer text-sm"
-                >
-                  {msg.ref}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex justify-between mt-auto pt-4 border-t">
-            <button
-              type="button"
-              onClick={() => setView("options")}
-              className="flex items-center gap-2 px-5 py-2 border border-gray-300 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition"
-            >
-              <FaArrowLeft /> Back
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                alert("Message sent: " + message);
-                setMessage("");
-              }}
-              className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition"
-            >
-              <FaPaperPlane /> Send
-            </button>
-          </div>
-        </div>
+        <MentorPhoneFormView
+          setView={setView}
+          handleClose={handleClose}
+          selectedApplicants={selectedApplicants}
+        />
       )}
 
       {/* Email Form View */}
       {view === "email" && (
-        <EmailFormView
+        <MentorEmailFormView
           setView={setView}
+          handleClose={handleClose}
           selectedApplicants={selectedApplicants}
         />
       )}

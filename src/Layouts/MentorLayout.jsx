@@ -89,7 +89,11 @@ const sidebarLinks = [
     title: "Mentees & Sessions",
     links: [
       { label: "Mentees", path: "/Mentor/Mentees", icon: MenteesIcon },
-      { label: "Sessions & Schedule", path: "/sessions", icon: SessionsIcon },
+      {
+        label: "Sessions & Schedule",
+        path: "/Mentor/ScheduledSessions",
+        icon: SessionsIcon,
+      },
     ],
   },
   {

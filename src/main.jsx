@@ -1,30 +1,26 @@
 import "./index.css";
 
-// React and React Router
+// Core React & Router
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-// TanStack Query
+// State & Data
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-// Authentication Provider
+// Providers
 import AuthProvider from "./Provider/AuthProvider";
 
 // Layouts
 import MainLayout from "./Layouts/MainLayout";
 import PublicLayout from "./Layouts/PublicLayout";
+import MentorLayout from "./Layouts/MentorLayout";
 import EmployerLayout from "./Layouts/EmployerLayout";
 
-// Public Pages
+// ------------------ Public Pages ------------------
+
+// Main Public Pages
 import Home from "./Pages/(Public_Pages)/Home/Home";
-
-// Auth Pages
-import Login from "./Pages/(Auth_Pages)/Login/Login";
-import SignUp from "./Pages/(Auth_Pages)/SignUp/SignUp";
-import SignUpDetails from "./Pages/(Auth_Pages)/SignUpDetails/SignUpDetails";
-
-// Public Pages - Main
 import Jobs from "./Pages/(Public_Pages)/Jobs/Jobs";
 import Gigs from "./Pages/(Public_Pages)/Gigs/Gigs";
 import Events from "./Pages/(Public_Pages)/Events/Events";
@@ -32,75 +28,73 @@ import Courses from "./Pages/(Public_Pages)/Courses/Courses";
 import Mentorship from "./Pages/(Public_Pages)/Mentorship/Mentorship";
 import Internship from "./Pages/(Public_Pages)/Internship/Internship";
 import CompanyProfiles from "./Pages/(Public_Pages)/CompanyProfiles/CompanyProfiles";
+import CompanyProfilesDetails from "./Pages/(Public_Pages)/CompanyProfilesDetails/CompanyProfilesDetails";
 
-// Public Pages - Extra
+// Extra Public Pages
 import Blogs from "./Pages/(Public_Pages)/Blogs/Blogs";
 import AboutUs from "./Pages/(Public_Pages)/AboutUs/AboutUs";
 import Testimonials from "./Pages/(Public_Pages)/Testimonials/Testimonials";
 
-// Public Pages - Applications / Bids
-import MyGigBids from "./Pages/(Member_Pages)/MyGigBids/MyGigBids";
+// Application / Bidding Pages
 import JobsApplyPage from "./Pages/(Public_Pages)/JobsApplyPage/JobsApplyPage";
-import MentorshipApplyPage from "./Pages/(Public_Pages)/MentorshipApplyPage/MentorshipApplyPage";
-import InternshipApplyPage from "./Pages/(Public_Pages)/InternshipApplyPage/InternshipApplyPage";
-import MyEventApplications from "./Pages/(Member_Pages)/MyEventApplications/MyEventApplications";
-import MyCourseApplications from "./Pages/(Member_Pages)/MyCourseApplications/MyCourseApplications";
-
-// Member Pages
 import GigBiddingpage from "./Pages/(Public_Pages)/GigBiddingpage/GigBiddingpage";
 import CoursesApplyPage from "./Pages/(Public_Pages)/CoursesApplyPage/CoursesApplyPage";
-import MyJobApplications from "./Pages/(Member_Pages)/MyJobApplications/MyJobApplications";
+import MentorshipApplyPage from "./Pages/(Public_Pages)/MentorshipApplyPage/MentorshipApplyPage";
+import InternshipApplyPage from "./Pages/(Public_Pages)/InternshipApplyPage/InternshipApplyPage";
 import EventApplicationPage from "./Pages/(Public_Pages)/EventApplicationPage/EventApplicationPage";
-import CompanyProfilesDetails from "./Pages/(Public_Pages)/CompanyProfilesDetails/CompanyProfilesDetails";
+
+// Public User
+import PublicUserProfile from "./Pages/(Public_Pages)/PublicUserProfile/PublicUserProfile";
+
+// ------------------ Auth Pages ------------------
+import Login from "./Pages/(Auth_Pages)/Login/Login";
+import SignUp from "./Pages/(Auth_Pages)/SignUp/SignUp";
+import SignUpDetails from "./Pages/(Auth_Pages)/SignUpDetails/SignUpDetails";
+
+// ------------------ Member Pages ------------------
+import MyGigBids from "./Pages/(Member_Pages)/MyGigBids/MyGigBids";
+import UserProfile from "./Pages/(Member_Pages)/UserProfile/UserProfile";
+import MyJobApplications from "./Pages/(Member_Pages)/MyJobApplications/MyJobApplications";
+import MyEventApplications from "./Pages/(Member_Pages)/MyEventApplications/MyEventApplications";
+import MyCourseApplications from "./Pages/(Member_Pages)/MyCourseApplications/MyCourseApplications";
 import MyMentorshipApplications from "./Pages/(Member_Pages)/MyMentorshipApplications/MyMentorshipApplications";
 import MyInternshipApplications from "./Pages/(Member_Pages)/MyInternshipApplications/MyInternshipApplications";
 
-// User Profile
-import UserProfile from "./Pages/(Member_Pages)/UserProfile/UserProfile";
+// ------------------ Employer Pages ------------------
+import CompanyDashboard from "./Pages/(Employer_Pages)/CompanyDashboard/CompanyDashboard";
+import EmployerDashboard from "./Pages/(Employer_Pages)/EmployerDashboard/EmployerDashboard";
 
-// Member Private Route
-import MemberPrivateRoute from "./Routes/MemberPrivateRoute";
-
-// Deleted User Page
-import DeletedUser from "./Pages/DeletedUser/DeletedUser";
-
-// Public User Profile
-import PublicUserProfile from "./Pages/(Public_Pages)/PublicUserProfile/PublicUserProfile";
-
-// Become Employer & Mentor
-import BecomeMentor from "./Pages/BecomeMentor/BecomeMentor";
-import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
-
-// Employer Pages
-import ManageGigs from "./Pages/(Employer_Pages)/ManageGigs/ManageGigs";
 import ManageJobs from "./Pages/(Employer_Pages)/ManageJobs/ManageJobs";
+import ManageGigs from "./Pages/(Employer_Pages)/ManageGigs/ManageGigs";
 import ManageEvents from "./Pages/(Employer_Pages)/ManageEvents/ManageEvents";
 import ManageGigBids from "./Pages/(Employer_Pages)/ManageGigBids/ManageGigBids";
 import ManageInternship from "./Pages/(Employer_Pages)/ManageInternship/ManageInternship";
-import EmployerDashboard from "./Pages/(Employer_Pages)/EmployerDashboard/EmployerDashboard";
-import ManageCompanyProfile from "./Pages/(Employer_Pages)/ManageCompanyProfile/ManageCompanyProfile";
-import ManageEmployerProfile from "./Pages/(Employer_Pages)/ManageEmployerProfile/ManageEmployerProfile";
+
 import ManageJobApplications from "./Pages/(Employer_Pages)/ManageJobApplications/ManageJobApplications";
 import ManageEventApplications from "./Pages/(Employer_Pages)/ManageEventApplications/ManageEventApplications";
 import ManageInternshipApplications from "./Pages/(Employer_Pages)/ManageInternshipApplications/ManageInternshipApplications";
 
-// Company Dashboard
-import CompanyDashboard from "./Pages/(Employer_Pages)/CompanyDashboard/CompanyDashboard";
-import MentorDashboard from "./Pages/(Mentor_Pages)/MentorDashboard/MentorDashboard";
+import ManageCompanyProfile from "./Pages/(Employer_Pages)/ManageCompanyProfile/ManageCompanyProfile";
+import ManageEmployerProfile from "./Pages/(Employer_Pages)/ManageEmployerProfile/ManageEmployerProfile";
 
-// Private Route
-import EmployerPrivateRoute from "./Routes/EmployerPrivateRoute";
-
-// Mentor Layout
-import MentorLayout from "./Layouts/MentorLayout";
-
-// Mentor Pages
+// ------------------ Mentor Pages ------------------
 import MentorProfile from "./Pages/(Mentor_Pages)/MentorProfile/MentorProfile";
+import MentorMentees from "./Pages/(Mentor_Pages)/MentorMentees/MentorMentees";
+import MentorDashboard from "./Pages/(Mentor_Pages)/MentorDashboard/MentorDashboard";
 import MentorMyCourses from "./Pages/(Mentor_Pages)/MentorMyCourses/MentorMyCourses";
 import MentorMyMentorship from "./Pages/(Mentor_Pages)/MentorMyMentorship/MentorMyMentorship";
-import MentorMyMentorshipApplications from "./Pages/(Mentor_Pages)/MentorMyMentorshipApplications/MentorMyMentorshipApplications";
+import MentorScheduledSessions from "./Pages/(Mentor_Pages)/MentorScheduledSessions/MentorScheduledSessions";
 import MentorMyCourseApplications from "./Pages/(Mentor_Pages)/MentorMyCourseApplications/MentorMyCourseApplications";
-import MentorMentees from "./Pages/(Mentor_Pages)/MentorMentees/MentorMentees";
+import MentorMyMentorshipApplications from "./Pages/(Mentor_Pages)/MentorMyMentorshipApplications/MentorMyMentorshipApplications";
+
+// ------------------ Misc Pages ------------------
+import DeletedUser from "./Pages/DeletedUser/DeletedUser";
+import BecomeMentor from "./Pages/BecomeMentor/BecomeMentor";
+import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
+
+// ------------------ Routes ------------------
+import MemberPrivateRoute from "./Routes/MemberPrivateRoute";
+import EmployerPrivateRoute from "./Routes/EmployerPrivateRoute";
 
 const queryClient = new QueryClient();
 
@@ -438,7 +432,14 @@ createRoot(document.getElementById("root")).render(
                 element={<MentorMyCourseApplications />}
               />
 
+              {/* Mentor Mentees */}
               <Route path="/Mentor/Mentees" element={<MentorMentees />} />
+
+              {/* Mentor Scheduled Sessions */}
+              <Route
+                path="/Mentor/ScheduledSessions"
+                element={<MentorScheduledSessions />}
+              />
             </Route>
           </Routes>
         </BrowserRouter>

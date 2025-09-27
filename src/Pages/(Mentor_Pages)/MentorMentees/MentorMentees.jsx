@@ -427,7 +427,7 @@ const MentorMentees = () => {
         />
       </dialog>
 
-      {/* View Applicant Profile Modal */}
+      {/* View Mentor Mentees Message Modal */}
       <dialog id="Mentor_Mentees_Message_Modal" className="modal">
         <MentorMenteesMessageModal
           selectedApplicants={selectedApplicants}

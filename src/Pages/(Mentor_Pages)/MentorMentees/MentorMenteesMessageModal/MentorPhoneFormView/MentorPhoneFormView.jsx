@@ -57,6 +57,7 @@ const MentorPhoneFormView = ({ setView, handleClose, selectedApplicants }) => {
   const axiosPublic = useAxiosPublic();
 
   // State
+  const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
 
   // Form Handler
@@ -80,14 +81,23 @@ const MentorPhoneFormView = ({ setView, handleClose, selectedApplicants }) => {
       });
       return;
     }
+    if (!title.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Title",
+        text: "Please enter a title for your message.",
+        confirmButtonColor: "#f59e0b",
+      });
+      return;
+    }
 
-    // Prepare message
     try {
       // Prepare payload
       const payload = {
         name: user?.name || "Mentor",
         email: user?.email || "",
         type: "Mentor",
+        title, 
         message_raw: message,
         recipients: selectedApplicants.map((p) => ({
           to_id: p._id,
@@ -113,6 +123,7 @@ const MentorPhoneFormView = ({ setView, handleClose, selectedApplicants }) => {
 
       // Reset
       handleClose();
+      setTitle("");
       setMessage("");
 
       // Close modal
@@ -140,6 +151,15 @@ const MentorPhoneFormView = ({ setView, handleClose, selectedApplicants }) => {
           No SMS API is connected. Messages will not actually be sent.
         </span>
       </div>
+
+      {/* Title Input */}
+      <input
+        type="text"
+        placeholder="Enter title..."
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        className="w-full border rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-sm"
+      />
 
       {/* Message Textarea */}
       <textarea

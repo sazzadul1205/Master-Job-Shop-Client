@@ -146,7 +146,6 @@ const MentorshipApplyPage = () => {
       return;
     }
 
-    // Handle form submission
     try {
       setIsSubmitting(true);
 
@@ -176,6 +175,22 @@ const MentorshipApplyPage = () => {
       // Submit application to backend
       await axiosPublic.post("/MentorshipApplications", applicationData);
 
+      // --- Notification Payload ---
+      const notificationPayload = {
+        title: "New Mentorship Application",
+        message: `${
+          UsersData?.name || "A user"
+        } has applied for the mentorship "${SelectedMentorshipData?.title}"`,
+        userId: SelectedMentorshipData?.Mentor?.email, // Mentor ID is required
+        type: "mentorship_application",
+        referenceId: mentorshipId,
+        createdAt: new Date().toISOString(),
+        read: false,
+      };
+
+      // Send notification
+      await axiosPublic.post("/Notifications", notificationPayload);
+
       // Success Message
       Swal.fire({
         icon: "success",
@@ -191,7 +206,6 @@ const MentorshipApplyPage = () => {
     } catch (err) {
       setIsSubmitting(false);
       console.error("Error:", err);
-      console.log("Error:", err);
       setErrorMessage("Failed to create mentorship. Please try again.");
       Swal.fire({
         icon: "error",

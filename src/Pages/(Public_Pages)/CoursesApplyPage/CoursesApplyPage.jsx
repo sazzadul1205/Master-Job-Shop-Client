@@ -166,6 +166,22 @@ const CoursesApplyPage = () => {
       // Send application to backend
       await axiosPublic.post("/CourseApplications", applicationData);
 
+      // --- Notification Payload ---
+      const notificationPayload = {
+        title: "New Course Application",
+        message: `${UsersData?.name || "A user"} has applied for the Course "${
+          SelectedCourseData?.title
+        }"`,
+        userId: SelectedCourseData?.Mentor?.email, // Mentor ID is required
+        type: "course_application",
+        referenceId: courseId,
+        createdAt: new Date().toISOString(),
+        read: false,
+      };
+
+      // Send notification
+      await axiosPublic.post("/Notifications", notificationPayload);
+
       // Success Message
       Swal.fire({
         icon: "success",

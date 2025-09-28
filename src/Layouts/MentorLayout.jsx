@@ -102,7 +102,7 @@ const sidebarLinks = [
       { label: "Messages", path: "/Mentor/Messages", icon: FaRegMessage },
       {
         label: "Notifications",
-        path: "/notifications",
+        path: "/Mentor/Notifications",
         icon: IoNotificationsOutline,
       },
     ],

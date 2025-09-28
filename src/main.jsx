@@ -99,6 +99,7 @@ import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
 import MemberPrivateRoute from "./Routes/MemberPrivateRoute";
 import EmployerPrivateRoute from "./Routes/EmployerPrivateRoute";
 import MentorMessages from "./Pages/(Mentor_Pages)/MentorMessages/MentorMessages";
+import MentorNotifications from "./Pages/(Mentor_Pages)/MentorNotifications/MentorNotifications";
 
 const queryClient = new QueryClient();
 
@@ -407,6 +408,12 @@ createRoot(document.getElementById("root")).render(
 
               {/* Messages */}
               <Route path="/Mentor/Messages" element={<MentorMessages />} />
+
+              {/* Notifications */}
+              <Route
+                path="/Mentor/Notifications"
+                element={<MentorNotifications />}
+              />
             </Route>
           </Routes>
         </BrowserRouter>

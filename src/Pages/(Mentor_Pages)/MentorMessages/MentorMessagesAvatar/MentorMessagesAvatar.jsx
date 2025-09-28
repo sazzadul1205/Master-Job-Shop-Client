@@ -109,12 +109,16 @@ const MentorMessagesAvatar = ({ selectedItem }) => {
               data-tooltip-id={tooltipId}
               data-tooltip-html={`
                 <div style="min-width: 200px; text-align: left;">
-                  <p style="font-weight: bold; margin: 0;">${r.to_name}</p>
-                  <p style="margin: 0; font-size: 0.85rem; color: #eee;">
-                    ${r.to_email || r.to_phone || ""}
-                  </p>
-                </div>
-              `}
+                <p style="font-weight: bold; margin: 0;"> ${r.to_name} </p> 
+                <p style="margin: 0; font-size: 0.85rem; color: #eee;"> ${
+                  r.to_email ||
+                  (r.to_phone
+                    ? r.to_phone.startsWith("+")
+                      ? r.to_phone
+                      : `+${r.to_phone}`
+                    : "")
+                } </p> 
+              </div>`}
             />
 
             {/* Tooltip */}

@@ -151,8 +151,6 @@ const MyMentorshipApplications = () => {
     })
     .filter((item) => item.mentorship);
 
-  console.log(mergedData[0]);
-
   return (
     <section className="px-4 md:px-12 min-h-screen">
       {/* Title */}
@@ -318,9 +316,11 @@ const MyMentorshipApplications = () => {
           })
         ) : (
           <div className=" text-center col-span-full mt-24 px-6 max-w-xl mx-auto">
-            <p className="text-2xl font-medium text-white mb-3">
+
+            <h3 className="text-2xl font-medium text-white mb-3">
               No Mentorship Applications Found
-            </p>
+            </h3>
+            
             <p className="text-gray-200 font-semibold text-lg mb-5">
               You haven’t applied to any mentorship&apos;s yet. Browse available
               mentorship&apos;s and apply to grow under expert guidance.

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Packages
 import { useQuery } from "@tanstack/react-query";
@@ -22,6 +23,9 @@ import MentorMessagesAvatar from "./MentorMessagesAvatar/MentorMessagesAvatar";
 const MentorMessages = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
+
+  // Hooks
+  const navigate = useNavigate();
 
   // State Managements
   const [setTitle] = useState("");
@@ -67,14 +71,18 @@ const MentorMessages = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900">
+    <div className="min-h-screen text-gray-900">
       {/* Header */}
-      <div className="flex items-center justify-between pt-7 pb-4 px-8 bg-white shadow-sm">
-        <h3 className="text-3xl font-semibold">Messages & Emails</h3>
+      <div className="flex items-center justify-between py-7 px-9">
+        {/* Page Title */}
+        <h3 className="text-black text-3xl font-bold">Messages & Emails</h3>
+
+        {/* Refresh Button */}
         <button
           onClick={RefetchAll}
-          title="Refresh"
-          className="flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 font-medium px-4 py-2 rounded-lg shadow-sm transition"
+          className={`flex items-center gap-2 bg-white border border-gray-300 
+                hover:bg-blue-50 hover:border-blue-300 text-gray-800 font-medium 
+                px-4 py-2 rounded-lg shadow-sm transition-all duration-200 cursor-pointer`}
         >
           <FiRefreshCcw className="w-5 h-5" />
           <span>Refresh</span>
@@ -85,12 +93,18 @@ const MentorMessages = () => {
       <div className="flex px-8 gap-4 py-6">
         {/* Left Sidebar */}
         <div className="w-1/4 space-y-3">
-          <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition">
+          {/* Add Message Button */}
+          <button
+            onClick={() => navigate("/Mentor/Mentees")}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition"
+          >
             <IoMdAdd className="w-5 h-5" />
             Add Message
           </button>
 
+          {/* Message/Email Tabs */}
           <div className="flex bg-gray-200 rounded-lg p-1 shadow-inner">
+            {/* Message Tabs */}
             <button
               onClick={() => setActiveTab("emails")}
               className={`flex-1 text-center py-2 rounded-lg font-medium transition-colors duration-200 ${
@@ -101,6 +115,8 @@ const MentorMessages = () => {
             >
               Emails
             </button>
+
+            {/* Phone Tabs */}
             <button
               onClick={() => setActiveTab("phone")}
               className={`flex-1 text-center py-2 rounded-lg font-medium transition-colors duration-200 ${
@@ -113,6 +129,7 @@ const MentorMessages = () => {
             </button>
           </div>
 
+          {/* Divider */}
           <div className="border-t border-gray-300 mt-2" />
 
           {/* Message/Email List */}
@@ -120,6 +137,7 @@ const MentorMessages = () => {
             {activeTab === "emails" ? (
               Array.isArray(MyEmailsData) && MyEmailsData.length ? (
                 MyEmailsData.map((email) => (
+                  // Email
                   <div
                     key={email._id}
                     onClick={() => {
@@ -128,19 +146,24 @@ const MentorMessages = () => {
                     }}
                     className="p-3 bg-white rounded-lg shadow-sm hover:shadow-md cursor-pointer transition"
                   >
+                    {/* Subject */}
                     <p className="font-semibold text-sm truncate">
                       {email.subject || "Untitled Email"}
                     </p>
+
+                    {/* Sent At */}
                     <p className="text-xs text-gray-500">
                       {new Date(email.sentAt).toLocaleString()}
                     </p>
                   </div>
                 ))
               ) : (
+                // No Emails
                 <div className="p-2 text-gray-500 italic">No emails found</div>
               )
             ) : Array.isArray(MyMessagesData) && MyMessagesData.length ? (
               MyMessagesData.map((msg) => (
+                // Message
                 <div
                   key={msg._id}
                   onClick={() => {
@@ -149,15 +172,19 @@ const MentorMessages = () => {
                   }}
                   className="p-3 bg-white rounded-lg shadow-sm hover:shadow-md cursor-pointer transition"
                 >
+                  {/* Title */}
                   <p className="font-semibold text-sm truncate">
                     {msg.title || "Untitled Message"}
                   </p>
+
+                  {/* Sent At */}
                   <p className="text-xs text-gray-500">
                     {new Date(msg.sentAt).toLocaleString()}
                   </p>
                 </div>
               ))
             ) : (
+              // No Messages
               <div className="p-2 text-gray-500 italic">No messages found</div>
             )}
           </div>

@@ -124,34 +124,37 @@ const CoursesApplyPage = () => {
 
   // Submit handler
   const onSubmit = async (data) => {
-    let confirmationValue = data.confirmation;
+    setIsSubmitting(true);
+    setErrorMessage("");
 
-    // Only handle file upload if confirmationType === "screenshot"
-    if (SelectedCourseData?.fee?.confirmationType === "screenshot") {
-      if (data.confirmation && data.confirmation[0]) {
-        const formData = new FormData();
-        formData.append("image", data.confirmation[0]);
-
-        const res = await axiosPublic.post(Image_Hosting_API, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        confirmationValue = res.data.data.display_url; // store uploaded screenshot URL
-      }
-    }
-
-    // Validate that user is logged in
-    if (!user) {
-      setShowLoginModal(true);
-      return;
-    }
-
-    // Handle form submission
     try {
-      setIsSubmitting(true);
+      // --- Handle Screenshot Upload if Required ---
+      let confirmationValue = data.confirmation;
+      if (SelectedCourseData?.fee?.confirmationType === "screenshot") {
+        if (data.confirmation && data.confirmation[0]) {
+          const formData = new FormData();
+          formData.append("image", data.confirmation[0]);
 
-      // Create application data
-      const applicationData = {
+          const screenshotRes = await axiosPublic.post(
+            Image_Hosting_API,
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
+
+          confirmationValue = screenshotRes.data.data.display_url;
+        }
+      }
+
+      // --- Ensure User is Logged In ---
+      if (!user) {
+        setShowLoginModal(true);
+        return;
+      }
+
+      // --- Build Application Payload ---
+      const applicationPayload = {
         ...data,
         status: "pending",
         courseId: courseId,
@@ -163,26 +166,31 @@ const CoursesApplyPage = () => {
         profileImage: UsersData?.profileImage,
       };
 
-      // Send application to backend
-      await axiosPublic.post("/CourseApplications", applicationData);
+      // --- Submit Application to Backend ---
+      const applicationRes = await axiosPublic.post(
+        "/CourseApplications",
+        applicationPayload
+      );
 
-      // --- Notification Payload ---
+      // --- Build Notification Payload ---
       const notificationPayload = {
         title: "New Course Application",
-        message: `${UsersData?.name || "A user"} has applied for the Course "${
+        message: `${UsersData?.name || "A user"} has applied for the course "${
           SelectedCourseData?.title
         }"`,
-        userId: SelectedCourseData?.Mentor?.email, // Mentor ID is required
+        userEmail: UsersData?.email,
+        mentorId: SelectedCourseData?.Mentor?.email,
         type: "course_application",
-        referenceId: courseId,
+        AppliedToId: courseId,
+        applicationId: applicationRes.data.insertedId,
         createdAt: new Date().toISOString(),
         read: false,
       };
 
-      // Send notification
+      // --- Send Notification ---
       await axiosPublic.post("/Notifications", notificationPayload);
 
-      // Success Message
+      // --- Success Message ---
       Swal.fire({
         icon: "success",
         title: "Application Submitted",
@@ -192,17 +200,21 @@ const CoursesApplyPage = () => {
         timerProgressBar: true,
       });
 
-      navigate(-1);
+      // --- Reset Form and Navigate Back ---
       reset();
+      navigate(-1);
     } catch (err) {
-      setIsSubmitting(false);
-      console.error("Error:", err);
-      console.log("Error:", err);
-      setErrorMessage("Failed to create mentorship. Please try again.");
+      console.error("Error submitting application:", err);
+
+      // Set error message state
+      setErrorMessage(
+        err?.message || "Something went wrong. Please try again."
+      );
+
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
-        text: err?.message || "Something went wrong.",
+        text: err?.message || "Something went wrong. Please try again.",
       });
     } finally {
       setIsSubmitting(false);

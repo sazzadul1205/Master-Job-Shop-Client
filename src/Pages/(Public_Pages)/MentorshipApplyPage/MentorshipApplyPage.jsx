@@ -45,15 +45,20 @@ const MentorshipApplyPage = () => {
   const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
   const [showAlreadyAppliedModal, setShowAlreadyAppliedModal] = useState(false);
 
+  // --- React State & Handlers ---
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [skillsAllSelected, setSkillsAllSelected] = useState(false);
+
   // React Hook Form
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     reset,
   } = useForm();
 
-  // Fetch selected Mentorship
+  // --------- Selected Mentorship API ---------
   const {
     data: SelectedMentorshipData,
     isLoading: SelectedMentorshipIsLoading,
@@ -65,7 +70,7 @@ const MentorshipApplyPage = () => {
     enabled: !!mentorshipId,
   });
 
-  // Fetch logged-in user data
+  // --------- User API ---------
   const {
     data: UsersData,
     isLoading: UsersIsLoading,
@@ -77,7 +82,7 @@ const MentorshipApplyPage = () => {
     enabled: !!user,
   });
 
-  // Check if user already applied to this course
+  // --------- Check If User Applied APIs ---------
   const {
     data: CheckIfApplied,
     isLoading: CheckIfAppliedIsLoading,
@@ -110,6 +115,23 @@ const MentorshipApplyPage = () => {
     }
   }, [CheckIfApplied, CheckIfAppliedIsLoading]);
 
+  // Handle select all skills
+  const handleSelectAllSkills = (checked) => {
+    setSkillsAllSelected(checked);
+    setSelectedSkills(checked ? [...SelectedMentorshipData.skillsCovered] : []);
+  };
+
+  // Handle individual skill
+  const handleIndividualSkill = (skill, checked) => {
+    const updatedSkills = checked
+      ? [...selectedSkills, skill]
+      : selectedSkills.filter((s) => s !== skill);
+    setSelectedSkills(updatedSkills);
+    setSkillsAllSelected(
+      updatedSkills.length === SelectedMentorshipData.skillsCovered.length
+    );
+  };
+
   // Loading/Error UI
   if (
     SelectedMentorshipIsLoading ||
@@ -124,74 +146,92 @@ const MentorshipApplyPage = () => {
 
   // Submit handler
   const onSubmit = async (data) => {
-    let confirmationValue = data.confirmation;
-
-    // Only handle file upload if confirmationType === "screenshot"
-    if (SelectedMentorshipData?.fee?.confirmationType === "screenshot") {
-      if (data.confirmation && data.confirmation[0]) {
-        const formData = new FormData();
-        formData.append("image", data.confirmation[0]);
-
-        const res = await axiosPublic.post(Image_Hosting_API, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        confirmationValue = res.data.data.display_url; // store uploaded screenshot URL
-      }
-    }
-
-    // Validate that user is logged in
-    if (!user) {
-      setShowLoginModal(true);
-      return;
-    }
+    setIsSubmitting(true);
+    setErrorMessage("");
 
     try {
-      setIsSubmitting(true);
+      // --- Handle Screenshot Upload if Required ---
+      let confirmationValue = data.confirmation;
+      if (SelectedMentorshipData?.fee?.confirmationType === "screenshot") {
+        if (data.confirmation && data.confirmation[0]) {
+          const formData = new FormData();
+          formData.append("image", data.confirmation[0]);
 
-      // Upload resume (PDF)
+          const screenshotRes = await axiosPublic.post(
+            Image_Hosting_API,
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
+
+          confirmationValue = screenshotRes.data.data.display_url;
+        }
+      }
+
+      // --- Ensure User is Logged In ---
+      if (!user) {
+        setShowLoginModal(true);
+        return;
+      }
+
+      // --- Upload PDF Resume ---
+      if (!data.resume || !data.resume[0]) {
+        throw new Error("Please select a resume PDF to upload.");
+      }
+
       const resumeForm = new FormData();
       resumeForm.append("file", data.resume[0]);
-      const res = await axiosPublic.post("/PDFUpload", resumeForm, {
+
+      const resumeRes = await axiosPublic.post("/PDFUpload", resumeForm, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      if (!res.data?.url) throw new Error("Failed to upload PDF");
+      if (!resumeRes.data?.url) {
+        throw new Error("Failed to upload PDF.");
+      }
 
-      // Build application payload
-      const applicationData = {
-        ...data,
+      // --- Build Application Payload ---
+      // eslint-disable-next-line no-unused-vars
+      const { resume, ...rest } = data;
+      const applicationPayload = {
+        ...rest,
         status: "pending",
         userId: UsersData?._id,
         email: UsersData?.email,
         phone: UsersData?.phone,
-        resumeUrl: res.data.url,
+        resumeUrl: resumeRes.data.url, // use the uploaded URL
         mentorshipId: mentorshipId,
         confirmation: confirmationValue,
         appliedAt: new Date().toISOString(),
         profileImage: UsersData?.profileImage,
       };
 
-      // Submit application to backend
-      await axiosPublic.post("/MentorshipApplications", applicationData);
+      // --- Submit Application to Backend ---
+      const applicationRes = await axiosPublic.post(
+        "/MentorshipApplications",
+        applicationPayload
+      );
 
-      // --- Notification Payload ---
+      // --- Build Notification Payload ---
       const notificationPayload = {
         title: "New Mentorship Application",
         message: `${
           UsersData?.name || "A user"
         } has applied for the mentorship "${SelectedMentorshipData?.title}"`,
-        userId: SelectedMentorshipData?.Mentor?.email, // Mentor ID is required
+        userEmail: UsersData?.email,
+        mentorId: SelectedMentorshipData?.Mentor?.email,
         type: "mentorship_application",
-        referenceId: mentorshipId,
+        AppliedToId: mentorshipId,
+        applicationId: applicationRes.data.insertedId,
         createdAt: new Date().toISOString(),
         read: false,
       };
 
-      // Send notification
+      // --- Send Notification ---
       await axiosPublic.post("/Notifications", notificationPayload);
 
-      // Success Message
+      // --- Success Message ---
       Swal.fire({
         icon: "success",
         title: "Application Submitted",
@@ -201,16 +241,21 @@ const MentorshipApplyPage = () => {
         timerProgressBar: true,
       });
 
-      navigate(-1);
+      // --- Reset Form and Navigate Back ---
       reset();
+      navigate(-1);
     } catch (err) {
-      setIsSubmitting(false);
-      console.error("Error:", err);
-      setErrorMessage("Failed to create mentorship. Please try again.");
+      console.error("Error submitting application:", err);
+
+      // Set error message state
+      setErrorMessage(
+        err?.message || "Something went wrong. Please try again."
+      );
+
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
-        text: err?.message || "Something went wrong.",
+        text: err?.message || "Something went wrong. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -324,12 +369,23 @@ const MentorshipApplyPage = () => {
         {/* Skills Check */}
         {SelectedMentorshipData?.skillsCovered?.length > 0 && (
           <div className="space-y-3">
-            {/* Title */}
-            <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
-              Relevant Skills
-            </h2>
+            {/* Title with Select All */}
+            <div className="flex items-center justify-between border-b pb-2">
+              <h2 className="text-lg font-semibold text-gray-800">
+                Relevant Skills
+              </h2>
+              <label className="inline-flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-success"
+                  checked={skillsAllSelected}
+                  onChange={(e) => handleSelectAllSkills(e.target.checked)}
+                />
+                Select All
+              </label>
+            </div>
 
-            {/* Skills Check List */}
+            {/* Skills List */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {SelectedMentorshipData.skillsCovered.map((skill) => (
                 <label key={skill} className="inline-flex items-center gap-2">
@@ -337,6 +393,10 @@ const MentorshipApplyPage = () => {
                     type="checkbox"
                     {...register("skills")}
                     value={skill}
+                    checked={selectedSkills.includes(skill)}
+                    onChange={(e) =>
+                      handleIndividualSkill(skill, e.target.checked)
+                    }
                     className="checkbox checkbox-success"
                   />
                   {skill}
@@ -399,8 +459,7 @@ const MentorshipApplyPage = () => {
             <input
               type="file"
               accept=".pdf"
-              id="resume"
-              {...register("resume", { required: "Resume is required" })}
+              onChange={(e) => setValue("resume", e.target.files)}
               className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer bg-gray-50 border border-gray-300 rounded-lg"
             />
             {errors.resume && (

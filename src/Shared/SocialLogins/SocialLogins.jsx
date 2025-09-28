@@ -25,7 +25,7 @@ const SocialLogins = () => {
   const checkUserExists = async (email) => {
     try {
       const response = await axiosPublic.get(
-        `/Users/check-email?email=${email}`
+        `/Users/CheckEmail?email=${email}`
       );
       return response.data.exists; // Returns true if the user exists
     } catch (error) {
@@ -99,6 +99,7 @@ const SocialLogins = () => {
       });
     }
   };
+
   return (
     <div className="space-y-3">
       {/* Google Login Button */}

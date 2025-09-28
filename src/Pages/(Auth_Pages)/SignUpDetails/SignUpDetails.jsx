@@ -25,6 +25,7 @@ import { GenderSelectField } from "./GenderSelectField/GenderSelectField";
 // Image Cropper
 import ImageCropper from "./ImageCropper/ImageCropper";
 
+// Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
 
@@ -33,10 +34,20 @@ const SignUpDetails = () => {
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
 
-  const [profileImage, setProfileImage] = useState(null);
-  const [phoneNumber, setPhoneNumber] = useState("");
+  // State Management
   const [loading, setLoading] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
 
+  // Form Handling
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm();
+
+  // ------------- User Exists Check -------------
   const {
     data: UserExistCheck,
     isLoading: UserExistsCheckIsLoading,
@@ -49,13 +60,7 @@ const SignUpDetails = () => {
         .then((res) => res.data),
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm();
-
+  // Confirm and Submit
   const confirmAndSubmit = async (data) => {
     const confirmation = await Swal.fire({
       title: "Are you sure?",
@@ -71,6 +76,7 @@ const SignUpDetails = () => {
     onSubmit(data);
   };
 
+  // Submit Handler
   const onSubmit = async (data) => {
     setLoading(true);
 
@@ -130,53 +136,87 @@ const SignUpDetails = () => {
     }
   };
 
-  // Loading / Error UI
-  if (UserExistsCheckIsLoading) return <Loading />;
-  if (UserExistsCheckError) return <Error />;
+  // Wait until the user existence check is finished
+  if (UserExistsCheckIsLoading) {
+    // Show nothing OR a loader while checking
+    return <Loading />;
+  }
+
+  if (UserExistsCheckError) {
+    // Show error if the check fails
+    return <Error />;
+  }
 
   // If user already has an account
   if (UserExistCheck?.exists) {
     return (
-      <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-bl from-blue-400 to-blue-600 px-4">
-        <div className="text-center text-2xl font-bold text-red-500 mb-6">
-          You already have an account.
+      // If user already has an account
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-blue-500 to-blue-700 px-4 py-10">
+        {/* Card Container */}
+        <div className="bg-white rounded-3xl shadow-2xl p-10 max-w-lg text-center">
+          {/* Title */}
+          <h3 className="text-3xl font-playfair font-bold text-red-600 mb-4">
+            You already have an account
+          </h3>
+
+          {/* Message */}
+          <p className="text-gray-700 text-lg mb-6">
+            To modify your information or update details, please visit your
+            profile update page.
+          </p>
+
+          {/* Go to Profile Button */}
+          <button
+            onClick={() => navigate("/MyProfile")}
+            className="w-full max-w-md py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 shadow-md transition duration-300 hover:shadow-2xl cursor-pointer"
+          >
+            Go to Profile Update
+          </button>
         </div>
-        <p className="text-center mb-6 text-gray-700 text-lg">
-          To modify your information, go to your profile update page.
-        </p>
-        <button
-          onClick={() => navigate("/User/UserSettings?tab=Settings_Info")}
-          className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition duration-300"
-        >
-          Go to Profile Update
-        </button>
       </div>
     );
   }
 
+  // If user doesn't have an account
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-blue-400 to-blue-600 px-4">
-      <div className="w-full max-w-5xl rounded-2xl bg-white bg-opacity-90 shadow-lg p-8">
-        <h4 className="text-3xl font-playfair font-bold text-center text-black mb-4">
-          Details
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-blue-500 to-blue-700 px-4 py-10">
+      {/* Main Card Container */}
+      <div className="w-full max-w-6xl rounded-3xl bg-white bg-opacity-95 shadow-2xl p-10 md:p-12">
+        {/* Title */}
+        <h4 className="text-3xl md:text-4xl font-playfair font-bold text-center text-gray-900 mb-6">
+          Account Details
         </h4>
 
-        <div className="h-[1px] bg-black mb-8" />
+        {/* Divider */}
+        <div className="h-[2px] bg-gray-300 w-24 mx-auto mb-10 rounded-full" />
 
+        {/* Form */}
         <form onSubmit={handleSubmit(confirmAndSubmit)} noValidate>
-          <div className="flex ">
-            <div className="space-y-6 w-2/5">
-              <h3 className="text-black text-center font-semibold text-xl">
-                Trainer Profile
+          {/* Flex container: Left = Profile, Right = Inputs */}
+          <div className="flex flex-col md:flex-row gap-8">
+            {/* Left Side: Profile Image */}
+            <div className="w-full md:w-2/5 flex flex-col items-center space-y-6">
+              {/* Section Title */}
+              <h3 className="text-gray-900 text-center font-semibold text-xl">
+                Profile Image
               </h3>
+
+              {/* Image Cropper Component */}
               <ImageCropper
                 onImageCropped={setProfileImage}
                 register={register}
                 errors={errors}
               />
+
+              {/* Instruction Text */}
+              <p className="text-gray-500 text-sm text-center">
+                Upload a clear profile image. Supported formats: JPG, PNG.
+              </p>
             </div>
 
-            <div className="w-3/5 space-y-6  border-l border-gray-300 px-2">
+            {/* Right Side: Input Fields */}
+            <div className="w-full md:w-3/5 flex flex-col space-y-6 border-l border-gray-200 pl-0 md:pl-6">
+              {/* Full Name */}
               <InputField
                 label="Full Name"
                 placeholder="John Doe"
@@ -186,8 +226,9 @@ const SignUpDetails = () => {
                 type="text"
               />
 
-              <div>
-                <label className="block text-black font-playfair font-semibold text-lg mb-2">
+              {/* Phone Input */}
+              <div className="flex flex-col">
+                <label className="block text-gray-900 font-semibold text-lg mb-2">
                   Phone
                 </label>
                 <PhoneInput
@@ -199,6 +240,7 @@ const SignUpDetails = () => {
                 />
               </div>
 
+              {/* Date of Birth */}
               <InputField
                 label="Date of Birth"
                 placeholder=""
@@ -208,6 +250,7 @@ const SignUpDetails = () => {
                 type="date"
               />
 
+              {/* Gender Selection */}
               <GenderSelectField
                 register={register}
                 errors={errors}
@@ -216,13 +259,12 @@ const SignUpDetails = () => {
             </div>
           </div>
 
-          <div className="flex justify-end mt-5">
+          {/* Submit Button */}
+          <div className="flex justify-center md:justify-end mt-8">
             <button
               type="submit"
               disabled={loading}
-              className={`w-[300px] bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 shadow-md transition disabled:opacity-60 ${
-                loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
-              }`}
+              className="w-full max-w-md py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 shadow-md transition duration-300 hover:shadow-2xl cursor-pointer"
             >
               {loading ? "Creating Account ..." : "Create Account"}
             </button>
@@ -235,6 +277,7 @@ const SignUpDetails = () => {
 
 export default SignUpDetails;
 
+// Input Field
 export const InputField = ({
   label,
   placeholder,

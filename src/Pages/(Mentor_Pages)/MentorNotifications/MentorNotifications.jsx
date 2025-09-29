@@ -5,12 +5,15 @@ import useAuth from "../../../Hooks/useAuth";
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 import { useQuery } from "@tanstack/react-query";
+import MentorNotificationInformationModal from "./MentorNotificationInformationModal/MentorNotificationInformationModal";
 
 const MentorNotifications = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
+  // States Filters
   const [activeTab, setActiveTab] = useState("All");
+  const [selectedNotification, setSelectedNotification] = useState("All");
 
   // --------- Course Notifications ---------
   const {
@@ -22,7 +25,7 @@ const MentorNotifications = () => {
     queryKey: ["MyCourseNotificationsData", user?.email],
     queryFn: () =>
       axiosPublic
-        .get(`/Notifications?userId=${user?.email}&type=course_application`)
+        .get(`/Notifications?mentorId=${user?.email}&type=course_application`)
         .then((res) => res.data),
     enabled: !!user?.email,
   });
@@ -37,7 +40,9 @@ const MentorNotifications = () => {
     queryKey: ["MyMentorshipNotificationsData", user?.email],
     queryFn: () =>
       axiosPublic
-        .get(`/Notifications?userId=${user?.email}&type=mentorship_application`)
+        .get(
+          `/Notifications?mentorId=${user?.email}&type=mentorship_application`
+        )
         .then((res) => res.data),
     enabled: !!user?.email,
   });
@@ -76,6 +81,7 @@ const MentorNotifications = () => {
     }
   };
 
+  // Display data based on tab
   const displayedNotifications = getActiveData();
 
   return (
@@ -116,13 +122,21 @@ const MentorNotifications = () => {
       {/* Notifications List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mx-9 mt-6">
         {displayedNotifications.length === 0 ? (
+          // No Notifications Found UI
           <p className="text-gray-500 col-span-full text-center py-6">
             No notifications found.
           </p>
         ) : (
           displayedNotifications.map((n) => (
+            // Notification Card
             <div
               key={n._id}
+              onClick={() => {
+                setSelectedNotification(n);
+                document
+                  .getElementById("Mentor_Notification_Information_Modal")
+                  .showModal();
+              }}
               className={`relative bg-white border rounded-lg shadow-sm p-4 transition cursor-pointer hover:shadow-xl`}
             >
               {/* Unread Dot */}
@@ -138,13 +152,19 @@ const MentorNotifications = () => {
                   <FiBell className="w-6 h-6 text-blue-500 flex-shrink-0 mt-1 animate-pulse" />
                 )}
 
+                {/* Content */}
                 <div>
+                  {/* Title */}
                   <h4 className="font-semibold text-lg">
                     {n.title || "Untitled Notification"}
                   </h4>
+
+                  {/* Message */}
                   <p className="text-gray-700 text-sm mt-1">
                     {n.message || "No additional details available."}
                   </p>
+
+                  {/* Date */}
                   <p className="text-gray-400 text-xs mt-2">
                     {n.createdAt
                       ? new Date(n.createdAt).toLocaleString()
@@ -156,6 +176,14 @@ const MentorNotifications = () => {
           ))
         )}
       </div>
+
+      {/* Notification Modal */}
+      <dialog id="Mentor_Notification_Information_Modal" className="modal">
+        <MentorNotificationInformationModal
+          selectedNotification={selectedNotification}
+          setSelectedNotification={setSelectedNotification}
+        />
+      </dialog>
     </div>
   );
 };

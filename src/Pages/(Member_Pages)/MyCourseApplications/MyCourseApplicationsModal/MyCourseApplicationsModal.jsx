@@ -88,8 +88,6 @@ const MyCourseApplicationsModal = ({
     );
   }
 
-  console.log(application);
-
   return (
     <div
       id="View_Course_Application_Modal"

@@ -19,7 +19,7 @@ const MyCourseApplicationsModal = ({
 }) => {
   const axiosPublic = useAxiosPublic();
 
-  // Fetch selected application data
+  // -------- Get Selected Application API --------
   const {
     data: application = null,
     isLoading,
@@ -39,13 +39,15 @@ const MyCourseApplicationsModal = ({
     document.getElementById("View_Course_Application_Modal")?.close();
   };
 
-  // UI Loading / Error
+  // UI Loading
   if (isLoading)
     return (
       <div className="modal-box bg-white rounded-xl shadow-md p-0 max-w-3xl">
         <Loading />
       </div>
     );
+
+  // UI Error
   if (error) return <Error />;
 
   // If No Application Data
@@ -87,6 +89,8 @@ const MyCourseApplicationsModal = ({
       </div>
     );
   }
+
+  console.log(application);
 
   return (
     <div

@@ -1,5 +1,5 @@
-import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Icons
 import { FaArrowLeft, FaInfo } from "react-icons/fa";
@@ -10,17 +10,17 @@ import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 
 // Shared
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
-import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+import Loading from "../../../Shared/Loading/Loading";
+import FormInput from "../../../Shared/FormInput/FormInput";
+import CommonButton from "../../../Shared/CommonButton/CommonButton";
 
 // Hooks
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useAuth from "../../../Hooks/useAuth";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Modal
 import MentorshipDetailsModal from "../Home/FeaturedMentorship/MentorshipDetailsModal/MentorshipDetailsModal";
-import FormInput from "../../../Shared/FormInput/FormInput";
 
 // Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
@@ -132,7 +132,7 @@ const MentorshipApplyPage = () => {
     );
   };
 
-  // Loading/Error UI
+  // Loading UI
   if (
     SelectedMentorshipIsLoading ||
     CheckIfAppliedIsLoading ||
@@ -141,6 +141,7 @@ const MentorshipApplyPage = () => {
   )
     return <Loading />;
 
+  // Error UI
   if (UsersError || SelectedMentorshipError || CheckIfAppliedError)
     return <Error />;
 
@@ -150,8 +151,14 @@ const MentorshipApplyPage = () => {
     setErrorMessage("");
 
     try {
+      // --- Ensure User is Logged In ---
+      if (!user) {
+        setShowLoginModal(true);
+        return;
+      }
+
       // --- Handle Screenshot Upload if Required ---
-      let confirmationValue = data.confirmation;
+      let confirmationValue = null;
       if (SelectedMentorshipData?.fee?.confirmationType === "screenshot") {
         if (data.confirmation && data.confirmation[0]) {
           const formData = new FormData();
@@ -165,14 +172,16 @@ const MentorshipApplyPage = () => {
             }
           );
 
-          confirmationValue = screenshotRes.data.data.display_url;
+          confirmationValue = screenshotRes.data.data.display_url; // Only the URL
         }
-      }
-
-      // --- Ensure User is Logged In ---
-      if (!user) {
-        setShowLoginModal(true);
-        return;
+      } else {
+        // Use other confirmation types if provided
+        confirmationValue =
+          data.paymentLink ||
+          data.transactionId ||
+          data.receiptLink ||
+          data.referenceNumber ||
+          null;
       }
 
       // --- Upload PDF Resume ---
@@ -187,22 +196,34 @@ const MentorshipApplyPage = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      if (!resumeRes.data?.url) {
-        throw new Error("Failed to upload PDF.");
-      }
+      if (!resumeRes.data?.url) throw new Error("Failed to upload PDF.");
 
       // --- Build Application Payload ---
-      // eslint-disable-next-line no-unused-vars
-      const { resume, ...rest } = data;
+      const {
+        // eslint-disable-next-line no-unused-vars
+        resume,
+        paymentLink,
+        // eslint-disable-next-line no-unused-vars
+        confirmation,
+        receiptLink,
+        transactionId,
+        referenceNumber,
+        ...rest
+      } = data;
+
       const applicationPayload = {
         ...rest,
         status: "pending",
         userId: UsersData?._id,
         email: UsersData?.email,
         phone: UsersData?.phone,
-        resumeUrl: resumeRes.data.url, // use the uploaded URL
+        resumeUrl: resumeRes.data.url,
         mentorshipId: mentorshipId,
-        confirmation: confirmationValue,
+        confirmationScreenshot: confirmationValue || null,
+        paymentLink: paymentLink || null,
+        transactionId: transactionId || null,
+        receiptLink: receiptLink || null,
+        referenceNumber: referenceNumber || null,
         appliedAt: new Date().toISOString(),
         profileImage: UsersData?.profileImage,
       };
@@ -223,7 +244,7 @@ const MentorshipApplyPage = () => {
         mentorId: SelectedMentorshipData?.Mentor?.email,
         type: "mentorship_application",
         AppliedToId: mentorshipId,
-        applicationId: applicationRes.data.insertedId,
+        applicationId: applicationRes.data.insertedId || null,
         createdAt: new Date().toISOString(),
         read: false,
       };
@@ -231,7 +252,7 @@ const MentorshipApplyPage = () => {
       // --- Send Notification ---
       await axiosPublic.post("/Notifications", notificationPayload);
 
-      // --- Success Message ---
+      // --- Success Feedback ---
       Swal.fire({
         icon: "success",
         title: "Application Submitted",
@@ -247,7 +268,6 @@ const MentorshipApplyPage = () => {
     } catch (err) {
       console.error("Error submitting application:", err);
 
-      // Set error message state
       setErrorMessage(
         err?.message || "Something went wrong. Please try again."
       );
@@ -335,7 +355,7 @@ const MentorshipApplyPage = () => {
           />
         </div>
 
-        {/* Motivation */}
+        {/* Application Details */}
         <div className="space-y-4">
           {/* Title */}
           <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
@@ -470,11 +490,13 @@ const MentorshipApplyPage = () => {
           </div>
         </div>
 
-        {/* Payment & Confirmation (only if paid mentorship) */}
+        {/* Payment & Confirmation (for all paid Mentorship) */}
         {SelectedMentorshipData?.fee?.isFree === false && (
           <div className="space-y-4">
             {/* Payment Method */}
-            <div className="flex justify-between">
+            {/* Payment Method & Fee */}
+            <div className="flex justify-between items-start">
+              {/* Payment Method */}
               <div>
                 <label className="block font-medium mb-1">Payment Method</label>
                 <p className="text-gray-800 font-semibold capitalize">
@@ -497,156 +519,133 @@ const MentorshipApplyPage = () => {
                 </p>
               </div>
 
-              {/* Fee */}
+              {/* Fee Details */}
               <div className="flex flex-col gap-1">
-                <h3 className="font-semibold text-lg">Fee :</h3>
-                {SelectedMentorshipData?.fee?.isFree ? (
-                  <p className="text-green-600 font-semibold">Free</p>
-                ) : SelectedMentorshipData?.fee?.amount ? (
+                <h3 className="font-semibold text-lg">Fee:</h3>
+                {SelectedMentorshipData?.fee ? (
                   (() => {
-                    const { amount, currency, type } =
+                    const { amount, discount, currency, negotiable } =
                       SelectedMentorshipData.fee;
-                    const weeks =
-                      Number(SelectedMentorshipData.durationWeeks) || 0;
-                    const sessionsPerWeek =
-                      Number(SelectedMentorshipData.sessionsPerWeek) || 0;
-                    const sessionLengthHrs =
-                      parseInt(
-                        SelectedMentorshipData.sessionLength
-                          ?.replace("hr", "")
-                          .trim()
-                      ) || 0;
-
-                    let total = amount;
-
-                    switch (type) {
-                      case "hourly":
-                        total =
-                          amount * weeks * sessionsPerWeek * sessionLengthHrs;
-                        break;
-                      case "perSession":
-                        total = amount * weeks * sessionsPerWeek;
-                        break;
-                      case "weekly":
-                        total = amount * weeks;
-                        break;
-                      case "fixed":
-                        total = amount;
-                        break;
-                      case "fullCourse":
-                        total = amount;
-                        break;
-                      default:
-                        total = amount;
-                        break;
-                    }
+                    const total = discount
+                      ? (amount - discount).toFixed(2)
+                      : amount?.toFixed(2) || 0;
 
                     return (
-                      <div className="text-sm">
-                        <p className="font-semibold text-green-700">
-                          {amount} {currency || "USD"}{" "}
-                          <span className="text-gray-600 text-xs">
-                            ({type})
-                          </span>
+                      <div className="text-sm space-y-1">
+                        <p className="text-gray-800 font-semibold">
+                          Amount: {amount?.toFixed(2) || "0"}{" "}
+                          {currency || "USD"}
                         </p>
-                        <p className="text-gray-500 text-xs">
-                          Total:{" "}
-                          <span className="font-bold text-gray-800">
-                            {total} {currency || "USD"}
-                          </span>
+                        {discount && (
+                          <p className="text-gray-600 text-sm">
+                            Discount: {discount?.toFixed(2)} {currency || "USD"}
+                          </p>
+                        )}
+                        <p className="text-green-700 font-semibold">
+                          Total: {total} {currency || "USD"}
                         </p>
+                        {negotiable && (
+                          <p className="text-blue-600 text-sm font-medium">
+                            Payment is negotiable
+                          </p>
+                        )}
                       </div>
                     );
                   })()
                 ) : (
-                  <p className="text-gray-600">Not specified</p>
+                  <p className="text-gray-600 italic">Not specified</p>
                 )}
               </div>
             </div>
 
-            {/* Payment Link (if available) */}
-            {SelectedMentorshipData?.fee?.paymentLink && (
-              <div>
-                <label className="block font-medium mb-1">Payment Link</label>
-                <a
-                  href={SelectedMentorshipData.fee.paymentLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 underline"
-                >
-                  {SelectedMentorshipData.fee.paymentLink}
-                </a>
-              </div>
+            {/* Confirmation Input based on confirmationType */}
+            {SelectedMentorshipData?.fee?.confirmationType ? (
+              (() => {
+                switch (SelectedMentorshipData.fee.confirmationType) {
+                  case "paymentLink":
+                    return (
+                      <div>
+                        <label className="block font-medium mb-1">
+                          Payment Link
+                        </label>
+                        <input
+                          type="url"
+                          placeholder="Enter payment link"
+                          {...register("paymentLink")}
+                          className="w-full border border-gray-300 rounded px-3 py-2"
+                        />
+                      </div>
+                    );
+
+                  case "receiptLink":
+                    return (
+                      <div>
+                        <label className="block font-medium mb-1">
+                          Receipt Link
+                        </label>
+                        <input
+                          type="url"
+                          placeholder="Enter receipt link"
+                          {...register("receiptLink")}
+                          className="w-full border border-gray-300 rounded px-3 py-2"
+                        />
+                      </div>
+                    );
+
+                  case "transactionId":
+                    return (
+                      <div>
+                        <label className="block font-medium mb-1">
+                          Transaction ID
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Enter transaction ID"
+                          {...register("transactionId")}
+                          className="w-full border border-gray-300 rounded px-3 py-2"
+                        />
+                      </div>
+                    );
+
+                  case "screenshot":
+                    return (
+                      <div>
+                        <label className="block font-medium mb-1">
+                          Upload Screenshot
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          {...register("confirmation")}
+                          className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-700 cursor-pointer bg-gray-50 border border-gray-300 rounded-lg"
+                        />
+                      </div>
+                    );
+
+                  case "referenceNumber":
+                    return (
+                      <div>
+                        <label className="block font-medium mb-1">
+                          Bank Reference Number
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Enter reference number"
+                          {...register("referenceNumber")}
+                          className="w-full border border-gray-300 rounded px-3 py-2"
+                        />
+                      </div>
+                    );
+
+                  default:
+                    return null;
+                }
+              })()
+            ) : (
+              <p className="text-gray-500 italic">
+                ----- No Confirmation Needed -----
+              </p>
             )}
-
-            {/* Confirmation Type Input */}
-            <div>
-              {/* Confirmation Type */}
-              <label className="block font-medium mb-1">
-                Confirmation Type:{" "}
-                <span className="text-gray-800 font-semibold capitalize">
-                  {SelectedMentorshipData?.fee?.confirmationType}
-                </span>
-              </label>
-
-              {/* Receipt Link */}
-              {SelectedMentorshipData?.fee?.confirmationType ===
-                "receiptLink" && (
-                <input
-                  type="url"
-                  placeholder="Enter your receipt link"
-                  {...register("receiptLink", {
-                    required: "Receipt link is required",
-                  })}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                />
-              )}
-
-              {/* Transaction ID */}
-              {SelectedMentorshipData?.fee?.confirmationType ===
-                "transactionId" && (
-                <input
-                  type="text"
-                  placeholder="Enter your transaction ID"
-                  {...register("transactionId", {
-                    required: "Transaction ID is required",
-                  })}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                />
-              )}
-
-              {/* Screenshot */}
-              {SelectedMentorshipData?.fee?.confirmationType ===
-                "screenshot" && (
-                <input
-                  type="file"
-                  accept="image/*"
-                  {...register("confirmation", {
-                    required: "Payment screenshot is required",
-                  })}
-                  className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-700 cursor-pointer bg-gray-50 border border-gray-300 rounded-lg"
-                />
-              )}
-
-              {/* Bank Reference Number */}
-              {SelectedMentorshipData?.fee?.confirmationType ===
-                "referenceNumber" && (
-                <input
-                  type="text"
-                  placeholder="Enter your bank reference number"
-                  {...register("referenceNumber", {
-                    required: "Reference number is required",
-                  })}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                />
-              )}
-
-              {errors.confirmation && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.confirmation.message}
-                </p>
-              )}
-            </div>
           </div>
         )}
 

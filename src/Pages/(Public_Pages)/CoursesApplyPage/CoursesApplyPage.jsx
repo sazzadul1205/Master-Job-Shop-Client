@@ -53,7 +53,7 @@ const CoursesApplyPage = () => {
     reset,
   } = useForm();
 
-  // Fetch selected course
+  // --------- Selected Course API ---------
   const {
     data: SelectedCourseData,
     isLoading: SelectedCourseIsLoading,
@@ -65,7 +65,7 @@ const CoursesApplyPage = () => {
     enabled: !!courseId,
   });
 
-  // Fetch logged-in user data
+  // --------- User API ---------
   const {
     data: UsersData,
     isLoading: UsersIsLoading,
@@ -77,7 +77,7 @@ const CoursesApplyPage = () => {
     enabled: !!user,
   });
 
-  // Check if user already applied to this course
+  // --------- Check if user applied ---------
   const {
     data: CheckIfApplied,
     isLoading: CheckIfAppliedIsLoading,
@@ -110,7 +110,7 @@ const CoursesApplyPage = () => {
     }
   }, [CheckIfApplied, CheckIfAppliedIsLoading]);
 
-  // Loading/Error UI
+  // Loading UI
   if (
     CheckIfAppliedIsLoading ||
     SelectedCourseIsLoading ||
@@ -119,6 +119,7 @@ const CoursesApplyPage = () => {
   )
     return <Loading />;
 
+  // Error UI
   if (SelectedCourseError || UsersError || CheckIfAppliedError)
     return <Error />;
 
@@ -128,8 +129,14 @@ const CoursesApplyPage = () => {
     setErrorMessage("");
 
     try {
+      // --- Ensure User is Logged In ---
+      if (!user) {
+        setShowLoginModal(true);
+        return;
+      }
+
       // --- Handle Screenshot Upload if Required ---
-      let confirmationValue = data.confirmation;
+      let confirmationValue = null;
       if (SelectedCourseData?.fee?.confirmationType === "screenshot") {
         if (data.confirmation && data.confirmation[0]) {
           const formData = new FormData();
@@ -145,23 +152,42 @@ const CoursesApplyPage = () => {
 
           confirmationValue = screenshotRes.data.data.display_url;
         }
-      }
-
-      // --- Ensure User is Logged In ---
-      if (!user) {
-        setShowLoginModal(true);
-        return;
+      } else {
+        // Use other confirmation types if provided
+        confirmationValue =
+          data.paymentLink ||
+          data.transactionId ||
+          data.receiptLink ||
+          data.referenceNumber ||
+          null;
       }
 
       // --- Build Application Payload ---
+      const {
+        // eslint-disable-next-line no-unused-vars
+        resume,
+        paymentLink,
+        // eslint-disable-next-line no-unused-vars
+        confirmation,
+        receiptLink,
+        transactionId,
+        referenceNumber,
+        ...rest
+      } = data;
+
+      // --- Build Application Payload ---
       const applicationPayload = {
-        ...data,
+        ...rest,
         status: "pending",
-        courseId: courseId,
         userId: UsersData?._id,
         email: UsersData?.email,
         phone: UsersData?.phone,
-        confirmation: confirmationValue,
+        courseId: courseId,
+        confirmationScreenshot: confirmationValue || null,
+        paymentLink: paymentLink || null,
+        transactionId: transactionId || null,
+        receiptLink: receiptLink || null,
+        referenceNumber: referenceNumber || null,
         appliedAt: new Date().toISOString(),
         profileImage: UsersData?.profileImage,
       };
@@ -175,9 +201,9 @@ const CoursesApplyPage = () => {
       // --- Build Notification Payload ---
       const notificationPayload = {
         title: "New Course Application",
-        message: `${UsersData?.name || "A user"} has applied for the course "${
-          SelectedCourseData?.title
-        }"`,
+        message: `${
+          UsersData?.name || "A user"
+        } has applied for the mentorship "${SelectedCourseData?.title}"`,
         userEmail: UsersData?.email,
         mentorId: SelectedCourseData?.Mentor?.email,
         type: "course_application",
@@ -327,24 +353,16 @@ const CoursesApplyPage = () => {
             />
           </div>
 
-          {/* Payment Section (only if paid mentorship) */}
+          {/* Payment & Confirmation (for all paid Course) */}
           {SelectedCourseData?.fee?.isFree === false && (
             <div className="space-y-4">
-              {/* Title */}
-              <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                Payment Information
-              </h2>
-
-              {/* Payment Information */}
-              <div className="flex justify-between">
+              {/* Payment Method & Fee */}
+              <div className="flex justify-between items-start">
                 {/* Payment Method */}
                 <div>
-                  {/* Payment Method Label */}
                   <label className="block font-medium mb-1">
                     Payment Method
                   </label>
-
-                  {/* Payment Method */}
                   <p className="text-gray-800 font-semibold capitalize">
                     {(() => {
                       switch (SelectedCourseData?.fee?.paymentMethod) {
@@ -356,6 +374,8 @@ const CoursesApplyPage = () => {
                           return "Bank Transfer";
                         case "mobilePayment":
                           return "Mobile Payment (bKash, Paytm, etc.)";
+                        case "other":
+                          return "Other";
                         default:
                           return "Not specified";
                       }
@@ -363,74 +383,134 @@ const CoursesApplyPage = () => {
                   </p>
                 </div>
 
-                {/* Fee */}
-                <div className="flex flex-col gap-1 text-right">
-                  {/* Fee Label */}
-                  <h3 className="font-semibold text-lg">Fee :</h3>
+                {/* Fee Details */}
+                <div className="flex flex-col gap-1">
+                  <h3 className="font-semibold text-lg">Fee:</h3>
+                  {SelectedCourseData?.fee ? (
+                    (() => {
+                      const { amount, discount, currency, negotiable } =
+                        SelectedCourseData.fee;
+                      const total = discount
+                        ? (amount - discount).toFixed(2)
+                        : amount?.toFixed(2) || 0;
 
-                  {/* Amount */}
-                  <p className="font-semibold text-green-700">
-                    {SelectedCourseData?.fee?.amount}{" "}
-                    {SelectedCourseData?.fee?.currency || "USD"}
-                  </p>
-
-                  {/* Discount */}
-                  {SelectedCourseData?.fee?.discount > 0 && (
-                    <p className="text-sm text-gray-600">
-                      Discount: {SelectedCourseData.fee.discount}%
-                    </p>
-                  )}
-
-                  {/* Negotiable */}
-                  {SelectedCourseData?.fee?.negotiable && (
-                    <p className="text-xs text-yellow-600 italic">
-                      * Negotiable
-                    </p>
+                      return (
+                        <div className="text-sm space-y-1">
+                          <p className="text-gray-800 font-semibold">
+                            Amount: {amount?.toFixed(2) || "0"}{" "}
+                            {currency || "USD"}
+                          </p>
+                          {discount && (
+                            <p className="text-gray-600 text-sm">
+                              Discount: {discount?.toFixed(2)}{" "}
+                              {currency || "USD"}
+                            </p>
+                          )}
+                          <p className="text-green-700 font-semibold">
+                            Total: {total} {currency || "USD"}
+                          </p>
+                          {negotiable && (
+                            <p className="text-blue-600 text-sm font-medium">
+                              Payment is negotiable
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })()
+                  ) : (
+                    <p className="text-gray-600 italic">Not specified</p>
                   )}
                 </div>
               </div>
 
-              {/* Payment Link (if available) */}
-              {SelectedCourseData?.fee?.paymentLink && (
-                <div>
-                  <label className="block font-medium mb-1">Payment Link</label>
-                  <a
-                    href={SelectedCourseData.fee.paymentLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline break-words"
-                  >
-                    {SelectedCourseData.fee.paymentLink}
-                  </a>
-                </div>
+              {/* Confirmation Input based on confirmationType */}
+              {SelectedCourseData?.fee?.confirmationType ? (
+                (() => {
+                  switch (SelectedCourseData.fee.confirmationType) {
+                    case "paymentLink":
+                      return (
+                        <div>
+                          <label className="block font-medium mb-1">
+                            Payment Link
+                          </label>
+                          <input
+                            type="url"
+                            placeholder="Enter payment link"
+                            {...register("paymentLink")}
+                            className="w-full border border-gray-300 rounded px-3 py-2"
+                          />
+                        </div>
+                      );
+
+                    case "receiptLink":
+                      return (
+                        <div>
+                          <label className="block font-medium mb-1">
+                            Receipt Link
+                          </label>
+                          <input
+                            type="url"
+                            placeholder="Enter receipt link"
+                            {...register("receiptLink")}
+                            className="w-full border border-gray-300 rounded px-3 py-2"
+                          />
+                        </div>
+                      );
+
+                    case "transactionId":
+                      return (
+                        <div>
+                          <label className="block font-medium mb-1">
+                            Transaction ID
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Enter transaction ID"
+                            {...register("transactionId")}
+                            className="w-full border border-gray-300 rounded px-3 py-2"
+                          />
+                        </div>
+                      );
+
+                    case "screenshot":
+                      return (
+                        <div>
+                          <label className="block font-medium mb-1">
+                            Upload Screenshot
+                          </label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            {...register("confirmation")}
+                            className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-700 cursor-pointer bg-gray-50 border border-gray-300 rounded-lg"
+                          />
+                        </div>
+                      );
+
+                    case "referenceNumber":
+                      return (
+                        <div>
+                          <label className="block font-medium mb-1">
+                            Bank Reference Number
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Enter reference number"
+                            {...register("referenceNumber")}
+                            className="w-full border border-gray-300 rounded px-3 py-2"
+                          />
+                        </div>
+                      );
+
+                    default:
+                      return null;
+                  }
+                })()
+              ) : (
+                <p className="text-gray-500 italic">
+                  ----- No Confirmation Needed -----
+                </p>
               )}
-
-              {/* Proof of Payment */}
-              <div>
-                <label className="block font-medium mb-1">
-                  Upload Proof of Payment
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  {...register("paymentProof", {
-                    required: "Payment proof is required",
-                  })}
-                  className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4  file:rounded-full file:border-0 file:text-sm file:font-semibold  file:bg-green-600 file:text-white hover:file:bg-green-700 cursor-pointer  bg-gray-50 border border-gray-300 rounded-lg"
-                />
-                {errors.paymentProof && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.paymentProof.message}
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Free Mentorship Message */}
-          {SelectedCourseData?.fee?.isFree === true && (
-            <div className="text-green-600 font-semibold text-lg">
-              This mentorship is Free
             </div>
           )}
 

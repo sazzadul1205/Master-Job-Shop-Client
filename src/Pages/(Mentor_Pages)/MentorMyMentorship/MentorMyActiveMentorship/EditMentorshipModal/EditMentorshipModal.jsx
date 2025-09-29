@@ -2,23 +2,35 @@ import { useEffect, useState } from "react";
 
 // Packages
 import Swal from "sweetalert2";
+import PropTypes from "prop-types";
 import { useQuery } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 
 // Icons
 import { ImCross } from "react-icons/im";
+import { FaChevronRight } from "react-icons/fa";
 
 // Shared
 import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
+import TagInput from "../../../../../Shared/TagInput/TagInput";
 import FormInput from "../../../../../Shared/FormInput/FormInput";
-import { CategoryOptions } from "../../../../../Shared/Lists/CategoryOptions";
 
 // Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
-import TagInput from "../../../../../Shared/TagInput/TagInput";
+
+// Components
 import WeeklyPlanInput from "../../CreateMentorshipModal/WeeklyPlanInput/WeeklyPlanInput";
-import PropTypes from "prop-types";
+
+// Shared Lists
+import { LengthOptions } from "../../../../../Shared/Lists/LengthOptions";
+import { FeeTypeOptions } from "../../../../../Shared/Lists/FeeTypeOptions";
+import { CurrencyOptions } from "../../../../../Shared/Lists/CurrencyOptions";
+import { confirmationType } from "../../../..//../Shared/Lists/confirmationType";
+import { CategoryOptions } from "../../../../../Shared/Lists/CategoryOptions";
+import { PaymentMethodOptions } from "../../../../../Shared/Lists/PaymentMethodOptions";
+import { preferredCommunicationMethod } from "../../../../../Shared/Lists/preferredCommunicationMethod";
+import { preferredCommunicationFrequency } from "../../../../../Shared/Lists/preferredCommunicationFrequency";
 
 // Helper: format yyyy-mm-dd -> yyyy-mm-dd
 const formatDateForInput = (dateStr) => {
@@ -520,26 +532,7 @@ const EditMentorshipModal = ({
             placeholder="Select length"
             register={register("sessionLength", { required: "Required" })}
             error={errors.sessionLength}
-            options={[
-              { value: "5min", label: "5 minutes" },
-              { value: "10min", label: "10 minutes" },
-              { value: "15min", label: "15 minutes" },
-              { value: "20min", label: "20 minutes" },
-              { value: "25min", label: "25 minutes" },
-              { value: "30min", label: "30 minutes" },
-              { value: "45min", label: "45 minutes" },
-              { value: "1hr", label: "1 hour" },
-              { value: "1.5hr", label: "1.5 hours" },
-              { value: "2hr", label: "2 hours" },
-              { value: "2.5hr", label: "2.5 hours" },
-              { value: "3hr", label: "3 hours" },
-              { value: "3.5hr", label: "3.5 hours" },
-              { value: "4hr", label: "4 hours" },
-              { value: "5hr", label: "5 hours" },
-              { value: "6hr", label: "6 hours" },
-              { value: "7hr", label: "7 hours" },
-              { value: "8hr", label: "8 hours" },
-            ]}
+            options={LengthOptions}
           />
 
           {/* Session Days */}
@@ -708,8 +701,10 @@ const EditMentorshipModal = ({
 
         {/* Fee & Payment */}
         <div className="space-y-3">
-          {/* Header */}
-          <h3 className="font-semibold text-lg">Fee & Payment</h3>
+          {/* Title */}
+          <h3 className="flex items-center gap-2 text-lg font-semibold pb-0 mb-0">
+            <FaChevronRight className="text-gray-500s" /> Course Pricing
+          </h3>
 
           {/* Divider */}
           <p className="bg-gray-500 p-[1px] my-2" />
@@ -727,7 +722,7 @@ const EditMentorshipModal = ({
             </label>
           </div>
 
-          {/* All fee inputs (conditionally disabled if Free) */}
+          {/* All fee inputs */}
           <div className="grid grid-cols-2 items-center gap-4">
             {/* Fee Type */}
             <FormInput
@@ -740,25 +735,19 @@ const EditMentorshipModal = ({
               })}
               error={errors?.fee?.type}
               disabled={watch("fee.isFree")}
-              options={[
-                { value: "fixed", label: "Fixed" },
-                { value: "hourly", label: "Hourly" },
-                { value: "perSession", label: "Per Session" },
-                { value: "weekly", label: "Weekly" },
-              ]}
+              options={FeeTypeOptions}
             />
 
             {/* Amount */}
             <FormInput
-              label="Price"
+              label="Amount"
               type="number"
-              step="0.01"
-              placeholder="e.g., 29.99"
+              placeholder="e.g., 50"
               required
               register={register("fee.amount", {
-                required: !watch("fee.isFree") ? "Price is required" : false,
+                required: !watch("fee.isFree") ? "Amount is required" : false,
                 valueAsNumber: true,
-                min: { value: 0.01, message: "Price must be greater than 0" },
+                min: { value: 1, message: "Amount must be greater than 0" },
               })}
               error={errors?.fee?.amount}
               disabled={watch("fee.isFree")}
@@ -775,13 +764,7 @@ const EditMentorshipModal = ({
               })}
               error={errors?.fee?.currency}
               disabled={watch("fee.isFree")}
-              options={[
-                { value: "USD", label: "USD ($)" },
-                { value: "EUR", label: "EUR (€)" },
-                { value: "GBP", label: "GBP (£)" },
-                { value: "BDT", label: "BDT (৳)" },
-                { value: "INR", label: "INR (₹)" },
-              ]}
+              options={CurrencyOptions}
             />
 
             {/* Payment Method */}
@@ -797,16 +780,7 @@ const EditMentorshipModal = ({
               })}
               error={errors?.fee?.paymentMethod}
               disabled={watch("fee.isFree")}
-              options={[
-                { value: "paypal", label: "PayPal" },
-                { value: "stripe", label: "Stripe" },
-                { value: "bankTransfer", label: "Bank Transfer" },
-                {
-                  value: "mobilePayment",
-                  label: "Mobile Payment (bKash, Paytm, etc.)",
-                },
-                { value: "other", label: "Other" },
-              ]}
+              options={PaymentMethodOptions}
             />
 
             {/* Confirmation Type */}
@@ -822,12 +796,7 @@ const EditMentorshipModal = ({
               })}
               error={errors?.fee?.confirmationType}
               disabled={watch("fee.isFree")}
-              options={[
-                { value: "receiptLink", label: "Receipt Link (URL)" },
-                { value: "transactionId", label: "Transaction ID" },
-                { value: "screenshot", label: "Screenshot Upload" },
-                { value: "referenceNumber", label: "Bank Reference Number" },
-              ]}
+              options={confirmationType}
             />
 
             {/* Negotiable */}
@@ -903,15 +872,7 @@ const EditMentorshipModal = ({
               required: "Preferred communication method is required",
             })}
             error={errors?.communication?.preferredMethod}
-            options={[
-              { value: "Zoom", label: "Zoom" },
-              { value: "Google Meet", label: "Google Meet" },
-              { value: "Microsoft Teams", label: "Microsoft Teams" },
-              { value: "Slack", label: "Slack" },
-              { value: "Discord", label: "Discord" },
-              { value: "Phone", label: "Phone Call" },
-              { value: "InPerson", label: "In-Person" },
-            ]}
+            options={preferredCommunicationMethod}
           />
 
           <div className="flex flex-row justify-between px-20 py-2">
@@ -955,13 +916,7 @@ const EditMentorshipModal = ({
             placeholder="-- Select Frequency --"
             register={register("communication.frequency")}
             error={errors?.communication?.frequency}
-            options={[
-              { value: "daily", label: "Daily" },
-              { value: "weekly", label: "Weekly" },
-              { value: "biweekly", label: "Bi-Weekly" },
-              { value: "monthly", label: "Monthly" },
-              { value: "asNeeded", label: "As Needed" },
-            ]}
+            options={preferredCommunicationFrequency}
           />
 
           {/* Notes / Special Instructions */}
@@ -978,11 +933,11 @@ const EditMentorshipModal = ({
         <button
           type="submit"
           disabled={loading}
-          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow ${
-            loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
-          }`}
+          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow 
+            ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
+            `}
         >
-          {loading ? "Updating..." : "Update Mentorship"}
+          {loading ? "Editing..." : "Edit Mentorship"}
         </button>
       </form>
     </div>

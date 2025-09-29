@@ -1,87 +1,34 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 
 // Packages
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
+import { Tooltip } from "react-tooltip";
 import { useQuery } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 
 // Icons
 import { ImCross } from "react-icons/im";
-import { FaPaste } from "react-icons/fa";
+import { FaChevronRight, FaPaste } from "react-icons/fa";
 
 // Shared
 import TagInput from "../../../../Shared/TagInput/TagInput";
 import FormInput from "../../../../Shared/FormInput/FormInput";
-import { CategoryOptions } from "../../../../Shared/Lists/CategoryOptions";
 import WeeklyPlanInput from "./WeeklyPlanInput/WeeklyPlanInput";
 
 // Hooks
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
-import { Tooltip } from "react-tooltip";
+// Shared Lists
+import { LengthOptions } from "../../../../Shared/Lists/LengthOptions";
+import { FeeTypeOptions } from "../../../../Shared/Lists/FeeTypeOptions";
+import { CategoryOptions } from "../../../../Shared/Lists/CategoryOptions";
 import { CurrencyOptions } from "../../../../Shared/Lists/CurrencyOptions";
+import { confirmationType } from "../../../../Shared/Lists/confirmationType";
 import { PaymentMethodOptions } from "../../../../Shared/Lists/PaymentMethodOptions";
-
-// Length Options
-const LengthOptions = [
-  { value: "5min", label: "5 minutes" },
-  { value: "10min", label: "10 minutes" },
-  { value: "15min", label: "15 minutes" },
-  { value: "20min", label: "20 minutes" },
-  { value: "25min", label: "25 minutes" },
-  { value: "30min", label: "30 minutes" },
-  { value: "45min", label: "45 minutes" },
-  { value: "1hr", label: "1 hour" },
-  { value: "1.5hr", label: "1.5 hours" },
-  { value: "2hr", label: "2 hours" },
-  { value: "2.5hr", label: "2.5 hours" },
-  { value: "3hr", label: "3 hours" },
-  { value: "3.5hr", label: "3.5 hours" },
-  { value: "4hr", label: "4 hours" },
-  { value: "5hr", label: "5 hours" },
-  { value: "6hr", label: "6 hours" },
-  { value: "7hr", label: "7 hours" },
-  { value: "8hr", label: "8 hours" },
-];
-
-// Fee Types Options
-const FeeTypeOptions = [
-  { value: "fixed", label: "Fixed" },
-  { value: "hourly", label: "Hourly" },
-  { value: "perSession", label: "Per Session" },
-  { value: "weekly", label: "Weekly" },
-];
-
-// Confirmation Types Options
-const confirmationType = [
-  { value: "receiptLink", label: "Receipt Link (URL)" },
-  { value: "transactionId", label: "Transaction ID" },
-  { value: "screenshot", label: "Screenshot Upload" },
-  { value: "referenceNumber", label: "Bank Reference Number" },
-];
-
-// Preferred Communication Method Options
-const preferredCommunicationMethod = [
-  { value: "Zoom", label: "Zoom" },
-  { value: "Google Meet", label: "Google Meet" },
-  { value: "Microsoft Teams", label: "Microsoft Teams" },
-  { value: "Slack", label: "Slack" },
-  { value: "Discord", label: "Discord" },
-  { value: "Phone", label: "Phone Call" },
-  { value: "InPerson", label: "In-Person" },
-];
-
-// Preferred Communication Frequency Options
-const preferredCommunicationFrequency = [
-  { value: "daily", label: "Daily" },
-  { value: "weekly", label: "Weekly" },
-  { value: "biweekly", label: "Bi-Weekly" },
-  { value: "monthly", label: "Monthly" },
-  { value: "asNeeded", label: "As Needed" },
-];
+import { preferredCommunicationMethod } from "../../../../Shared/Lists/preferredCommunicationMethod";
+import { preferredCommunicationFrequency } from "../../../../Shared/Lists/preferredCommunicationFrequency";
 
 // Helper: format yyyy-mm-dd -> 25 Aug 2023
 const formatDate = (dateStr) => {
@@ -103,13 +50,6 @@ const CreateMentorshipModal = ({ refetch }) => {
   const [subOptions, setSubOptions] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Fetch Mentors
-  const { data: MyMentorsData } = useQuery({
-    queryKey: ["MentorsData"],
-    queryFn: () =>
-      axiosPublic.get(`/Mentors?email=${user?.email}`).then((res) => res.data),
-  });
-
   // Form Handling
   const {
     watch,
@@ -127,6 +67,26 @@ const CreateMentorshipModal = ({ refetch }) => {
       prerequisites: [],
     },
   });
+
+  // Watch category selection
+  const selectedCategory = watch("category");
+
+  // ---------- Fetch Mentors ----------
+  const { data: MyMentorsData } = useQuery({
+    queryKey: ["MentorsData"],
+    queryFn: () =>
+      axiosPublic.get(`/Mentors?email=${user?.email}`).then((res) => res.data),
+  });
+
+  // Update subcategory options based on selected category
+  useEffect(() => {
+    const category = CategoryOptions.find((c) => c.value === selectedCategory);
+    setSubOptions(
+      category
+        ? category.subcategories.map((sub) => ({ value: sub, label: sub }))
+        : []
+    );
+  }, [selectedCategory]);
 
   // Skills
   const {
@@ -178,19 +138,6 @@ const CreateMentorshipModal = ({ refetch }) => {
     name: "skillsCovered",
   });
 
-  // Watch category selection
-  const selectedCategory = watch("category");
-
-  // Update subcategory options based on selected category
-  useEffect(() => {
-    const category = CategoryOptions.find((c) => c.value === selectedCategory);
-    setSubOptions(
-      category
-        ? category.subcategories.map((sub) => ({ value: sub, label: sub }))
-        : []
-    );
-  }, [selectedCategory]);
-
   // Close Modal and Clear Errors
   const handleClose = () => {
     // Close Modal after success
@@ -213,6 +160,7 @@ const CreateMentorshipModal = ({ refetch }) => {
       let jsonData = JSON.parse(text);
 
       // Remove any 'id' or '_id' fields
+      // eslint-disable-next-line no-unused-vars
       const { id, _id, applications, ...rest } = jsonData;
 
       // Set subcategory options first
@@ -320,32 +268,36 @@ const CreateMentorshipModal = ({ refetch }) => {
       id="Create_Mentorship_Modal"
       className="modal-box min-w-3xl relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
     >
-      {/* Close Button */}
-      <button
-        type="button"
-        onClick={() => handleClose()}
-        className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
-      >
-        <ImCross className="text-xl" />
-      </button>
+      {/* Header */}
+      <div>
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={() => handleClose()}
+          className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+        >
+          <ImCross className="text-xl" />
+        </button>
 
-      {/* Modal Title */}
-      <h3 className="font-bold text-xl text-center mb-4">
-        Create New Mentorship
-      </h3>
+        {/* Modal Title */}
+        <h3 className="font-bold text-xl text-center mb-4">
+          Create New Mentorship
+        </h3>
 
-      <button
-        type="button"
-        onClick={handlePasteJSON}
-        data-tooltip-id="pasteTooltip"
-        data-tooltip-content="Paste JSON from clipboard"
-        className="flex items-center gap-2 border border-amber-400 absolute top-2 left-3 z-50 p-2 rounded-xl hover:text-red-500 cursor-pointer transition-colors duration-300"
-      >
-        <FaPaste className="text-lg" />
-        <span className="hidden sm:inline">Paste</span>
-      </button>
+        {/* Paste Button */}
+        <button
+          type="button"
+          onClick={handlePasteJSON}
+          data-tooltip-id="pasteTooltip"
+          data-tooltip-content="Paste JSON from clipboard"
+          className="flex items-center gap-2 border border-amber-400 absolute top-2 left-3 z-50 p-2 rounded-xl hover:text-red-500 cursor-pointer transition-colors duration-300"
+        >
+          <FaPaste className="text-lg" />
+          <span className="hidden sm:inline">Paste</span>
+        </button>
 
-      <Tooltip id="pasteTooltip" place="bottom" effect="solid" />
+        <Tooltip id="pasteTooltip" place="bottom" effect="solid" />
+      </div>
 
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-4" />
@@ -676,8 +628,10 @@ const CreateMentorshipModal = ({ refetch }) => {
 
         {/* Fee & Payment */}
         <div className="space-y-3">
-          {/* Header */}
-          <h3 className="font-semibold text-lg">Fee & Payment</h3>
+          {/* Title */}
+          <h3 className="flex items-center gap-2 text-lg font-semibold pb-0 mb-0">
+            <FaChevronRight className="text-gray-500s" /> Course Pricing
+          </h3>
 
           {/* Divider */}
           <p className="bg-gray-500 p-[1px] my-2" />
@@ -695,7 +649,7 @@ const CreateMentorshipModal = ({ refetch }) => {
             </label>
           </div>
 
-          {/* All fee inputs (conditionally disabled if Free) */}
+          {/* All fee inputs */}
           <div className="grid grid-cols-2 items-center gap-4">
             {/* Fee Type */}
             <FormInput

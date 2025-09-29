@@ -1,10 +1,17 @@
+// Packages
+import PropTypes from "prop-types";
+import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+
+// Icons
 import { ImCross } from "react-icons/im";
+
+// Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+
+// Shared
 import Loading from "../../../../Shared/Loading/Loading";
 import Error from "../../../../Shared/Error/Error";
-import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
-import PropTypes from "prop-types";
 
 const MentorNotificationInformationModal = ({
   selectedNotification,
@@ -12,7 +19,7 @@ const MentorNotificationInformationModal = ({
 }) => {
   const axiosPublic = useAxiosPublic();
 
-  // Fetch selected Application Data from notification
+  // ---------- Application Data ----------
   const {
     data: application = null,
     isLoading,
@@ -38,14 +45,7 @@ const MentorNotificationInformationModal = ({
     enabled: !!selectedNotification?.applicationId,
   });
 
-  // UI Loading / Error
-  if (isLoading)
-    return (
-      <div className="modal-box bg-white rounded-xl shadow-md p-0 max-w-3xl">
-        <Loading />
-      </div>
-    );
-  if (error) return <Error />;
+  console.log(application);
 
   // Close Modal
   const handleClose = () => {
@@ -53,15 +53,18 @@ const MentorNotificationInformationModal = ({
     document.getElementById("Mentor_Notification_Information_Modal")?.close();
   };
 
-  // UI Loading / Error
+  // UI Loading
   if (isLoading)
     return (
       <div className="modal-box bg-white rounded-xl shadow-md p-0 max-w-3xl">
         <Loading />
       </div>
     );
+
+  // UI Error
   if (error) return <Error />;
 
+  // Course Application Render UI
   if (selectedNotification?.type === "course_application") {
     return (
       <div
@@ -180,6 +183,7 @@ const MentorNotificationInformationModal = ({
     );
   }
 
+  // Mentorship Application Render UI
   if (selectedNotification?.type === "mentorship_application") {
     return (
       <div

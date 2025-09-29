@@ -20,16 +20,16 @@ import Error from "../../../Shared/Error/Error";
 
 // Modals
 import CreateMentorProfileModal from "./CreateMentorProfileModal/CreateMentorProfileModal";
-import EditProfileBasicInformationModal from "./EditProfileBasicInformationModal/EditProfileBasicInformationModal";
-import EditProfileContactDetailsModal from "./EditProfileContactDetailsModal/EditProfileContactDetailsModal";
 import EditProfileExpertiseModal from "./EditProfileExpertiseModal/EditProfileExpertiseModal";
 import EditProfileBiographyModal from "./EditProfileBiographyModal/EditProfileBiographyModal";
+import EditProfileContactDetailsModal from "./EditProfileContactDetailsModal/EditProfileContactDetailsModal";
+import EditProfileBasicInformationModal from "./EditProfileBasicInformationModal/EditProfileBasicInformationModal";
 
 const MentorProfile = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
 
-  // Fetch Mentor Data
+  // ---------- Fetch Mentor Profile Data ----------
   const {
     data: MentorData,
     isFetching,
@@ -43,8 +43,10 @@ const MentorProfile = () => {
     enabled: !!user?.email,
   });
 
-  // Loading / Error UI
+  // Loading UI
   if (isLoading || loading) return <Loading />;
+
+  // Error UI
   if (error) return <Error />;
 
   // If no mentor profile data exists

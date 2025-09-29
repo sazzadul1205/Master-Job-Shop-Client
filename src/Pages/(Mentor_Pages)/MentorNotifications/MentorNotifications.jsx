@@ -1,19 +1,31 @@
 import { useState } from "react";
-import { FiRefreshCcw, FiBell, FiCheckCircle } from "react-icons/fi";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Packages
+import Swal from "sweetalert2";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+// Icons
+import { FiRefreshCcw, FiBell } from "react-icons/fi";
+
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+
+// Shared
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
-import { useQuery } from "@tanstack/react-query";
+
+// Modals
 import MentorNotificationInformationModal from "./MentorNotificationInformationModal/MentorNotificationInformationModal";
 
 const MentorNotifications = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
+  const queryClient = useQueryClient();
 
   // States Filters
   const [activeTab, setActiveTab] = useState("All");
-  const [selectedNotification, setSelectedNotification] = useState("All");
+  const [selectedNotification, setSelectedNotification] = useState("");
 
   // --------- Course Notifications ---------
   const {
@@ -47,13 +59,15 @@ const MentorNotifications = () => {
     enabled: !!user?.email,
   });
 
-  // Loading & Error UI
+  // Loading UI
   if (
     loading ||
     MyCourseNotificationsIsLoading ||
     MyMentorshipNotificationsIsLoading
   )
     return <Loading />;
+
+  // Error UI
   if (MyCourseNotificationsError || MyMentorshipNotificationsError)
     return <Error />;
 
@@ -81,8 +95,35 @@ const MentorNotifications = () => {
     }
   };
 
-  // Display data based on tab
+  // Select data based on tab
   const displayedNotifications = getActiveData();
+
+  // PATCH: Mark notification as read
+  const markNotificationAsRead = async (notificationId) => {
+    try {
+      const response = await axiosPublic.patch(
+        `/Notifications/Read/${notificationId}`
+      );
+
+      if (response.status !== 200) {
+        throw new Error("Failed to update notification");
+      }
+    } catch (err) {
+      console.error("Error marking notification as read:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to mark notification as read",
+        text: err?.message || "Something went wrong.",
+        confirmButtonColor: "#ef4444",
+      });
+      // Revert read status in UI
+      queryClient.invalidateQueries(["MyCourseNotificationsData", user?.email]);
+      queryClient.invalidateQueries([
+        "MyMentorshipNotificationsData",
+        user?.email,
+      ]);
+    }
+  };
 
   return (
     <div className="min-h-screen text-gray-900">
@@ -92,7 +133,7 @@ const MentorNotifications = () => {
 
         {/* Refresh */}
         <button
-          onClick={RefetchAll}
+          onClick={() => RefetchAll()}
           className="flex items-center gap-2 bg-white border border-gray-300 
                      hover:bg-blue-50 hover:border-blue-300 text-gray-800 font-medium 
                      px-4 py-2 rounded-lg shadow-sm transition-all duration-200 cursor-pointer"
@@ -122,20 +163,26 @@ const MentorNotifications = () => {
       {/* Notifications List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mx-9 mt-6">
         {displayedNotifications.length === 0 ? (
-          // No Notifications Found UI
           <p className="text-gray-500 col-span-full text-center py-6">
             No notifications found.
           </p>
         ) : (
           displayedNotifications.map((n) => (
-            // Notification Card
             <div
               key={n._id}
-              onClick={() => {
+              onClick={async () => {
                 setSelectedNotification(n);
                 document
                   .getElementById("Mentor_Notification_Information_Modal")
                   .showModal();
+
+                if (!n.read) {
+                  // Optimistic UI: mark as read immediately
+                  n.read = true;
+
+                  // Call PATCH request
+                  await markNotificationAsRead(n._id);
+                }
               }}
               className={`relative bg-white border rounded-lg shadow-sm p-4 transition cursor-pointer hover:shadow-xl`}
             >
@@ -145,26 +192,17 @@ const MentorNotifications = () => {
               )}
 
               <div className="flex items-start gap-2">
-                {/* Icon */}
-                {n.read ? (
-                  <FiCheckCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-1" />
-                ) : (
-                  <FiBell className="w-6 h-6 text-blue-500 flex-shrink-0 mt-1 animate-pulse" />
-                )}
+                <FiBell className="w-6 h-6 text-blue-500 flex-shrink-0 mt-1 animate-pulse" />
 
-                {/* Content */}
                 <div>
-                  {/* Title */}
                   <h4 className="font-semibold text-lg">
                     {n.title || "Untitled Notification"}
                   </h4>
 
-                  {/* Message */}
                   <p className="text-gray-700 text-sm mt-1">
                     {n.message || "No additional details available."}
                   </p>
 
-                  {/* Date */}
                   <p className="text-gray-400 text-xs mt-2">
                     {n.createdAt
                       ? new Date(n.createdAt).toLocaleString()

@@ -176,8 +176,10 @@ const MentorLayout = () => {
     };
   }, []);
 
-  // Loading / Error UI
+  // Loading UI
   if (isLoading || loading) return <Loading />;
+
+  // Error UI
   if (error) return <Error />;
 
   const toggleDropdown = (name) => {

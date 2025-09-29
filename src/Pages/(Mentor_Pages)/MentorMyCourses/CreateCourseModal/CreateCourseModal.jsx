@@ -18,11 +18,14 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 // Shared
 import TagInput from "../../../../Shared/TagInput/TagInput";
 import FormInput from "../../../../Shared/FormInput/FormInput";
+
+// Shared Lists
 import { TypeOptions } from "../../../../Shared/Lists/TypeOptions";
 import { LevelOptions } from "../../../../Shared/Lists/LevelOptions ";
 import { LanguageOptions } from "../../../../Shared/Lists/LanguageOptions";
 import { CategoryOptions } from "../../../../Shared/Lists/CategoryOptions";
 import { CurrencyOptions } from "../../../../Shared/Lists/CurrencyOptions";
+import { confirmationType } from "../../../../Shared/Lists/confirmationType";
 import { PaymentMethodOptions } from "../../../../Shared/Lists/PaymentMethodOptions";
 
 // Helper: format yyyy-mm-dd -> 25 Aug 2023
@@ -61,7 +64,7 @@ const CreateCourseModal = ({ refetch }) => {
   // Watch category selection
   const selectedCategory = watch("category");
 
-  // Fetch Mentors
+  // ---------- Fetch Mentors ----------
   const { data: MyMentorsData } = useQuery({
     queryKey: ["MentorsData"],
     queryFn: () =>
@@ -141,6 +144,62 @@ const CreateCourseModal = ({ refetch }) => {
     reset();
   };
 
+  // Inside your component
+  const handlePasteJSON = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (!text) return;
+
+      let jsonData = JSON.parse(text);
+
+      // Remove any 'id' or '_id' fields
+      // eslint-disable-next-line no-unused-vars
+      const { id, _id, applications, ...rest } = jsonData;
+
+      // Set subcategory options first
+      const selectedCategory = rest.category || "";
+      const categoryObj = CategoryOptions.find(
+        (c) => c.value === selectedCategory
+      );
+      const newSubOptions = categoryObj
+        ? categoryObj.subcategories.map((sub) => ({ value: sub, label: sub }))
+        : [];
+      setSubOptions(newSubOptions);
+
+      // Map skills/attachments/prerequisites/skillsCovered correctly
+      const mapToOptions = (arr) =>
+        arr?.map((item) =>
+          typeof item === "string" ? { value: item, label: item } : item
+        ) || [];
+
+      // Reset the form without id/_id
+      reset({
+        ...rest,
+        category: rest.category || "",
+        subCategory:
+          newSubOptions.find((s) => s.value === rest.subCategory)?.value || "",
+        skills: mapToOptions(rest.skills),
+        attachments: mapToOptions(rest.attachments),
+        prerequisites: mapToOptions(rest.prerequisites),
+        skillsCovered: mapToOptions(rest.skillsCovered),
+        weeklyPlan: rest.weeklyPlan || [],
+        fee: rest.fee || {},
+        communication: rest.communication || {},
+        sessionDays: rest.sessionDays || [],
+        location: rest.location || {},
+        modeToggle: rest.modeToggle || false,
+      });
+    } catch (err) {
+      console.error("Failed to paste JSON:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Invalid JSON",
+        text: "Cannot parse clipboard data. Please check the format.",
+      });
+    }
+  };
+
+  // Form Submission
   const onSubmit = async (data) => {
     setLoading(true);
     setErrorMessage("");
@@ -208,29 +267,36 @@ const CreateCourseModal = ({ refetch }) => {
       id="Create_Course_Modal"
       className="modal-box min-w-3xl relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
     >
-      {/* Close Button */}
-      <button
-        type="button"
-        onClick={() => handleClose()}
-        className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
-      >
-        <ImCross className="text-xl" />
-      </button>
+      {/* Header */}
+      <div>
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={() => handleClose()}
+          className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+        >
+          <ImCross className="text-xl" />
+        </button>
 
-      {/* Modal Title */}
-      <h3 className="font-bold text-xl text-center mb-4">Create New Course</h3>
+        {/* Modal Title */}
+        <h3 className="font-bold text-xl text-center mb-4">
+          Create New Course
+        </h3>
 
-      <button
-        type="button"
-        data-tooltip-id="pasteTooltip"
-        data-tooltip-content="Paste JSON from clipboard"
-        className="flex items-center gap-2 border border-amber-400 absolute top-2 left-3 z-50 p-2 rounded-xl hover:text-red-500 cursor-pointer transition-colors duration-300"
-      >
-        <FaPaste className="text-lg" />
-        <span className="hidden sm:inline">Paste</span>
-      </button>
+        {/* Paste Button */}
+        <button
+          type="button"
+          onClick={handlePasteJSON}
+          data-tooltip-id="pasteTooltip"
+          data-tooltip-content="Paste JSON from clipboard"
+          className="flex items-center gap-2 border border-amber-400 absolute top-2 left-3 z-50 p-2 rounded-xl hover:text-red-500 cursor-pointer transition-colors duration-300"
+        >
+          <FaPaste className="text-lg" />
+          <span className="hidden sm:inline">Paste</span>
+        </button>
 
-      <Tooltip id="pasteTooltip" place="bottom" effect="solid" />
+        <Tooltip id="pasteTooltip" place="bottom" effect="solid" />
+      </div>
 
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-4" />
@@ -244,7 +310,7 @@ const CreateCourseModal = ({ refetch }) => {
 
       {/* Modal Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Course Information */}
+        {/*  Basic Info Section  */}
         <div className="space-y-4">
           {/* Title */}
           <FormInput
@@ -375,6 +441,9 @@ const CreateCourseModal = ({ refetch }) => {
           </div>
         </div>
 
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
         {/* Course Structure */}
         <div className="space-y-4">
           {/* Title */}
@@ -454,6 +523,9 @@ const CreateCourseModal = ({ refetch }) => {
             placeholder="Add a Prerequisite"
           />
         </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
 
         {/* Schedule */}
         <div className="space-y-4">
@@ -602,6 +674,9 @@ const CreateCourseModal = ({ refetch }) => {
           </div>
         </div>
 
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
         {/* Pricing */}
         <div className="space-y-4">
           {/* Title */}
@@ -685,6 +760,22 @@ const CreateCourseModal = ({ refetch }) => {
               error={errors?.fee?.paymentMethod}
               disabled={watch("fee.isFree")}
               options={PaymentMethodOptions}
+            />
+
+            {/* Confirmation Type */}
+            <FormInput
+              label="Confirmation Type"
+              required
+              as="select"
+              placeholder="-- Select Confirmation Type --"
+              register={register("fee.confirmationType", {
+                required: !watch("fee.isFree")
+                  ? "Confirmation type is required"
+                  : false,
+              })}
+              error={errors?.fee?.confirmationType}
+              disabled={watch("fee.isFree")}
+              options={confirmationType}
             />
 
             {/* Negotiable */}

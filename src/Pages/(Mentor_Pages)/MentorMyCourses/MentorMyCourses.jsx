@@ -25,7 +25,7 @@ const MentorMyCourses = () => {
   // Track active tab
   const [activeTab, setActiveTab] = useState("active");
 
-  // Fetching Active Mentorship
+  // ----------- Fetching Active Course API -----------
   const {
     data: ActiveCoursesData,
     isLoading: ActiveCoursesIsLoading,
@@ -45,7 +45,7 @@ const MentorMyCourses = () => {
         }),
   });
 
-  // Fetching Completed Course
+  // ----------- Fetching Completed Course API -----------
   const {
     data: CompletedCoursesData,
     isLoading: CompletedCoursesIsLoading,
@@ -65,7 +65,7 @@ const MentorMyCourses = () => {
         }),
   });
 
-  // Fetching Archived Course
+  // ----------- Fetching Archived Course API -----------
   const {
     data: ArchivedCourseData,
     isLoading: ArchivedCourseIsLoading,

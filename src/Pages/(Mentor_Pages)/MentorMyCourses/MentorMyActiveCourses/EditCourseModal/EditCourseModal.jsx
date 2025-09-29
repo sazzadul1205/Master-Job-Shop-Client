@@ -18,11 +18,14 @@ import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
 import TagInput from "../../../../../Shared/TagInput/TagInput";
 import FormInput from "../../../../../Shared/FormInput/FormInput";
+
+// Shared Lists
 import { TypeOptions } from "../../../../../Shared/Lists/TypeOptions";
 import { LevelOptions } from "../../../../../Shared/Lists/LevelOptions ";
 import { CategoryOptions } from "../../../../../Shared/Lists/CategoryOptions";
 import { CurrencyOptions } from "../../../../../Shared/Lists/CurrencyOptions";
 import { LanguageOptions } from "../../../../../Shared/Lists/LanguageOptions";
+import { confirmationType } from "../../../../../Shared/Lists/confirmationType";
 import { PaymentMethodOptions } from "../../../../../Shared/Lists/PaymentMethodOptions";
 
 // Helper: format yyyy-mm-dd -> yyyy-mm-dd
@@ -94,6 +97,7 @@ const EditCourseModal = ({
         discount: "",
         currency: "",
         paymentMethod: "",
+        confirmationType: "",
         negotiable: false,
         paymentLink: "",
       },
@@ -193,6 +197,7 @@ const EditCourseModal = ({
           discount: "",
           currency: "",
           paymentMethod: "",
+          confirmationType: "",
           negotiable: false,
           paymentLink: "",
         },
@@ -376,8 +381,9 @@ const EditCourseModal = ({
       )}
 
       {/* Modal Form Section */}
+      {/* Modal Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Course Information */}
+        {/*  Basic Info Section  */}
         <div className="space-y-4">
           {/* Title */}
           <FormInput
@@ -508,6 +514,9 @@ const EditCourseModal = ({
           </div>
         </div>
 
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
         {/* Course Structure */}
         <div className="space-y-4">
           {/* Title */}
@@ -587,6 +596,9 @@ const EditCourseModal = ({
             placeholder="Add a Prerequisite"
           />
         </div>
+
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
 
         {/* Schedule */}
         <div className="space-y-4">
@@ -735,6 +747,9 @@ const EditCourseModal = ({
           </div>
         </div>
 
+        {/* Divider */}
+        <p className="bg-gray-500 h-[1px] w-full" />
+
         {/* Pricing */}
         <div className="space-y-4">
           {/* Title */}
@@ -820,6 +835,22 @@ const EditCourseModal = ({
               options={PaymentMethodOptions}
             />
 
+            {/* Confirmation Type */}
+            <FormInput
+              label="Confirmation Type"
+              required
+              as="select"
+              placeholder="-- Select Confirmation Type --"
+              register={register("fee.confirmationType", {
+                required: !watch("fee.isFree")
+                  ? "Confirmation type is required"
+                  : false,
+              })}
+              error={errors?.fee?.confirmationType}
+              disabled={watch("fee.isFree")}
+              options={confirmationType}
+            />
+
             {/* Negotiable */}
             <div className="flex flex-col justify-center">
               <label
@@ -871,11 +902,11 @@ const EditCourseModal = ({
         <button
           type="submit"
           disabled={loading}
-          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow  ${
-            loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
-          } `}
+          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow 
+            ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
+            `}
         >
-          {loading ? "Updating..." : "Update Course"}
+          {loading ? "Editing..." : "Edit Course"}
         </button>
       </form>
     </div>

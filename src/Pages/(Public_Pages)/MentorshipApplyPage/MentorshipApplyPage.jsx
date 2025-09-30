@@ -3,6 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 
 // Icons
 import { FaArrowLeft, FaInfo } from "react-icons/fa";
+import { MdOutlineAssignment } from "react-icons/md";
+import { FiAlertCircle, FiLock } from "react-icons/fi";
+import { IoArrowBack, IoLogInOutline } from "react-icons/io5";
 
 // Packages
 import Swal from "sweetalert2";
@@ -13,8 +16,6 @@ import { useQuery } from "@tanstack/react-query";
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 import FormInput from "../../../Shared/FormInput/FormInput";
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
-
 // Hooks
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
@@ -145,58 +146,68 @@ const MentorshipApplyPage = () => {
   if (UsersError || SelectedMentorshipError || CheckIfAppliedError)
     return <Error />;
 
-  // Submit handler
+  // --- Helper: Upload Screenshot ---
+  const uploadScreenshot = async (file) => {
+    // Return empty string if no file provided
+    if (!file) return "";
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const screenshotRes = await axiosPublic.post(
+        Image_Hosting_API,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      return screenshotRes.data?.data?.display_url || "";
+    } catch (err) {
+      console.error("Screenshot upload failed:", err);
+      return "";
+    }
+  };
+
+  // --- Helper: Upload Resume PDF ---
+  const uploadResume = async (file) => {
+    // Return empty string if no file provided
+    if (!file) return "";
+
+    const resumeForm = new FormData();
+    resumeForm.append("file", file);
+
+    try {
+      const resumeRes = await axiosPublic.post("/PDFUpload", resumeForm, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      return resumeRes.data?.url || "";
+    } catch (err) {
+      console.error("Resume upload failed:", err);
+      return "";
+    }
+  };
+
+  // --- Submit handler ---
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     setErrorMessage("");
 
     try {
-      // --- Ensure User is Logged In ---
       if (!user) {
         setShowLoginModal(true);
         return;
       }
 
-      // --- Handle Screenshot Upload if Required ---
-      let confirmationValue = null;
-      if (SelectedMentorshipData?.fee?.confirmationType === "screenshot") {
-        if (data.confirmation && data.confirmation[0]) {
-          const formData = new FormData();
-          formData.append("image", data.confirmation[0]);
+      // --- Upload Resume PDF ---
+      const resumeUrl = await uploadResume(data.resume[0] ?? null);
 
-          const screenshotRes = await axiosPublic.post(
-            Image_Hosting_API,
-            formData,
-            {
-              headers: { "Content-Type": "multipart/form-data" },
-            }
-          );
-
-          confirmationValue = screenshotRes.data.data.display_url; // Only the URL
-        }
-      } else {
-        // Use other confirmation types if provided
-        confirmationValue =
-          data.paymentLink ||
-          data.transactionId ||
-          data.receiptLink ||
-          data.referenceNumber ||
-          null;
-      }
-
-      // --- Upload PDF Resume ---
-      if (!data.resume || !data.resume[0]) {
-        throw new Error("Please select a resume PDF to upload.");
-      }
-
-      const resumeForm = new FormData();
-      resumeForm.append("file", data.resume[0]);
-
-      const resumeRes = await axiosPublic.post("/PDFUpload", resumeForm, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      if (!resumeRes.data?.url) throw new Error("Failed to upload PDF.");
+      // --- Upload Confirmation Screenshot ---
+      const confirmationScreenshot = await uploadScreenshot(
+        data.confirmation[0] ?? null
+      );
 
       // --- Build Application Payload ---
       const {
@@ -211,15 +222,16 @@ const MentorshipApplyPage = () => {
         ...rest
       } = data;
 
+      // --- Build Application Payload ---
       const applicationPayload = {
         ...rest,
         status: "pending",
         userId: UsersData?._id,
         email: UsersData?.email,
         phone: UsersData?.phone,
-        resumeUrl: resumeRes.data.url,
+        resumeUrl,
         mentorshipId: mentorshipId,
-        confirmationScreenshot: confirmationValue || null,
+        confirmationScreenshot: confirmationScreenshot || null,
         paymentLink: paymentLink || null,
         transactionId: transactionId || null,
         receiptLink: receiptLink || null,
@@ -228,13 +240,13 @@ const MentorshipApplyPage = () => {
         profileImage: UsersData?.profileImage,
       };
 
-      // --- Submit Application to Backend ---
+      // --- Submit Application ---
       const applicationRes = await axiosPublic.post(
         "/MentorshipApplications",
         applicationPayload
       );
 
-      // --- Build Notification Payload ---
+      // --- Build Notification ---
       const notificationPayload = {
         title: "New Mentorship Application",
         message: `${
@@ -244,7 +256,7 @@ const MentorshipApplyPage = () => {
         mentorId: SelectedMentorshipData?.Mentor?.email,
         type: "mentorship_application",
         AppliedToId: mentorshipId,
-        applicationId: applicationRes.data.insertedId || null,
+        applicationId: applicationRes?.data?.insertedId || null,
         createdAt: new Date().toISOString(),
         read: false,
       };
@@ -252,7 +264,7 @@ const MentorshipApplyPage = () => {
       // --- Send Notification ---
       await axiosPublic.post("/Notifications", notificationPayload);
 
-      // --- Success Feedback ---
+      // Success Alert
       Swal.fire({
         icon: "success",
         title: "Application Submitted",
@@ -262,12 +274,12 @@ const MentorshipApplyPage = () => {
         timerProgressBar: true,
       });
 
-      // --- Reset Form and Navigate Back ---
+      // Reset form and go back
       reset();
       navigate(-1);
     } catch (err) {
+      // Error Alert
       console.error("Error submitting application:", err);
-
       setErrorMessage(
         err?.message || "Something went wrong. Please try again."
       );
@@ -286,32 +298,28 @@ const MentorshipApplyPage = () => {
     <div className="pb-5">
       {/* Top bar with Back and Details */}
       <div className="flex items-center justify-between mb-4 px-20">
-        <CommonButton
+        {/* Back Button */}
+        <button
           type="button"
-          text="Back"
-          icon={<FaArrowLeft />}
-          clickEvent={() => navigate(-1)}
-          bgColor="white"
-          textColor="text-black"
-          px="px-10"
-          py="py-2"
-          borderRadius="rounded-md"
-        />
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 bg-white font-semibold text-black px-10 py-2 rounded-md border border-gray-300 hover:bg-gray-200 cursor-pointer shadow-lg hover:shadow-2xl  "
+        >
+          <FaArrowLeft />
+          Back
+        </button>
 
-        <CommonButton
+        {/* Details Button */}
+        <button
           type="button"
-          text="Details"
-          clickEvent={() => {
+          onClick={() => {
             document.getElementById("Mentorship_Details_Modal")?.showModal();
             setSelectedMentorshipID(SelectedMentorshipData._id);
           }}
-          icon={<FaInfo />}
-          bgColor="white"
-          textColor="text-black"
-          px="px-10"
-          py="py-2"
-          borderRadius="rounded-md"
-        />
+          className="flex items-center gap-2 bg-white font-semibold text-black px-10 py-2 rounded-md border border-gray-300 hover:bg-gray-200 cursor-pointer shadow-lg hover:shadow-2xl  "
+        >
+          <FaInfo />
+          Details
+        </button>
       </div>
 
       {/* Application Form */}
@@ -493,7 +501,6 @@ const MentorshipApplyPage = () => {
         {/* Payment & Confirmation (for all paid Mentorship) */}
         {SelectedMentorshipData?.fee?.isFree === false && (
           <div className="space-y-4">
-            {/* Payment Method */}
             {/* Payment Method & Fee */}
             <div className="flex justify-between items-start">
               {/* Payment Method */}
@@ -665,51 +672,53 @@ const MentorshipApplyPage = () => {
 
       {/* Login Modal via State */}
       {showLoginModal && (
-        <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+          {/* Modal */}
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 z-10 animate-fadeIn">
+            {/* Header with Icon */}
+            <div className="flex items-center justify-center mb-4">
+              <FiLock className="w-12 h-12 text-blue-600" />
+            </div>
+
             {/* Title */}
-            <h3 className="text-lg font-bold text-black mb-2">
-              🔒 Login Required
+            <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
+              Login Required
             </h3>
 
             {/* Sub Title */}
-            <p className="text-black font-semibold mb-4">
-              You must be logged in to apply for this Mentorship.
+            <p className="text-gray-600 text-center mb-6">
+              You must be logged in to apply for this Mentorship. Please login
+              to continue.
             </p>
 
             {/* Buttons */}
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-center gap-4">
               {/* Login Button */}
-              <CommonButton
-                type="button"
-                text="Login"
-                clickEvent={() => {
+              <button
+                onClick={() => {
                   setShowLoginModal(false);
                   window.location.href = "/Login";
                 }}
-                bgColor="blue"
-                textColor="text-white"
-                px="px-10"
-                py="py-2"
-                borderRadius="rounded"
-                width="auto"
-              />
+                className="flex items-center gap-2 px-6 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md transition"
+              >
+                <IoLogInOutline className="w-5 h-5" />
+                Login
+              </button>
 
               {/* Cancel Button */}
-              <CommonButton
-                type="button"
-                text="Cancel"
-                clickEvent={() => {
+              <button
+                onClick={() => {
                   setShowLoginModal(false);
-                  navigate(-1); // Go back
+                  navigate(-1);
                 }}
-                bgColor="gray"
-                textColor="text-white"
-                px="px-10"
-                py="py-2"
-                borderRadius="rounded"
-                width="auto"
-              />
+                className="flex items-center gap-2 px-6 py-2 rounded-lg bg-gray-500 text-white font-medium hover:bg-gray-600 shadow-md transition"
+              >
+                <IoArrowBack className="w-5 h-5" />
+                Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -717,45 +726,53 @@ const MentorshipApplyPage = () => {
 
       {/* Apply Modal via State */}
       {showAlreadyAppliedModal && (
-        <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+          {/* Modal */}
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 z-10 animate-fadeIn">
+            {/* Header with Icon */}
+            <div className="flex items-center justify-center mb-4">
+              <FiAlertCircle className="w-12 h-12 text-yellow-500" />
+            </div>
+
             {/* Title */}
-            <h3 className="text-lg font-bold text-black mb-2">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
               Already Applied
             </h3>
 
             {/* Sub Title */}
-            <p className="text-black font-semibold mb-4">
-              You have already applied for this Mentorship.
+            <p className="text-gray-600 text-center mb-6">
+              You’ve already submitted an application for this mentorship.
+              Choose what you’d like to do next:
             </p>
 
             {/* Buttons */}
-            <div className="flex justify-end gap-3">
-              <CommonButton
-                text="View Application"
-                clickEvent={() => {
+            <div className="flex justify-center gap-4">
+              {/* View Application */}
+              <button
+                onClick={() => {
                   setShowAlreadyAppliedModal(false);
                   navigate(`/MyMentorshipApplication`);
                 }}
-                bgColor="blue"
-                textColor="text-white"
-                px="px-6"
-                py="py-2"
-                borderRadius="rounded"
-              />
+                className="flex items-center gap-2 px-6 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md transition cursor-pointer "
+              >
+                <MdOutlineAssignment className="w-5 h-5" />
+                View Application
+              </button>
 
-              <CommonButton
-                text="Back"
-                clickEvent={() => {
+              {/* Back */}
+              <button
+                onClick={() => {
                   setShowAlreadyAppliedModal(false);
                   navigate(-1);
                 }}
-                bgColor="gray"
-                textColor="text-white"
-                px="px-6"
-                py="py-2"
-                borderRadius="rounded"
-              />
+                className="flex items-center gap-2 px-6 py-2 rounded-lg bg-gray-500 text-white font-medium hover:bg-gray-600 shadow-md transition cursor-pointer "
+              >
+                <IoArrowBack className="w-5 h-5" />
+                Back
+              </button>
             </div>
           </div>
         </div>

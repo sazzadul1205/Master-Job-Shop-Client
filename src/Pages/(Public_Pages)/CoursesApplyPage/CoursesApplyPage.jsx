@@ -17,10 +17,12 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 import FormInput from "../../../Shared/FormInput/FormInput";
-import CommonButton from "../../../Shared/CommonButton/CommonButton";
 
 // Modals
 import CourseDetailsModal from "../Home/FeaturedCourses/CourseDetailsModal/CourseDetailsModal";
+import { FiAlertCircle, FiLock } from "react-icons/fi";
+import { IoArrowBack, IoLogInOutline } from "react-icons/io5";
+import { MdOutlineAssignment } from "react-icons/md";
 
 // Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
@@ -123,7 +125,36 @@ const CoursesApplyPage = () => {
   if (SelectedCourseError || UsersError || CheckIfAppliedError)
     return <Error />;
 
-  // Submit handler
+  // --- Helper: Upload Screenshot ---
+  const uploadScreenshot = async (file) => {
+    // Return empty string if no file provided
+    if (!file) return "";
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const screenshotRes = await axiosPublic.post(
+        Image_Hosting_API,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      if (!screenshotRes.data?.data?.display_url) {
+        // Return empty string instead of throwing
+        return "";
+      }
+
+      return screenshotRes.data.data.display_url;
+    } catch (err) {
+      console.error("Screenshot upload failed:", err);
+      return "";
+    }
+  };
+
+  // --- Submit handler ---
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     setErrorMessage("");
@@ -135,32 +166,10 @@ const CoursesApplyPage = () => {
         return;
       }
 
-      // --- Handle Screenshot Upload if Required ---
-      let confirmationValue = null;
-      if (SelectedCourseData?.fee?.confirmationType === "screenshot") {
-        if (data.confirmation && data.confirmation[0]) {
-          const formData = new FormData();
-          formData.append("image", data.confirmation[0]);
-
-          const screenshotRes = await axiosPublic.post(
-            Image_Hosting_API,
-            formData,
-            {
-              headers: { "Content-Type": "multipart/form-data" },
-            }
-          );
-
-          confirmationValue = screenshotRes.data.data.display_url;
-        }
-      } else {
-        // Use other confirmation types if provided
-        confirmationValue =
-          data.paymentLink ||
-          data.transactionId ||
-          data.receiptLink ||
-          data.referenceNumber ||
-          null;
-      }
+      // --- Upload Resume PDF ---
+      const confirmationScreenshot = await uploadScreenshot(
+        data.confirmation?.[0] ?? null
+      );
 
       // --- Build Application Payload ---
       const {
@@ -183,7 +192,7 @@ const CoursesApplyPage = () => {
         email: UsersData?.email,
         phone: UsersData?.phone,
         courseId: courseId,
-        confirmationScreenshot: confirmationValue || null,
+        confirmationScreenshot: confirmationScreenshot || null,
         paymentLink: paymentLink || null,
         transactionId: transactionId || null,
         receiptLink: receiptLink || null,
@@ -251,32 +260,28 @@ const CoursesApplyPage = () => {
     <div className="pb-5">
       {/* Top bar with Back and Details */}
       <div className="flex items-center justify-between mb-4 px-20">
-        <CommonButton
+        {/* Back Button */}
+        <button
           type="button"
-          text="Back"
-          icon={<FaArrowLeft />}
-          clickEvent={() => navigate(-1)}
-          bgColor="white"
-          textColor="text-black"
-          px="px-10"
-          py="py-2"
-          borderRadius="rounded-md"
-        />
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 bg-white font-semibold text-black px-10 py-2 rounded-md border border-gray-300 hover:bg-gray-200 cursor-pointer shadow-lg hover:shadow-2xl  "
+        >
+          <FaArrowLeft />
+          Back
+        </button>
 
-        <CommonButton
+        {/* Details Button */}
+        <button
           type="button"
-          text="Details"
-          clickEvent={() => {
+          onClick={() => {
             document.getElementById("Course_Details_Modal")?.showModal();
             setSelectedCourseID(SelectedCourseData._id);
           }}
-          icon={<FaInfo />}
-          bgColor="white"
-          textColor="text-black"
-          px="px-10"
-          py="py-2"
-          borderRadius="rounded-md"
-        />
+          className="flex items-center gap-2 bg-white font-semibold text-black px-10 py-2 rounded-md border border-gray-300 hover:bg-gray-200 cursor-pointer shadow-lg hover:shadow-2xl  "
+        >
+          <FaInfo />
+          Details
+        </button>
       </div>
 
       {/* Form  */}
@@ -513,7 +518,6 @@ const CoursesApplyPage = () => {
               )}
             </div>
           )}
-
           {/* Submit */}
           <div className="pt-6">
             <button
@@ -531,51 +535,55 @@ const CoursesApplyPage = () => {
         </form>
       </div>
 
-      {/* Login Modal */}
+      {/* Login Modal via State */}
       {showLoginModal && (
-        <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+          {/* Modal */}
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 z-10 animate-fadeIn">
+            {/* Header with Icon */}
+            <div className="flex items-center justify-center mb-4">
+              <FiLock className="w-12 h-12 text-blue-600" />
+            </div>
+
             {/* Title */}
-            <h3 className="text-lg font-bold text-black mb-2">
-              🔒 Login Required
+            <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
+              Login Required
             </h3>
 
             {/* Sub Title */}
-            <p className="text-black font-semibold mb-4">
-              You must be logged in to apply for this Course.
+            <p className="text-gray-600 text-center mb-6">
+              You must be logged in to apply for this Course. Please login to
+              continue.
             </p>
 
             {/* Buttons */}
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-center gap-4">
               {/* Login Button */}
-              <CommonButton
-                text="Login"
-                clickEvent={() => {
+              <button
+                onClick={() => {
                   setShowLoginModal(false);
                   window.location.href = "/Login";
                 }}
-                bgColor="blue"
-                textColor="text-white"
-                px="px-10"
-                py="py-2"
-                borderRadius="rounded"
-                width="auto"
-              />
+                className="flex items-center gap-2 px-6 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md transition"
+              >
+                <IoLogInOutline className="w-5 h-5" />
+                Login
+              </button>
 
               {/* Cancel Button */}
-              <CommonButton
-                text="Cancel"
-                clickEvent={() => {
+              <button
+                onClick={() => {
                   setShowLoginModal(false);
                   navigate(-1);
                 }}
-                bgColor="gray"
-                textColor="text-white"
-                px="px-10"
-                py="py-2"
-                borderRadius="rounded"
-                width="auto"
-              />
+                className="flex items-center gap-2 px-6 py-2 rounded-lg bg-gray-500 text-white font-medium hover:bg-gray-600 shadow-md transition"
+              >
+                <IoArrowBack className="w-5 h-5" />
+                Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -583,47 +591,53 @@ const CoursesApplyPage = () => {
 
       {/* Already Applied Modal */}
       {showAlreadyAppliedModal && (
-        <div className="fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white min-w-xl space-y-5 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+          {/* Modal */}
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 z-10 animate-fadeIn">
+            {/* Header with Icon */}
+            <div className="flex items-center justify-center mb-4">
+              <FiAlertCircle className="w-12 h-12 text-yellow-500" />
+            </div>
+
             {/* Title */}
-            <h3 className="text-lg font-bold text-black mb-2">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
               Already Applied
             </h3>
 
             {/* Sub Title */}
-            <p className="text-black font-semibold mb-4">
-              You have already applied for this Course.
+            <p className="text-gray-600 text-center mb-6">
+              You’ve already submitted an application for this course. Choose
+              what you’d like to do next:
             </p>
 
             {/* Buttons */}
-            <div className="flex justify-end gap-3">
-              {/* View ApplicationS Button */}
-              <CommonButton
-                text="View Application"
-                clickEvent={() => {
+            <div className="flex justify-center gap-4">
+              {/* View Application */}
+              <button
+                onClick={() => {
                   setShowAlreadyAppliedModal(false);
-                  navigate(`/CourseApplications`);
+                  navigate(`/MyCourseApplication`);
                 }}
-                bgColor="blue"
-                textColor="text-white"
-                px="px-6"
-                py="py-2"
-                borderRadius="rounded"
-              />
+                className="flex items-center gap-2 px-6 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md transition cursor-pointer "
+              >
+                <MdOutlineAssignment className="w-5 h-5" />
+                View Application
+              </button>
 
-              {/* Back Button */}
-              <CommonButton
-                text="Back"
-                clickEvent={() => {
+              {/* Back */}
+              <button
+                onClick={() => {
                   setShowAlreadyAppliedModal(false);
                   navigate(-1);
                 }}
-                bgColor="gray"
-                textColor="text-white"
-                px="px-6"
-                py="py-2"
-                borderRadius="rounded"
-              />
+                className="flex items-center gap-2 px-6 py-2 rounded-lg bg-gray-500 text-white font-medium hover:bg-gray-600 shadow-md transition cursor-pointer "
+              >
+                <IoArrowBack className="w-5 h-5" />
+                Back
+              </button>
             </div>
           </div>
         </div>

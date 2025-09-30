@@ -121,9 +121,7 @@ const MentorMyMentorshipApplications = () => {
     MyMentorshipRefetch();
     MyMentorshipApplicationsRefetch();
   };
-
-  console.log(MyMentorshipData);
-
+  
   return (
     <div className="py-7 px-8">
       <div className="flex justify-between items-center">

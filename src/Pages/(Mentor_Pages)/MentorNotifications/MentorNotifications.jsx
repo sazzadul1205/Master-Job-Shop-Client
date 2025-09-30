@@ -162,6 +162,7 @@ const MentorNotifications = () => {
 
       {/* Notifications List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mx-9 mt-6">
+        {/* No notifications found */}
         {displayedNotifications.length === 0 ? (
           <p className="text-gray-500 col-span-full text-center py-6">
             No notifications found.

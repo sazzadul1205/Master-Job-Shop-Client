@@ -125,22 +125,74 @@ const MentorNotifications = () => {
     }
   };
 
+  // Function to mark all notifications as read
+  const markAllNotificationsAsRead = async () => {
+    try {
+      const allIds = allNotifications.filter((n) => !n.read).map((n) => n._id);
+
+      if (allIds.length === 0) return; // Nothing to do
+
+      // Optimistic UI: mark all unread as read
+      allNotifications.forEach((n) => (n.read = true));
+
+      // Call PATCH requests in parallel
+      await Promise.all(
+        allIds.map((id) => axiosPublic.patch(`/Notifications/Read/${id}`))
+      );
+
+      // Refetch queries to sync
+      queryClient.invalidateQueries(["MyCourseNotificationsData", user?.email]);
+      queryClient.invalidateQueries([
+        "MyMentorshipNotificationsData",
+        user?.email,
+      ]);
+    } catch (err) {
+      console.error("Error marking all notifications as read:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to mark all notifications as read",
+        text: err?.message || "Something went wrong.",
+        confirmButtonColor: "#ef4444",
+      });
+
+      // Revert read status
+      queryClient.invalidateQueries(["MyCourseNotificationsData", user?.email]);
+      queryClient.invalidateQueries([
+        "MyMentorshipNotificationsData",
+        user?.email,
+      ]);
+    }
+  };
+
   return (
     <div className="min-h-screen text-gray-900">
       {/* Header */}
       <div className="flex items-center justify-between py-7 px-9">
         <h3 className="text-black text-3xl font-bold">My Notifications</h3>
 
-        {/* Refresh */}
-        <button
-          onClick={() => RefetchAll()}
-          className="flex items-center gap-2 bg-white border border-gray-300 
-                     hover:bg-blue-50 hover:border-blue-300 text-gray-800 font-medium 
-                     px-4 py-2 rounded-lg shadow-sm transition-all duration-200 cursor-pointer"
-        >
-          <FiRefreshCcw className="w-5 h-5" />
-          <span>Refresh</span>
-        </button>
+        <div className="flex gap-3">
+          {/* Refresh */}
+          <button
+            onClick={() => RefetchAll()}
+            className="flex items-center gap-2 bg-white border border-gray-300 
+                 hover:bg-blue-50 hover:border-blue-300 text-gray-800 font-medium 
+                 px-4 py-2 rounded-lg shadow-sm transition-all duration-200 cursor-pointer"
+          >
+            <FiRefreshCcw className="w-5 h-5" />
+            <span>Refresh</span>
+          </button>
+
+          {/* Mark All as Read */}
+          <button
+            onClick={() => markAllNotificationsAsRead()}
+            className="flex items-center gap-2 bg-blue-500 border border-blue-600
+                 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-lg
+                 shadow-sm transition-all duration-200 cursor-pointer"
+          >
+            <FiBell className="w-5 h-5" />
+            <span>Mark All as Read</span>
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -216,6 +268,7 @@ const MentorNotifications = () => {
         )}
       </div>
 
+      {/* Modal */}
       {/* Notification Modal */}
       <dialog id="Mentor_Notification_Information_Modal" className="modal">
         <MentorNotificationInformationModal

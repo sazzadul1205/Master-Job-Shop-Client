@@ -83,9 +83,11 @@ import ManageEmployerProfile from "./Pages/(Employer_Pages)/ManageEmployerProfil
 // ------------------ Mentor Pages ------------------
 import MentorProfile from "./Pages/(Mentor_Pages)/MentorProfile/MentorProfile";
 import MentorMentees from "./Pages/(Mentor_Pages)/MentorMentees/MentorMentees";
+import MentorMessages from "./Pages/(Mentor_Pages)/MentorMessages/MentorMessages";
 import MentorDashboard from "./Pages/(Mentor_Pages)/MentorDashboard/MentorDashboard";
 import MentorMyCourses from "./Pages/(Mentor_Pages)/MentorMyCourses/MentorMyCourses";
 import MentorMyMentorship from "./Pages/(Mentor_Pages)/MentorMyMentorship/MentorMyMentorship";
+import MentorNotifications from "./Pages/(Mentor_Pages)/MentorNotifications/MentorNotifications";
 import MentorScheduledSessions from "./Pages/(Mentor_Pages)/MentorScheduledSessions/MentorScheduledSessions";
 import MentorMyCourseApplications from "./Pages/(Mentor_Pages)/MentorMyCourseApplications/MentorMyCourseApplications";
 import MentorMyMentorshipApplications from "./Pages/(Mentor_Pages)/MentorMyMentorshipApplications/MentorMyMentorshipApplications";
@@ -98,8 +100,7 @@ import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
 // ------------------ Routes ------------------
 import MemberPrivateRoute from "./Routes/MemberPrivateRoute";
 import EmployerPrivateRoute from "./Routes/EmployerPrivateRoute";
-import MentorMessages from "./Pages/(Mentor_Pages)/MentorMessages/MentorMessages";
-import MentorNotifications from "./Pages/(Mentor_Pages)/MentorNotifications/MentorNotifications";
+
 
 const queryClient = new QueryClient();
 

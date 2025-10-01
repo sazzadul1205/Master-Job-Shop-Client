@@ -214,7 +214,7 @@ const CoursesApplyPage = () => {
           UsersData?.name || "A user"
         } has applied for the mentorship "${SelectedCourseData?.title}"`,
         userEmail: UsersData?.email,
-        mentorId: SelectedCourseData?.Mentor?.email,
+        mentorEmail: SelectedCourseData?.Mentor?.email,
         type: "course_application",
         AppliedToId: courseId,
         applicationId: applicationRes.data.insertedId,

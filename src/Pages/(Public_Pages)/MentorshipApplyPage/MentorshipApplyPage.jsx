@@ -253,7 +253,7 @@ const MentorshipApplyPage = () => {
           UsersData?.name || "A user"
         } has applied for the mentorship "${SelectedMentorshipData?.title}"`,
         userEmail: UsersData?.email,
-        mentorId: SelectedMentorshipData?.Mentor?.email,
+        mentorEmail: SelectedMentorshipData?.Mentor?.email,
         type: "mentorship_application",
         AppliedToId: mentorshipId,
         applicationId: applicationRes?.data?.insertedId || null,

@@ -4,6 +4,7 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import MentorDashboardCards from "./MentorDashboardCards/MentorDashboardCards";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+import MentorDashboardGraphs from "./MentorDashboardGraphs/MentorDashboardGraphs";
 
 const MentorDashboard = () => {
   const { user } = useAuth();
@@ -232,6 +233,8 @@ const MentorDashboard = () => {
         MyCoursesApplicationsStatusData={MyCoursesApplicationsStatusData}
         MyMentorshipApplicationsStatusData={MyMentorshipApplicationsStatusData}
       />
+      
+      <MentorDashboardGraphs />
     </div>
   );
 };

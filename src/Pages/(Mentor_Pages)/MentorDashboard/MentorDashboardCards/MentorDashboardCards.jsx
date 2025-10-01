@@ -9,7 +9,29 @@ import {
   FiMessageSquare,
 } from "react-icons/fi";
 
-const DashboardOverviewCards = () => {
+const DashboardOverviewCards = ({
+  MyCoursesStatusData,
+  MyMentorshipStatusData,
+  MyMentorEmailsStatusData,
+  MyNotificationsStatusData,
+  MyMentorMessagesStatusData,
+  MyCoursesApplicationsStatusData,
+  MyMentorshipApplicationsStatusData,
+}) => {
+  console.log("My Courses Status Data", MyCoursesStatusData);
+  console.log("My Mentorship Status Data", MyMentorshipStatusData);
+  console.log("My Mentor Emails Status Data", MyMentorEmailsStatusData);
+  console.log("My Notifications Status Data", MyNotificationsStatusData);
+  console.log("My Mentor Messages Status Data", MyMentorMessagesStatusData);
+  console.log(
+    "My Courses Applications Status Data",
+    MyCoursesApplicationsStatusData
+  );
+  console.log(
+    "My Mentorship Applications Status Data",
+    MyMentorshipApplicationsStatusData
+  );
+
   // Example data (replace with real data later)
   const cards = [
     {

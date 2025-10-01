@@ -233,8 +233,11 @@ const MentorDashboard = () => {
         MyCoursesApplicationsStatusData={MyCoursesApplicationsStatusData}
         MyMentorshipApplicationsStatusData={MyMentorshipApplicationsStatusData}
       />
-      
-      <MentorDashboardGraphs />
+
+      <MentorDashboardGraphs
+        MyCoursesApplicationsStatusData={MyCoursesApplicationsStatusData}
+        MyMentorshipApplicationsStatusData={MyMentorshipApplicationsStatusData}
+      />
     </div>
   );
 };

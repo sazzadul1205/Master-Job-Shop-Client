@@ -76,3 +76,40 @@ a:hover .scroll-text {
 .animate-float-icon {
   animation: floatIcon 6s ease-in-out infinite;
 }
+
+@keyframes spin360 {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin360 1s linear infinite;
+  /* continuous spin */
+}
+
+
+/* index.css or global CSS */
+.overflow-container {
+  width: 100%;
+  /* container fills the button width */
+  overflow: hidden;
+  /* hide overflowing text */
+  position: relative;
+}
+
+.scroll-hover {
+  display: inline-block;
+  white-space: nowrap;
+  transition: transform 5s linear;
+  /* smooth scrolling */
+}
+
+.overflow-container:hover .scroll-hover {
+  transform: translateX(calc(-100% + 100%));
+  /* scroll left exactly the overflow */
+}

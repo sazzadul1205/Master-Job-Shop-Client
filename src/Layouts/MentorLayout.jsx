@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 
 // Packages
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 // Icons
@@ -187,7 +189,7 @@ const MentorLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-bl from-blue-100 to-white">
+    <div className="min-h-screen bg-gradient-to-bl from-blue-100 to-white flex flex-col">
       {/* Top Navigation Bar */}
       <div className="flex justify-between items-center bg-[#002242] shadow-2xl w-full px-5 py-3">
         {/* Logo */}
@@ -332,105 +334,84 @@ const MentorLayout = () => {
       </div>
 
       {/* Sidebar & Main Content */}
-      <div className="flex">
+      <div className="flex flex-1 overflow-hidden">
         {/* Sidebar Navigation */}
-        <aside className="w-1/6 shadow-2xl min-h-screen bg-white border-t border-r-3 border-gray-400 pt-8 px-2">
+        <aside className="w-1/6 bg-white border-r border-gray-300 pt-1 px-2 overflow-y-auto h-[calc(100vh-64px)]">
           {sidebarLinks.map((section, i) => (
             <div key={i} className="mb-4">
+              {/* Section Title */}
               {section.title && (
                 <h3 className="flex items-center gap-2 font-semibold text-gray-600 pt-3 pb-2 px-2 uppercase">
                   {section.title}
                 </h3>
               )}
 
+              {/* Sidebar Links */}
               <div className="space-y-2">
-                {section.links.map(
-                  ({ label, path, icon: Icon, scroll, onClick }, j) =>
-                    onClick ? (
-                      // Button for links with onClick (like "Create Mentorship")
-                      <button
-                        key={j}
-                        onClick={onClick}
-                        className="flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden group text-gray-700 hover:bg-gray-200 w-full text-left cursor-pointer"
-                      >
-                        {/* Icon */}
-                        <Icon className="w-[20px] h-[20px] text-gray-700 group-hover:text-blue-500 group-hover:fill-blue-500" />
-
-                        {/* Label */}
-                        {scroll ? (
-                          <div className="relative overflow-hidden w-[220px]">
-                            <p className="font-semibold whitespace-nowrap transition-colors duration-300 group-hover:text-blue-500">
+                {section.links.map(({ label, path, icon: Icon, onClick }, j) =>
+                  onClick ? (
+                    <button
+                      key={j}
+                      onClick={onClick}
+                      className="flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden group text-gray-700 hover:bg-gray-200 w-full text-left cursor-pointer"
+                      data-tooltip-id="sidebar-tooltip"
+                      data-tooltip-content={label}
+                    >
+                      <Icon className="w-[20px] h-[20px] text-gray-700 group-hover:text-blue-500" />
+                      <div className="overflow-container">
+                        <p className="font-semibold scroll-hover">{label}</p>
+                      </div>
+                    </button>
+                  ) : (
+                    <NavLink
+                      key={j}
+                      to={path}
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden group ${
+                          isActive
+                            ? "bg-gray-200 text-blue-500"
+                            : "text-gray-700 hover:bg-gray-200"
+                        }`
+                      }
+                      data-tooltip-id="sidebar-tooltip"
+                      data-tooltip-content={label}
+                    >
+                      {({ isActive }) => (
+                        <>
+                          <Icon
+                            className={`w-[20px] h-[20px] transition-colors duration-300 ${
+                              isActive
+                                ? "text-blue-500 fill-blue-500"
+                                : "text-gray-700 fill-black group-hover:text-blue-500 group-hover:fill-blue-500"
+                            }`}
+                          />
+                          <div className="overflow-container">
+                            <p className="font-semibold scroll-hover">
                               {label}
                             </p>
                           </div>
-                        ) : (
-                          <p className="font-semibold transition-colors duration-300 group-hover:text-blue-500">
-                            {label}
-                          </p>
-                        )}
-                      </button>
-                    ) : (
-                      // Default NavLink for normal navigation
-                      <NavLink
-                        key={j}
-                        to={path}
-                        className={({ isActive }) =>
-                          `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden group ${
-                            isActive
-                              ? "bg-gray-200 text-blue-500"
-                              : "text-gray-700 hover:bg-gray-200"
-                          }`
-                        }
-                      >
-                        {({ isActive }) => (
-                          <>
-                            {/* Icon */}
-                            <Icon
-                              className={`w-[20px] h-[20px] transition-colors duration-300 ${
-                                isActive
-                                  ? "text-blue-500 fill-blue-500"
-                                  : "text-gray-700 fill-black group-hover:text-blue-500 group-hover:fill-blue-500"
-                              }`}
-                            />
-
-                            {/* Label */}
-                            {scroll ? (
-                              <div className="relative overflow-hidden w-[220px]">
-                                <p
-                                  className={`font-semibold whitespace-nowrap transition-colors duration-300 scroll-text ${
-                                    isActive
-                                      ? "text-blue-500"
-                                      : "group-hover:text-blue-500"
-                                  }`}
-                                >
-                                  {label}
-                                </p>
-                              </div>
-                            ) : (
-                              <p
-                                className={`font-semibold transition-colors duration-300 ${
-                                  isActive
-                                    ? "text-blue-500"
-                                    : "group-hover:text-blue-500"
-                                }`}
-                              >
-                                {label}
-                              </p>
-                            )}
-                          </>
-                        )}
-                      </NavLink>
-                    )
+                        </>
+                      )}
+                    </NavLink>
+                  )
                 )}
               </div>
+
+              {/* Single Tooltip instance for all sidebar links */}
+              <Tooltip
+                id="sidebar-tooltip"
+                place="top"
+                effect="solid"
+                className="bg-blue-500 text-white text-sm z-[9999]"
+              />
             </div>
           ))}
         </aside>
 
-        {/* Dynamic Main Content Area */}
-        <div className="w-5/6">
+        {/* Main Content Area */}
+        <main className="w-5/6 overflow-y-auto h-[calc(100vh-64px)]">
           <Outlet />
-        </div>
+        </main>
       </div>
 
       {/* Modals */}

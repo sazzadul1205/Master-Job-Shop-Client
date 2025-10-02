@@ -77,7 +77,7 @@ const MentorApplicationsChart = ({
   }));
 
   return (
-    <>
+    <div className="px-5">
       {/* --- Mentor Course Applications Status (Last 30 Days) */}
       <div className="w-[calc(100%-20px)] h-[400px] bg-white shadow-md mx-[5px] my-5 pb-20 hover:shadow-2xl cursor-default rounded-2xl border border-gray-300">
         <h3 className="text-center text-xl text-black font-semibold mb-4 bg-gray-100 py-4">
@@ -161,7 +161,7 @@ const MentorApplicationsChart = ({
           </LineChart>
         </ResponsiveContainer>
       </div>
-    </>
+    </div>
   );
 };
 

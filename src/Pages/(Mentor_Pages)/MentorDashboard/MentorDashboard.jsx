@@ -5,6 +5,7 @@ import MentorDashboardCards from "./MentorDashboardCards/MentorDashboardCards";
 import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
 import MentorDashboardGraphs from "./MentorDashboardGraphs/MentorDashboardGraphs";
+import MentorDashboardInsights from "./MentorDashboardInsights/MentorDashboardInsights";
 
 const MentorDashboard = () => {
   const { user } = useAuth();
@@ -89,7 +90,7 @@ const MentorDashboard = () => {
     refetch: MyCoursesApplicationsStatusRefetch,
     error: MyCoursesApplicationsStatusError,
   } = useQuery({
-    queryKey: ["MyCoursesApplicationsStatusData"],
+    queryKey: ["MyCoursesApplicationsStatusData", allCoursesIds],
     queryFn: () =>
       axiosPublic
         .get(`/CourseApplications/Status?ids=${allCoursesIds}`)
@@ -98,6 +99,7 @@ const MentorDashboard = () => {
           // Ensure the result is always an array
           return Array.isArray(data) ? data : [data];
         }),
+    enabled: !!allCoursesIds?.length, // Only run the query if All Courses Ids is not empty
   });
 
   // ---------- My Mentorship Applications Status API ----------
@@ -107,7 +109,7 @@ const MentorDashboard = () => {
     refetch: MyMentorshipApplicationsStatusRefetch,
     error: MyMentorshipApplicationsStatusError,
   } = useQuery({
-    queryKey: ["MyMentorshipApplicationsStatusData"],
+    queryKey: ["MyMentorshipApplicationsStatusData", allMentorshipIds],
     queryFn: () =>
       axiosPublic
         .get(`/MentorshipApplications/Status?ids=${allMentorshipIds}`)
@@ -116,6 +118,45 @@ const MentorDashboard = () => {
           // Ensure the result is always an array
           return Array.isArray(data) ? data : [data];
         }),
+    enabled: !!allMentorshipIds?.length, // Only run the query if All Mentorship Ids is not empty
+  });
+
+  // ---------- My Courses Applications API ----------
+  const {
+    data: MyCoursesApplicationsData,
+    isLoading: MyCoursesApplicationsIsLoading,
+    refetch: MyCoursesApplicationsRefetch,
+    error: MyCoursesApplicationsError,
+  } = useQuery({
+    queryKey: ["MyCoursesApplications", allCoursesIds],
+    queryFn: () =>
+      axiosPublic
+        .get(`/CourseApplications/ByCourse?courseId=${allCoursesIds}`)
+        .then((res) => {
+          const data = res.data;
+          return data;
+        }),
+    enabled: !!allCoursesIds,
+  });
+
+  // ---------- My Mentorship Applications API ----------
+  const {
+    data: MyMentorshipApplicationsData,
+    isLoading: MyMentorshipApplicationsIsLoading,
+    refetch: MyMentorshipApplicationsRefetch,
+    error: MyMentorshipApplicationsError,
+  } = useQuery({
+    queryKey: ["MyMentorshipApplications", allMentorshipIds],
+    queryFn: () =>
+      axiosPublic
+        .get(
+          `/MentorshipApplications/ByMentorship?mentorshipId=${allMentorshipIds}`
+        )
+        .then((res) => {
+          const data = res.data;
+          return data;
+        }),
+    enabled: !!allMentorshipIds,
   });
 
   // ---------- My Notifications Status API ----------
@@ -180,7 +221,9 @@ const MentorDashboard = () => {
     MyMentorshipStatusIsLoading ||
     MyMentorEmailsStatusIsLoading ||
     MyNotificationsStatusIsLoading ||
+    MyCoursesApplicationsIsLoading ||
     MyMentorMessagesStatusIsLoading ||
+    MyMentorshipApplicationsIsLoading ||
     MyCoursesApplicationsStatusIsLoading ||
     MyMentorshipApplicationsStatusIsLoading
   )
@@ -194,7 +237,9 @@ const MentorDashboard = () => {
     MyMentorshipStatusError ||
     MyMentorEmailsStatusError ||
     MyNotificationsStatusError ||
+    MyCoursesApplicationsError ||
     MyMentorMessagesStatusError ||
+    MyMentorshipApplicationsError ||
     MyCoursesApplicationsStatusError ||
     MyMentorshipApplicationsStatusError
   )
@@ -211,7 +256,9 @@ const MentorDashboard = () => {
     MyMentorMessagesStatusData();
     MyMentorEmailsStatusRefetch();
     MyNotificationsStatusRefetch();
+    MyCoursesApplicationsRefetch();
     MyMentorMessagesStatusRefetch();
+    MyMentorshipApplicationsRefetch();
     MyCoursesApplicationsStatusRefetch();
     MyMentorshipApplicationsStatusRefetch();
   };
@@ -234,9 +281,17 @@ const MentorDashboard = () => {
         MyMentorshipApplicationsStatusData={MyMentorshipApplicationsStatusData}
       />
 
+      {/* Graphs */}
       <MentorDashboardGraphs
         MyCoursesApplicationsStatusData={MyCoursesApplicationsStatusData}
         MyMentorshipApplicationsStatusData={MyMentorshipApplicationsStatusData}
+      />
+
+      <MentorDashboardInsights
+        MyCoursesData={MyCoursesData}
+        MyMentorshipData={MyMentorshipData}
+        MyCoursesApplicationsData={MyCoursesApplicationsData}
+        MyMentorshipApplicationsData={MyMentorshipApplicationsData}
       />
     </div>
   );

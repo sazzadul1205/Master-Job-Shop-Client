@@ -83,7 +83,11 @@ const MentorApplicationsChart = ({
         <h3 className="text-center text-xl text-black font-semibold mb-4 bg-gray-100 py-4">
           Mentor Course Applications Status (Last 30 Days)
         </h3>
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          className={"text-black"}
+        >
           <LineChart
             data={chartDataCourse}
             margin={{ top: 20, right: 20, left: 0, bottom: 25 }}
@@ -91,8 +95,24 @@ const MentorApplicationsChart = ({
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" angle={-45} textAnchor="end" height={50} />
             <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Legend verticalAlign="top" />
+
+            {/* Tooltip with Capitalized Labels */}
+            <Tooltip
+              formatter={(value, name) => [
+                value,
+                name.charAt(0).toUpperCase() + name.slice(1),
+              ]}
+              labelFormatter={(label) => `Date: ${label}`}
+            />
+
+            {/* Legend with Capitalized Labels */}
+            <Legend
+              verticalAlign="top"
+              formatter={(value) =>
+                value.charAt(0).toUpperCase() + value.slice(1)
+              }
+            />
+
             <Line type="monotone" dataKey="accepted" stroke="#4caf50" />
             <Line type="monotone" dataKey="rejected" stroke="#f44336" />
             <Line type="monotone" dataKey="pending" stroke="#ff9800" />
@@ -105,7 +125,11 @@ const MentorApplicationsChart = ({
         <h3 className="text-center text-xl text-black font-semibold mb-4 bg-gray-100 py-4">
           Mentor Mentorship Applications Status (Last 30 Days)
         </h3>
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          className={"text-black"}
+        >
           <LineChart
             data={chartDataMentorship}
             margin={{ top: 20, right: 20, left: 0, bottom: 25 }}
@@ -113,8 +137,24 @@ const MentorApplicationsChart = ({
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" angle={-45} textAnchor="end" height={50} />
             <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Legend verticalAlign="top" />
+
+            {/* Tooltip with Capitalized Labels */}
+            <Tooltip
+              formatter={(value, name) => [
+                value,
+                name.charAt(0).toUpperCase() + name.slice(1),
+              ]}
+              labelFormatter={(label) => `Date: ${label}`}
+            />
+
+            {/* Legend with Capitalized Labels */}
+            <Legend
+              verticalAlign="top"
+              formatter={(value) =>
+                value.charAt(0).toUpperCase() + value.slice(1)
+              }
+            />
+
             <Line type="monotone" dataKey="accepted" stroke="#4caf50" />
             <Line type="monotone" dataKey="rejected" stroke="#f44336" />
             <Line type="monotone" dataKey="pending" stroke="#ff9800" />

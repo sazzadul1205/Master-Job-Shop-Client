@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 // Packages
+import Swal from "sweetalert2";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +14,7 @@ import {
   IoSettingsOutline,
 } from "react-icons/io5";
 import { CiMail } from "react-icons/ci";
+import { FiLogOut } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { FaRegMessage } from "react-icons/fa6";
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -27,6 +29,7 @@ import MyMentorshipIcon from "../assets/MentorLayoutIcons/MyMentorshipIcon";
 import ApplicationsIcon from "../assets/MentorLayoutIcons/ApplicationsIcon";
 
 // Modal
+import CreateCourseModal from "../Pages/(Mentor_Pages)/MentorMyCourses/CreateCourseModal/CreateCourseModal";
 import CreateMentorshipModal from "../Pages/(Mentor_Pages)/MentorMyMentorship/CreateMentorshipModal/CreateMentorshipModal";
 
 // Shared
@@ -36,7 +39,6 @@ import Error from "../Shared/Error/Error";
 // Hooks
 import useAuth from "../Hooks/useAuth";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
-import CreateCourseModal from "../Pages/(Mentor_Pages)/MentorMyCourses/CreateCourseModal/CreateCourseModal";
 
 // Sidebar Links
 const sidebarLinks = [
@@ -118,9 +120,10 @@ const sidebarLinks = [
 ];
 
 const MentorLayout = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, logOut } = useAuth();
   const axiosPublic = useAxiosPublic();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // Helper to invalidate all mentorship queries
   const RefetchAll = () => {
@@ -188,6 +191,28 @@ const MentorLayout = () => {
 
   const toggleDropdown = (name) => {
     setOpenDropdown((prev) => (prev === name ? null : name));
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logOut(); // Firebase logout
+      Swal.fire({
+        icon: "success",
+        title: "Logged Out",
+        text: "You have been logged out successfully.",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+      navigate("/Login"); // redirect to login page
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Logout Failed",
+        text: error.message || "Something went wrong during logout.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
   };
 
   return (
@@ -326,8 +351,14 @@ const MentorLayout = () => {
                 <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                   Settings
                 </li>
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                  Logout
+
+                {/* Logout Button */}
+                <li
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-red-100 hover:text-red-600 cursor-pointer transition-colors"
+                >
+                  <FiLogOut className="text-lg" />
+                  <span className="font-semibold">Logout</span>
                 </li>
               </ul>
             </div>

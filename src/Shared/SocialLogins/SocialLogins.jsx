@@ -13,89 +13,84 @@ import useAuth from "../../Hooks/useAuth";
 
 const SocialLogins = () => {
   const axiosPublic = useAxiosPublic();
+
+  // Auth
   const { signInWithGoogle, signInWithFacebook } = useAuth();
 
+  // Shared
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Default redirect path
+  // Support both router state and query param fallback
   const from = location.state?.from?.pathname || "/";
 
-  // Function to check if the user already exists based on their email
-  const checkUserExists = async (email) => {
+  // Log login history
+  const logLoginHistory = async (user) => {
     try {
-      const response = await axiosPublic.get(
-        `/Users/CheckEmail?email=${email}`
-      );
-      return response.data.exists; // Returns true if the user exists
-    } catch (error) {
-      console.error("Error checking user existence:", error);
-      // Show error message in case of failure
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to check user existence. Please try again.",
-        confirmButtonColor: "#d33",
-        timer: 3000,
+      await axiosPublic.post("/LoginHistory", {
+        uid: user.uid,
+        email: user.email,
+        loginTime: new Date().toISOString(),
+        userAgent: navigator.userAgent,
       });
-      return false; // Return false if there was an error
+    } catch (logError) {
+      console.error("Failed to log login history:", logError);
     }
   };
 
-  // Handler for Google login
-  const handleGoogleLogin = async () => {
+  const handleSocialLogin = async (provider) => {
     try {
-      const res = await signInWithGoogle();
+      const res =
+        provider === "google"
+          ? await signInWithGoogle()
+          : await signInWithFacebook();
 
-      // Extract the email from the Google response
-      const email = res.user.email;
-      const userExists = await checkUserExists(email);
+      const user = res.user;
+      if (!user) throw new Error("No user data returned from provider.");
 
-      if (userExists) {
-        // Redirect to previous page if the user exists
-        navigate(from, { replace: true });
-      } else {
-        // Redirect to the SignUp/Details page if the user doesn't exist
-        navigate("/SignUp/Details", { replace: true });
+      // Log login history
+      await logLoginHistory(user);
+
+      // Fetch user role
+      const UserRole = await axiosPublic.get(`/Users/Role?email=${user.email}`);
+      const Role = UserRole.data.role;
+
+      if (!Role) {
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: "User role not found. Contact support.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
       }
-    } catch (error) {
-      console.error("Google login error:", error);
-      // Show error message if Google login fails
+
+      // Show success alert
       Swal.fire({
-        icon: "error",
-        title: "Login Failed",
-        text: `Google login failed: ${error.message}`,
-        confirmButtonColor: "#d33",
-        timer: 3000,
+        icon: "success",
+        title: "Login Successful",
+        text: "Redirecting...",
+        timer: 1500,
+        showConfirmButton: false,
       });
-    }
-  };
 
-  // Handler for Facebook login
-  const handleFacebookLogin = async () => {
-    try {
-      const res = await signInWithFacebook();
-
-      // Extract the email from the Facebook response
-      const email = res.user.email;
-      const userExists = await checkUserExists(email);
-
-      if (userExists) {
-        // Redirect to previous page if the user exists
-        navigate(from, { replace: true });
+      // Redirect based on role
+      if (Role === "Company") {
+        navigate("/Employer/Company/Dashboard", { replace: true });
+      } else if (Role === "Employer") {
+        navigate("/Employer/Employer/Dashboard", { replace: true });
       } else {
-        // Redirect to the SignUp/Details page if the user doesn't exist
-        navigate("/SignUp/Details", { replace: true });
+        navigate(from, { replace: true });
       }
     } catch (error) {
-      console.error("Facebook login error:", error);
-      // Show error message if Facebook login fails
+      console.error(`${provider} login error:`, error);
       Swal.fire({
         icon: "error",
         title: "Login Failed",
-        text: `Facebook login failed: ${error.message}`,
-        confirmButtonColor: "#d33",
-        timer: 3000,
+        text: error.message || `${provider} login failed.`,
+        timer: 2000,
+        showConfirmButton: false,
       });
     }
   };
@@ -105,7 +100,7 @@ const SocialLogins = () => {
       {/* Google Login Button */}
       <div>
         <button
-          onClick={handleGoogleLogin}
+          onClick={() => handleSocialLogin("google")}
           className="flex bg-linear-to-bl hover:bg-linear-to-tr from-white to-gray-300 text-black rounded-xl w-full py-3 justify-center gap-5 cursor-pointer"
         >
           <FcGoogle className="text-xl" />
@@ -116,7 +111,7 @@ const SocialLogins = () => {
       {/* Facebook Login Button */}
       <div>
         <button
-          onClick={handleFacebookLogin}
+          onClick={() => handleSocialLogin("facebook")}
           className="flex bg-linear-to-bl hover:bg-linear-to-tr from-white to-gray-300 text-black rounded-xl w-full py-3 justify-center gap-5 cursor-pointer"
         >
           <FaFacebookSquare className="text-xl text-[#1877F2]" />

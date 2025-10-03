@@ -38,17 +38,6 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  // Alert
-  const showAlert = (type, message) => {
-    Swal.fire({
-      icon: type,
-      title: type === "success" ? "Login Successful" : "Login Failed",
-      text: message,
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  };
-
   const onSubmit = useCallback(
     async (data) => {
       setLoading(true);
@@ -57,34 +46,74 @@ const Login = () => {
         const user = res?.user;
 
         if (!user) {
-          showAlert("error", "No user found with this email.");
+          // Temporary error alert
+          Swal.fire({
+            icon: "error",
+            title: "Login Failed",
+            text: "No user found with this email.",
+            showConfirmButton: false,
+            timer: 1500,
+          });
           return;
         }
 
+        // Log login history
+        try {
+          await axiosPublic.post("/LoginHistory", {
+            uid: user.uid, // use Firebase uid
+            email: user.email,
+            loginTime: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+          });
+        } catch (logError) {
+          console.error("Failed to log login history:", logError);
+        }
+
+        // Fetch user role
         const UserRole = await axiosPublic.get(
           `/Users/Role?email=${user.email}`
         );
         const Role = UserRole.data.role;
 
         if (!Role) {
-          showAlert("error", "User data not found. Please contact support.");
+          Swal.fire({
+            icon: "error",
+            title: "Login Failed",
+            text: "User data not found. Please contact support.",
+            showConfirmButton: false,
+            timer: 1500,
+          });
           return;
         }
+
+        // Temporary success alert
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          text: "Redirecting...",
+          showConfirmButton: false,
+          timer: 1500,
+        });
 
         // Redirect based on Role
         if (Role === "Company") {
           navigate("/Employer/Company/Dashboard", { replace: true });
         } else if (Role === "Employer") {
           navigate("/Employer/Employer/Dashboard", { replace: true });
+        } else if (Role === "Mentor") {
+          navigate("/Mentor/Mentor/Dashboard", { replace: true });
         } else {
-          // fallback if role is unknown
           navigate(from, { replace: true });
         }
       } catch (error) {
-        showAlert(
-          "error",
-          error.response?.data?.message || "Invalid email or password."
-        );
+        // Temporary failure alert
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: error.response?.data?.message || "Invalid email or password.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       } finally {
         setLoading(false);
       }

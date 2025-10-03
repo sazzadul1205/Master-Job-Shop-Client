@@ -5,6 +5,8 @@ import useAuth from "../../../../Hooks/useAuth";
 import MentorLoginHistoryModal from "./MentorLoginHistoryModal/MentorLoginHistoryModal";
 import TwoFAAuthenticationModal from "./TwoFAAuthenticationModal/TwoFAAuthenticationModal";
 import SettingsChangePasswordModal from "./SettingsChangePasswordModal/SettingsChangePasswordModal";
+import MentorDownloadAccountDataModal from "./MentorDownloadAccountDataModal/MentorDownloadAccountDataModal.JSX";
+import MentorDisableAccountModal from "./MentorDisableAccountModal/MentorDisableAccountModal";
 
 const MySettings = () => {
   const { user } = useAuth();
@@ -92,7 +94,16 @@ const MySettings = () => {
         {/* Download Data */}
         <div className="flex items-center justify-between border-b pb-3">
           <p className="text-gray-600 font-semibold">Download Account Data</p>
-          <button className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 cursor-pointer">
+
+          {/* Button */}
+          <button
+            onClick={() =>
+              document
+                .getElementById("Mentor_Download_Account_Data_Modal")
+                .showModal()
+            }
+            className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 cursor-pointer"
+          >
             Download
           </button>
         </div>
@@ -100,7 +111,16 @@ const MySettings = () => {
         {/* Delete Account */}
         <div className="flex items-center justify-between border-b pb-3">
           <p className="text-gray-600 font-semibold">Deactivate Account</p>
-          <button className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 cursor-pointer">
+
+          {/* Button */}
+          <button
+            onClick={() =>
+              document
+                .getElementById("Mentor_Disable_Account_Modal")
+                .showModal()
+            }
+            className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+          >
             Deactivate
           </button>
         </div>
@@ -108,6 +128,8 @@ const MySettings = () => {
         {/* Blocked Users */}
         <div className="flex items-center justify-between">
           <p className="text-gray-600 font-semibold">Manage Blocked Users</p>
+
+          {/* Button */}
           <button className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">
             View
           </button>
@@ -128,6 +150,16 @@ const MySettings = () => {
       {/* Mentor Login History Modal */}
       <dialog id="Mentor_Login_History_Modal" className="modal">
         <MentorLoginHistoryModal />
+      </dialog>
+
+      {/* Mentor Download Account Data Modal */}
+      <dialog id="Mentor_Download_Account_Data_Modal" className="modal">
+        <MentorDownloadAccountDataModal />
+      </dialog>
+
+      {/* Mentor Disable Account Modal */}
+      <dialog id="Mentor_Disable_Account_Modal" className="modal">
+        <MentorDisableAccountModal />
       </dialog>
     </>
   );

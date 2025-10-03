@@ -38,6 +38,7 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
+  // Handle form submission
   const onSubmit = useCallback(
     async (data) => {
       setLoading(true);
@@ -45,12 +46,12 @@ const Login = () => {
         const res = await signIn(data.email, data.password);
         const user = res?.user;
 
+        // If no user, show generic error
         if (!user) {
-          // Temporary error alert
           Swal.fire({
             icon: "error",
             title: "Login Failed",
-            text: "No user found with this email.",
+            text: "No account found with this email.",
             showConfirmButton: false,
             timer: 1500,
           });
@@ -60,7 +61,7 @@ const Login = () => {
         // Log login history
         try {
           await axiosPublic.post("/LoginHistory", {
-            uid: user.uid, // use Firebase uid
+            uid: user.uid,
             email: user.email,
             loginTime: new Date().toISOString(),
             userAgent: navigator.userAgent,
@@ -75,18 +76,19 @@ const Login = () => {
         );
         const Role = UserRole.data.role;
 
+        // If no role assigned, show error
         if (!Role) {
           Swal.fire({
             icon: "error",
             title: "Login Failed",
-            text: "User data not found. Please contact support.",
+            text: "Your account role is not assigned. Please contact support.",
             showConfirmButton: false,
             timer: 1500,
           });
           return;
         }
 
-        // Temporary success alert
+        // Success alert
         Swal.fire({
           icon: "success",
           title: "Login Successful",
@@ -106,13 +108,40 @@ const Login = () => {
           navigate(from, { replace: true });
         }
       } catch (error) {
-        // Temporary failure alert
+        console.error("Login error:", error);
+
+        let message = "Invalid email or password.";
+
+        // Firebase Auth error handling
+        if (error.code) {
+          switch (error.code) {
+            case "auth/wrong-password":
+              message = "The password you entered is incorrect.";
+              break;
+            case "auth/user-not-found":
+              message = "No account found with this email.";
+              break;
+            case "auth/too-many-requests":
+              message =
+                "Too many failed login attempts. Please try again later or reset your password.";
+              break;
+            case "auth/invalid-email":
+              message = "Please enter a valid email address.";
+              break;
+            default:
+              message = "Login failed. Please check your credentials.";
+          }
+        } else if (error.response?.data?.message) {
+          // Backend-specific messages
+          message = error.response.data.message;
+        }
+
         Swal.fire({
           icon: "error",
           title: "Login Failed",
-          text: error.response?.data?.message || "Invalid email or password.",
+          text: message,
           showConfirmButton: false,
-          timer: 1500,
+          timer: 2000,
         });
       } finally {
         setLoading(false);

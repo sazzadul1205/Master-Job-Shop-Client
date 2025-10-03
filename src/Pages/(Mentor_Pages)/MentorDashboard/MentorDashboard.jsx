@@ -1,17 +1,27 @@
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+// Packages
 import { useQuery } from "@tanstack/react-query";
+
+// Icons
+import { FiRefreshCw } from "react-icons/fi";
+import MyCoursesIcon from "../../../assets/MentorLayoutIcons/MyCoursesIcon";
+import MyMentorshipIcon from "../../../assets/MentorLayoutIcons/MyMentorshipIcon";
+import ApplicationsIcon from "../../../assets/MentorLayoutIcons/ApplicationsIcon";
+
+// Hooks
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import MentorDashboardCards from "./MentorDashboardCards/MentorDashboardCards";
-import Loading from "../../../Shared/Loading/Loading";
+
+// Shared
 import Error from "../../../Shared/Error/Error";
+import Loading from "../../../Shared/Loading/Loading";
+
+// Components
+import MentorDashboardCards from "./MentorDashboardCards/MentorDashboardCards";
 import MentorDashboardGraphs from "./MentorDashboardGraphs/MentorDashboardGraphs";
 import MentorDashboardInsights from "./MentorDashboardInsights/MentorDashboardInsights";
-import { useState } from "react";
-import { FiRefreshCw } from "react-icons/fi";
-import MyMentorshipIcon from "../../../assets/MentorLayoutIcons/MyMentorshipIcon";
-import MyCoursesIcon from "../../../assets/MentorLayoutIcons/MyCoursesIcon";
-import ApplicationsIcon from "../../../assets/MentorLayoutIcons/ApplicationsIcon";
-import { useNavigate } from "react-router-dom";
 
 const MentorDashboard = () => {
   const { user } = useAuth();
@@ -325,6 +335,7 @@ const MentorDashboard = () => {
         MyMentorshipApplicationsStatusData={MyMentorshipApplicationsStatusData}
       />
 
+      {/* Insights */}
       <MentorDashboardInsights
         MyCoursesData={MyCoursesData}
         MyMentorshipData={MyMentorshipData}

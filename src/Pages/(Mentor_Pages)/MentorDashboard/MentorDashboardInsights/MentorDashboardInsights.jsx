@@ -30,7 +30,7 @@ const MentorDashboardInsights = ({
     }) || [];
 
   return (
-    <div className="bg-white p-5 m-5 rounded-2xl shadow-md border border-gray-300 hover:shadow-2xl transition-shadow duration-300">
+    <div className="bg-white p-5 m-5 rounded-2xl shadow-md border border-gray-300 ">
       {/* Header */}
       <h3 className="text-2xl font-semibold text-center text-gray-700 mb-4">
         Course and Mentorship Insights

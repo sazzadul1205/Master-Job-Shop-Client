@@ -40,7 +40,7 @@ const SettingsChangePasswordModal = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 
-  // ---------- Fetch Mentor Profile Data ----------
+  // ---------- Fetch Mentor Profile Data API ----------
   const {
     data: MentorData,
     isLoading,

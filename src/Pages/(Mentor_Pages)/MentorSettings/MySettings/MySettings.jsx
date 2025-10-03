@@ -1,6 +1,19 @@
+// Hooks
+import useAuth from "../../../../Hooks/useAuth";
+
+// Modals
+import MentorLoginHistoryModal from "./MentorLoginHistoryModal/MentorLoginHistoryModal";
+import TwoFAAuthenticationModal from "./TwoFAAuthenticationModal/TwoFAAuthenticationModal";
 import SettingsChangePasswordModal from "./SettingsChangePasswordModal/SettingsChangePasswordModal";
 
 const MySettings = () => {
+  const { user } = useAuth();
+
+  // Check if user can change password
+  const canChangePassword =
+    user &&
+    user.providerData.some((provider) => provider.providerId === "password");
+
   return (
     <>
       {/* Header - My Settings */}
@@ -20,14 +33,18 @@ const MySettings = () => {
 
         {/* Change Password */}
         <div className="flex items-center justify-between border-b pb-3">
+          {/* Text */}
           <p className="text-gray-600 font-semibold">Change Password</p>
+
+          {/* Button */}
           <button
             onClick={() =>
-              document.getElementById(
-                "Settings_Change_Password_Modal"
-              ).showModal()
+              document
+                .getElementById("Settings_Change_Password_Modal")
+                .showModal()
             }
-            className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+            disabled={!canChangePassword}
+            className={`px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             Update
           </button>
@@ -38,7 +55,12 @@ const MySettings = () => {
           <p className="text-gray-600 font-semibold">
             Two-Factor Authentication (2FA)
           </p>
-          <button className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">
+          <button
+            onClick={() =>
+              document.getElementById("Two_FA_Authentication_Modal").showModal()
+            }
+            className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+          >
             Manage
           </button>
         </div>
@@ -48,7 +70,12 @@ const MySettings = () => {
           <p className="text-gray-600 font-semibold">
             Manage Active Sessions / Login History
           </p>
-          <button className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">
+          <button
+            onClick={() =>
+              document.getElementById("Mentor_Login_History_Modal").showModal()
+            }
+            className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+          >
             View
           </button>
         </div>
@@ -91,6 +118,16 @@ const MySettings = () => {
       {/* Change Password Modal */}
       <dialog id="Settings_Change_Password_Modal" className="modal">
         <SettingsChangePasswordModal />
+      </dialog>
+
+      {/* 2FA Authentication Modal */}
+      <dialog id="Two_FA_Authentication_Modal" className="modal">
+        <TwoFAAuthenticationModal />
+      </dialog>
+
+      {/* Mentor Login History Modal */}
+      <dialog id="Mentor_Login_History_Modal" className="modal">
+        <MentorLoginHistoryModal />
       </dialog>
     </>
   );

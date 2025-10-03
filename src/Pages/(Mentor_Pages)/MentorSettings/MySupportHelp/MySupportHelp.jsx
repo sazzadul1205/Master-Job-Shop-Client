@@ -1,6 +1,8 @@
 import { FaBook, FaBug, FaComments, FaHeadset } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const MySupportHelp = () => {
+  const navigate = useNavigate();
   return (
     <>
       {/* Header - Support & Help */}
@@ -32,7 +34,10 @@ const MySupportHelp = () => {
 
           {/* Go to Help Center */}
           <div className="flex justify-end">
-            <button className="mt-3 px-4 py-2 text-sm w-[150px] font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer ">
+            <button
+              onClick={() => navigate("/Mentor/HelpCenter")}
+              className="mt-3 px-4 py-2 text-sm w-[150px] font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer "
+            >
               Go to Help Center
             </button>
           </div>

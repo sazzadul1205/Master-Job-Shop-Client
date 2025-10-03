@@ -1,7 +1,22 @@
-
 import { FaMoon, FaSun } from "react-icons/fa";
+import Swal from "sweetalert2";
+import DashboardLayoutPreferencesModal from "./DashboardLayoutPreferencesModal/DashboardLayoutPreferencesModal";
 
 const MyPlatformCustomization = () => {
+  // Handle toggle click
+  const handleToggleClick = () => {
+    Swal.fire({
+      icon: "info",
+      title: "Feature Unavailable",
+      html: `
+        Light / Dark Mode switching is currently not available.<br/>
+        This feature will be implemented in a future update to enhance your UI experience.
+      `,
+      confirmButtonText: "Okay",
+      confirmButtonColor: "#2563EB", // Blue
+    });
+  };
+
   return (
     <>
       {/* Header - Platform Customization */}
@@ -31,11 +46,13 @@ const MyPlatformCustomization = () => {
             {/* Sun Icon */}
             <FaSun className="w-6 h-6 text-yellow-500" />
 
-            {/* Toggle */}
+            {/* Toggle (fixed) */}
             <input
               type="checkbox"
-              defaultChecked
-              className="toggle toggle-xl bg-gray-300 checked:bg-blue-600 border-0"
+              checked={false}
+              readOnly
+              onClick={handleToggleClick}
+              className="toggle toggle-xl bg-gray-300 checked:bg-blue-600 border-0 cursor-pointer"
             />
 
             {/* Moon Icon */}
@@ -48,7 +65,14 @@ const MyPlatformCustomization = () => {
           <p className="text-gray-600 font-semibold">
             Dashboard Layout Preferences
           </p>
-          <button className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">
+          <button
+            onClick={() =>
+              document
+                .getElementById("Dashboard_Layout_Preferences_Modal")
+                .showModal()
+            }
+            className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+          >
             Customize
           </button>
         </div>
@@ -72,7 +96,10 @@ const MyPlatformCustomization = () => {
           </p>
 
           {/* Dropdown */}
-          <select className="px-3 py-2 w-[150px] border rounded-lg text-gray-700 focus:ring-2 focus:ring-blue-500 cursor-pointer">
+          <select
+            onChange={handleToggleClick}
+            className="px-3 py-2 w-[150px] border rounded-lg text-gray-700 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+          >
             <option>English</option>
             <option>Spanish</option>
             <option>French</option>
@@ -80,6 +107,12 @@ const MyPlatformCustomization = () => {
             <option>Bangla</option>
           </select>
         </div>
+
+        {/* ----- Modal ----- */}
+        {/* Dashboard Layout Preferences Modal */}
+        <dialog id="Dashboard_Layout_Preferences_Modal" className="modal">
+          <DashboardLayoutPreferencesModal />
+        </dialog>
       </div>
     </>
   );

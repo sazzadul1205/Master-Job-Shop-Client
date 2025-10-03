@@ -6,8 +6,8 @@ import MentorLoginHistoryModal from "./MentorLoginHistoryModal/MentorLoginHistor
 import TwoFAAuthenticationModal from "./TwoFAAuthenticationModal/TwoFAAuthenticationModal";
 import MentorDisableAccountModal from "./MentorDisableAccountModal/MentorDisableAccountModal";
 import SettingsChangePasswordModal from "./SettingsChangePasswordModal/SettingsChangePasswordModal";
-import MentorDownloadAccountDataModal from "./MentorDownloadAccountDataModal/MentorDownloadAccountDataModal.JSX";
 import MentorManagedBlockedUsersModal from "./MentorManagedBlockedUsersModal/MentorManagedBlockedUsersModal";
+import MentorDownloadAccountDataModal from "./MentorDownloadAccountDataModal/MentorDownloadAccountDataModal.JSX";
 
 const MySettings = () => {
   const { user } = useAuth();
@@ -145,7 +145,7 @@ const MySettings = () => {
       </div>
 
       {/* ----- Modal ----- */}
-      {/* Change Password Modal */}
+      {/* Settings Change Password Modal */}
       <dialog id="Settings_Change_Password_Modal" className="modal">
         <SettingsChangePasswordModal />
       </dialog>

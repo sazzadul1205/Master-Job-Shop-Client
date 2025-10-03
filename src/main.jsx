@@ -100,7 +100,7 @@ import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
 // ------------------ Routes ------------------
 import MemberPrivateRoute from "./Routes/MemberPrivateRoute";
 import EmployerPrivateRoute from "./Routes/EmployerPrivateRoute";
-
+import MentorSettings from "./Pages/(Mentor_Pages)/MentorSettings/MentorSettings";
 
 const queryClient = new QueryClient();
 
@@ -415,6 +415,9 @@ createRoot(document.getElementById("root")).render(
                 path="/Mentor/Notifications"
                 element={<MentorNotifications />}
               />
+
+              {/* Settings */}
+              <Route path="/Mentor/Settings" element={<MentorSettings />} />
             </Route>
           </Routes>
         </BrowserRouter>

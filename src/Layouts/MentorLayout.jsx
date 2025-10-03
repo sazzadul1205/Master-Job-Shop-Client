@@ -111,7 +111,9 @@ const sidebarLinks = [
   },
   {
     title: "More",
-    links: [{ label: "Settings", path: "/settings", icon: IoSettingsOutline }],
+    links: [
+      { label: "Settings", path: "/Mentor/Settings", icon: IoSettingsOutline },
+    ],
   },
 ];
 

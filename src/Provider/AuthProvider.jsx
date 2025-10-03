@@ -16,6 +16,12 @@ import {
   updateProfile,
 } from "firebase/auth";
 
+import {
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+} from "firebase/auth";
+
 // Firebase configuration (custom setup)
 import auth from "../Firebase/firebase.config";
 
@@ -203,6 +209,29 @@ const AuthProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [logOut]);
 
+  // Change Password (requires re-authentication if session is old)
+  const changePassword = useCallback(async (currentPassword, newPassword) => {
+    if (!auth.currentUser) throw new Error("No user is logged in");
+
+    try {
+      // Step 1: Re-authenticate user
+      const credential = EmailAuthProvider.credential(
+        auth.currentUser.email,
+        currentPassword
+      );
+
+      await reauthenticateWithCredential(auth.currentUser, credential);
+
+      // Step 2: Update password
+      await updatePassword(auth.currentUser, newPassword);
+
+      return { success: true, message: "Password updated successfully!" };
+    } catch (error) {
+      console.error("Change Password Error:", error.message);
+      return { success: false, message: error.message };
+    }
+  }, []);
+
   // Provide auth info to the rest of the app
   const authInfo = {
     user,
@@ -211,6 +240,7 @@ const AuthProvider = ({ children }) => {
     loading,
     updateUser,
     createUser,
+    changePassword,
     signInWithGoogle,
     signInWithFacebook,
   };

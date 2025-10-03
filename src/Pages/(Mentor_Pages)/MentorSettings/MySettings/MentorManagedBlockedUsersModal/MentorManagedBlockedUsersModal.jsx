@@ -2,18 +2,18 @@
 import { ImCross } from "react-icons/im";
 import { MdInfoOutline } from "react-icons/md";
 
-const TwoFAAuthenticationModal = () => {
-  // Close modal and reset states
+const MentorManagedBlockedUsersModal = () => {
+  // Close modal
   const handleClose = () => {
-    document.getElementById("Two_FA_Authentication_Modal")?.close();
+    document.getElementById("Mentor_Managed_Blocked_Users_Modal")?.close();
   };
 
   return (
     <div
-      id="Two_FA_Authentication_Modal"
-      className="modal-box max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh] "
+      id="Mentor_Managed_Blocked_Users_Modal"
+      className="modal-box max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
     >
-      {/* Close */}
+      {/* Close Button */}
       <button
         type="button"
         onClick={handleClose}
@@ -24,25 +24,24 @@ const TwoFAAuthenticationModal = () => {
 
       {/* Header */}
       <h3 className="font-bold text-xl text-center mb-4">
-        Two-Factor Authentication (2FA) Settings
+        Blocked Users Management
       </h3>
 
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-6" />
 
-      {/* Info Message */}
+      {/* Info / Placeholder Message */}
       <div className="flex flex-col items-center justify-center text-center space-y-4 mt-6">
         <MdInfoOutline className="text-6xl text-blue-500" />
         <h4 className="text-lg font-semibold">Feature Unavailable</h4>
         <p className="text-gray-600 max-w-md">
-          Two-Factor Authentication (2FA) is currently unavailable. Implementing
-          this feature requires additional time and proper security handling to
-          ensure your account&apos;s safety. We plan to enable it in a future
-          update.
+          Managing blocked users is currently unavailable. This feature will be
+          implemented in a future update with proper moderation tools and
+          security measures.
         </p>
       </div>
     </div>
   );
 };
 
-export default TwoFAAuthenticationModal;
+export default MentorManagedBlockedUsersModal;

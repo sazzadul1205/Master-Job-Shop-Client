@@ -4,9 +4,10 @@ import useAuth from "../../../../Hooks/useAuth";
 // Modals
 import MentorLoginHistoryModal from "./MentorLoginHistoryModal/MentorLoginHistoryModal";
 import TwoFAAuthenticationModal from "./TwoFAAuthenticationModal/TwoFAAuthenticationModal";
+import MentorDisableAccountModal from "./MentorDisableAccountModal/MentorDisableAccountModal";
 import SettingsChangePasswordModal from "./SettingsChangePasswordModal/SettingsChangePasswordModal";
 import MentorDownloadAccountDataModal from "./MentorDownloadAccountDataModal/MentorDownloadAccountDataModal.JSX";
-import MentorDisableAccountModal from "./MentorDisableAccountModal/MentorDisableAccountModal";
+import MentorManagedBlockedUsersModal from "./MentorManagedBlockedUsersModal/MentorManagedBlockedUsersModal";
 
 const MySettings = () => {
   const { user } = useAuth();
@@ -130,7 +131,14 @@ const MySettings = () => {
           <p className="text-gray-600 font-semibold">Manage Blocked Users</p>
 
           {/* Button */}
-          <button className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">
+          <button
+            onClick={() =>
+              document
+                .getElementById("Mentor_Managed_Blocked_Users_Modal")
+                .showModal()
+            }
+            className="px-4 py-2 w-[120px] text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+          >
             View
           </button>
         </div>
@@ -160,6 +168,11 @@ const MySettings = () => {
       {/* Mentor Disable Account Modal */}
       <dialog id="Mentor_Disable_Account_Modal" className="modal">
         <MentorDisableAccountModal />
+      </dialog>
+
+      {/* Mentor Managed Blocked Users Modal */}
+      <dialog id="Mentor_Managed_Blocked_Users_Modal" className="modal">
+        <MentorManagedBlockedUsersModal />
       </dialog>
     </>
   );

@@ -1,10 +1,25 @@
-import { FaBook, FaBug, FaComments, FaHeadset } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import MentorSubmitTicketModal from "./MentorSubmitTicketModal/MentorSubmitTicketModal";
+
+// Icons
+import {
+  FaBook,
+  FaBug,
+  FaComments,
+  FaHeadset,
+  FaLightbulb,
+} from "react-icons/fa";
+
+// Modals
 import MentorStartChatModal from "./MentorStartChatModal/MentorStartChatModal";
+import MentorCommunityModal from "./MentorCommunityModal/MentorCommunityModal";
+import MentorReportIssueModal from "./MentorReportIssueModal/MentorReportIssueModal";
+import MentorSubmitTicketModal from "./MentorSubmitTicketModal/MentorSubmitTicketModal";
+import MentorSuggestImprovementModal from "./MentorSuggestImprovementModal/MentorSuggestImprovementModal";
 
 const MySupportHelp = () => {
+  // Navigation
   const navigate = useNavigate();
+
   return (
     <>
       {/* Header - Support & Help */}
@@ -106,18 +121,20 @@ const MySupportHelp = () => {
 
         {/* Content */}
         <div className="space-y-3 text-gray-600 font-semibold">
-          {/* Text */}
           <p>Join discussions and share knowledge with peers:</p>
 
-          {/* List */}
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li>Mentor & Mentees Forum</li>
             <li>Knowledge Base with shared insights</li>
           </ul>
 
-          {/* Button */}
           <div className="flex justify-end">
-            <button className="mt-3 px-4 py-2 w-[150px] text-sm font-medium rounded-lg bg-purple-600 text-white hover:bg-purple-700 cursor-pointer">
+            <button
+              onClick={() =>
+                document.getElementById("Mentor_Community_Dialog").showModal()
+              }
+              className="mt-3 px-4 py-2 w-[150px] text-sm font-medium rounded-lg bg-purple-600 text-white hover:bg-purple-700 cursor-pointer"
+            >
               Visit Community
             </button>
           </div>
@@ -145,9 +162,53 @@ const MySupportHelp = () => {
             <li>General Feedback</li>
           </ul>
 
+          {/* Button */}
           <div className="flex justify-end">
-            <button className="mt-3 px-4 py-2 w-[150px] text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 cursor-pointer">
+            <button
+              onClick={() =>
+                document.getElementById("Mentor_Report_Issue_Modal").showModal()
+              }
+              className="mt-3 px-4 py-2 w-[150px] text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+            >
               Report Issue
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Suggest an Improvement */}
+      <div className="bg-white rounded-2xl shadow p-6 space-y-2 mx-5 mt-6">
+        {/* Title */}
+        <h3 className="text-lg font-semibold text-gray-700 flex items-center gap-2">
+          <FaLightbulb className="text-green-600" /> Suggest an Improvement
+        </h3>
+
+        {/* Divider */}
+        <p className="bg-gray-600 h-0.5 w-full" />
+
+        {/* Content */}
+        <div className="space-y-3 text-gray-600 font-semibold">
+          {/* Text */}
+          <p>Have an idea to make the platform better?</p>
+
+          {/* List */}
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Feature Suggestions</li>
+            <li>UI/UX Enhancements</li>
+            <li>Performance or Accessibility Improvements</li>
+          </ul>
+
+          {/* Button */}
+          <div className="flex justify-end">
+            <button
+              onClick={() =>
+                document
+                  .getElementById("Mentor_Suggest_Improvement_Modal")
+                  .showModal()
+              }
+              className="mt-3 px-4 py-2 w-[180px] text-sm font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 cursor-pointer"
+            >
+              Suggest Improvement
             </button>
           </div>
         </div>
@@ -162,6 +223,21 @@ const MySupportHelp = () => {
       {/* Mentor Start Chat Modal */}
       <dialog id="Mentor_Start_Chat_Modal" className="modal">
         <MentorStartChatModal />
+      </dialog>
+
+      {/* Mentor Community Modal */}
+      <dialog id="Mentor_Community_Dialog" className="modal">
+        <MentorCommunityModal />
+      </dialog>
+
+      {/* Mentor Report Issue Modal */}
+      <dialog id="Mentor_Report_Issue_Modal" className="modal">
+        <MentorReportIssueModal />
+      </dialog>
+
+      {/* Mentor Report Issue Modal */}
+      <dialog id="Mentor_Suggest_Improvement_Modal" className="modal">
+        <MentorSuggestImprovementModal />
       </dialog>
     </>
   );

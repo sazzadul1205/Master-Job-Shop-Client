@@ -1,5 +1,7 @@
 import { FaBook, FaBug, FaComments, FaHeadset } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import MentorSubmitTicketModal from "./MentorSubmitTicketModal/MentorSubmitTicketModal";
+import MentorStartChatModal from "./MentorStartChatModal/MentorStartChatModal";
 
 const MySupportHelp = () => {
   const navigate = useNavigate();
@@ -67,10 +69,25 @@ const MySupportHelp = () => {
 
           {/* Buttons */}
           <div className="flex justify-end gap-3">
-            <button className="px-4 py-2 text-sm w-[150px] font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 cursor-pointer ">
+            {/* Submit Ticket Button */}
+            <button
+              onClick={() =>
+                document
+                  .getElementById("Mentor_Submit_Ticket_Modal")
+                  .showModal()
+              }
+              className="px-4 py-2 text-sm w-[150px] font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 cursor-pointer "
+            >
               Submit Ticket
             </button>
-            <button className="px-4 py-2 text-sm w-[150px] font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer ">
+
+            {/* Start Chat Button */}
+            <button
+              onClick={() =>
+                document.getElementById("Mentor_Start_Chat_Modal").showModal()
+              }
+              className="px-4 py-2 text-sm w-[150px] font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer "
+            >
               Start Chat
             </button>
           </div>
@@ -135,6 +152,17 @@ const MySupportHelp = () => {
           </div>
         </div>
       </div>
+
+      {/* ----- Modal ----- */}
+      {/* Mentor Submit Ticket Modal */}
+      <dialog id="Mentor_Submit_Ticket_Modal" className="modal">
+        <MentorSubmitTicketModal />
+      </dialog>
+
+      {/* Mentor Start Chat Modal */}
+      <dialog id="Mentor_Start_Chat_Modal" className="modal">
+        <MentorStartChatModal />
+      </dialog>
     </>
   );
 };

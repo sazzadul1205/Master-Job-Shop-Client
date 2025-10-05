@@ -1,4 +1,5 @@
 // Components
+import MyDelete from "./MyDelete/MyDelete";
 import MySettings from "./MySettings/MySettings";
 import MySupportHelp from "./MySupportHelp/MySupportHelp";
 import MyPlatformCustomization from "./MyPlatformCustomization/MyPlatformCustomization";
@@ -14,6 +15,9 @@ const MentorSettings = () => {
 
       {/* My Support & Help */}
       <MySupportHelp />
+
+      {/* Delete */}
+      <MyDelete />
     </div>
   );
 };

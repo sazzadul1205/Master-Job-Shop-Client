@@ -83,7 +83,7 @@ const MentorSubmitTicketModal = () => {
 
   return (
     <div
-      id="Mentor_Community_Modal"
+      id="Mentor_Submit_Ticket_Modal"
       className="modal-box max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh] relative"
     >
       {/* Close Button */}

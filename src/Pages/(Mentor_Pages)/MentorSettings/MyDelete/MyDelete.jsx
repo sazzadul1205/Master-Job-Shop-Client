@@ -7,6 +7,7 @@ import {
   FaUserSlash,
 } from "react-icons/fa";
 import MentorDeleteMentorshipModal from "./MentorDeleteMentorshipModal/MentorDeleteMentorshipModal";
+import MentorDeleteCourseModal from "./MentorDeleteCourseModal/MentorDeleteCourseModal";
 
 const MyDelete = () => {
   return (
@@ -35,9 +36,10 @@ const MyDelete = () => {
           {/* List */}
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li>All mentorship session records</li>
-            <li>Mentor and mentee history</li>
+            <li>Mentor and mentees history</li>
             <li>Any attached files or notes</li>
             <li>Associated analytics or feedback</li>
+            <li>Mentorship Applications and responses history</li>
           </ul>
 
           {/* Warning */}
@@ -80,6 +82,7 @@ const MyDelete = () => {
           {/* List */}
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li>All created and enrolled courses</li>
+            <li>Courses Applications and responses history</li>
             <li>All uploaded course materials (videos, PDFs, etc.)</li>
             <li>Student progress and submissions</li>
             <li>Certificates and completion records</li>
@@ -92,7 +95,14 @@ const MyDelete = () => {
 
           {/* Button */}
           <div className="flex justify-end">
-            <button className="mt-3 px-5 py-2 w-[200px] text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 cursor-pointer">
+            <button
+              onClick={() =>
+                document
+                  .getElementById("Mentor_Delete_Course_Modal")
+                  .showModal()
+              }
+              className="mt-3 px-5 py-2 w-[200px] text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+            >
               Delete All Courses
             </button>
           </div>
@@ -193,6 +203,11 @@ const MyDelete = () => {
       {/* Mentor Delete Mentorship's Modal */}
       <dialog id="Mentor_Delete_Mentorship_Modal" className="modal">
         <MentorDeleteMentorshipModal />
+      </dialog>
+
+      {/* Mentor Delete Course's Modal */}
+      <dialog id="Mentor_Delete_Course_Modal" className="modal">
+        <MentorDeleteCourseModal />
       </dialog>
     </>
   );

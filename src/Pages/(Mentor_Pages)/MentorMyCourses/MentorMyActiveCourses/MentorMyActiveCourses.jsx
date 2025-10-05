@@ -128,9 +128,22 @@ const MentorMyActiveCourses = ({ error, refetch, CoursesData, isLoading }) => {
   const handleDelete = async (id) => {
     // If Delete
     try {
+      // Fetch applications for this mentorship
+      const { data: applications } = await axiosPublic.get(
+        `/CourseApplications/ByCourse?courseId=${id}`
+      );
+
+      // Extract all application IDs
+      const allApplicationIds = Object.values(applications)
+        .flat() // flatten arrays
+        .map((app) => app._id);
+
+      // Confirm deletion
       const confirmResult = await Swal.fire({
         title: "Are you sure?",
-        text: "This Course will be permanently deleted!",
+        text: `This Course and ${
+          allApplicationIds.length || "No"
+        } Applications will be permanently deleted!`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
@@ -139,39 +152,67 @@ const MentorMyActiveCourses = ({ error, refetch, CoursesData, isLoading }) => {
         cancelButtonText: "Cancel",
       });
 
-      if (confirmResult.isConfirmed) {
-        // For testing, skip actual deletion
-        await axiosPublic.delete(`/Courses/${id}`);
+      // If not confirmed
+      if (!confirmResult.isConfirmed) return;
 
-        // Trashcan animation modal
-        Swal.fire({
-          title: "Deleted!",
-          html: `
-            <div style="font-size: 50px; text-align:center;">
-              <img src=${DeleteAnimation} alt="Trashcan closing" width="200" /> 
-            </div> 
-            <p>Course has been removed.</p>
-            `,
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true,
-          background: "#fff",
-          didOpen: () => {
-            const content = Swal.getHtmlContainer();
-            content.style.display = "flex";
-            content.style.alignItems = "center";
-            content.style.flexDirection = "column";
-          },
-        });
+      // Set Deleted Applications Message
+      let deletedApplicationsMessage = "No applications to delete.";
 
-        refetch();
+      // Delete all applications in bulk if any exist
+      if (allApplicationIds.length > 0) {
+        try {
+          const { data } = await axiosPublic.delete(
+            "/CourseApplications/BulkDelete",
+            { data: { ids: allApplicationIds } }
+          );
+
+          deletedApplicationsMessage = `Deleted ${data.deletedCount} application(s).`;
+        } catch (error) {
+          deletedApplicationsMessage = "Failed to delete applications.";
+          console.error(error);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `Failed to delete. Please try again!, ${error}`,
+          });
+        }
       }
+
+      // Delete the Courses itself
+      await axiosPublic.delete(`/Courses/${id}`);
+
+      // Show success modal with dynamic message
+      Swal.fire({
+        title: "Deleted!",
+        html: `
+         <div style="font-size: 50px; text-align:center;">
+           <img src=${DeleteAnimation} alt="Trashcan closing" width="200" /> 
+         </div> 
+         <p>Course has been removed.</p>
+         <p><strong>Applications:</strong> ${deletedApplicationsMessage}</p>
+       `,
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: true,
+        background: "#fff",
+        didOpen: () => {
+          const content = Swal.getHtmlContainer();
+          content.style.display = "flex";
+          content.style.alignItems = "center";
+          content.style.flexDirection = "column";
+          content.style.textAlign = "center";
+        },
+      });
+
+      // Refresh mentorship list
+      refetch();
     } catch (error) {
-      console.error("Failed to delete Course:", error);
+      // Show error
+      console.error(error);
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Failed to delete. Please try again!",
+        text: `Failed to delete. Please try again!, ${error}`,
       });
     }
   };

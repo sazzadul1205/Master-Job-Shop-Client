@@ -141,7 +141,7 @@ const MentorMyActiveMentorship = ({
       const confirmResult = await Swal.fire({
         title: "Are you sure?",
         text: `This Mentorship and ${
-          allApplicationIds.length || "no"
+          allApplicationIds.length || "No"
         } Applications will be permanently deleted!`,
         icon: "warning",
         showCancelButton: true,
@@ -151,8 +151,10 @@ const MentorMyActiveMentorship = ({
         cancelButtonText: "Cancel",
       });
 
+      // If not confirmed
       if (!confirmResult.isConfirmed) return;
 
+      // Set Deleted Applications Message
       let deletedApplicationsMessage = "No applications to delete.";
 
       // Delete all applications in bulk if any exist
@@ -204,6 +206,7 @@ const MentorMyActiveMentorship = ({
       // Refresh mentorship list
       refetch();
     } catch (error) {
+      // Show error
       console.error(error);
       Swal.fire({
         icon: "error",

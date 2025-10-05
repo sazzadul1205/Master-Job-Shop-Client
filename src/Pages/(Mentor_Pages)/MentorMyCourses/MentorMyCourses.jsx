@@ -84,10 +84,10 @@ const MentorMyCourses = () => {
   });
 
   // Refetch All
-  const RefetchAll = async () => {
-    await ActiveCoursesRefetch();
-    await ArchivedCourseRefetch();
-    await CompletedCoursesRefetch();
+  const RefetchAll = () => {
+    ActiveCoursesRefetch();
+    ArchivedCourseRefetch();
+    CompletedCoursesRefetch();
   };
 
   // Tabs Data

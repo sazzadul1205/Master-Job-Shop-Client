@@ -18,7 +18,7 @@ import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
 
-const MentorDeleteCourseModal = () => {
+const MentorDeleteMessagesModal = () => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
 
@@ -46,43 +46,47 @@ const MentorDeleteCourseModal = () => {
     enabled: !!user?.email,
   });
 
-  // ---------- Fetch My Courses Data API ----------
+  // ---------- Fetch Mentor Messages Data API ----------
   const {
-    data: MyCoursesData,
-    isLoading: MyCoursesIsLoading,
-    error: MyCoursesError,
+    data: MentorMessagesData,
+    isLoading: MentorMessagesIsLoading,
+    error: MentorMessagesError,
   } = useQuery({
-    queryKey: ["MyCoursesData"],
-    queryFn: () =>
-      axiosPublic.get(`/Courses?mentorEmail=${user?.email}`).then((res) => {
-        const data = res.data;
-        return Array.isArray(data) ? data : [data];
-      }),
-  });
-
-  // Map Through Ids of My Courses Data
-  const allCourseIds = MyCoursesData?.map((course) => course._id);
-
-  // ---------- Fetch Course Applications Data API ----------
-  const {
-    data: CourseApplicationsData,
-    isLoading: CourseApplicationsIsLoading,
-    error: CourseApplicationsError,
-  } = useQuery({
-    queryKey: ["CourseApplications", allCourseIds],
+    queryKey: ["MentorMessagesData", user?.email],
     queryFn: () =>
       axiosPublic
-        .get(`/CourseApplications/ByCourse?courseId=${allCourseIds}`)
+        .get(`/MentorMessages?email=${user?.email}`)
         .then((res) => res.data),
-    enabled: !!allCourseIds,
+    enabled: !!user?.email,
   });
 
-  // Assuming My Course Applications Data contains the API response
-  const allApplicantIds = CourseApplicationsData
-    ? Object.values(CourseApplicationsData)
-        .flat()
-        .map((applicant) => applicant._id)
-    : [];
+  // ---------- Fetch Mentor Email Data API ----------
+  const {
+    data: MentorEmailsData,
+    isLoading: MentorEmailsIsLoading,
+    error: MentorEmailsError,
+  } = useQuery({
+    queryKey: ["MentorEmailsData", user?.email],
+    queryFn: () =>
+      axiosPublic
+        .get(`/MentorEmails?email=${user?.email}`)
+        .then((res) => res.data),
+    enabled: !!user?.email,
+  });
+
+  // ---------- Fetch Mentor Notifications Data API ----------
+  const {
+    data: MentorNotificationsData,
+    isLoading: MentorNotificationsIsLoading,
+    error: MentorNotificationsError,
+  } = useQuery({
+    queryKey: ["MentorNotificationsData", user?.email],
+    queryFn: () =>
+      axiosPublic
+        .get(`/Notifications?mentorId=${user?.email}`)
+        .then((res) => res.data),
+    enabled: !!user?.email,
+  });
 
   // Step 1: Verify password
   const onVerifyPassword = async (data) => {
@@ -128,94 +132,132 @@ const MentorDeleteCourseModal = () => {
   // Close modal
   const handleClose = () => {
     setServerError("");
-    document.getElementById("Mentor_Delete_Course_Modal")?.close();
+    document.getElementById("Mentor_Delete_Messages_Modal")?.close();
   };
 
   // Loading states
-  if (MentorIsLoading || MyCoursesIsLoading || CourseApplicationsIsLoading)
+  if (
+    MentorIsLoading ||
+    MentorEmailsIsLoading ||
+    MentorMessagesIsLoading ||
+    MentorNotificationsIsLoading
+  )
     return <Loading />;
 
   // Error states
-  if (MentorError || MyCoursesError || CourseApplicationsError)
+  if (
+    MentorError ||
+    MentorEmailsError ||
+    MentorMessagesError ||
+    MentorNotificationsError
+  )
     return <Error />;
 
-  // Delete Courses & Applications Handler
-  const DeleteCoursesHandler = async () => {
-    // Reset states
+  const DeleteMentorDataHandler = async () => {
     setLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
 
     try {
-      // Check if there are any Mentorship
-      if (!allCourseIds || allCourseIds.length === 0) {
-        setErrorMessage("No courses available to delete.");
+      // Collect all IDs from fetched data
+      const MentorMessageIds = MentorMessagesData?.map((msg) => msg?._id) || [];
+      const MentorEmailIds = MentorEmailsData?.map((email) => email?._id) || [];
+      const MentorNotificationIds =
+        MentorNotificationsData?.map((notification) => notification?._id) || [];
+
+      if (
+        MentorMessageIds.length === 0 &&
+        MentorEmailIds.length === 0 &&
+        MentorNotificationIds.length === 0
+      ) {
+        setErrorMessage("No messages, emails, or notifications to delete.");
+        Swal.fire({
+          icon: "info",
+          title: "Nothing to Delete",
+          text: "No messages, emails, or notifications found.",
+        });
         return;
       }
 
-      // Initialize messages
-      let applicationsMessage = "No course applications to delete.";
-      let coursesMessage = "No courses to delete.";
+      // Initialize result messages
+      let messagesMsg = "No mentor messages deleted.";
+      let emailsMsg = "No mentor emails deleted.";
+      let notificationsMsg = "No mentor notifications deleted.";
 
-      // Delete Course Applications
-      if (allApplicantIds?.length > 0) {
+      // ---------- Delete Mentor Messages ----------
+      if (MentorMessageIds.length > 0) {
         try {
           const { data } = await axiosPublic.delete(
-            "/CourseApplications/BulkDelete",
-            { data: { ids: allApplicantIds } }
+            "/MentorMessages/BulkDelete",
+            {
+              data: { ids: MentorMessageIds },
+            }
           );
-          applicationsMessage = `Deleted ${data.deletedCount} application(s).`;
+          messagesMsg = `Deleted ${data.deletedCount} message(s).`;
         } catch (err) {
-          console.error("Applications delete error:", err);
-          applicationsMessage = "Failed to delete applications.";
+          console.error("Mentor messages delete error:", err);
+          messagesMsg = "Failed to delete mentor messages.";
         }
       }
 
-      // Delete Courses
-      if (allCourseIds?.length > 0) {
+      // ---------- Delete Mentor Emails ----------
+      if (MentorEmailIds.length > 0) {
         try {
-          const { data } = await axiosPublic.delete("/Courses/BulkDelete", {
-            data: { ids: allCourseIds },
-          });
-          coursesMessage = `Deleted ${data.deletedCount} course(s).`;
+          const { data } = await axiosPublic.delete(
+            "/MentorEmails/BulkDelete",
+            {
+              data: { ids: MentorEmailIds },
+            }
+          );
+          emailsMsg = `Deleted ${data.deletedCount} email(s).`;
         } catch (err) {
-          console.error("Courses delete error:", err);
-          coursesMessage = "Failed to delete courses.";
+          console.error("Mentor emails delete error:", err);
+          emailsMsg = "Failed to delete mentor emails.";
         }
       }
 
-      // Show success modal
+      // ---------- Delete Mentor Notifications ----------
+      if (MentorNotificationIds.length > 0) {
+        try {
+          const { data } = await axiosPublic.delete(
+            "/Notifications/BulkDelete",
+            { data: { ids: MentorNotificationIds } }
+          );
+          notificationsMsg = `Deleted ${data.deletedCount} notification(s).`;
+        } catch (err) {
+          console.error("Mentor notifications delete error:", err);
+          notificationsMsg = "Failed to delete mentor notifications.";
+        }
+      }
+
+      // ---------- Show Summary ----------
       Swal.fire({
         icon: "success",
-        title: "Deleted Successfully!",
+        title: "Deletion Complete",
         html: `
-          <p><strong>Courses:</strong> ${coursesMessage}</p>
-          <p><strong>Applications:</strong> ${applicationsMessage}</p>
-        `,
-        showConfirmButton: true,
+        <p><strong>Messages:</strong> ${messagesMsg}</p>
+        <p><strong>Emails:</strong> ${emailsMsg}</p>
+        <p><strong>Notifications:</strong> ${notificationsMsg}</p>
+      `,
         confirmButtonText: "OK",
       });
 
-      // Close Modal
       handleClose();
     } catch (error) {
-      // Show error
-      console.error("Delete error:", error);
-      setErrorMessage("Failed to delete. Please try again.");
+      console.error("Bulk delete error:", error);
       Swal.fire({
         icon: "error",
-        title: "Oops...",
-        text: `Failed to delete. ${error.message}`,
+        title: "Deletion Failed",
+        text: error.message || "An error occurred while deleting data.",
       });
     } finally {
-      // Set loading to false
       setLoading(false);
     }
   };
 
   return (
     <div
-      id="Mentor_Delete_Course_Modal"
+      id="Mentor_Delete_Messages_Modal"
       className="modal-box max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh] relative"
     >
       {/* Close Button */}
@@ -309,43 +351,48 @@ const MentorDeleteCourseModal = () => {
 
           {/* Step 2: Delete Courses */}
           {step === 2 && (
-            <div className="space-y-6">
-              {/* Summary Card */}
-              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl shadow-md">
-                {/* Title */}
-                <h4 className="text-lg font-bold mb-2">Deletion Summary</h4>
+            <div className="space-y-4">
+              <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-xl shadow-md space-y-4">
+                <h4 className="text-lg font-bold mb-2">Mentor Summary</h4>
 
-                {/* Count */}
                 <div className="flex flex-col sm:flex-row sm:gap-10 gap-4">
-                  {/* Course Counts */}
+                  {/* Messages Count */}
                   <div className="flex items-center gap-3">
-                    {/* Icons */}
-                    <span className="bg-red-100 text-red-600 rounded-full p-3 shadow-md">
-                      📚
+                    <span className="bg-blue-100 text-blue-600 rounded-full p-3 shadow-md">
+                      💬
                     </span>
-
-                    {/* Counts */}
                     <p>
                       <span className="font-semibold">
-                        {allCourseIds?.length || 0}
+                        {MentorMessagesData?.length || 0}
                       </span>{" "}
-                      Course{allCourseIds?.length > 1 ? "s" : ""}
+                      Message{MentorMessagesData?.length > 1 ? "s" : ""}
                     </p>
                   </div>
 
-                  {/* Applicant Counts */}
+                  {/* Emails Count */}
                   <div className="flex items-center gap-3">
-                    {/* ICons */}
-                    <span className="bg-red-100 text-red-600 rounded-full p-3 shadow-md">
-                      👥
+                    <span className="bg-blue-100 text-blue-600 rounded-full p-3 shadow-md">
+                      📧
                     </span>
-
-                    {/* Counts */}
                     <p>
                       <span className="font-semibold">
-                        {allApplicantIds?.length || 0}
+                        {MentorEmailsData?.length || 0}
                       </span>{" "}
-                      Application{allApplicantIds?.length > 1 ? "s" : ""}
+                      Email{MentorEmailsData?.length > 1 ? "s" : ""}
+                    </p>
+                  </div>
+
+                  {/* Notifications Count */}
+                  <div className="flex items-center gap-3">
+                    <span className="bg-blue-100 text-blue-600 rounded-full p-3 shadow-md">
+                      🔔
+                    </span>
+                    <p>
+                      <span className="font-semibold">
+                        {MentorNotificationsData?.length || 0}
+                      </span>{" "}
+                      Notification
+                      {MentorNotificationsData?.length > 1 ? "s" : ""}
                     </p>
                   </div>
                 </div>
@@ -353,7 +400,7 @@ const MentorDeleteCourseModal = () => {
 
               {/* Delete Button */}
               <button
-                onClick={DeleteCoursesHandler}
+                onClick={DeleteMentorDataHandler}
                 disabled={loading}
                 className={`w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-2xl cursor-pointer ${
                   loading ? "opacity-50 cursor-not-allowed" : ""
@@ -398,4 +445,4 @@ const MentorDeleteCourseModal = () => {
   );
 };
 
-export default MentorDeleteCourseModal;
+export default MentorDeleteMessagesModal;

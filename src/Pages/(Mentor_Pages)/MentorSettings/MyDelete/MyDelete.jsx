@@ -6,8 +6,11 @@ import {
   FaSkullCrossbones,
   FaUserSlash,
 } from "react-icons/fa";
-import MentorDeleteMentorshipModal from "./MentorDeleteMentorshipModal/MentorDeleteMentorshipModal";
+
+// Modals
 import MentorDeleteCourseModal from "./MentorDeleteCourseModal/MentorDeleteCourseModal";
+import MentorDeleteMessagesModal from "./MentorDeleteMessagesModal/MentorDeleteMessagesModal";
+import MentorDeleteMentorshipModal from "./MentorDeleteMentorshipModal/MentorDeleteMentorshipModal";
 
 const MyDelete = () => {
   return (
@@ -141,7 +144,14 @@ const MyDelete = () => {
 
           {/* Button */}
           <div className="flex justify-end">
-            <button className="mt-3 px-5 py-2 w-[250px] text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 cursor-pointer">
+            <button
+              onClick={() =>
+                document
+                  .getElementById("Mentor_Delete_Messages_Modal")
+                  .showModal()
+              }
+              className="mt-3 px-5 py-2 w-[250px] text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+            >
               Delete All Emails & Messages
             </button>
           </div>
@@ -208,6 +218,11 @@ const MyDelete = () => {
       {/* Mentor Delete Course's Modal */}
       <dialog id="Mentor_Delete_Course_Modal" className="modal">
         <MentorDeleteCourseModal />
+      </dialog>
+
+      {/* Mentor Delete Message's Modal */}
+      <dialog id="Mentor_Delete_Messages_Modal" className="modal">
+        <MentorDeleteMessagesModal />
       </dialog>
     </>
   );

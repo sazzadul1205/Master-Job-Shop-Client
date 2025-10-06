@@ -11,6 +11,7 @@ import {
 import MentorDeleteCourseModal from "./MentorDeleteCourseModal/MentorDeleteCourseModal";
 import MentorDeleteMessagesModal from "./MentorDeleteMessagesModal/MentorDeleteMessagesModal";
 import MentorDeleteMentorshipModal from "./MentorDeleteMentorshipModal/MentorDeleteMentorshipModal";
+import MentorDeleteProfileModal from "./MentorDeleteProfileModal/MentorDeleteProfileModal";
 
 const MyDelete = () => {
   return (
@@ -201,7 +202,14 @@ const MyDelete = () => {
 
           {/* Button */}
           <div className="flex justify-end">
-            <button className="mt-3 px-6 py-3 w-[320px] text-sm font-bold rounded-lg bg-gradient-to-r from-red-700 to-red-600 text-white hover:from-red-800 hover:to-red-700 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer ">
+            <button
+              onClick={() =>
+                document
+                  .getElementById("Mentor_Delete_Profile_Modal")
+                  .showModal()
+              }
+              className="mt-3 px-6 py-3 w-[320px] text-sm font-bold rounded-lg bg-gradient-to-r from-red-700 to-red-600 text-white hover:from-red-800 hover:to-red-700 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer "
+            >
               <FaSkullCrossbones className="text-white" />
               Permanently Delete My Account
             </button>
@@ -223,6 +231,11 @@ const MyDelete = () => {
       {/* Mentor Delete Message's Modal */}
       <dialog id="Mentor_Delete_Messages_Modal" className="modal">
         <MentorDeleteMessagesModal />
+      </dialog>
+
+      {/* Mentor Delete Profile Modal */}
+      <dialog id="Mentor_Delete_Profile_Modal" className="modal">
+        <MentorDeleteProfileModal />
       </dialog>
     </>
   );

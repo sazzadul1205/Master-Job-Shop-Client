@@ -18,7 +18,7 @@ import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
 
-const MentorDeleteMessagesModal = () => {
+const MentorDeleteProfileModal = () => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
 
@@ -46,44 +46,72 @@ const MentorDeleteMessagesModal = () => {
     enabled: !!user?.email,
   });
 
-  // ---------- Fetch Mentor Messages Data API ----------
+  // ---------- Fetch Check Mentorship Data API ----------
   const {
-    data: MentorMessagesData,
-    isLoading: MentorMessagesIsLoading,
-    error: MentorMessagesError,
+    data: CheckMentorshipData,
+    isLoading: CheckMentorshipIsLoading,
+    error: CheckMentorshipError,
   } = useQuery({
-    queryKey: ["MentorMessagesData", user?.email],
+    queryKey: ["CheckMentorshipData", user?.email],
     queryFn: () =>
       axiosPublic
-        .get(`/MentorMessages?email=${user?.email}`)
+        .get(`/Mentorship/CheckMentor?mentorEmail=${user?.email}`)
         .then((res) => res.data),
     enabled: !!user?.email,
   });
 
-  // ---------- Fetch Mentor Email Data API ----------
+  // ---------- Fetch Check Courses Data API ----------
   const {
-    data: MentorEmailsData,
-    isLoading: MentorEmailsIsLoading,
-    error: MentorEmailsError,
+    data: CheckCoursesData,
+    isLoading: CheckCoursesIsLoading,
+    error: CheckCoursesError,
   } = useQuery({
-    queryKey: ["MentorEmailsData", user?.email],
+    queryKey: ["CheckCoursesData", user?.email],
     queryFn: () =>
       axiosPublic
-        .get(`/MentorEmails?email=${user?.email}`)
+        .get(`/Courses/CheckMentor?mentorEmail=${user?.email}`)
         .then((res) => res.data),
     enabled: !!user?.email,
   });
 
-  // ---------- Fetch Mentor Notifications Data API ----------
+  // ---------- Fetch Check Mentor Emails Data API ----------
   const {
-    data: MentorNotificationsData,
-    isLoading: MentorNotificationsIsLoading,
-    error: MentorNotificationsError,
+    data: CheckMentorEmailsData,
+    isLoading: CheckMentorEmailsIsLoading,
+    error: CheckMentorEmailsError,
   } = useQuery({
-    queryKey: ["MentorNotificationsData", user?.email],
+    queryKey: ["CheckMentorEmailsData", user?.email],
     queryFn: () =>
       axiosPublic
-        .get(`/Notifications?mentorId=${user?.email}`)
+        .get(`/MentorEmails/CheckMentor?email=${user?.email}`)
+        .then((res) => res.data),
+    enabled: !!user?.email,
+  });
+
+  // ---------- Fetch Check Mentor Messages Data API ----------
+  const {
+    data: CheckMentorMessagesData,
+    isLoading: CheckMentorMessagesIsLoading,
+    error: CheckMentorMessagesError,
+  } = useQuery({
+    queryKey: ["CheckMentorMessagesData", user?.email],
+    queryFn: () =>
+      axiosPublic
+        .get(`/MentorMessages/CheckMentor?email=${user?.email}`)
+        .then((res) => res.data),
+    enabled: !!user?.email,
+  });
+
+  // ---------- Fetch Check Mentor Notifications Data API ----------
+  const {
+    data: CheckMentorNotificationsData,
+    isLoading: CheckMentorNotificationsIsLoading,
+    error: CheckMentorNotificationsError,
+  } = useQuery({
+    queryKey: ["CheckMentorNotificationsData", user?.email],
+    queryFn: () =>
+      axiosPublic
+        .get(`/Notifications/CheckMentor?mentorId=${user?.email}`)
         .then((res) => res.data),
     enabled: !!user?.email,
   });
@@ -138,122 +166,30 @@ const MentorDeleteMessagesModal = () => {
   // Loading states
   if (
     MentorIsLoading ||
-    MentorEmailsIsLoading ||
-    MentorMessagesIsLoading ||
-    MentorNotificationsIsLoading
+    CheckCoursesIsLoading ||
+    CheckMentorshipIsLoading ||
+    CheckMentorEmailsIsLoading ||
+    CheckMentorMessagesIsLoading ||
+    CheckMentorNotificationsIsLoading
   )
     return <Loading />;
 
   // Error states
   if (
     MentorError ||
-    MentorEmailsError ||
-    MentorMessagesError ||
-    MentorNotificationsError
+    CheckCoursesError ||
+    CheckMentorshipError ||
+    CheckMentorEmailsError ||
+    CheckMentorMessagesError ||
+    CheckMentorNotificationsError
   )
     return <Error />;
 
-  const DeleteMentorDataHandler = async () => {
-    setLoading(true);
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    try {
-      // Collect all IDs from fetched data
-      const MentorMessageIds = MentorMessagesData?.map((msg) => msg?._id) || [];
-      const MentorEmailIds = MentorEmailsData?.map((email) => email?._id) || [];
-      const MentorNotificationIds =
-        MentorNotificationsData?.map((notification) => notification?._id) || [];
-
-      if (
-        MentorMessageIds.length === 0 &&
-        MentorEmailIds.length === 0 &&
-        MentorNotificationIds.length === 0
-      ) {
-        setErrorMessage("No messages, emails, or notifications to delete.");
-        Swal.fire({
-          icon: "info",
-          title: "Nothing to Delete",
-          text: "No messages, emails, or notifications found.",
-        });
-        return;
-      }
-
-      // Initialize result messages
-      let messagesMsg = "No mentor messages deleted.";
-      let emailsMsg = "No mentor emails deleted.";
-      let notificationsMsg = "No mentor notifications deleted.";
-
-      // ---------- Delete Mentor Messages ----------
-      if (MentorMessageIds.length > 0) {
-        try {
-          const { data } = await axiosPublic.delete(
-            "/MentorMessages/BulkDelete",
-            {
-              data: { ids: MentorMessageIds },
-            }
-          );
-          messagesMsg = `Deleted ${data.deletedCount} message(s).`;
-        } catch (err) {
-          console.error("Mentor messages delete error:", err);
-          messagesMsg = "Failed to delete mentor messages.";
-        }
-      }
-
-      // ---------- Delete Mentor Emails ----------
-      if (MentorEmailIds.length > 0) {
-        try {
-          const { data } = await axiosPublic.delete(
-            "/MentorEmails/BulkDelete",
-            {
-              data: { ids: MentorEmailIds },
-            }
-          );
-          emailsMsg = `Deleted ${data.deletedCount} email(s).`;
-        } catch (err) {
-          console.error("Mentor emails delete error:", err);
-          emailsMsg = "Failed to delete mentor emails.";
-        }
-      }
-
-      // ---------- Delete Mentor Notifications ----------
-      if (MentorNotificationIds.length > 0) {
-        try {
-          const { data } = await axiosPublic.delete(
-            "/Notifications/BulkDelete",
-            { data: { ids: MentorNotificationIds } }
-          );
-          notificationsMsg = `Deleted ${data.deletedCount} notification(s).`;
-        } catch (err) {
-          console.error("Mentor notifications delete error:", err);
-          notificationsMsg = "Failed to delete mentor notifications.";
-        }
-      }
-
-      // ---------- Show Summary ----------
-      Swal.fire({
-        icon: "success",
-        title: "Deletion Complete",
-        html: `
-        <p><strong>Messages:</strong> ${messagesMsg}</p>
-        <p><strong>Emails:</strong> ${emailsMsg}</p>
-        <p><strong>Notifications:</strong> ${notificationsMsg}</p>
-      `,
-        confirmButtonText: "OK",
-      });
-
-      handleClose();
-    } catch (error) {
-      console.error("Bulk delete error:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Deletion Failed",
-        text: error.message || "An error occurred while deleting data.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  console.log("Check Courses Data :", CheckCoursesData);
+  console.log("Check Mentorship Data :", CheckMentorshipData);
+  console.log("Check Mentor Emails Data:", CheckMentorEmailsData);
+  console.log("Check Mentor Messages Data:", CheckMentorMessagesData);
+  console.log("Check Mentor Notifications Data:", CheckMentorNotificationsData);
 
   return (
     <div
@@ -270,7 +206,7 @@ const MentorDeleteMessagesModal = () => {
       </button>
 
       {/* Header */}
-      <h3 className="font-bold text-xl text-center mb-4">Delete Messages</h3>
+      <h3 className="font-bold text-xl text-center mb-4">Delete Profile</h3>
 
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-6" />
@@ -348,75 +284,6 @@ const MentorDeleteMessagesModal = () => {
               </div>
             </form>
           )}
-
-          {/* Step 2: Delete Courses */}
-          {step === 2 && (
-            <div className="space-y-4">
-              <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-xl shadow-md space-y-4">
-                <h4 className="text-lg font-bold mb-2">Mentor Summary</h4>
-
-                <div className="flex flex-col sm:flex-row sm:gap-10 gap-4">
-                  {/* Messages Count */}
-                  <div className="flex items-center gap-3">
-                    <span className="bg-blue-100 text-blue-600 rounded-full p-3 shadow-md">
-                      💬
-                    </span>
-                    <p>
-                      <span className="font-semibold">
-                        {MentorMessagesData?.length || 0}
-                      </span>{" "}
-                      Message{MentorMessagesData?.length > 1 ? "s" : ""}
-                    </p>
-                  </div>
-
-                  {/* Emails Count */}
-                  <div className="flex items-center gap-3">
-                    <span className="bg-blue-100 text-blue-600 rounded-full p-3 shadow-md">
-                      📧
-                    </span>
-                    <p>
-                      <span className="font-semibold">
-                        {MentorEmailsData?.length || 0}
-                      </span>{" "}
-                      Email{MentorEmailsData?.length > 1 ? "s" : ""}
-                    </p>
-                  </div>
-
-                  {/* Notifications Count */}
-                  <div className="flex items-center gap-3">
-                    <span className="bg-blue-100 text-blue-600 rounded-full p-3 shadow-md">
-                      🔔
-                    </span>
-                    <p>
-                      <span className="font-semibold">
-                        {MentorNotificationsData?.length || 0}
-                      </span>{" "}
-                      Notification
-                      {MentorNotificationsData?.length > 1 ? "s" : ""}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Delete Button */}
-              <button
-                onClick={DeleteMentorDataHandler}
-                disabled={loading}
-                className={`w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-2xl cursor-pointer ${
-                  loading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                {loading ? "Deleting..." : "Delete Courses & Applications"}
-              </button>
-
-              {/* Warning */}
-              <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg text-red-700 text-sm shadow-sm">
-                ⚠️ <span className="font-semibold">Warning:</span> This action
-                will permanently remove all courses, applications, and related
-                data. This cannot be undone.
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Right: Mentor Info */}
@@ -445,4 +312,4 @@ const MentorDeleteMessagesModal = () => {
   );
 };
 
-export default MentorDeleteMessagesModal;
+export default MentorDeleteProfileModal;

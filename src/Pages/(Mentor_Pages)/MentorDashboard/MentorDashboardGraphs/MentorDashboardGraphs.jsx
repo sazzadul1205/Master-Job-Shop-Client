@@ -17,8 +17,8 @@ import dayjs from "dayjs";
 import PropTypes from "prop-types";
 
 const MentorApplicationsChart = ({
-  MyCoursesApplicationsStatusData,
-  MyMentorshipApplicationsStatusData,
+  MyCoursesApplicationsStatusData = [], // default to empty array
+  MyMentorshipApplicationsStatusData = [], // default to empty array
 }) => {
   // --- Generate last 30 days ---
   const last30DaysFull = useMemo(() => {
@@ -28,32 +28,32 @@ const MentorApplicationsChart = ({
     );
   }, []);
 
-  // --- Aggregate data by Date Course  ---
+  // --- Aggregate data by Date Course ---
   const dataByDateCourse = useMemo(() => {
     const map = {};
-    MyCoursesApplicationsStatusData.forEach((item) => {
+    (MyCoursesApplicationsStatusData || []).forEach((item) => {
       const date = item.date;
       if (!map[date]) {
         map[date] = { accepted: 0, rejected: 0, pending: 0 };
       }
-      map[date].accepted += item.detailed.accepted || 0;
-      map[date].rejected += item.detailed.rejected || 0;
-      map[date].pending += item.detailed.pending || 0;
+      map[date].accepted += item.detailed?.accepted || 0;
+      map[date].rejected += item.detailed?.rejected || 0;
+      map[date].pending += item.detailed?.pending || 0;
     });
     return map;
   }, [MyCoursesApplicationsStatusData]);
 
-  // --- Aggregate data by Date Mentorship  ---
+  // --- Aggregate data by Date Mentorship ---
   const dataByDateMentorship = useMemo(() => {
     const map = {};
-    MyMentorshipApplicationsStatusData.forEach((item) => {
+    (MyMentorshipApplicationsStatusData || []).forEach((item) => {
       const date = item.date;
       if (!map[date]) {
         map[date] = { accepted: 0, rejected: 0, pending: 0 };
       }
-      map[date].accepted += item.detailed.accepted || 0;
-      map[date].rejected += item.detailed.rejected || 0;
-      map[date].pending += item.detailed.pending || 0;
+      map[date].accepted += item.detailed?.accepted || 0;
+      map[date].rejected += item.detailed?.rejected || 0;
+      map[date].pending += item.detailed?.pending || 0;
     });
     return map;
   }, [MyMentorshipApplicationsStatusData]);
@@ -67,7 +67,6 @@ const MentorApplicationsChart = ({
     pending: dataByDateCourse[fullDate]?.pending || 0,
   }));
 
-  // --- Prepare chart data (fill missing dates with 0) ---
   const chartDataMentorship = last30DaysFull.map((fullDate) => ({
     fullDate,
     date: dayjs(fullDate, "DD-MMM-YYYY").format("DD-MMM"),
@@ -78,7 +77,7 @@ const MentorApplicationsChart = ({
 
   return (
     <div className="px-5">
-      {/* --- Mentor Course Applications Status (Last 30 Days) */}
+      {/* Mentor Course Applications */}
       <div className="w-[calc(100%-20px)] h-[400px] bg-white shadow-md mx-[5px] my-5 pb-20 hover:shadow-2xl cursor-default rounded-2xl border border-gray-300">
         <h3 className="text-center text-xl text-black font-semibold mb-4 bg-gray-100 py-4">
           Mentor Course Applications Status (Last 30 Days)
@@ -95,8 +94,6 @@ const MentorApplicationsChart = ({
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" angle={-45} textAnchor="end" height={50} />
             <YAxis allowDecimals={false} />
-
-            {/* Tooltip with Capitalized Labels */}
             <Tooltip
               formatter={(value, name) => [
                 value,
@@ -104,15 +101,12 @@ const MentorApplicationsChart = ({
               ]}
               labelFormatter={(label) => `Date: ${label}`}
             />
-
-            {/* Legend with Capitalized Labels */}
             <Legend
               verticalAlign="top"
               formatter={(value) =>
                 value.charAt(0).toUpperCase() + value.slice(1)
               }
             />
-
             <Line type="monotone" dataKey="accepted" stroke="#4caf50" />
             <Line type="monotone" dataKey="rejected" stroke="#f44336" />
             <Line type="monotone" dataKey="pending" stroke="#ff9800" />
@@ -120,7 +114,7 @@ const MentorApplicationsChart = ({
         </ResponsiveContainer>
       </div>
 
-      {/* --- Mentor Mentorship Applications Status (Last 30 Days) */}
+      {/* Mentor Mentorship Applications */}
       <div className="w-[calc(100%-20px)] h-[400px] bg-white shadow-md mx-[5px] my-5 pb-20 hover:shadow-2xl cursor-default rounded-2xl border border-gray-300">
         <h3 className="text-center text-xl text-black font-semibold mb-4 bg-gray-100 py-4">
           Mentor Mentorship Applications Status (Last 30 Days)
@@ -137,8 +131,6 @@ const MentorApplicationsChart = ({
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" angle={-45} textAnchor="end" height={50} />
             <YAxis allowDecimals={false} />
-
-            {/* Tooltip with Capitalized Labels */}
             <Tooltip
               formatter={(value, name) => [
                 value,
@@ -146,15 +138,12 @@ const MentorApplicationsChart = ({
               ]}
               labelFormatter={(label) => `Date: ${label}`}
             />
-
-            {/* Legend with Capitalized Labels */}
             <Legend
               verticalAlign="top"
               formatter={(value) =>
                 value.charAt(0).toUpperCase() + value.slice(1)
               }
             />
-
             <Line type="monotone" dataKey="accepted" stroke="#4caf50" />
             <Line type="monotone" dataKey="rejected" stroke="#f44336" />
             <Line type="monotone" dataKey="pending" stroke="#ff9800" />
@@ -167,30 +156,8 @@ const MentorApplicationsChart = ({
 
 // Prop Validation
 MentorApplicationsChart.propTypes = {
-  MyCoursesApplicationsStatusData: PropTypes.arrayOf(
-    PropTypes.shape({
-      date: PropTypes.string.isRequired,
-      courseId: PropTypes.string,
-      count: PropTypes.number,
-      detailed: PropTypes.shape({
-        accepted: PropTypes.number,
-        rejected: PropTypes.number,
-        pending: PropTypes.number,
-      }).isRequired,
-    })
-  ).isRequired,
-  MyMentorshipApplicationsStatusData: PropTypes.arrayOf(
-    PropTypes.shape({
-      date: PropTypes.string.isRequired,
-      mentorshipId: PropTypes.string,
-      count: PropTypes.number,
-      detailed: PropTypes.shape({
-        accepted: PropTypes.number,
-        rejected: PropTypes.number,
-        pending: PropTypes.number,
-      }).isRequired,
-    })
-  ).isRequired,
+  MyCoursesApplicationsStatusData: PropTypes.array,
+  MyMentorshipApplicationsStatusData: PropTypes.array,
 };
 
 export default MentorApplicationsChart;

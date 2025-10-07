@@ -4,7 +4,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 
 // Icons
-import { RxCross2 } from "react-icons/rx";
+import { ImCross } from "react-icons/im";
 
 const TagInput = ({
   items = [], // default empty array
@@ -42,15 +42,15 @@ const TagInput = ({
       </label>
 
       {/* Tags */}
-      <div className="flex flex-wrap gap-2 rounded border border-gray-700 mb-3 px-2 py-2">
+      <div className="flex flex-wrap gap-1 rounded border border-gray-700 mb-3 px-2 py-2">
         {items.length > 0 ? (
           items.map((item, index) => (
             <div
               key={item.id || index} // fallback key if id is missing
               onClick={() => removeItem(index)}
-              className="flex items-center border border-gray-600 font-semibold text-gray-800 gap-2 px-5 py-1 rounded-full cursor-pointer hover:bg-gray-100 transition-all duration-200 text-sm"
+              className="flex items-center border-2 border-gray-600 hover:border-blue-600 font-semibold text-gray-800 gap-2 px-5 py-1 rounded-xl cursor-pointer hover:bg-blue-100 transition-all duration-200 text-sm"
             >
-              {item.value} <RxCross2 />
+              {item.value} <ImCross className="text-blue-500 text-[10px]" />
             </div>
           ))
         ) : (
@@ -67,7 +67,7 @@ const TagInput = ({
           value={newValue}
           onChange={(e) => setNewValue(e.target.value)}
           placeholder={placeholder}
-          className="input input-bordered bg-white text-black border-black w-3/7"
+          className="input input-bordered bg-white text-black border-black w-3/7 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();

@@ -25,7 +25,6 @@ const FormInput = ({
   name,
   step,
 }) => {
-  // Watch the value for formatting (only for date type)
   const value = watch && name ? watch(name) : "";
 
   return (
@@ -44,7 +43,9 @@ const FormInput = ({
           disabled={disabled}
           className={`textarea textarea-bordered w-full bg-white text-black border ${
             error ? "border-red-500" : "border-black"
-          } ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""}`}
+          } focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
+            disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""
+          }`}
         />
       ) : as === "select" ? (
         <select
@@ -53,7 +54,9 @@ const FormInput = ({
           disabled={disabled}
           className={`select select-bordered w-full bg-white text-black border ${
             error ? "border-red-500" : "border-black"
-          } ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""}`}
+          } focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
+            disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""
+          }`}
         >
           {placeholder && (
             <option value="" disabled>
@@ -75,7 +78,9 @@ const FormInput = ({
           disabled={disabled}
           className={`input input-bordered w-full bg-white text-black border ${
             error ? "border-red-500" : "border-black"
-          } ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""}`}
+          } focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
+            disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""
+          }`}
         />
       )}
 

@@ -109,7 +109,10 @@ const CompanyProfileLogoUpload = ({ preview, setPreview, setProfileImage }) => {
 
       {/* Upload area */}
       <div
-        className="w-28 h-28 rounded-full border-2 border-dashed border-gray-500 hover:border-black flex items-center justify-center mx-auto mt-3 cursor-pointer transition-colors duration-300 overflow-hidden bg-gray-50"
+        className="group w-28 h-28 rounded-full border-2 border-dashed border-gray-400 
+             flex items-center justify-center mx-auto mt-3 cursor-pointer 
+             transition-all duration-300 overflow-hidden bg-gray-50 
+             hover:border-blue-500 hover:bg-blue-50 hover:shadow-lg"
         onClick={openFilePicker}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -118,10 +121,10 @@ const CompanyProfileLogoUpload = ({ preview, setPreview, setProfileImage }) => {
           <img
             src={preview}
             alt="Company Logo Preview"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <FaCamera className="text-3xl text-gray-700" />
+          <FaCamera className="text-3xl text-gray-600 group-hover:text-blue-500 transition-colors duration-300" />
         )}
       </div>
 
@@ -170,7 +173,7 @@ const CompanyProfileLogoUpload = ({ preview, setPreview, setProfileImage }) => {
               <div className="flex gap-4">
                 <button
                   onClick={() => setShowCropper(false)}
-                  className="bg-gray-500 text-white px-4 py-2 w-[100px] rounded-lg hover:bg-gray-600"
+                  className="bg-gray-500 text-white px-4 py-2 w-[100px] rounded-lg hover:bg-gray-600 cursor-pointer "
                 >
                   Cancel
                 </button>
@@ -180,7 +183,7 @@ const CompanyProfileLogoUpload = ({ preview, setPreview, setProfileImage }) => {
                     e.preventDefault();
                     getCroppedImage();
                   }}
-                  className="bg-red-500 text-white px-4 py-2 w-[100px] rounded-lg hover:bg-red-700"
+                  className="bg-red-500 text-white px-4 py-2 w-[100px] rounded-lg hover:bg-red-700 cursor-pointer "
                 >
                   Save
                 </button>

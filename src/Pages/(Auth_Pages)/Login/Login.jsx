@@ -103,7 +103,7 @@ const Login = () => {
         } else if (Role === "Employer") {
           navigate("/Employer/Employer/Dashboard", { replace: true });
         } else if (Role === "Mentor") {
-          navigate("/Mentor/Mentor/Dashboard", { replace: true });
+          navigate("/Mentor/Dashboard", { replace: true });
         } else {
           navigate(from, { replace: true });
         }

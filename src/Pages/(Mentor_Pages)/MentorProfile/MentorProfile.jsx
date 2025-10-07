@@ -39,7 +39,7 @@ const MentorProfile = () => {
   } = useQuery({
     queryKey: ["MentorData", user?.email],
     queryFn: () =>
-      axiosPublic.get(`/Mentors?email=${user?.email}`).then((res) => res.data),
+      axiosPublic.get(`/Mentors/${user?.email}`).then((res) => res.data),
     enabled: !!user?.email,
   });
 
@@ -111,8 +111,8 @@ const MentorProfile = () => {
           ) : (
             // If no avatar, show default logo
             <img
-              src={MentorData.avatar || DefaultUserLogo}
-              alt={MentorData.name || "Mentor avatar"}
+              src={MentorData?.avatar || DefaultUserLogo}
+              alt={MentorData?.name || "Mentor avatar"}
               className="w-20 h-20 rounded-full"
             />
           )}
@@ -120,15 +120,15 @@ const MentorProfile = () => {
           {/* Name & Position */}
           <div>
             {/* Name */}
-            <h2 className="text-2xl font-semibold">{MentorData.name}</h2>
+            <h2 className="text-2xl font-semibold">{MentorData?.name}</h2>
 
             {/* Position */}
-            <p className="text-gray-500">{MentorData.position}</p>
+            <p className="text-gray-500">{MentorData?.position}</p>
           </div>
         </div>
 
         {/* Description */}
-        <p className="pt-5">{MentorData.description}</p>
+        <p className="pt-5">{MentorData?.description}</p>
       </div>
 
       {/* Contact Details Block */}
@@ -156,19 +156,19 @@ const MentorProfile = () => {
           {/* Email */}
           <div className="flex items-center gap-3 text-base">
             <AiOutlineMail className="text-2xl" />
-            {MentorData.contact.email}
+            {MentorData?.contact?.email}
           </div>
 
           {/* Phone */}
           <div className="flex items-center gap-3 text-base">
             <FiPhone className="text-2xl" />
-            {MentorData.contact.phone}
+            {MentorData?.contact?.phone}
           </div>
 
           {/* LinkedIn */}
           <div className="flex items-center gap-3 text-base">
             <SlSocialLinkedin className="text-2xl" />
-            {MentorData.contact.linkedin}
+            {MentorData?.contact?.linkedin}
           </div>
         </div>
       </div>
@@ -197,7 +197,7 @@ const MentorProfile = () => {
             Expertise Areas
           </h2>
           <div className="flex flex-wrap gap-2">
-            {MentorData.expertise.map((area, idx) => (
+            {MentorData?.expertise?.map((area, idx) => (
               <span
                 key={idx}
                 className="text-gray-800 text-xs font-semibold bg-gray-200 px-3 py-1.5 rounded-2xl hover:bg-gray-300 cursor-default transition-colors"
@@ -214,7 +214,7 @@ const MentorProfile = () => {
             Key Skills
           </h2>
           <div className="flex flex-wrap gap-2">
-            {MentorData.skills.map((skill, idx) => (
+            {MentorData?.skills?.map((skill, idx) => (
               <span
                 key={idx}
                 className="text-gray-800 text-xs font-semibold bg-gray-200 px-3 py-1.5 rounded-2xl hover:bg-gray-300 cursor-default transition-colors"
@@ -255,7 +255,7 @@ const MentorProfile = () => {
         </div>
       </div>
 
-      {/* Modals */}
+      {/* ---------- Modals ---------- */}
       {/* Edit Profile Basic Information Modal */}
       <dialog id="Edit_Profile_Basic_Information" className="modal">
         <EditProfileBasicInformationModal

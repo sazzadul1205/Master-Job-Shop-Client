@@ -74,7 +74,7 @@ const CreateCourseModal = ({ refetch }) => {
   } = useQuery({
     queryKey: ["MentorsData"],
     queryFn: () =>
-      axiosPublic?.get(`/Mentors?email=${user?.email}`).then((res) => res.data),
+      axiosPublic?.get(`/Mentors/${user?.email}`).then((res) => res.data),
     enabled: !!user?.email,
   });
 

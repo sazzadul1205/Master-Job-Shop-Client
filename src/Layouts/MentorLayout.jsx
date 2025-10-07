@@ -145,7 +145,7 @@ const MentorLayout = () => {
 
   const formatCount = (count) => (count > 1200 ? "99+" : count);
 
-  // Fetch Mentor Data
+  // ---------- Fetching Mentor Data API ----------
   const {
     data: MentorData,
     isLoading,
@@ -153,7 +153,7 @@ const MentorLayout = () => {
   } = useQuery({
     queryKey: ["MentorData", user?.email],
     queryFn: () =>
-      axiosPublic.get(`/Mentors?email=${user?.email}`).then((res) => res.data),
+      axiosPublic.get(`/Mentors/${user?.email}`).then((res) => res.data),
     enabled: !!user?.email,
   });
 
@@ -189,13 +189,15 @@ const MentorLayout = () => {
   // Error UI
   if (error) return <Error />;
 
+  // Toggle dropdown
   const toggleDropdown = (name) => {
     setOpenDropdown((prev) => (prev === name ? null : name));
   };
 
+  // Logout Handler
   const handleLogout = async () => {
     try {
-      await logOut(); // Firebase logout
+      await logOut();
       Swal.fire({
         icon: "success",
         title: "Logged Out",
@@ -203,7 +205,7 @@ const MentorLayout = () => {
         timer: 1500,
         showConfirmButton: false,
       });
-      navigate("/Login"); // redirect to login page
+      navigate("/Login");
     } catch (error) {
       Swal.fire({
         icon: "error",

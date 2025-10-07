@@ -10,6 +10,9 @@ import { ImCross } from "react-icons/im";
 // Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
+// Shared
+import FormInput from "../../../../Shared/FormInput/FormInput";
+
 const EditProfileBiographyModal = ({ MentorData, refetch }) => {
   const axiosPublic = useAxiosPublic();
 
@@ -17,7 +20,7 @@ const EditProfileBiographyModal = ({ MentorData, refetch }) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Form
+  // Form Handling
   const {
     register,
     handleSubmit,
@@ -61,9 +64,9 @@ const EditProfileBiographyModal = ({ MentorData, refetch }) => {
       setLoading(false);
       handleClose();
     } catch (error) {
-      // On error
       console.error("Error updating biography:", error);
       setErrorMessage("Failed to update biography. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
@@ -83,9 +86,12 @@ const EditProfileBiographyModal = ({ MentorData, refetch }) => {
       </button>
 
       {/* Title */}
-      <h3 className="font-bold text-2xl mb-4 text-center">
+      <h3 className="font-bold text-xl text-center mb-4">
         Edit Profile Biography
       </h3>
+
+      {/* Divider */}
+      <div className="p-[1px] bg-blue-500 mb-4" />
 
       {/* Error */}
       {errorMessage && (
@@ -97,26 +103,14 @@ const EditProfileBiographyModal = ({ MentorData, refetch }) => {
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Biography */}
-        <div>
-          <label className="font-medium text-sm mb-1">Biography</label>
-          <textarea
-            {...register("biography", {
-              required: "Biography is required",
-              minLength: {
-                value: 10,
-                message: "Biography must be at least 10 characters",
-              },
-            })}
-            className="textarea textarea-bordered w-full bg-white text-black border-black"
-            placeholder="Describe your Biography"
-            rows={10}
-          />
-          {errors.biography && (
-            <p className="text-red-500 text-xs mt-1">
-              {errors.biography.message}
-            </p>
-          )}
-        </div>
+        <FormInput
+          label="Biography"
+          rows={15}
+          as="textarea"
+          placeholder="Make a Biography ......"
+          register={register("biography")}
+          error={errors.position}
+        />
 
         {/* Submit */}
         <button

@@ -15,8 +15,11 @@ import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 // Shared
-import Loading from "../../../Shared/Loading/Loading";
 import Error from "../../../Shared/Error/Error";
+import Loading from "../../../Shared/Loading/Loading";
+
+// Functions
+import { formatBDPhoneNumber } from "../../../Functions/formatPhoneNumber";
 
 // Modals
 import CreateMentorProfileModal from "./CreateMentorProfileModal/CreateMentorProfileModal";
@@ -24,6 +27,7 @@ import EditProfileExpertiseModal from "./EditProfileExpertiseModal/EditProfileEx
 import EditProfileBiographyModal from "./EditProfileBiographyModal/EditProfileBiographyModal";
 import EditProfileContactDetailsModal from "./EditProfileContactDetailsModal/EditProfileContactDetailsModal";
 import EditProfileBasicInformationModal from "./EditProfileBasicInformationModal/EditProfileBasicInformationModal";
+import { GoDotFill } from "react-icons/go";
 
 const MentorProfile = () => {
   const { user, loading } = useAuth();
@@ -52,7 +56,7 @@ const MentorProfile = () => {
   // If no mentor profile data exists
   if (!MentorData || Object.keys(MentorData).length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[70vh] text-center">
+      <div className="flex flex-col items-center justify-center h-[70vh]">
         {/* Header */}
         <h2 className="text-2xl text-black font-bold mb-4">No Profile Found</h2>
 
@@ -79,6 +83,8 @@ const MentorProfile = () => {
       </div>
     );
   }
+
+  console.log(MentorData);
 
   return (
     <div className="p-8">
@@ -162,7 +168,9 @@ const MentorProfile = () => {
           {/* Phone */}
           <div className="flex items-center gap-3 text-base">
             <FiPhone className="text-2xl" />
-            {MentorData?.contact?.phone}
+            {MentorData?.contact?.phone
+              ? formatBDPhoneNumber(MentorData.contact.phone)
+              : "N/A"}
           </div>
 
           {/* LinkedIn */}
@@ -193,14 +201,14 @@ const MentorProfile = () => {
 
         {/* Expertise */}
         <div className="pt-6">
-          <h2 className="text-gray-500 text-lg font-semibold mb-2">
-            Expertise Areas
+          <h2 className="flex items-center gap-2 text-lg font-semibold mb-4">
+            <GoDotFill /> Expertise Areas
           </h2>
           <div className="flex flex-wrap gap-2">
             {MentorData?.expertise?.map((area, idx) => (
               <span
                 key={idx}
-                className="text-gray-800 text-xs font-semibold bg-gray-200 px-3 py-1.5 rounded-2xl hover:bg-gray-300 cursor-default transition-colors"
+                className="text-gray-800 text-sm font-semibold bg-gray-200 px-5 py-1.5 rounded-xl hover:bg-gray-300 transition-colors cursor-pointer "
               >
                 {area}
               </span>
@@ -210,14 +218,14 @@ const MentorProfile = () => {
 
         {/* Skills */}
         <div className="pt-6">
-          <h2 className="text-gray-500 text-lg font-semibold mb-2">
-            Key Skills
+          <h2 className="flex items-center gap-2 text-lg font-semibold mb-4">
+            <GoDotFill /> Key Skills
           </h2>
           <div className="flex flex-wrap gap-2">
             {MentorData?.skills?.map((skill, idx) => (
               <span
                 key={idx}
-                className="text-gray-800 text-xs font-semibold bg-gray-200 px-3 py-1.5 rounded-2xl hover:bg-gray-300 cursor-default transition-colors"
+                className="text-gray-800 text-sm font-semibold bg-gray-200 px-5 py-1.5 rounded-xl hover:bg-gray-300 transition-colors cursor-pointer "
               >
                 {skill}
               </span>

@@ -29,6 +29,7 @@
     "dayjs": "^1.11.18",
     "firebase": "^11.10.0",
     "format": "^0.2.2",
+    "libphonenumber-js": "^1.12.23",
     "localforage": "^1.10.0",
     "lucide-react": "^0.525.0",
     "match-sorter": "^6.3.4",

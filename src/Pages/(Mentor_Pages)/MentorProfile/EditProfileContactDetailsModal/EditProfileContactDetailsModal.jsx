@@ -10,6 +10,7 @@ import { ImCross } from "react-icons/im";
 // Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import PhoneInput from "react-phone-input-2";
+import FormInput from "../../../../Shared/FormInput/FormInput";
 
 const EditProfileContactDetailsModal = ({ MentorData, refetch }) => {
   const axiosPublic = useAxiosPublic();
@@ -21,6 +22,7 @@ const EditProfileContactDetailsModal = ({ MentorData, refetch }) => {
     MentorData?.contact?.phone || ""
   );
 
+  // Form Handling
   const {
     register,
     handleSubmit,
@@ -57,15 +59,17 @@ const EditProfileContactDetailsModal = ({ MentorData, refetch }) => {
     setLoading(true);
     setErrorMessage("");
 
-    try {
-      const payload = {
-        contact: {
-          email: data.email,
-          phone: phoneNumber,
-          linkedin: data.linkedin,
-        },
-      };
+    const payload = {
+      contact: {
+        email: data.email,
+        phone: phoneNumber,
+        linkedin: data.linkedin,
+      },
+    };
 
+    // Prepare payload
+    try {
+      // Send PUT request
       await axiosPublic.put(`/Mentors/${MentorData._id}`, payload);
 
       setLoading(false);
@@ -73,6 +77,7 @@ const EditProfileContactDetailsModal = ({ MentorData, refetch }) => {
     } catch (error) {
       console.error(error);
       setErrorMessage("Failed to update contact details. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
@@ -92,9 +97,12 @@ const EditProfileContactDetailsModal = ({ MentorData, refetch }) => {
       </button>
 
       {/* Modal Title */}
-      <h3 className="font-bold text-2xl mb-4 text-center">
+      <h3 className="font-bold text-xl text-center mb-4">
         Edit Profile Contact Details
       </h3>
+
+      {/* Divider */}
+      <div className="p-[1px] bg-blue-500 mb-4" />
 
       {/* Server error message */}
       {errorMessage && (
@@ -106,20 +114,14 @@ const EditProfileContactDetailsModal = ({ MentorData, refetch }) => {
       {/* Contact Details Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Email */}
-        <div>
-          <label className="font-medium text-sm mb-1">
-            Email <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="email"
-            {...register("email", { required: true })}
-            className="input input-bordered w-full bg-white text-black border-black"
-            placeholder="e.g. psazzadul@gmail.com"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm">Email is required</p>
-          )}
-        </div>
+        <FormInput
+          label="Email"
+          type="email"
+          required
+          placeholder="YourEmail@example.com"
+          register={register("email", { required: true })}
+          error={errors.email}
+        />
 
         {/* Phone */}
         <div>
@@ -139,20 +141,14 @@ const EditProfileContactDetailsModal = ({ MentorData, refetch }) => {
         </div>
 
         {/* LinkedIn */}
-        <div>
-          <label className="font-medium text-sm mb-1">
-            LinkedIn <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="url"
-            {...register("linkedin", { required: true })}
-            className="input input-bordered w-full bg-white text-black border-black"
-            placeholder="e.g. linkedin.com/in/adam"
-          />
-          {errors.linkedin && (
-            <p className="text-red-500 text-sm">LinkedIn is required</p>
-          )}
-        </div>
+        <FormInput
+          label="LinkedIn"
+          type="url"
+          required
+          placeholder="Your LinkedIn URL"
+          register={register("linkedin", { required: true })}
+          error={errors.linkedin}
+        />
 
         {/* Submit Button */}
         <button

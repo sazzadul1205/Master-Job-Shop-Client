@@ -153,6 +153,7 @@ const MentorDeleteMessagesModal = () => {
   )
     return <Error />;
 
+  // Step 2: Delete mentor data
   const DeleteMentorDataHandler = async () => {
     setLoading(true);
     setErrorMessage("");

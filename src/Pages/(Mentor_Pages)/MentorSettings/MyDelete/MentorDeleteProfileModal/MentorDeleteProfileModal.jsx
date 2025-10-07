@@ -1,11 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Icons
 import { ImCross } from "react-icons/im";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 // Packages
-import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
@@ -19,8 +19,11 @@ import Error from "../../../../../Shared/Error/Error";
 import Loading from "../../../../../Shared/Loading/Loading";
 
 const MentorDeleteProfileModal = () => {
-  const { user } = useAuth();
+  const { user, logOut } = useAuth();
   const axiosPublic = useAxiosPublic();
+
+  // Navigate Hooks
+  const navigate = useNavigate();
 
   // States
   const [step, setStep] = useState(1);
@@ -160,7 +163,7 @@ const MentorDeleteProfileModal = () => {
   // Close modal
   const handleClose = () => {
     setServerError("");
-    document.getElementById("Mentor_Delete_Messages_Modal")?.close();
+    document.getElementById("Mentor_Delete_Profile_Modal")?.close();
   };
 
   // Loading states
@@ -185,15 +188,59 @@ const MentorDeleteProfileModal = () => {
   )
     return <Error />;
 
-  console.log("Check Courses Data :", CheckCoursesData);
-  console.log("Check Mentorship Data :", CheckMentorshipData);
-  console.log("Check Mentor Emails Data:", CheckMentorEmailsData);
-  console.log("Check Mentor Messages Data:", CheckMentorMessagesData);
-  console.log("Check Mentor Notifications Data:", CheckMentorNotificationsData);
+  // Determine remaining data
+  const remainingData = [];
+
+  // Check if there are any remaining data
+  if (CheckCoursesData?.hasMentorship) remainingData.push("Courses");
+  if (CheckMentorEmailsData?.hasEmails) remainingData.push("Emails");
+  if (CheckMentorshipData?.hasMentorship) remainingData.push("Mentorship");
+  if (CheckMentorMessagesData?.hasMentorship) remainingData.push("Messages");
+  if (CheckMentorNotificationsData?.hasNotifications)
+    remainingData.push("Notifications");
+
+  // Determine if there is any remaining data
+  const hasPendingData = remainingData.length > 0;
+
+  // Close modal
+  const DeleteMentorDataHandler = async () => {
+    setLoading(true);
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    try {
+      // Step 1: Delete mentor by email
+      await axiosPublic.delete("/Mentors/ByEmail", {
+        params: { email: user?.email },
+      });
+
+      // Step 2: Update role to normal user
+      await axiosPublic.patch("/Users/RoleUpdate", {
+        email: user?.email,
+        role: "Member",
+      });
+
+      // Step 3: Success — show message and logout
+      setSuccessMessage("Mentor profile deleted successfully.");
+
+      // Step 4: Delay a bit for UX, then logout and navigate home
+      setTimeout(async () => {
+        await logOut();
+        navigate("/");
+      }, 1000);
+    } catch (error) {
+      console.error("Error deleting mentor:", error);
+      setErrorMessage(
+        error.response?.data?.message || "An error occurred while deleting."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
-      id="Mentor_Delete_Messages_Modal"
+      id="Mentor_Delete_Profile_Modal"
       className="modal-box max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh] relative"
     >
       {/* Close Button */}
@@ -283,6 +330,45 @@ const MentorDeleteProfileModal = () => {
                 </button>
               </div>
             </form>
+          )}
+
+          {/* Step 1: Verify Password */}
+          {step === 2 && (
+            <div>
+              {/* Delete Button */}
+              <button
+                onClick={DeleteMentorDataHandler}
+                disabled={loading || hasPendingData}
+                className={`w-full ${
+                  hasPendingData ? "bg-gray-400" : "bg-red-600 hover:bg-red-700"
+                } text-white font-bold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-2xl cursor-pointer ${
+                  loading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                {loading
+                  ? "Deleting..."
+                  : hasPendingData
+                  ? "Cannot Delete – Data Remaining"
+                  : "Delete Profile"}
+              </button>
+
+              {/* Warning */}
+              <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg text-red-700 text-sm shadow-sm mt-3">
+                ⚠️ <span className="font-semibold">Warning:</span> This action
+                will permanently remove your profile and all associated data.
+                <br />
+                {hasPendingData ? (
+                  <span className="block mt-2 text-red-600 font-medium">
+                    You must delete the following first:{" "}
+                    {remainingData.join(", ")}.
+                  </span>
+                ) : (
+                  <span className="block mt-2 text-green-600 font-medium">
+                    All data cleared. You can safely delete your profile.
+                  </span>
+                )}
+              </div>
+            </div>
           )}
         </div>
 

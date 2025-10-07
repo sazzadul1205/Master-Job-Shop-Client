@@ -83,9 +83,11 @@ import ManageEmployerProfile from "./Pages/(Employer_Pages)/ManageEmployerProfil
 // ------------------ Mentor Pages ------------------
 import MentorProfile from "./Pages/(Mentor_Pages)/MentorProfile/MentorProfile";
 import MentorMentees from "./Pages/(Mentor_Pages)/MentorMentees/MentorMentees";
+import MentorSettings from "./Pages/(Mentor_Pages)/MentorSettings/MentorSettings";
 import MentorMessages from "./Pages/(Mentor_Pages)/MentorMessages/MentorMessages";
 import MentorDashboard from "./Pages/(Mentor_Pages)/MentorDashboard/MentorDashboard";
 import MentorMyCourses from "./Pages/(Mentor_Pages)/MentorMyCourses/MentorMyCourses";
+import MentorHelpCenter from "./Pages/(Mentor_Pages)/MentorHelpCenter/MentorHelpCenter";
 import MentorMyMentorship from "./Pages/(Mentor_Pages)/MentorMyMentorship/MentorMyMentorship";
 import MentorNotifications from "./Pages/(Mentor_Pages)/MentorNotifications/MentorNotifications";
 import MentorScheduledSessions from "./Pages/(Mentor_Pages)/MentorScheduledSessions/MentorScheduledSessions";
@@ -98,10 +100,10 @@ import BecomeMentor from "./Pages/BecomeMentor/BecomeMentor";
 import BecomeEmployer from "./Pages/BecomeEmployer/BecomeEmployer";
 
 // ------------------ Routes ------------------
+import MentorPrivateRoute from "./Routes/MentorPrivateRoute";
 import MemberPrivateRoute from "./Routes/MemberPrivateRoute";
 import EmployerPrivateRoute from "./Routes/EmployerPrivateRoute";
-import MentorSettings from "./Pages/(Mentor_Pages)/MentorSettings/MentorSettings";
-import MentorHelpCenter from "./Pages/(Mentor_Pages)/MentorHelpCenter/MentorHelpCenter";
+import RestrictedAccess from "./Pages/RestrictedAccess/RestrictedAccess";
 
 const queryClient = new QueryClient();
 
@@ -381,48 +383,120 @@ createRoot(document.getElementById("root")).render(
               />
 
               {/* Mentor Profile & Dashboard */}
-              <Route path="/Mentor/Profile" element={<MentorProfile />} />
-              <Route path="/Mentor/Dashboard" element={<MentorDashboard />} />
+              <Route
+                path="/Mentor/Profile"
+                element={
+                  <MentorPrivateRoute>
+                    <MentorProfile />
+                  </MentorPrivateRoute>
+                }
+              />
+              <Route
+                path="/Mentor/Dashboard"
+                element={
+                  <MentorPrivateRoute>
+                    <MentorDashboard />
+                  </MentorPrivateRoute>
+                }
+              />
 
               {/* Mentorship */}
               <Route
                 path="/Mentor/MyMentorship's"
-                element={<MentorMyMentorship />}
+                element={
+                  <MentorPrivateRoute>
+                    <MentorMyMentorship />
+                  </MentorPrivateRoute>
+                }
               />
               <Route
                 path="/Mentor/MentorshipApplications"
-                element={<MentorMyMentorshipApplications />}
+                element={
+                  <MentorPrivateRoute>
+                    <MentorMyMentorshipApplications />
+                  </MentorPrivateRoute>
+                }
               />
 
               {/* Courses */}
-              <Route path="/Mentor/MyCourses" element={<MentorMyCourses />} />
+              <Route
+                path="/Mentor/MyCourses"
+                element={
+                  <MentorPrivateRoute>
+                    <MentorMyCourses />
+                  </MentorPrivateRoute>
+                }
+              />
               <Route
                 path="/Mentor/CourseApplications"
-                element={<MentorMyCourseApplications />}
+                element={
+                  <MentorPrivateRoute>
+                    <MentorMyCourseApplications />
+                  </MentorPrivateRoute>
+                }
               />
 
               {/* Mentees & Scheduled Sessions */}
-              <Route path="/Mentor/Mentees" element={<MentorMentees />} />
+              <Route
+                path="/Mentor/Mentees"
+                element={
+                  <MentorPrivateRoute>
+                    <MentorMentees />
+                  </MentorPrivateRoute>
+                }
+              />
               <Route
                 path="/Mentor/ScheduledSessions"
-                element={<MentorScheduledSessions />}
+                element={
+                  <MentorPrivateRoute>
+                    <MentorScheduledSessions />
+                  </MentorPrivateRoute>
+                }
               />
 
               {/* Messages */}
-              <Route path="/Mentor/Messages" element={<MentorMessages />} />
+              <Route
+                path="/Mentor/Messages"
+                element={
+                  <MentorPrivateRoute>
+                    <MentorMessages />
+                  </MentorPrivateRoute>
+                }
+              />
 
               {/* Notifications */}
               <Route
                 path="/Mentor/Notifications"
-                element={<MentorNotifications />}
+                element={
+                  <MentorPrivateRoute>
+                    <MentorNotifications />
+                  </MentorPrivateRoute>
+                }
               />
 
               {/* Settings */}
-              <Route path="/Mentor/Settings" element={<MentorSettings />} />
+              <Route
+                path="/Mentor/Settings"
+                element={
+                  <MentorPrivateRoute>
+                    <MentorSettings />
+                  </MentorPrivateRoute>
+                }
+              />
 
               {/* Help Center */}
-              <Route path="/Mentor/HelpCenter" element={<MentorHelpCenter />} />
+              <Route
+                path="/Mentor/HelpCenter"
+                element={
+                  <MentorPrivateRoute>
+                    <MentorHelpCenter />
+                  </MentorPrivateRoute>
+                }
+              />
             </Route>
+
+            {/* ========================== Restricted Access ========================== */}
+            <Route path="/RestrictedAccess" element={<RestrictedAccess />} />
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>

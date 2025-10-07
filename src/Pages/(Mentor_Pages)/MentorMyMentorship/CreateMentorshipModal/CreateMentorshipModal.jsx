@@ -29,6 +29,8 @@ import { confirmationType } from "../../../../Shared/Lists/confirmationType";
 import { PaymentMethodOptions } from "../../../../Shared/Lists/PaymentMethodOptions";
 import { preferredCommunicationMethod } from "../../../../Shared/Lists/preferredCommunicationMethod";
 import { preferredCommunicationFrequency } from "../../../../Shared/Lists/preferredCommunicationFrequency";
+import Error from "../../../../Shared/Error/Error";
+import Loading from "../../../../Shared/Loading/Loading";
 
 // Helper: format yyyy-mm-dd -> 25 Aug 2023
 const formatDate = (dateStr) => {
@@ -43,7 +45,7 @@ const formatDate = (dateStr) => {
 
 const CreateMentorshipModal = ({ refetch }) => {
   const axiosPublic = useAxiosPublic();
-  const { user } = useAuth();
+  const { user, loading: userLoading } = useAuth();
 
   // States Variables
   const [loading, setLoading] = useState(null);
@@ -72,10 +74,15 @@ const CreateMentorshipModal = ({ refetch }) => {
   const selectedCategory = watch("category");
 
   // ---------- Fetch Mentors ----------
-  const { data: MyMentorsData } = useQuery({
+  const {
+    data: MyMentorsData,
+    isLoading: MyMentorsIsLoading,
+    error: MyMentorsError,
+  } = useQuery({
     queryKey: ["MentorsData"],
     queryFn: () =>
       axiosPublic.get(`/Mentors?email=${user?.email}`).then((res) => res.data),
+    enabled: !!user?.email,
   });
 
   // Update subcategory options based on selected category
@@ -262,6 +269,12 @@ const CreateMentorshipModal = ({ refetch }) => {
       setLoading(false);
     }
   };
+
+  // Loading states
+  if (MyMentorsIsLoading || userLoading) return <Loading />;
+
+  // Error states
+  if (MyMentorsError) return <Error />;
 
   return (
     <div
@@ -640,11 +653,14 @@ const CreateMentorshipModal = ({ refetch }) => {
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              id="isFree"
+              id="isFree-mentorship"
               {...register("fee.isFree")}
               className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
             />
-            <label htmlFor="isFree" className="text-gray-700 font-medium">
+            <label
+              htmlFor="isFree-mentorship"
+              className="text-gray-700 font-medium"
+            >
               Free Mentorship
             </label>
           </div>
@@ -658,10 +674,12 @@ const CreateMentorshipModal = ({ refetch }) => {
               as="select"
               placeholder="-- Select Fee Type --"
               register={register("fee.type", {
-                required: !watch("fee.isFree") ? "Fee type is required" : false,
+                required: !watch("fee.isFree-mentorship")
+                  ? "Fee type is required"
+                  : false,
               })}
               error={errors?.fee?.type}
-              disabled={watch("fee.isFree")}
+              disabled={watch("fee.isFree-mentorship")}
               options={FeeTypeOptions}
             />
 
@@ -672,12 +690,14 @@ const CreateMentorshipModal = ({ refetch }) => {
               placeholder="e.g., 50"
               required
               register={register("fee.amount", {
-                required: !watch("fee.isFree") ? "Amount is required" : false,
+                required: !watch("fee.isFree-mentorship")
+                  ? "Amount is required"
+                  : false,
                 valueAsNumber: true,
                 min: { value: 1, message: "Amount must be greater than 0" },
               })}
               error={errors?.fee?.amount}
-              disabled={watch("fee.isFree")}
+              disabled={watch("fee.isFree-mentorship")}
             />
 
             {/* Currency */}
@@ -687,10 +707,12 @@ const CreateMentorshipModal = ({ refetch }) => {
               as="select"
               placeholder="-- Select Currency --"
               register={register("fee.currency", {
-                required: !watch("fee.isFree") ? "Currency is required" : false,
+                required: !watch("fee.isFree-mentorship")
+                  ? "Currency is required"
+                  : false,
               })}
               error={errors?.fee?.currency}
-              disabled={watch("fee.isFree")}
+              disabled={watch("fee.isFree-mentorship")}
               options={CurrencyOptions}
             />
 
@@ -701,12 +723,12 @@ const CreateMentorshipModal = ({ refetch }) => {
               as="select"
               placeholder="-- Select Payment Method --"
               register={register("fee.paymentMethod", {
-                required: !watch("fee.isFree")
+                required: !watch("fee.isFree-mentorship")
                   ? "Payment method is required"
                   : false,
               })}
               error={errors?.fee?.paymentMethod}
-              disabled={watch("fee.isFree")}
+              disabled={watch("fee.isFree-mentorship")}
               options={PaymentMethodOptions}
             />
 
@@ -717,12 +739,12 @@ const CreateMentorshipModal = ({ refetch }) => {
               as="select"
               placeholder="-- Select Confirmation Type --"
               register={register("fee.confirmationType", {
-                required: !watch("fee.isFree")
+                required: !watch("fee.isFree-mentorship")
                   ? "Confirmation type is required"
                   : false,
               })}
               error={errors?.fee?.confirmationType}
-              disabled={watch("fee.isFree")}
+              disabled={watch("fee.isFree-mentorship")}
               options={confirmationType}
             />
 
@@ -737,9 +759,9 @@ const CreateMentorshipModal = ({ refetch }) => {
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  id="negotiable"
+                  id="negotiable-mentorship"
                   {...register("fee.negotiable")}
-                  disabled={watch("fee.isFree")}
+                  disabled={watch("fee.isFree-mentorship")}
                   className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
                 />
                 <span className="text-gray-700 text-sm">Yes</span>
@@ -753,7 +775,7 @@ const CreateMentorshipModal = ({ refetch }) => {
             placeholder="e.g., https://paypal.me/username"
             register={register("fee.paymentLink")}
             error={errors?.fee?.paymentLink}
-            disabled={watch("fee.isFree")}
+            disabled={watch("fee.isFree-mentorship")}
           />
         </div>
 

@@ -44,10 +44,12 @@ const MentorLoginHistoryModal = () => {
   if (isLoading) return <Loading />;
   if (error) return <Error />;
 
-  // Take only last 10 sorted by loginTime (newest first)
-  const recentLogins = [...MentorLoginHistoryData]
-    .sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime))
-    .slice(0, 10);
+  // Safely handle missing or invalid data
+  const recentLogins = Array.isArray(MentorLoginHistoryData)
+    ? [...MentorLoginHistoryData]
+        .sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime))
+        .slice(0, 10)
+    : [];
 
   return (
     <div

@@ -13,6 +13,9 @@ import CompanyProfileLogoUpload from "../../../(Employer_Pages)/ManageCompanyPro
 // Hooks
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
+// Shared
+import FormInput from "../../../../Shared/FormInput/FormInput";
+
 // Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
@@ -26,7 +29,7 @@ const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [profileImage, setProfileImage] = useState(null);
 
-  // Initialize react-hook-form with default values from user.preferences or empty strings
+  // Form Handling
   const {
     register,
     handleSubmit,
@@ -40,6 +43,7 @@ const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
     },
   });
 
+  // Reset form whenever MentorData changes
   useEffect(() => {
     if (MentorData) {
       reset({
@@ -66,10 +70,11 @@ const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
     setLoading(true);
     setErrorMessage("");
 
-    let uploadedImageUrl = preview; // default to existing avatar
+    let uploadedImageUrl = preview;
 
     // Upload new image if selected
     if (profileImage) {
+      // Upload new image
       try {
         const formData = new FormData();
         formData.append("image", profileImage);
@@ -103,9 +108,11 @@ const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
     } catch (error) {
       console.error(error);
       setErrorMessage("Failed to update profile. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
+
   return (
     <div
       id="Edit_Profile_Basic_Information"
@@ -121,9 +128,12 @@ const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
       </button>
 
       {/* Modal Title */}
-      <h3 className="font-bold text-2xl mb-4 text-center">
+      <h3 className="font-bold text-xl text-center mb-4">
         Edit Profile Basic Information
       </h3>
+
+      {/* Divider */}
+      <div className="p-[1px] bg-blue-500 mb-4" />
 
       {/* Server error message */}
       {errorMessage && (
@@ -135,8 +145,9 @@ const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
       {/* Preference Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Basic information */}
-        <div className="flex w-full gap-1">
-          <div className="w-1/3 py-2 px-5">
+        <div className="flex w-full gap-3">
+          {/* Avatar Section */}
+          <div className="w-1/3 p-2">
             {/* Logo Title */}
             <p className="font-medium text-center text-sm mb-1">Mentor Image</p>
 
@@ -149,48 +160,37 @@ const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
           </div>
 
           {/* Initial Information */}
-          <div className="w-2/3 space-y-3 py-2">
+          <div className="w-2/3 space-y-3 py-2 pl-3 border-l border-gray-300">
             {/* Name */}
-            <div>
-              <label className="font-medium text-sm mb-1">
-                Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                {...register("name", { required: true })}
-                className="input input-bordered w-full bg-white text-black border-black"
-                placeholder="Company Name"
-              />
-              {errors.name && <p className="text-red-500 text-sm">Required</p>}
-            </div>
+            <FormInput
+              label="Name"
+              required
+              placeholder="My Name"
+              register={register("name", { required: true })}
+              error={errors.name}
+            />
 
             {/* Industries */}
-            <div>
-              <label className="font-medium text-sm mb-1">
-                Industries <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                {...register("position", { required: true })}
-                className="input input-bordered w-full bg-white text-black border-black"
-                placeholder="Your position"
-              />
-            </div>
+            <FormInput
+              label="Industries"
+              required
+              placeholder="Your position"
+              register={register("position", { required: true })}
+              error={errors.position}
+            />
           </div>
         </div>
 
         {/* Description */}
-        <div>
-          <label className="font-medium text-sm mb-1">
-            Description <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            {...register("description")}
-            className="textarea textarea-bordered w-full bg-white text-black border-black"
-            placeholder="Describe your self"
-            rows={4}
-          />
-        </div>
+        <FormInput
+          label="Description"
+          required
+          rows={10}
+          as="textarea"
+          placeholder="Describe Your Self ......"
+          register={register("description", { required: true })}
+          error={errors.position}
+        />
 
         {/* Submit Button */}
         <button

@@ -4,15 +4,19 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 import PhoneInput from "react-phone-input-2";
+import { QueryClient } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 
 // Icons
 import { ImCross } from "react-icons/im";
-import { RxCross2 } from "react-icons/rx";
 
 // Hooks
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+
+// Shared
+import TagInput from "../../../../Shared/TagInput/TagInput";
+import FormInput from "../../../../Shared/FormInput/FormInput";
 
 // Components
 import CompanyProfileLogoUpload from "../../../(Employer_Pages)/ManageCompanyProfile/AddCompanyProfileModal/CompanyProfileLogoUpload/CompanyProfileLogoUpload";
@@ -33,7 +37,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
   const [profileImage, setProfileImage] = useState(null);
 
   // New Field Values
-  const [newFieldValues, setNewFieldValues] = useState({
+  const [setNewFieldValues] = useState({
     expertise: "",
     skills: "",
   });
@@ -67,6 +71,23 @@ const CreateMentorProfileModal = ({ refetch }) => {
     name: "skills",
   });
 
+  // Close Modal
+  const handleClose = () => {
+    document.getElementById("Create_Mentor_Profile_Modal").close();
+
+    // Reset States
+    reset();
+    refetch();
+    setPreview("");
+    setPhoneNumber("+880 ");
+    setErrorMessage("");
+    setProfileImage("");
+    setNewFieldValues({
+      expertise: "",
+      skills: "",
+    });
+  };
+
   // Form Submission
   const onSubmit = async (data) => {
     // Loading & Error Message Reinstate
@@ -78,6 +99,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
 
     // Image Upload
     try {
+      // Image Upload
       if (profileImage) {
         const formData = new FormData();
         formData.append("image", profileImage);
@@ -97,7 +119,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
         description: data.description,
         email: user.email,
         contact: {
-          email: data.email, // from form
+          email: data.email,
           phone: phoneNumber,
           linkedin: data.linkedin,
         },
@@ -111,20 +133,11 @@ const CreateMentorProfileModal = ({ refetch }) => {
       // POST Request
       await axiosPublic.post("/Mentors", formattedData);
 
-      // Close Modal after success
-      document.getElementById("Create_Mentor_Profile_Modal").close();
+      // Close Modal
+      handleClose();
 
-      // Reset states after modal is closed
-      reset();
-      refetch();
-      setPreview("");
-      setPhoneNumber("+880 ");
-      setErrorMessage("");
-      setProfileImage("");
-      setNewFieldValues({
-        expertise: "",
-        skills: "",
-      });
+      // Automatically refetch MentorData everywhere
+      QueryClient.invalidateQueries(["MentorData"]);
 
       // Success Message
       Swal.fire({
@@ -137,7 +150,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
       });
     } catch (err) {
       setErrorMessage("Failed to save Mentor profile.");
-      console.log("Error", err);
+      console.error("Error", err);
     } finally {
       setLoading(false);
     }
@@ -146,24 +159,12 @@ const CreateMentorProfileModal = ({ refetch }) => {
   return (
     <div
       id="Create_Mentor_Profile_Modal"
-      className="modal-box min-w-3xl relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
+      className="modal-box min-w-4xl relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
     >
       {/* Close Button */}
       <button
         type="button"
-        onClick={() => {
-          document.getElementById("Create_Mentor_Profile_Modal").close();
-          reset();
-          refetch();
-          setPreview("");
-          setPhoneNumber("+880 ");
-          setErrorMessage("");
-          setProfileImage("");
-          setNewFieldValues({
-            expertise: "",
-            skills: "",
-          });
-        }}
+        onClick={handleClose}
         className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
       >
         <ImCross className="text-xl" />
@@ -187,8 +188,9 @@ const CreateMentorProfileModal = ({ refetch }) => {
       {/* Modal Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Basic information */}
-        <div className="flex w-full gap-1">
-          <div className="w-1/3 py-2 px-5">
+        <div className="flex w-full gap-3">
+          {/* Avatar Section */}
+          <div className="w-1/3 p-2">
             {/* Logo Title */}
             <p className="font-medium text-center text-sm mb-1">Mentor Image</p>
 
@@ -201,48 +203,37 @@ const CreateMentorProfileModal = ({ refetch }) => {
           </div>
 
           {/* Initial Information */}
-          <div className="w-2/3 space-y-3 py-2">
+          <div className="w-2/3 space-y-3 py-2 pl-3 border-l border-gray-300">
             {/* Name */}
-            <div>
-              <label className="font-medium text-sm mb-1">
-                Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                {...register("name", { required: true })}
-                className="input input-bordered w-full bg-white text-black border-black"
-                placeholder="Company Name"
-              />
-              {errors.name && <p className="text-red-500 text-sm">Required</p>}
-            </div>
+            <FormInput
+              label="Name"
+              required
+              placeholder="My Name"
+              register={register("name", { required: true })}
+              error={errors.name}
+            />
 
             {/* Industries */}
-            <div>
-              <label className="font-medium text-sm mb-1">
-                Industries <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                {...register("position", { required: true })}
-                className="input input-bordered w-full bg-white text-black border-black"
-                placeholder="Your position"
-              />
-            </div>
+            <FormInput
+              label="Industries"
+              required
+              placeholder="Your position"
+              register={register("position", { required: true })}
+              error={errors.position}
+            />
           </div>
         </div>
 
         {/* Description */}
-        <div>
-          <label className="font-medium text-sm mb-1">
-            Description <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            {...register("description")}
-            className="textarea textarea-bordered w-full bg-white text-black border-black"
-            placeholder="Describe your self"
-            rows={4}
-          />
-        </div>
+        <FormInput
+          label="Description"
+          required
+          rows={4}
+          as="textarea"
+          placeholder="Describe Your Self ......"
+          register={register("description", { required: true })}
+          error={errors.position}
+        />
 
         {/* Contact Information */}
         <div>
@@ -257,17 +248,14 @@ const CreateMentorProfileModal = ({ refetch }) => {
           {/* Contact Info */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Email */}
-            <div>
-              <label className="font-medium text-sm mb-1">
-                Email <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="email"
-                {...register("email")}
-                className="input input-bordered w-full bg-white text-black border-black"
-                placeholder="e.g. Psazzadul@gmail.com"
-              />
-            </div>
+            <FormInput
+              label="Email"
+              type="email"
+              required
+              placeholder="YourEmail@example.com"
+              register={register("email", { required: true })}
+              error={errors.email}
+            />
 
             {/* Phone */}
             <div>
@@ -278,162 +266,52 @@ const CreateMentorProfileModal = ({ refetch }) => {
                 country={"bd"}
                 value={phoneNumber}
                 onChange={setPhoneNumber}
-                inputClass="!w-full !bg-white !text-black !rounded-lg !shadow-md"
+                inputClass="!w-full !bg-white !text-black !rounded-lg !shadow-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 inputStyle={{ width: "100%", height: "40px" }}
               />
             </div>
 
             {/* LinkedIn */}
-            <div>
-              <label className="font-medium text-sm mb-1">
-                LinkedIn <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="url"
-                {...register("linkedin")}
-                className="input input-bordered w-full bg-white text-black border-black"
-                placeholder="e.g. linkedin.com/in/Adam"
-              />
-            </div>
+            <FormInput
+              label="LinkedIn"
+              type="url"
+              required
+              placeholder="Your LinkedIn URL"
+              register={register("linkedin", { required: true })}
+              error={errors.linkedin}
+            />
           </div>
         </div>
 
         {/* Expertise */}
-        <div className="mb-3">
-          {/* Label */}
-          <label
-            htmlFor="expertise-input"
-            className="block font-semibold text-sm mb-2 capitalize"
-          >
-            Expertise
-          </label>
+        <TagInput
+          label="Expertise"
+          items={expertiseFields}
+          appendItem={appendExpertise}
+          removeItem={removeExpertise}
+          placeholder="Add new expertise"
+          showNumbers={false}
+        />
 
-          {/* Expertise Fields */}
-          <div className="flex flex-wrap gap-2 rounded border border-gray-700 mb-3 px-2 py-2">
-            {expertiseFields.length > 0 ? (
-              expertiseFields.map((item, index) => (
-                <div
-                  key={item.id}
-                  onClick={() => removeExpertise(index)}
-                  className="flex items-center border border-gray-600 font-semibold text-gray-800 gap-2 px-5 py-1 rounded-full cursor-pointer hover:bg-gray-100 transition-all duration-200 text-sm"
-                >
-                  {item.value || `Expertise #${index + 1}`} <RxCross2 />
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500 italic text-sm px-5 py-2">
-                No Expertise added yet.
-              </p>
-            )}
-          </div>
-
-          {/* Add New Expertise */}
-          <div className="flex justify-end gap-2">
-            {/* Input */}
-            <input
-              id="expertise-input"
-              type="text"
-              value={newFieldValues.expertise}
-              onChange={(e) =>
-                setNewFieldValues((prev) => ({
-                  ...prev,
-                  expertise: e.target.value,
-                }))
-              }
-              placeholder="Add new expertise"
-              className="input input-bordered bg-white text-black border-black w-3/7"
-            />
-
-            {/* Add Button */}
-            <button
-              type="button"
-              onClick={() => {
-                const value = newFieldValues.expertise.trim();
-                if (value) {
-                  appendExpertise({ value }); // must be object
-                  setNewFieldValues((prev) => ({ ...prev, expertise: "" }));
-                }
-              }}
-              className="flex items-center gap-2 border border-blue-600 font-semibold text-blue-600 rounded shadow-xl hover:shadow-2xl px-5 py-1 cursor-pointer hover:bg-blue-600 hover:text-white transition-colors duration-500"
-            >
-              Add
-            </button>
-          </div>
-        </div>
-
-        {/* Skills */}
-        <div className="mb-3">
-          {/* Label */}
-          <label
-            htmlFor="skills-input"
-            className="block font-semibold text-sm mb-2 capitalize"
-          >
-            Skills
-          </label>
-
-          {/* Skills Fields */}
-          <div className="flex flex-wrap gap-2 rounded border border-gray-700 mb-3 px-2 py-2">
-            {skillsFields.length > 0 ? (
-              skillsFields.map((item, index) => (
-                <div
-                  key={item.id}
-                  onClick={() => removeSkills(index)}
-                  className="flex items-center border border-gray-600 font-semibold text-gray-800 gap-2 px-5 py-1 rounded-full cursor-pointer hover:bg-gray-100 transition-all duration-200 text-sm"
-                >
-                  {item.value || `Skill #${index + 1}`} <RxCross2 />
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500 italic text-sm px-5 py-2">
-                No Skills added yet.
-              </p>
-            )}
-          </div>
-
-          {/* Add New Skill */}
-          <div className="flex justify-end gap-2">
-            {/* Input */}
-            <input
-              id="skills-input"
-              type="text"
-              value={newFieldValues.skills}
-              onChange={(e) =>
-                setNewFieldValues((prev) => ({
-                  ...prev,
-                  skills: e.target.value,
-                }))
-              }
-              placeholder="Add new skills"
-              className="input input-bordered bg-white text-black border-black w-3/7"
-            />
-
-            {/* Add Button */}
-            <button
-              type="button"
-              onClick={() => {
-                const value = newFieldValues.skills.trim();
-                if (value) {
-                  appendSkills({ value }); // must be object
-                  setNewFieldValues((prev) => ({ ...prev, skills: "" }));
-                }
-              }}
-              className="flex items-center gap-2 border border-blue-600 font-semibold text-blue-600 rounded shadow-xl hover:shadow-2xl px-5 py-1 cursor-pointer hover:bg-blue-600 hover:text-white transition-colors duration-500"
-            >
-              Add
-            </button>
-          </div>
-        </div>
+        {/* Expertise */}
+        <TagInput
+          label="Skills"
+          items={skillsFields}
+          appendItem={appendSkills}
+          removeItem={removeSkills}
+          placeholder="Add new Skills"
+          showNumbers={false}
+        />
 
         {/* Biography */}
-        <div>
-          <label className="font-medium text-sm mb-1">Biography</label>
-          <textarea
-            {...register("biography")}
-            className="textarea textarea-bordered w-full bg-white text-black border-black"
-            placeholder="Describe your Biography"
-            rows={4}
-          />
-        </div>
+        <FormInput
+          label="Biography"
+          rows={4}
+          as="textarea"
+          placeholder="Make a Biography ......"
+          register={register("biography")}
+          error={errors.position}
+        />
 
         {/* Submit Button */}
         <button

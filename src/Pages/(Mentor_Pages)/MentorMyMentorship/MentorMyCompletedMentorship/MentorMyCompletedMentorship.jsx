@@ -1,7 +1,4 @@
-import { useState } from "react";
-
 // Packages
-import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 
 // Icons
@@ -13,102 +10,23 @@ import {
   FaStar,
   FaRegStar,
 } from "react-icons/fa";
-import DeleteAnimation from "../../../../assets/Animation/DeleteAnimation.gif";
 
 // Shared
 import Error from "../../../../Shared/Error/Error";
 import Loading from "../../../../Shared/Loading/Loading";
 
-// Hooks
-import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-
-// Modals
-import EditMentorshipModal from "../MentorMyActiveMentorship/EditMentorshipModal/EditMentorshipModal";
-import MentorshipDetailsModal from "../../../(Public_Pages)/Home/FeaturedMentorship/MentorshipDetailsModal/MentorshipDetailsModal";
-
-// Utility: Format Budget Display
-const formatBudget = (amount, currency = "USD", isNegotiable = false) => {
-  if (!amount) return "Free";
-  return `${currency} ${amount}${isNegotiable ? " (Negotiable)" : ""}`;
-};
-
-// Utility: Posted Time
-const calculateDaysAgo = (isoString) => {
-  if (!isoString) return "Unknown";
-  const postedDate = new Date(isoString);
-  const today = new Date();
-  const diff = today - postedDate;
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  return days === 0 ? "Today" : `${days} day${days > 1 ? "s" : ""} ago`;
-};
+// Functions
+import { formatBudget } from "../../../../Functions/formatBudget";
+import { calculateDaysAgo } from "../../../../Functions/calculateDaysAgo";
 
 const MentorMyCompletedMentorship = ({
   error,
-  refetch,
   isLoading,
+  toggleStar,
+  handleDelete,
   MentorshipData,
+  setSelectedMentorshipID,
 }) => {
-  const axiosPublic = useAxiosPublic();
-
-  // State Variables
-  const [selectedMentorshipID, setSelectedMentorshipID] = useState(null);
-
-  // ⭐ keep track of starred Mentorship's by ID
-  const [starred, setStarred] = useState([]);
-
-  // Optimistic Archive Toggle
-  const toggleStar = async (id) => {
-    // Optimistically toggle locally
-    const isCurrentlyStarred = starred.includes(id);
-    setStarred((prev) =>
-      isCurrentlyStarred ? prev.filter((sid) => sid !== id) : [...prev, id]
-    );
-
-    try {
-      // Call backend to toggle archive
-      const res = await axiosPublic.put(`/Mentorship/Archive/${id}`);
-
-      if (res?.data?.archived === undefined) {
-        throw new Error("Unexpected response from server");
-      }
-
-      // Refetch data
-      refetch();
-
-      // Show success toast
-      Swal.fire({
-        toast: true,
-        position: "top-start",
-        icon: "success",
-        title: res.data.archived ? "Archived!" : "Un-Archived!",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      });
-
-      // If backend disagrees with local toggle, correct it
-      if (res.data.archived !== !isCurrentlyStarred) {
-        setStarred((prev) =>
-          res.data.archived ? [...prev, id] : prev.filter((sid) => sid !== id)
-        );
-      }
-    } catch (error) {
-      // Rollback local toggle
-      setStarred((prev) =>
-        isCurrentlyStarred ? [...prev, id] : prev.filter((sid) => sid !== id)
-      );
-
-      // Show error alert
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Failed to update archive status. Please try again!",
-      });
-
-      console.error("Failed to toggle archive:", error);
-    }
-  };
-
   // Sort Mentorship's by postedAt (most recent first)
   const sortedMentorship = MentorshipData
     ? [...MentorshipData].sort(
@@ -122,95 +40,6 @@ const MentorMyCompletedMentorship = ({
   // Error State
   if (error) return <Error />;
 
-  // Handle Delete
-  // Delete Mentorship
-  const handleDelete = async (id) => {
-    try {
-      // Fetch applications for this mentorship
-      const { data: applications } = await axiosPublic.get(
-        `/MentorshipApplications/ByMentorship?mentorshipId=${id}`
-      );
-
-      // Extract all application IDs
-      const allApplicationIds = Object.values(applications)
-        .flat() // flatten arrays
-        .map((app) => app._id);
-
-      // Confirm deletion
-      const confirmResult = await Swal.fire({
-        title: "Are you sure?",
-        text: `This Mentorship and ${
-          allApplicationIds.length || "no"
-        } Applications will be permanently deleted!`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "Cancel",
-      });
-
-      if (!confirmResult.isConfirmed) return;
-
-      let deletedApplicationsMessage = "No applications to delete.";
-
-      // Delete all applications in bulk if any exist
-      if (allApplicationIds.length > 0) {
-        try {
-          const { data } = await axiosPublic.delete(
-            "/MentorshipApplications/BulkDelete",
-            { data: { ids: allApplicationIds } }
-          );
-
-          deletedApplicationsMessage = `Deleted ${data.deletedCount} application(s).`;
-        } catch (error) {
-          deletedApplicationsMessage = "Failed to delete applications.";
-          console.error(error);
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: `Failed to delete. Please try again!, ${error}`,
-          });
-        }
-      }
-
-      // Delete the mentorship itself
-      await axiosPublic.delete(`/Mentorship/${id}`);
-
-      // Show success modal with dynamic message
-      Swal.fire({
-        title: "Deleted!",
-        html: `
-        <div style="font-size: 50px; text-align:center;">
-          <img src=${DeleteAnimation} alt="Trashcan closing" width="200" /> 
-        </div> 
-        <p>Mentorship has been removed.</p>
-        <p><strong>Applications:</strong> ${deletedApplicationsMessage}</p>
-      `,
-        showConfirmButton: false,
-        timer: 4000,
-        timerProgressBar: true,
-        background: "#fff",
-        didOpen: () => {
-          const content = Swal.getHtmlContainer();
-          content.style.display = "flex";
-          content.style.alignItems = "center";
-          content.style.flexDirection = "column";
-          content.style.textAlign = "center";
-        },
-      });
-
-      // Refresh mentorship list
-      refetch();
-    } catch (error) {
-      console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: `Failed to delete. Please try again!, ${error}`,
-      });
-    }
-  };
   return (
     <div className="text-black">
       {/* Title */}
@@ -226,7 +55,7 @@ const MentorMyCompletedMentorship = ({
               key={idx}
               className="relative bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-2xl"
             >
-              {/* 🔖 Status Badge */}
+              {/* Status Badge */}
               <span
                 className={`absolute -top-3 -left-3 px-5 py-1 text-sm font-semibold rounded-full shadow-xl ${
                   ["active", "closed"].includes(
@@ -255,7 +84,7 @@ const MentorMyCompletedMentorship = ({
                   : "Unknown"}
               </span>
 
-              {/* ⭐ Star Toggle */}
+              {/* Star Toggle */}
               <button
                 onClick={() => toggleStar(mentorship._id)}
                 className="absolute top-3 right-3 text-2xl cursor-pointer transition-colors group"
@@ -397,25 +226,6 @@ const MentorMyCompletedMentorship = ({
           </div>
         )}
       </div>
-
-      {/* Modal */}
-      {/* Mentorship Details Modal */}
-      <dialog id="Mentorship_Details_Modal" className="modal">
-        <MentorshipDetailsModal
-          isEditor={true}
-          selectedMentorshipID={selectedMentorshipID}
-          setSelectedMentorshipID={setSelectedMentorshipID}
-        />
-      </dialog>
-
-      {/* Edit Mentorship Modal */}
-      <dialog id="Edit_Mentorship_Modal" className="modal">
-        <EditMentorshipModal
-          refetch={refetch}
-          selectedMentorshipID={selectedMentorshipID}
-          setSelectedMentorshipID={setSelectedMentorshipID}
-        />
-      </dialog>
     </div>
   );
 };
@@ -443,7 +253,9 @@ MentorMyCompletedMentorship.propTypes = {
       postedAt: PropTypes.string,
     })
   ).isRequired,
-  refetch: PropTypes.func,
+  handleDelete: PropTypes.func,
+  toggleStar: PropTypes.func,
+  setSelectedMentorshipID: PropTypes.func,
 };
 
 export default MentorMyCompletedMentorship;

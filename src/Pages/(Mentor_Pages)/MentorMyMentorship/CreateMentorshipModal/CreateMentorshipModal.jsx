@@ -20,6 +20,10 @@ import WeeklyPlanInput from "./WeeklyPlanInput/WeeklyPlanInput";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
+// Shared
+import Error from "../../../../Shared/Error/Error";
+import Loading from "../../../../Shared/Loading/Loading";
+
 // Shared Lists
 import { LengthOptions } from "../../../../Shared/Lists/LengthOptions";
 import { FeeTypeOptions } from "../../../../Shared/Lists/FeeTypeOptions";
@@ -29,8 +33,6 @@ import { confirmationType } from "../../../../Shared/Lists/confirmationType";
 import { PaymentMethodOptions } from "../../../../Shared/Lists/PaymentMethodOptions";
 import { preferredCommunicationMethod } from "../../../../Shared/Lists/preferredCommunicationMethod";
 import { preferredCommunicationFrequency } from "../../../../Shared/Lists/preferredCommunicationFrequency";
-import Error from "../../../../Shared/Error/Error";
-import Loading from "../../../../Shared/Loading/Loading";
 
 // Helper: format yyyy-mm-dd -> 25 Aug 2023
 const formatDate = (dateStr) => {
@@ -271,10 +273,37 @@ const CreateMentorshipModal = ({ refetch }) => {
   };
 
   // Loading states
-  if (MyMentorsIsLoading || userLoading) return <Loading />;
+  if (MyMentorsIsLoading || userLoading)
+    return (
+      <div
+        id="Create_Mentorship_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        <Loading height="min-h-[60vh]" />
+      </div>
+    );
 
   // Error states
-  if (MyMentorsError) return <Error />;
+  if (MyMentorsError)
+    return (
+      <div
+        id="Create_Mentorship_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={() => handleClose()}
+          className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+        >
+          <ImCross className="text-xl" />
+        </button>
+
+        {/* Error Component inside modal */}
+
+        <Error height="min-h-[60vh]" />
+      </div>
+    );
 
   return (
     <div
@@ -653,14 +682,11 @@ const CreateMentorshipModal = ({ refetch }) => {
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              id="isFree-mentorship"
+              id="isFree"
               {...register("fee.isFree")}
               className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
             />
-            <label
-              htmlFor="isFree-mentorship"
-              className="text-gray-700 font-medium"
-            >
+            <label htmlFor="isFree" className="text-gray-700 font-medium">
               Free Mentorship
             </label>
           </div>
@@ -674,12 +700,10 @@ const CreateMentorshipModal = ({ refetch }) => {
               as="select"
               placeholder="-- Select Fee Type --"
               register={register("fee.type", {
-                required: !watch("fee.isFree-mentorship")
-                  ? "Fee type is required"
-                  : false,
+                required: !watch("fee.isFree") ? "Fee type is required" : false,
               })}
               error={errors?.fee?.type}
-              disabled={watch("fee.isFree-mentorship")}
+              disabled={watch("fee.isFree")}
               options={FeeTypeOptions}
             />
 
@@ -690,14 +714,12 @@ const CreateMentorshipModal = ({ refetch }) => {
               placeholder="e.g., 50"
               required
               register={register("fee.amount", {
-                required: !watch("fee.isFree-mentorship")
-                  ? "Amount is required"
-                  : false,
+                required: !watch("fee.isFree") ? "Amount is required" : false,
                 valueAsNumber: true,
                 min: { value: 1, message: "Amount must be greater than 0" },
               })}
               error={errors?.fee?.amount}
-              disabled={watch("fee.isFree-mentorship")}
+              disabled={watch("fee.isFree")}
             />
 
             {/* Currency */}
@@ -707,12 +729,10 @@ const CreateMentorshipModal = ({ refetch }) => {
               as="select"
               placeholder="-- Select Currency --"
               register={register("fee.currency", {
-                required: !watch("fee.isFree-mentorship")
-                  ? "Currency is required"
-                  : false,
+                required: !watch("fee.isFree") ? "Currency is required" : false,
               })}
               error={errors?.fee?.currency}
-              disabled={watch("fee.isFree-mentorship")}
+              disabled={watch("fee.isFree")}
               options={CurrencyOptions}
             />
 
@@ -723,12 +743,12 @@ const CreateMentorshipModal = ({ refetch }) => {
               as="select"
               placeholder="-- Select Payment Method --"
               register={register("fee.paymentMethod", {
-                required: !watch("fee.isFree-mentorship")
+                required: !watch("fee.isFree")
                   ? "Payment method is required"
                   : false,
               })}
               error={errors?.fee?.paymentMethod}
-              disabled={watch("fee.isFree-mentorship")}
+              disabled={watch("fee.isFree")}
               options={PaymentMethodOptions}
             />
 
@@ -739,12 +759,12 @@ const CreateMentorshipModal = ({ refetch }) => {
               as="select"
               placeholder="-- Select Confirmation Type --"
               register={register("fee.confirmationType", {
-                required: !watch("fee.isFree-mentorship")
+                required: !watch("fee.isFree")
                   ? "Confirmation type is required"
                   : false,
               })}
               error={errors?.fee?.confirmationType}
-              disabled={watch("fee.isFree-mentorship")}
+              disabled={watch("fee.isFree")}
               options={confirmationType}
             />
 
@@ -761,7 +781,7 @@ const CreateMentorshipModal = ({ refetch }) => {
                   type="checkbox"
                   id="negotiable-mentorship"
                   {...register("fee.negotiable")}
-                  disabled={watch("fee.isFree-mentorship")}
+                  disabled={watch("fee.isFree")}
                   className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
                 />
                 <span className="text-gray-700 text-sm">Yes</span>
@@ -775,7 +795,7 @@ const CreateMentorshipModal = ({ refetch }) => {
             placeholder="e.g., https://paypal.me/username"
             register={register("fee.paymentLink")}
             error={errors?.fee?.paymentLink}
-            disabled={watch("fee.isFree-mentorship")}
+            disabled={watch("fee.isFree")}
           />
         </div>
 

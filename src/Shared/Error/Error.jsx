@@ -1,11 +1,13 @@
 import PropTypes from "prop-types";
-
-// Icons
 import { BiRefresh } from "react-icons/bi";
 
-const Error = ({ message }) => {
+const Error = ({ message, height }) => {
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center bg-gradient-to-br from-blue-500 via-indigo-600 to-indigo-800 text-white px-6">
+    <div
+      className={`w-full flex flex-col justify-center items-center bg-gradient-to-br from-blue-500 via-indigo-600 to-indigo-800 text-white px-6 ${
+        height || "min-h-screen"
+      }`}
+    >
       <div className="max-w-lg text-center space-y-8">
         {/* Title */}
         <h1 className="text-5xl font-extrabold tracking-tight drop-shadow-md">
@@ -39,9 +41,9 @@ const Error = ({ message }) => {
   );
 };
 
-// Prop Validation
 Error.propTypes = {
   message: PropTypes.string,
+  height: PropTypes.string, 
 };
 
 export default Error;

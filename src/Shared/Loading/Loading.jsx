@@ -1,6 +1,10 @@
-const Loading = () => {
+import PropTypes from "prop-types";
+
+const Loading = ({ height = "min-h-screen" }) => {
   return (
-    <div className="w-full min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-500 via-indigo-600 to-indigo-800 text-white">
+    <div
+      className={`w-full ${height} flex flex-col justify-center items-center bg-gradient-to-br from-blue-500 via-indigo-600 to-indigo-800 text-white transition-all duration-300`}
+    >
       {/* SVG Loader */}
       <svg
         viewBox="0 0 100 100"
@@ -84,6 +88,10 @@ const Loading = () => {
       </p>
     </div>
   );
+};
+
+Loading.propTypes = {
+  height: PropTypes.string,
 };
 
 export default Loading;

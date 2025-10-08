@@ -15,13 +15,18 @@ import { FaChevronRight, FaPaste } from "react-icons/fa";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
+// Functions
+import { formatDate } from "../../../../Functions/formatDate";
+
 // Shared
 import TagInput from "../../../../Shared/TagInput/TagInput";
 import FormInput from "../../../../Shared/FormInput/FormInput";
 
-// Shared Lists
+// Lists
 import Error from "../../../../Shared/Error/Error";
 import Loading from "../../../../Shared/Loading/Loading";
+
+// Shared List
 import { TypeOptions } from "../../../../Shared/Lists/TypeOptions";
 import { LevelOptions } from "../../../../Shared/Lists/LevelOptions ";
 import { LanguageOptions } from "../../../../Shared/Lists/LanguageOptions";
@@ -29,17 +34,6 @@ import { CategoryOptions } from "../../../../Shared/Lists/CategoryOptions";
 import { CurrencyOptions } from "../../../../Shared/Lists/CurrencyOptions";
 import { confirmationType } from "../../../../Shared/Lists/confirmationType";
 import { PaymentMethodOptions } from "../../../../Shared/Lists/PaymentMethodOptions";
-
-// Helper: format yyyy-mm-dd -> 25 Aug 2023
-const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-};
 
 const CreateCourseModal = ({ refetch }) => {
   const axiosPublic = useAxiosPublic();
@@ -60,7 +54,13 @@ const CreateCourseModal = ({ refetch }) => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    defaultValues: {},
+    defaultValues: {
+      tags: [],
+      modules: [],
+      skillsCovered: [],
+      prerequisites: [],
+      learningActivity: [],
+    },
   });
 
   // Watch category selection
@@ -270,10 +270,37 @@ const CreateCourseModal = ({ refetch }) => {
   };
 
   // Loading states
-  if (MyMentorsIsLoading || userLoading) return <Loading />;
+  if (MyMentorsIsLoading || userLoading)
+    return (
+      <div
+        id="Create_Mentorship_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        <Loading height="min-h-[60vh]" />
+      </div>
+    );
 
   // Error states
-  if (MyMentorsError) return <Error />;
+  if (MyMentorsError)
+    return (
+      <div
+        id="Create_Mentorship_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={() => handleClose()}
+          className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+        >
+          <ImCross className="text-xl" />
+        </button>
+
+        {/* Error Component inside modal */}
+
+        <Error height="min-h-[60vh]" />
+      </div>
+    );
 
   return (
     <div

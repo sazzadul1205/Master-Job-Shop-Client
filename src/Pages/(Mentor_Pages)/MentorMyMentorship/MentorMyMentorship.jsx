@@ -254,7 +254,7 @@ const MentorMyMentorship = () => {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between py-8 px-8">
+      <div className="flex items-center justify-between p-5">
         {/* Title */}
         <h3 className="text-2xl text-black font-bold">My Mentorship&apos;s</h3>
 
@@ -270,7 +270,7 @@ const MentorMyMentorship = () => {
       </div>
 
       {/* Tabs Navigation */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 py-1 px-1 mx-8 bg-gray-200 rounded-md">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 p-1 mx-5 bg-gray-200 rounded-md">
         {tabs.map((tab) => (
           <p
             key={tab.id}
@@ -288,7 +288,7 @@ const MentorMyMentorship = () => {
       </div>
 
       {/* Tabs Content */}
-      <div className="p-8">
+      <div className="p-5">
         {/* Active Tab Content */}
         {activeTab === "active" && (
           <MentorMyActiveMentorship

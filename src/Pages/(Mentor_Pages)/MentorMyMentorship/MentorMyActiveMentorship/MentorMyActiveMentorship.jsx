@@ -43,12 +43,15 @@ const MentorMyActiveMentorship = ({
   return (
     <div className="text-black">
       {/* Title */}
-      <h3 className="text-2xl font-bold mb-6">
-        Ongoing Mentorship&apos;s ( {sortedMentorship?.length || 0} )
+      <h3 className="text-2xl font-bold">
+        Active Mentorship&apos;s ( {sortedMentorship?.length || 0} )
       </h3>
 
+      {/* Divider */}
+      <p className="bg-blue-500 w-full h-[2px] my-2" />
+
       {/* Mentorship Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-5">
         {sortedMentorship && sortedMentorship.length > 0 ? (
           sortedMentorship.map((mentorship, idx) => (
             <div

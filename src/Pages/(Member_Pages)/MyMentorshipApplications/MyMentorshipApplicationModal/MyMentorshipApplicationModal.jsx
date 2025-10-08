@@ -41,23 +41,38 @@ const MyMentorshipApplicationModal = ({
     document.getElementById("View_Mentorship_Application_Modal")?.close();
   };
 
-  // If Loading
-  if (isLoading) {
+  // Loading states
+  if (isLoading)
     return (
-      <div className="modal-box bg-white rounded-xl shadow-md p-0 max-w-3xl">
-        <Loading />
+      <div
+        id="Edit_Mentorship_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        <Loading height="min-h-[60vh]" />
       </div>
     );
-  }
 
-  // If Error
-  if (error) {
+  // Error states
+  if (error)
     return (
-      <div className="modal-box bg-white rounded-xl shadow-md p-0 max-w-3xl">
-        <Error />
+      <div
+        id="Edit_Mentorship_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={() => handleClose()}
+          className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+        >
+          <ImCross className="text-xl" />
+        </button>
+
+        {/* Error Component inside modal */}
+
+        <Error height="min-h-[60vh]" />
       </div>
     );
-  }
 
   // If No Application Data
   if (
@@ -66,7 +81,7 @@ const MyMentorshipApplicationModal = ({
   ) {
     return (
       <div
-        id="View_Mentorship_Application_Modal"
+        id="Edit_Mentorship_Modal"
         className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white text-black rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
       >
         {/* Close Button */}
@@ -91,8 +106,8 @@ const MyMentorshipApplicationModal = ({
 
           {/* Subtitle */}
           <p className="text-gray-500 max-w-sm">
-            We couldn’t find any Mentorship Application details to display right
-            now. Please check back later or refresh the page.
+            We couldn’t find any Mentorship details to display right now. Please
+            check back later or refresh the page.
           </p>
         </div>
       </div>

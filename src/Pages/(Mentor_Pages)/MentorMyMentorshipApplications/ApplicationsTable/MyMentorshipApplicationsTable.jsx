@@ -605,7 +605,7 @@ const MyMentorshipApplicationsTable = ({
                       applicant?.profileImage ||
                       DefaultApplicant
                     }
-                    alt={applicant?.name || "N/A"}
+                    alt={applicant?.name || applicant?.fullname || "N/A"}
                     className="w-16 h-16 rounded-full"
                     onError={(e) => {
                       e.target.onerror = null; // prevent infinite loop

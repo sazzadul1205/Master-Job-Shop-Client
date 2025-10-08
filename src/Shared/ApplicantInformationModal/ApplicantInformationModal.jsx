@@ -55,23 +55,38 @@ const ApplicantInformationModal = ({
     document.getElementById("View_Applicant_Profile_Modal")?.close();
   };
 
-  // If Loading
-  if (isLoading) {
+  // Loading states
+  if (isLoading)
     return (
-      <div className="modal-box bg-white rounded-xl shadow-md p-0 max-w-3xl">
-        <Loading />
+      <div
+        id="Edit_Mentorship_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        <Loading height="min-h-[60vh]" />
       </div>
     );
-  }
 
-  // If Error
-  if (error) {
+  // Error states
+  if (error)
     return (
-      <div className="modal-box bg-white rounded-xl shadow-md p-0 max-w-3xl">
-        <Error />
+      <div
+        id="Edit_Mentorship_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={() => handleClose()}
+          className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+        >
+          <ImCross className="text-xl" />
+        </button>
+
+        {/* Error Component inside modal */}
+
+        <Error height="min-h-[60vh]" />
       </div>
     );
-  }
 
   // If No Application Data
   if (
@@ -172,17 +187,15 @@ const ApplicantInformationModal = ({
       id="View_Applicant_Profile_Modal"
       className="modal-box bg-white rounded-xl shadow-lg p-0 max-w-3xl w-full h-[75vh]"
     >
-      {/* Header with Profile Image */}
-      <div className="flex items-center gap-4 border-b px-6 py-4 bg-gray-50">
-        {/* Close Button */}
-        <button
-          className="ml-auto text-gray-500 hover:text-red-500 p-2 rounded-full cursor-pointer"
-          onClick={() => handleClose()}
-        >
-          <ImCross className="text-lg" />
-        </button>
-      </div>
+      {/* Close Button */}
+      <button
+        onClick={() => handleClose()}
+        className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
+      >
+        <ImCross className="text-xl text-black hover:text-red-500" />
+      </button>
 
+      {/* Modal Content */}
       <div className="max-w-7xl mx-auto rounded-xl shadow-sm border p-6">
         {/* Public User Header */}
         <PublicUserProfileHeader user={ApplicantInformation} />

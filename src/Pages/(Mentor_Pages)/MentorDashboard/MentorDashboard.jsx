@@ -18,6 +18,9 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import Error from "../../../Shared/Error/Error";
 import Loading from "../../../Shared/Loading/Loading";
 
+// Functions
+import { safeArray } from "../../../Functions/safeArray";
+
 // Components
 import MentorDashboardCards from "./MentorDashboardCards/MentorDashboardCards";
 import MentorDashboardGraphs from "./MentorDashboardGraphs/MentorDashboardGraphs";
@@ -41,12 +44,11 @@ const MentorDashboard = () => {
     error: MyCoursesError,
   } = useQuery({
     queryKey: ["MyCoursesData"],
-    queryFn: () =>
-      axiosPublic.get(`/Courses?mentorEmail=${user?.email}`).then((res) => {
-        const data = res.data;
-        // Ensure the result is always an array
-        return Array.isArray(data) ? data : [data];
-      }),
+    queryFn: async () => {
+      if (!user?.email) return [];
+      const res = await axiosPublic.get(`/Courses?mentorEmail=${user?.email}`);
+      return safeArray(res.data);
+    },
   });
 
   // ---------- My Mentorship API ----------
@@ -57,12 +59,13 @@ const MentorDashboard = () => {
     error: MyMentorshipError,
   } = useQuery({
     queryKey: ["MyMentorshipData"],
-    queryFn: () =>
-      axiosPublic.get(`/Mentorship?mentorEmail=${user?.email}`).then((res) => {
-        const data = res.data;
-        // Ensure the result is always an array
-        return Array.isArray(data) ? data : [data];
-      }),
+    queryFn: async () => {
+      if (!user?.email) return [];
+      const res = await axiosPublic.get(
+        `/Mentorship?mentorEmail=${user?.email}`
+      );
+      return safeArray(res.data);
+    },
   });
 
   // Destructuring Courses & Mentorship Ids
@@ -76,15 +79,14 @@ const MentorDashboard = () => {
     refetch: MyCoursesStatusRefetch,
     error: MyCoursesStatusError,
   } = useQuery({
-    queryKey: ["MyCoursesStatusData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/Courses/Status?mentorEmail=${user?.email}`)
-        .then((res) => {
-          const data = res.data;
-          // Ensure the result is always an array
-          return Array.isArray(data) ? data : [data];
-        }),
+    queryKey: ["MyCoursesStatusData", user?.email],
+    queryFn: async () => {
+      if (!user?.email) return [];
+      const res = await axiosPublic.get(
+        `/Courses/Status?mentorEmail=${user?.email}`
+      );
+      return safeArray(res.data);
+    },
   });
 
   // ---------- My Mentorship Status API ----------
@@ -94,15 +96,14 @@ const MentorDashboard = () => {
     refetch: MyMentorshipStatusRefetch,
     error: MyMentorshipStatusError,
   } = useQuery({
-    queryKey: ["MyMentorshipStatusData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/Mentorship/Status?mentorEmail=${user?.email}`)
-        .then((res) => {
-          const data = res.data;
-          // Ensure the result is always an array
-          return Array.isArray(data) ? data : [data];
-        }),
+    queryKey: ["MyMentorshipStatusData", user?.email],
+    queryFn: async () => {
+      if (!user?.email) return []; // Return empty array if no email
+      const res = await axiosPublic.get(
+        `/Mentorship/Status?mentorEmail=${user?.email}`
+      );
+      return safeArray(res.data); // Always return array
+    },
   });
 
   // ---------- My Courses Applications Status API ----------
@@ -113,15 +114,14 @@ const MentorDashboard = () => {
     error: MyCoursesApplicationsStatusError,
   } = useQuery({
     queryKey: ["MyCoursesApplicationsStatusData", allCoursesIds],
-    queryFn: () =>
-      axiosPublic
-        .get(`/CourseApplications/Status?ids=${allCoursesIds}`)
-        .then((res) => {
-          const data = res.data;
-          // Ensure the result is always an array
-          return Array.isArray(data) ? data : [data];
-        }),
-    enabled: !!allCoursesIds?.length, // Only run the query if All Courses Ids is not empty
+    queryFn: async () => {
+      if (!allCoursesIds?.length) return [];
+      const res = await axiosPublic.get(
+        `/CourseApplications/Status?ids=${allCoursesIds}`
+      );
+      return safeArray(res.data);
+    },
+    enabled: !!allCoursesIds?.length,
   });
 
   // ---------- My Mentorship Applications Status API ----------
@@ -132,15 +132,14 @@ const MentorDashboard = () => {
     error: MyMentorshipApplicationsStatusError,
   } = useQuery({
     queryKey: ["MyMentorshipApplicationsStatusData", allMentorshipIds],
-    queryFn: () =>
-      axiosPublic
-        .get(`/MentorshipApplications/Status?ids=${allMentorshipIds}`)
-        .then((res) => {
-          const data = res.data;
-          // Ensure the result is always an array
-          return Array.isArray(data) ? data : [data];
-        }),
-    enabled: !!allMentorshipIds?.length, // Only run the query if All Mentorship Ids is not empty
+    queryFn: async () => {
+      if (!allMentorshipIds?.length) return [];
+      const res = await axiosPublic.get(
+        `/MentorshipApplications/Status?ids=${allMentorshipIds}`
+      );
+      return safeArray(res.data);
+    },
+    enabled: !!allMentorshipIds?.length,
   });
 
   // ---------- My Courses Applications API ----------
@@ -151,13 +150,13 @@ const MentorDashboard = () => {
     error: MyCoursesApplicationsError,
   } = useQuery({
     queryKey: ["MyCoursesApplications", allCoursesIds],
-    queryFn: () =>
-      axiosPublic
-        .get(`/CourseApplications/ByCourse?courseId=${allCoursesIds}`)
-        .then((res) => {
-          const data = res.data;
-          return data;
-        }),
+    queryFn: async () => {
+      if (!allCoursesIds) return [];
+      const res = await axiosPublic.get(
+        `/CourseApplications/ByCourse?courseId=${allCoursesIds}`
+      );
+      return safeArray(res.data);
+    },
     enabled: !!allCoursesIds,
   });
 
@@ -169,15 +168,13 @@ const MentorDashboard = () => {
     error: MyMentorshipApplicationsError,
   } = useQuery({
     queryKey: ["MyMentorshipApplications", allMentorshipIds],
-    queryFn: () =>
-      axiosPublic
-        .get(
-          `/MentorshipApplications/ByMentorship?mentorshipId=${allMentorshipIds}`
-        )
-        .then((res) => {
-          const data = res.data;
-          return data;
-        }),
+    queryFn: async () => {
+      if (!allMentorshipIds) return [];
+      const res = await axiosPublic.get(
+        `/MentorshipApplications/ByMentorship?mentorshipId=${allMentorshipIds}`
+      );
+      return safeArray(res.data);
+    },
     enabled: !!allMentorshipIds,
   });
 
@@ -188,15 +185,14 @@ const MentorDashboard = () => {
     refetch: MyNotificationsStatusRefetch,
     error: MyNotificationsStatusError,
   } = useQuery({
-    queryKey: ["MyNotificationsStatusData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/Notifications/Status?mentorEmail=${user?.email}`)
-        .then((res) => {
-          const data = res.data;
-          // Ensure the result is always an array
-          return Array.isArray(data) ? data : [data];
-        }),
+    queryKey: ["MyNotificationsStatusData", user?.email],
+    queryFn: async () => {
+      if (!user?.email) return [];
+      const res = await axiosPublic.get(
+        `/Notifications/Status?mentorEmail=${user?.email}`
+      );
+      return safeArray(res.data);
+    },
   });
 
   // ---------- My Mentor Emails Status API ----------
@@ -206,15 +202,14 @@ const MentorDashboard = () => {
     refetch: MyMentorEmailsStatusRefetch,
     error: MyMentorEmailsStatusError,
   } = useQuery({
-    queryKey: ["MyMentorEmailsStatusData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/MentorEmails/Status?email=${user?.email}`)
-        .then((res) => {
-          const data = res.data;
-          // Ensure the result is always an array
-          return Array.isArray(data) ? data : [data];
-        }),
+    queryKey: ["MyMentorEmailsStatusData", user?.email],
+    queryFn: async () => {
+      if (!user?.email) return [];
+      const res = await axiosPublic.get(
+        `/MentorEmails/Status?email=${user?.email}`
+      );
+      return safeArray(res.data);
+    },
   });
 
   // ---------- My Mentor Messages Status API ----------
@@ -224,15 +219,14 @@ const MentorDashboard = () => {
     refetch: MyMentorMessagesStatusRefetch,
     error: MyMentorMessagesStatusError,
   } = useQuery({
-    queryKey: ["MyMentorMessagesStatusData"],
-    queryFn: () =>
-      axiosPublic
-        .get(`/MentorMessages/Status?email=${user?.email}`)
-        .then((res) => {
-          const data = res.data;
-          // Ensure the result is always an array
-          return Array.isArray(data) ? data : [data];
-        }),
+    queryKey: ["MyMentorMessagesStatusData", user?.email],
+    queryFn: async () => {
+      if (!user?.email) return [];
+      const res = await axiosPublic.get(
+        `/MentorMessages/Status?email=${user?.email}`
+      );
+      return safeArray(res.data);
+    },
   });
 
   // Check for loading state

@@ -1,7 +1,11 @@
 const Loading = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col justify-center items-center bg-gradient-to-l from-blue-400 to-blue-600 rounded-lg">
-      <svg viewBox="0 0 100 100" className="w-[120px] h-[120px]">
+    <div className="w-full min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-500 via-indigo-600 to-indigo-800 text-white">
+      {/* SVG Loader */}
+      <svg
+        viewBox="0 0 100 100"
+        className="w-[120px] h-[120px] drop-shadow-lg mb-6"
+      >
         <g
           fill="none"
           stroke="#fff"
@@ -48,7 +52,7 @@ const Loading = () => {
           <path d="M 50 21 L 79 40 L 50 60 L 21 40 Z">
             <animate
               attributeName="stroke"
-              values="rgba(255,255,255,1); rgba(100,100,100,0)"
+              values="rgba(255,255,255,1); rgba(150,150,150,0.2)"
               dur="2s"
               repeatCount="indefinite"
             />
@@ -57,7 +61,7 @@ const Loading = () => {
           <path d="M 50 59 L 79 78 L 50 98 L 21 78 Z">
             <animate
               attributeName="stroke"
-              values="rgba(100,100,100,0); rgba(255,255,255,1)"
+              values="rgba(150,150,150,0.2); rgba(255,255,255,1)"
               dur="2s"
               repeatCount="indefinite"
             />
@@ -72,6 +76,12 @@ const Loading = () => {
           />
         </g>
       </svg>
+
+      {/* Text Feedback */}
+      <h2 className="text-2xl font-semibold tracking-wide mb-2">Loading...</h2>
+      <p className="text-sm text-blue-100 opacity-80">
+        Please wait while we prepare everything for you.
+      </p>
     </div>
   );
 };

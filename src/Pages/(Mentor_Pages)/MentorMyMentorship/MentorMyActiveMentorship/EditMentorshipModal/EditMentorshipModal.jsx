@@ -19,6 +19,9 @@ import FormInput from "../../../../../Shared/FormInput/FormInput";
 // Hooks
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 
+// Function
+import { formatDateForInput } from "../../../../../Functions/formatDateForInput";
+
 // Components
 import WeeklyPlanInput from "../../CreateMentorshipModal/WeeklyPlanInput/WeeklyPlanInput";
 
@@ -31,17 +34,6 @@ import { CategoryOptions } from "../../../../../Shared/Lists/CategoryOptions";
 import { PaymentMethodOptions } from "../../../../../Shared/Lists/PaymentMethodOptions";
 import { preferredCommunicationMethod } from "../../../../../Shared/Lists/preferredCommunicationMethod";
 import { preferredCommunicationFrequency } from "../../../../../Shared/Lists/preferredCommunicationFrequency";
-
-// Helper: format yyyy-mm-dd -> yyyy-mm-dd
-const formatDateForInput = (dateStr) => {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
-  if (isNaN(date)) return "";
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
-};
 
 const EditMentorshipModal = ({
   refetch,
@@ -245,31 +237,36 @@ const EditMentorshipModal = ({
     document.getElementById("Edit_Mentorship_Modal")?.close();
   };
 
-  // If loading
+  // Loading states
   if (isLoading)
     return (
-      <div className="min-w-[600px] max-h-[90vh] relative">
-        <button
-          onClick={handleClose}
-          className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
-        >
-          <ImCross className="text-xl text-black hover:text-red-500" />
-        </button>
-        <Loading />
+      <div
+        id="Edit_Mentorship_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        <Loading height="min-h-[60vh]" />
       </div>
     );
 
-  // If error
+  // Error states
   if (error)
     return (
-      <div className="min-w-[600px] max-h-[90vh] relative">
+      <div
+        id="Edit_Mentorship_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        {/* Close Button */}
         <button
-          onClick={handleClose}
-          className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
+          type="button"
+          onClick={() => handleClose()}
+          className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
         >
-          <ImCross className="text-xl text-black hover:text-red-500" />
+          <ImCross className="text-xl" />
         </button>
-        <Error />
+
+        {/* Error Component inside modal */}
+
+        <Error height="min-h-[60vh]" />
       </div>
     );
 
@@ -358,7 +355,7 @@ const EditMentorshipModal = ({
   return (
     <div
       id="Edit_Mentorship_Modal"
-      className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
+      className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh] text-black"
     >
       {/* Close Button */}
       <button

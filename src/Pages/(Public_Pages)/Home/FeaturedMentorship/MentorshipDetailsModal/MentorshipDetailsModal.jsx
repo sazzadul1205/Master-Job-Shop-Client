@@ -83,35 +83,40 @@ const MentorshipDetailsModal = ({
     }
   }, [mentorship?.Mentor?.bio]);
 
-  // If loading
+  // Loading states
   if (isLoading)
     return (
-      <div className="min-w-[600px] max-h-[90vh] relative">
-        <button
-          onClick={() => handleClose()}
-          className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
-        >
-          <ImCross className="text-xl text-black hover:text-red-500" />
-        </button>
-        <Loading />
+      <div
+        id="Mentorship_Details_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        <Loading height="min-h-[60vh]" />
       </div>
     );
 
-  // If error
+  // Error states
   if (error)
     return (
-      <div className="min-w-[600px] max-h-[90vh] relative">
+      <div
+        id="Mentorship_Details_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        {/* Close Button */}
         <button
+          type="button"
           onClick={() => handleClose()}
-          className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
+          className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
         >
-          <ImCross className="text-xl text-black hover:text-red-500" />
+          <ImCross className="text-xl" />
         </button>
-        <Error />
+
+        {/* Error Component inside modal */}
+
+        <Error height="min-h-[60vh]" />
       </div>
     );
 
-  // If no data
+  // If no Data
   if (!mentorship)
     return (
       <div
@@ -140,7 +145,7 @@ const MentorshipDetailsModal = ({
 
           {/* Subtitle */}
           <p className="text-gray-500 max-w-sm">
-            We couldn’t find any mentorship details to display right now. Please
+            We couldn’t find any Mentorship details to display right now. Please
             check back later or refresh the page.
           </p>
         </div>
@@ -177,7 +182,7 @@ const MentorshipDetailsModal = ({
   return (
     <div
       id="Mentorship_Details_Modal"
-      className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white text-black rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
+      className="modal-box max-w-5xl mx-auto p-6 space-y-6 bg-white text-black rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
     >
       {/* Close Button */}
       <button
@@ -211,7 +216,7 @@ const MentorshipDetailsModal = ({
             <div
               className={`cursor-pointer overflow-hidden transition-all duration-500`}
               style={{
-                maxHeight: bioExpanded ? `${bioHeight}px` : "1.5rem", // approx 1 line
+                maxHeight: bioExpanded ? `${bioHeight}px` : "1.5rem",
               }}
               onClick={() => setBioExpanded(!bioExpanded)}
               title="Click to expand"

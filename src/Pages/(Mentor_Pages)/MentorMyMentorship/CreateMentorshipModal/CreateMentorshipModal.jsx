@@ -20,6 +20,9 @@ import WeeklyPlanInput from "./WeeklyPlanInput/WeeklyPlanInput";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
+// Functions
+import { formatDate } from "../../../../Functions/formatDate";
+
 // Shared
 import Error from "../../../../Shared/Error/Error";
 import Loading from "../../../../Shared/Loading/Loading";
@@ -33,17 +36,6 @@ import { confirmationType } from "../../../../Shared/Lists/confirmationType";
 import { PaymentMethodOptions } from "../../../../Shared/Lists/PaymentMethodOptions";
 import { preferredCommunicationMethod } from "../../../../Shared/Lists/preferredCommunicationMethod";
 import { preferredCommunicationFrequency } from "../../../../Shared/Lists/preferredCommunicationFrequency";
-
-// Helper: format yyyy-mm-dd -> 25 Aug 2023
-const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-};
 
 const CreateMentorshipModal = ({ refetch }) => {
   const axiosPublic = useAxiosPublic();

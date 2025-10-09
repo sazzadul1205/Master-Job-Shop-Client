@@ -40,16 +40,87 @@ const MentorLoginHistoryModal = () => {
     document.getElementById("Mentor_Login_History_Modal")?.close();
   };
 
-  // Loading and error states
-  if (isLoading) return <Loading />;
-  if (error) return <Error />;
-
   // Safely handle missing or invalid data
   const recentLogins = Array.isArray(MentorLoginHistoryData)
     ? [...MentorLoginHistoryData]
         .sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime))
         .slice(0, 10)
     : [];
+
+  // Loading states
+  if (isLoading)
+    return (
+      <div
+        id="Mentor_Login_History_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        <Loading height="min-h-[60vh]" />
+      </div>
+    );
+
+  // Error states
+  if (error)
+    return (
+      <div
+        id="Mentor_Login_History_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={() => handleClose()}
+          className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+        >
+          <ImCross className="text-xl" />
+        </button>
+
+        {/* Error Component inside modal */}
+
+        <Error height="min-h-[60vh]" />
+      </div>
+    );
+
+  // If No Mentor Login History Data Data
+  if (
+    !isLoading &&
+    (!MentorLoginHistoryData ||
+      (Array.isArray(MentorLoginHistoryData) &&
+        MentorLoginHistoryData.length === 0))
+  ) {
+    return (
+      <div
+        id="Mentor_Login_History_Modal"
+        className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white text-black rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
+      >
+        {/* Close Button */}
+        <button
+          onClick={() => handleClose()}
+          className="absolute top-3 right-3 z-50 bg-gray-200 hover:bg-gray-300 p-2 rounded-full cursor-pointer"
+        >
+          <ImCross className="text-xl text-black hover:text-red-500" />
+        </button>
+
+        {/* Empty State */}
+        <div className="flex flex-col items-center justify-center text-center py-16">
+          {/* Icon */}
+          <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-100 mb-6 shadow-sm">
+            <ImCross className="text-4xl text-gray-400" />
+          </div>
+
+          {/* Title */}
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            No Data Found
+          </h3>
+
+          {/* Subtitle */}
+          <p className="text-gray-500 max-w-sm">
+            We couldn’t find any User Change Password to display right now.
+            Please check back later or refresh the page.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

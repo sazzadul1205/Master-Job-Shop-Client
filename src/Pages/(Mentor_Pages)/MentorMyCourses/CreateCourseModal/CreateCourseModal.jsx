@@ -245,7 +245,7 @@ const CreateCourseModal = ({ refetch }) => {
       };
 
       // POST Request
-      await axiosPublic.post("/Course", payload);
+      await axiosPublic.post("/Courses", payload);
 
       // Close Modal and Reset
       handleClose();
@@ -731,14 +731,11 @@ const CreateCourseModal = ({ refetch }) => {
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              id="isFree-course"
+              id="isFree"
               {...register("fee.isFree")}
               className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
             />
-            <label
-              htmlFor="isFree-course"
-              className="text-gray-700 font-medium"
-            >
+            <label htmlFor="isFree" className="text-gray-700 font-medium">
               Free Course
             </label>
           </div>
@@ -753,14 +750,12 @@ const CreateCourseModal = ({ refetch }) => {
               placeholder="e.g., 29.99"
               required
               register={register("fee.amount", {
-                required: !watch("fee.isFree-course")
-                  ? "Price is required"
-                  : false,
+                required: !watch("fee.isFree") ? "Price is required" : false,
                 valueAsNumber: true,
                 min: { value: 0.01, message: "Price must be greater than 0" },
               })}
               error={errors?.fee?.amount}
-              disabled={watch("fee.isFree-course")}
+              disabled={watch("fee.isFree")}
             />
 
             {/* Discount (%) */}
@@ -774,7 +769,7 @@ const CreateCourseModal = ({ refetch }) => {
                 max: { value: 100, message: "Discount cannot exceed 100%" },
               })}
               error={errors?.fee?.discount}
-              disabled={watch("fee.isFree-course")}
+              disabled={watch("fee.isFree")}
             />
 
             {/* Currency */}
@@ -784,12 +779,10 @@ const CreateCourseModal = ({ refetch }) => {
               as="select"
               placeholder="-- Select Currency --"
               register={register("fee.currency", {
-                required: !watch("fee.isFree-course")
-                  ? "Currency is required"
-                  : false,
+                required: !watch("fee.isFree") ? "Currency is required" : false,
               })}
               error={errors?.fee?.currency}
-              disabled={watch("fee.isFree-course")}
+              disabled={watch("fee.isFree")}
               options={CurrencyOptions}
             />
 
@@ -800,12 +793,12 @@ const CreateCourseModal = ({ refetch }) => {
               as="select"
               placeholder="-- Select Payment Method --"
               register={register("fee.paymentMethod", {
-                required: !watch("fee.isFree-course")
+                required: !watch("fee.isFree")
                   ? "Payment method is required"
                   : false,
               })}
               error={errors?.fee?.paymentMethod}
-              disabled={watch("fee.isFree-course")}
+              disabled={watch("fee.isFree")}
               options={PaymentMethodOptions}
             />
 
@@ -816,12 +809,12 @@ const CreateCourseModal = ({ refetch }) => {
               as="select"
               placeholder="-- Select Confirmation Type --"
               register={register("fee.confirmationType", {
-                required: !watch("fee.isFree-course")
+                required: !watch("fee.isFree")
                   ? "Confirmation type is required"
                   : false,
               })}
               error={errors?.fee?.confirmationType}
-              disabled={watch("fee.isFree-course")}
+              disabled={watch("fee.isFree")}
               options={confirmationType}
             />
 
@@ -838,7 +831,7 @@ const CreateCourseModal = ({ refetch }) => {
                   type="checkbox"
                   id="negotiable-course"
                   {...register("fee.negotiable")}
-                  disabled={watch("fee.isFree-course")}
+                  disabled={watch("fee.isFree")}
                   className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
                 />
                 <span className="text-gray-700 text-sm">Yes</span>
@@ -852,11 +845,11 @@ const CreateCourseModal = ({ refetch }) => {
             placeholder="e.g., https://paypal.me/username"
             register={register("fee.paymentLink")}
             error={errors?.fee?.paymentLink}
-            disabled={watch("fee.isFree-course")}
+            disabled={watch("fee.isFree")}
           />
 
           {/* Final Price Display */}
-          {!watch("fee.isFree-course") && (
+          {!watch("fee.isFree") && (
             <div className="bg-gray-100 p-3 rounded-md">
               <p className="font-semibold text-sm text-gray-700">
                 Final Price:{" "}

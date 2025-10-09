@@ -354,7 +354,7 @@ const EditCourseModal = ({
   return (
     <div
       id="Edit_Course_Modal"
-      className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
+      className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh] text-black"
     >
       {/* Close Button */}
       <button

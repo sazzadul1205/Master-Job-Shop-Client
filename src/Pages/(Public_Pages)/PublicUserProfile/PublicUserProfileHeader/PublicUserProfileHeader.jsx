@@ -21,7 +21,7 @@ const PublicUserProfileHeader = ({ user }) => {
         {/* Name & Meta */}
         <div className="space-y-1">
           <h1 className="text-3xl font-semibold text-gray-900">
-            {user?.fullName || "Not Given Yet"}
+            {user?.fullName || user?.name || "Not Given Yet"}
           </h1>
 
           <p className="text-sm text-gray-600">
@@ -48,6 +48,7 @@ const PublicUserProfileHeader = ({ user }) => {
 PublicUserProfileHeader.propTypes = {
   user: PropTypes.shape({
     fullName: PropTypes.string,
+    name: PropTypes.string,
     title: PropTypes.string,
     location: PropTypes.string,
     bio: PropTypes.string,

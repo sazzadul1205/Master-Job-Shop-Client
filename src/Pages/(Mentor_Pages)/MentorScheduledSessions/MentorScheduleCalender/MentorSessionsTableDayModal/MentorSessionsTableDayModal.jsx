@@ -85,31 +85,45 @@ const MentorSessionsTableDayModal = ({
   const isLoadingAll = MyCoursesIsLoading || MyMentorshipIsLoading;
   const errorAll = MyCoursesError || MyMentorshipError;
 
-  if (isLoadingAll)
-    return (
-      <div
-        id="Mentor_Sessions_Table_Day_Modal"
-        className="modal-box bg-white text-black rounded-2xl shadow-2xl p-4 max-w-3xl w-full h-[90vh] flex flex-col overflow-y-auto"
-      >
-        <Loading />;
-      </div>
-    );
-  if (errorAll)
-    return (
-      <div
-        id="Mentor_Sessions_Table_Day_Modal"
-        className="modal-box bg-white text-black rounded-2xl shadow-2xl p-4 max-w-3xl w-full h-[90vh] flex flex-col overflow-y-auto"
-      >
-        <Error message={errorAll.message || "Something went wrong"} />
-      </div>
-    );
-
   // Close Modal
   const handleClose = () => {
     document.getElementById("Mentor_Sessions_Table_Day_Modal")?.close();
     setSelectedDate(null);
     setSelectedEventIds([]);
   };
+
+  // Loading handling
+  if (isLoadingAll)
+    return (
+      <div
+        id="Mentor_Sessions_Table_Day_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        <Loading height="min-h-[60vh]" />
+      </div>
+    );
+
+  // Error handling
+  if (errorAll)
+    return (
+      <div
+        id="Mentor_Sessions_Table_Day_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={handleClose}
+          className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+        >
+          <ImCross className="text-xl" />
+        </button>
+
+        {/* Error Component inside modal */}
+
+        <Error height="min-h-[60vh]" />
+      </div>
+    );
 
   // Generate 24-hour times
   const generateTimes = () => {

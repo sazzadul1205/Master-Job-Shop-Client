@@ -109,7 +109,7 @@ const MentorMenteesCard = ({
           <h3>Total Active Mentees</h3>
           <FiUsers className="text-2xl" />
         </div>
-        <p className="font-bold text-4xl py-1.5">{totalMentees || "N/A"}</p>
+        <p className="font-bold text-4xl py-1.5">{totalMentees || 0}</p>
         {renderChange(totalMenteesChange)}
       </div>
 
@@ -119,7 +119,7 @@ const MentorMenteesCard = ({
           <h3>Mentees In Courses</h3>
           <FiBook className="text-2xl" />
         </div>
-        <p className="font-bold text-4xl py-1.5">{courseCount || "N/A"}</p>
+        <p className="font-bold text-4xl py-1.5">{courseCount || 0}</p>
         {renderChange(courseChange)}
       </div>
 
@@ -129,7 +129,7 @@ const MentorMenteesCard = ({
           <h3>Mentees In Mentorship</h3>
           <LuHandshake className="text-2xl" />
         </div>
-        <p className="font-bold text-4xl py-1.5">{mentorshipCount || "N/A"}</p>
+        <p className="font-bold text-4xl py-1.5">{mentorshipCount || 0}</p>
         {renderChange(mentorChange)}
       </div>
 
@@ -139,7 +139,7 @@ const MentorMenteesCard = ({
           <h3>Total Communications</h3>
           <FaRegMessage className="text-2xl" />
         </div>
-        <p className="font-bold text-4xl py-1.5">{totalComms || "N/A"}</p>
+        <p className="font-bold text-4xl py-1.5">{totalComms || 0}</p>
         {renderChange(totalCommsChange)}
       </div>
     </div>

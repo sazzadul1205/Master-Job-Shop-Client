@@ -19,7 +19,6 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 // Modals
 import MentorSessionsTableDayModal from "./MentorSessionsTableDayModal/MentorSessionsTableDayModal";
 
-
 const MentorScheduleCalender = ({ MyCoursesData, MyMentorshipData }) => {
   // Today
   const today = new Date();
@@ -179,7 +178,7 @@ const MentorScheduleCalender = ({ MyCoursesData, MyMentorshipData }) => {
         <MentorSessionsTableDayModal
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
-          selectedEventIds={selectedEventIds} 
+          selectedEventIds={selectedEventIds}
           setSelectedEventIds={setSelectedEventIds}
         />
       </dialog>

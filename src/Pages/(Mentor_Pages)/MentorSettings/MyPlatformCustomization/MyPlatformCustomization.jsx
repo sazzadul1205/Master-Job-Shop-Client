@@ -13,7 +13,7 @@ const MyPlatformCustomization = () => {
         This feature will be implemented in a future update to enhance your UI experience.
       `,
       confirmButtonText: "Okay",
-      confirmButtonColor: "#2563EB", // Blue
+      confirmButtonColor: "#2563EB",
     });
   };
 

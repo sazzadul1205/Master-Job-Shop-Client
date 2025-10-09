@@ -6,10 +6,14 @@ import { useForm } from "react-hook-form";
 
 // Icons
 import { ImCross } from "react-icons/im";
+import { FaCloudUploadAlt } from "react-icons/fa";
 
 // Hooks
 import useAuth from "../../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
+
+// Shared
+import FormInput from "../../../../../Shared/FormInput/FormInput";
 
 // Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
@@ -20,9 +24,9 @@ const MentorSuggestImprovementModal = () => {
   const axiosPublic = useAxiosPublic();
 
   // States Variables
-  const [preview, setPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
 
   // React Hook Form
   const {
@@ -35,33 +39,39 @@ const MentorSuggestImprovementModal = () => {
   // Close modal
   const handleClose = () => {
     reset();
-    setPreview(null);
     setServerError("");
+    setImagePreview(null);
     document.getElementById("Mentor_Suggest_Improvement_Modal")?.close();
   };
 
   // Handle image preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) setPreview(URL.createObjectURL(file));
+    if (file) setImagePreview(URL.createObjectURL(file));
   };
 
   // Submit form
   const onSubmit = async (data) => {
     try {
       setUploading(true);
+      setServerError("");
+
       let imageUrl = null;
 
       // Upload image if provided
-      if (data.image && data.image[0]) {
+      if (data.image) {
         const formData = new FormData();
-        formData.append("image", data.image[0]);
-        const res = await fetch(Image_Hosting_API, {
+        formData.append("image", data.image);
+
+        const uploadRes = await fetch(Image_Hosting_API, {
           method: "POST",
           body: formData,
         });
-        const imgData = await res.json();
-        if (imgData.success) imageUrl = imgData.data.display_url;
+
+        const imgData = await uploadRes.json();
+        if (imgData.success) {
+          imageUrl = imgData.data.display_url;
+        }
       }
 
       // Build payload
@@ -137,91 +147,102 @@ const MentorSuggestImprovementModal = () => {
           </p>
         </div>
       )}
+
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Title */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Suggestion Title <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            placeholder="e.g. Add Dark Mode or Improve Dashboard UI"
-            {...register("title", { required: "Title is required" })}
-            className="input input-bordered bg-white border border-gray-300 w-full rounded-lg focus:ring-2 focus:ring-green-500"
-          />
-          {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
-          )}
-        </div>
+        <FormInput
+          label="Suggestion Title"
+          required
+          placeholder="e.g. Add Dark Mode or Improve Dashboard UI"
+          register={register("title", { required: "Title is required" })}
+          error={errors.title}
+        />
 
         {/* Category */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Category <span className="text-red-500">*</span>
-          </label>
-          <select
-            {...register("category", { required: "Category is required" })}
-            className="select select-bordered bg-white border border-gray-300  w-full rounded-lg focus:ring-2 focus:ring-green-500"
-          >
-            <option value="" disabled>
-              Select a category
-            </option>
-            <option>Feature Suggestion</option>
-            <option>UI/UX Enhancement</option>
-            <option>Performance Improvement</option>
-            <option>Accessibility Improvement</option>
-          </select>
-          {errors.category && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.category.message}
-            </p>
-          )}
-        </div>
+        <FormInput
+          label="Category"
+          required
+          as="select"
+          placeholder="Select a category"
+          register={register("category", { required: "Category is required" })}
+          error={errors.category}
+          options={[
+            { value: "Feature Suggestion", label: "Feature Suggestion" },
+            { value: "UI/UX Enhancement", label: "UI/UX Enhancement" },
+            {
+              value: "Performance Improvement",
+              label: "Performance Improvement",
+            },
+            {
+              value: "Accessibility Improvement",
+              label: "Accessibility Improvement",
+            },
+          ]}
+        />
 
         {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Detailed Description <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            {...register("description", {
-              required: "Description is required",
-            })}
-            rows="5"
-            placeholder="Describe your suggestion or improvement idea in detail..."
-            className="textarea textarea-bordered bg-white border border-gray-300  w-full rounded-lg focus:ring-2 focus:ring-green-500"
-          ></textarea>
-          {errors.description && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.description.message}
-            </p>
-          )}
-        </div>
+        <FormInput
+          label="Detailed Description"
+          required
+          as="textarea"
+          rows={5}
+          placeholder="Describe your suggestion or improvement idea in detail..."
+          register={register("description", {
+            required: "Description is required",
+          })}
+          error={errors.description}
+        />
 
-        {/* Image Upload */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Upload Supporting Image (optional)
-          </label>
+        {/* Drag & Drop Image Upload */}
+        <div
+          className="border-2 border-dashed rounded-lg p-5 text-center hover:bg-gray-50 cursor-pointer"
+          onClick={() => document.getElementById("ticketImageInput")?.click()}
+        >
+          {/* Hidden Input */}
           <input
+            id="ticketImageInput"
             type="file"
             accept="image/*"
-            {...register("image")}
             onChange={handleImageChange}
-            className="file-input file-input-bordered bg-white border border-gray-300  w-full rounded-lg cursor-pointer"
+            hidden
           />
-          {preview && (
-            <img
-              src={preview}
-              alt="Preview"
-              className="mt-3 rounded-lg shadow-md w-40 h-40 object-cover mx-auto border"
-            />
+
+          {/* Image Preview */}
+          {imagePreview ? (
+            <div className="relative inline-block">
+              {/* Preview */}
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="max-h-40 mx-auto rounded-lg object-cover"
+              />
+
+              {/* Remove Button */}
+              <button
+                type="button"
+                onClick={() => setImagePreview(null)}
+                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs"
+              >
+                <ImCross />
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center text-gray-500">
+              <FaCloudUploadAlt className="text-4xl mb-2 text-blue-500" />
+              <p>
+                <span className="text-blue-600 font-semibold">
+                  Click to upload
+                </span>{" "}
+                or drag and drop an image
+              </p>
+            </div>
           )}
         </div>
 
         {/* Buttons */}
         <div className="flex justify-end gap-3 pt-4">
+          {/* Cancel Button */}
           <button
             type="button"
             onClick={handleClose}
@@ -229,6 +250,8 @@ const MentorSuggestImprovementModal = () => {
           >
             Cancel
           </button>
+
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={uploading}

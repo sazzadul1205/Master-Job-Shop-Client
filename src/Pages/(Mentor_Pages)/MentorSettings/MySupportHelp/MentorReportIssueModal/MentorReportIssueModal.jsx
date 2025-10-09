@@ -12,6 +12,9 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import useAuth from "../../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 
+// Shared
+import FormInput from "../../../../../Shared/FormInput/FormInput";
+
 // Constants for image hosting API
 const Image_Hosting_Key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const Image_Hosting_API = `https://api.imgbb.com/1/upload?key=${Image_Hosting_Key}`;
@@ -55,7 +58,7 @@ const MentorReportIssueModal = () => {
   const onSubmit = async (data) => {
     try {
       setUploading(true);
-      setServerError(""); // Reset error
+      setServerError("");
 
       let imageUrl = null;
 
@@ -148,52 +151,28 @@ const MentorReportIssueModal = () => {
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Error Type */}
-        <div>
-          {/* Label */}
-          <label className="block text-gray-700 font-semibold mb-1">
-            Error Type <span className="text-red-500">*</span>
-          </label>
-
-          {/* Input */}
-          <input
-            type="text"
-            {...register("errorType", { required: "Error Type is required" })}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Briefly describe your issue"
-          />
-
-          {/* Error */}
-          {errors.errorType && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.errorType.message}
-            </p>
-          )}
-        </div>
+        <FormInput
+          label="Error Type"
+          required
+          placeholder="Briefly describe your issue"
+          register={register("errorType", {
+            required: "Error Type is required",
+          })}
+          error={errors.errorType}
+        />
 
         {/* Error Description */}
-        <div>
-          {/* Label */}
-          <label className="block text-gray-700 font-semibold mb-1">
-            Error Description <span className="text-red-500">*</span>
-          </label>
-
-          {/* Textarea */}
-          <textarea
-            rows="4"
-            {...register("errorDescription", {
-              required: "Error Description is required",
-            })}
-            className="textarea w-full bg-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Provide more details about your issue..."
-          ></textarea>
-
-          {/* Error */}
-          {errors.errorDescription && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.errorDescription.message}
-            </p>
-          )}
-        </div>
+        <FormInput
+          label="Error Description"
+          required
+          as="textarea"
+          rows={4}
+          placeholder="Provide more details about your issue..."
+          register={register("errorDescription", {
+            required: "Error Description is required",
+          })}
+          error={errors.errorDescription}
+        />
 
         {/* Drag & Drop Image Upload */}
         <div
@@ -219,7 +198,7 @@ const MentorReportIssueModal = () => {
                 className="max-h-40 mx-auto rounded-lg object-cover"
               />
 
-              {/* Close Button */}
+              {/* Remove Button */}
               <button
                 type="button"
                 onClick={() => setImagePreview(null)}
@@ -229,12 +208,8 @@ const MentorReportIssueModal = () => {
               </button>
             </div>
           ) : (
-            // Placeholder
             <div className="flex flex-col items-center text-gray-500">
-              {/* Icons */}
               <FaCloudUploadAlt className="text-4xl mb-2 text-blue-500" />
-
-              {/* Text */}
               <p>
                 <span className="text-blue-600 font-semibold">
                   Click to upload
@@ -245,9 +220,8 @@ const MentorReportIssueModal = () => {
           )}
         </div>
 
-        {/* Submit */}
+        {/* Buttons */}
         <div className="flex justify-end gap-3 pt-3">
-          {/* Cancel Button */}
           <button
             type="button"
             onClick={handleClose}
@@ -256,7 +230,6 @@ const MentorReportIssueModal = () => {
             Cancel
           </button>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={uploading}

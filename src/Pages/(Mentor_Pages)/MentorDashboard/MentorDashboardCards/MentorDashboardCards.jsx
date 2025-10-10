@@ -186,7 +186,7 @@ const DashboardOverviewCards = ({
   return (
     <>
       {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-5 ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 px-2 md:px-5 ">
         {cards.map((card, index) => (
           <div
             key={index}
@@ -225,7 +225,7 @@ const DashboardOverviewCards = ({
             <h4 className="text-gray-500 text-sm font-medium">{card.title}</h4>
 
             {/* Card Value */}
-            <p className="text-2xl font-bold text-gray-900 mt-1">
+            <p className="text-2xl font-bold text-gray-900 mt-1 text-right md:text-left">
               {card.value}
             </p>
           </div>

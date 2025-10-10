@@ -17,8 +17,8 @@ import dayjs from "dayjs";
 import PropTypes from "prop-types";
 
 const MentorApplicationsChart = ({
-  MyCoursesApplicationsStatusData = [], // default to empty array
-  MyMentorshipApplicationsStatusData = [], // default to empty array
+  MyCoursesApplicationsStatusData = [],
+  MyMentorshipApplicationsStatusData = [],
 }) => {
   // --- Generate last 30 days ---
   const last30DaysFull = useMemo(() => {
@@ -76,79 +76,93 @@ const MentorApplicationsChart = ({
   }));
 
   return (
-    <div className="px-5">
-      {/* Mentor Course Applications */}
-      <div className="w-[calc(100%-20px)] h-[400px] bg-white shadow-md mx-[5px] my-5 pb-20 hover:shadow-2xl cursor-default rounded-2xl border border-gray-300">
-        <h3 className="text-center text-xl text-black font-semibold mb-4 bg-gray-100 py-4">
-          Mentor Course Applications Status (Last 30 Days)
-        </h3>
-        <ResponsiveContainer
-          width="100%"
-          height="100%"
-          className={"text-black"}
-        >
-          <LineChart
-            data={chartDataCourse}
-            margin={{ top: 20, right: 20, left: 0, bottom: 25 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" angle={-45} textAnchor="end" height={50} />
-            <YAxis allowDecimals={false} />
-            <Tooltip
-              formatter={(value, name) => [
-                value,
-                name.charAt(0).toUpperCase() + name.slice(1),
-              ]}
-              labelFormatter={(label) => `Date: ${label}`}
-            />
-            <Legend
-              verticalAlign="top"
-              formatter={(value) =>
-                value.charAt(0).toUpperCase() + value.slice(1)
-              }
-            />
-            <Line type="monotone" dataKey="accepted" stroke="#4caf50" />
-            <Line type="monotone" dataKey="rejected" stroke="#f44336" />
-            <Line type="monotone" dataKey="pending" stroke="#ff9800" />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+    <div className="px-2 md:px-5 text-black">
+      <div className="flex flex-col gap-4">
+        {/* Mentor Course Applications */}
+        <div className="bg-white shadow-md my-5 hover:shadow-2xl cursor-default rounded-2xl border border-gray-300">
+          <h3 className="text-center text-xl text-black font-semibold mb-4 bg-gray-100 py-4">
+            Mentor Course Applications Status (Last 30 Days)
+          </h3>
 
-      {/* Mentor Mentorship Applications */}
-      <div className="w-[calc(100%-20px)] h-[400px] bg-white shadow-md mx-[5px] my-5 pb-20 hover:shadow-2xl cursor-default rounded-2xl border border-gray-300">
-        <h3 className="text-center text-xl text-black font-semibold mb-4 bg-gray-100 py-4">
-          Mentor Mentorship Applications Status (Last 30 Days)
-        </h3>
-        <ResponsiveContainer
-          width="100%"
-          height="100%"
-          className={"text-black"}
-        >
-          <LineChart
-            data={chartDataMentorship}
-            margin={{ top: 20, right: 20, left: 0, bottom: 25 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" angle={-45} textAnchor="end" height={50} />
-            <YAxis allowDecimals={false} />
-            <Tooltip
-              formatter={(value, name) => [
-                value,
-                name.charAt(0).toUpperCase() + name.slice(1),
-              ]}
-              labelFormatter={(label) => `Date: ${label}`}
-            />
-            <Legend
-              verticalAlign="top"
-              formatter={(value) =>
-                value.charAt(0).toUpperCase() + value.slice(1)
-              }
-            />
-            <Line type="monotone" dataKey="accepted" stroke="#4caf50" />
-            <Line type="monotone" dataKey="rejected" stroke="#f44336" />
-            <Line type="monotone" dataKey="pending" stroke="#ff9800" />
-          </LineChart>
-        </ResponsiveContainer>
+          <div className="overflow-x-auto">
+            <div className="min-w-[900px] h-[400px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={chartDataCourse}
+                  margin={{ top: 20, right: 20, left: 0, bottom: 25 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="date"
+                    angle={-45}
+                    textAnchor="end"
+                    height={50}
+                  />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip
+                    formatter={(value, name) => [
+                      value,
+                      name.charAt(0).toUpperCase() + name.slice(1),
+                    ]}
+                    labelFormatter={(label) => `Date: ${label}`}
+                  />
+                  <Legend
+                    verticalAlign="top"
+                    formatter={(value) =>
+                      value.charAt(0).toUpperCase() + value.slice(1)
+                    }
+                  />
+                  <Line type="monotone" dataKey="accepted" stroke="#4caf50" />
+                  <Line type="monotone" dataKey="rejected" stroke="#f44336" />
+                  <Line type="monotone" dataKey="pending" stroke="#ff9800" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* Mentor Mentorship Applications */}
+        <div className="bg-white shadow-md my-5 hover:shadow-2xl cursor-default rounded-2xl border border-gray-300">
+          <h3 className="text-center text-xl text-black font-semibold mb-4 bg-gray-100 py-4">
+            Mentor Mentorship Applications Status (Last 30 Days)
+          </h3>
+
+          <div className="overflow-x-auto">
+            <div className="min-w-[900px] h-[400px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={chartDataMentorship}
+                  margin={{ top: 20, right: 20, left: 0, bottom: 25 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="date"
+                    angle={-45}
+                    textAnchor="end"
+                    height={50}
+                  />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip
+                    formatter={(value, name) => [
+                      value,
+                      name.charAt(0).toUpperCase() + name.slice(1),
+                    ]}
+                    labelFormatter={(label) => `Date: ${label}`}
+                  />
+                  <Legend
+                    verticalAlign="top"
+                    formatter={(value) =>
+                      value.charAt(0).toUpperCase() + value.slice(1)
+                    }
+                  />
+                  <Line type="monotone" dataKey="accepted" stroke="#4caf50" />
+                  <Line type="monotone" dataKey="rejected" stroke="#f44336" />
+                  <Line type="monotone" dataKey="pending" stroke="#ff9800" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

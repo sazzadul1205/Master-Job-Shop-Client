@@ -301,12 +301,12 @@ const MentorLayout = () => {
 
         <div className="dock">
           {/* Navigation */}
-          <button>
+          <label htmlFor="my-drawer">
             {/* Icon */}
             <GiHamburgerMenu className="text-white text-2xl" />
             {/* Label */}
             <span className="dock-label">Navigation</span>
-          </button>
+          </label>
 
           {/* Profile */}
           <MentorProfileDropdownMobile
@@ -322,6 +322,72 @@ const MentorLayout = () => {
             toggleDropdown={toggleDropdown}
             notificationRef={notificationRef}
           />
+        </div>
+      </div>
+
+      {/* Drawer */}
+      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+
+      {/* Sidebar */}
+      <div className="drawer-side">
+        {/* Overlay */}
+        <label htmlFor="my-drawer" className="drawer-overlay"></label>
+
+        {/* Drawer Content */}
+        <div className="flex flex-col h-full w-4/5 bg-white text-base-content overflow-y-auto p-4">
+          {sidebarLinks.map((section, i) => (
+            <div key={i} className="mb-6 last:mb-0">
+              {/* Section Title */}
+              {section.title && (
+                <h3 className="font-semibold text-gray-600 uppercase mb-2">
+                  {section.title}
+                </h3>
+              )}
+
+              {/* Links */}
+              <div className="flex flex-col space-y-2">
+                {section.links.map(({ label, path, icon: Icon, onClick }, j) =>
+                  onClick ? (
+                    <button
+                      key={j}
+                      onClick={() => {
+                        onClick();
+                        document.getElementById("my-drawer").checked = false; // Close drawer
+                      }}
+                      className="flex items-center gap-3 p-2 rounded-md text-gray-700 hover:bg-gray-200 transition-colors duration-300 w-full"
+                    >
+                      <Icon className="w-5 h-5 text-gray-700 group-hover:text-blue-500" />
+                      <span className="font-semibold">{label}</span>
+                    </button>
+                  ) : (
+                    <NavLink
+                      key={j}
+                      to={path}
+                      onClick={() =>
+                        (document.getElementById("my-drawer").checked = false)
+                      } // Close drawer
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 w-full ${
+                          isActive
+                            ? "bg-gray-200 text-blue-500"
+                            : "text-gray-700 hover:bg-gray-200"
+                        }`
+                      }
+                    >
+                      <Icon
+                        className={`w-5 h-5 transition-colors duration-300 ${
+                          path === window.location.pathname
+                            ? "text-blue-500"
+                            : "text-gray-700 hover:text-blue-500"
+                        }`}
+                      />
+                      <span className="font-semibold">{label}</span>
+                    </NavLink>
+                  )
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

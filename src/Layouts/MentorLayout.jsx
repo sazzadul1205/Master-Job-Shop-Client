@@ -295,11 +295,11 @@ const MentorLayout = () => {
         </aside>
 
         {/* Content */}
-        <main className="w-5/6 md:h-[calc(100vh-64px)]">
+        <main className="w-full md:w-5/6 md:h-[calc(100vh-64px)] md:overflow-y-auto ">
           <Outlet />
         </main>
 
-        <div className="dock">
+        <div className="flex md:hidden dock">
           {/* Navigation */}
           <label htmlFor="my-drawer">
             {/* Icon */}
@@ -334,12 +334,12 @@ const MentorLayout = () => {
         <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
         {/* Drawer Content */}
-        <div className="flex flex-col h-full w-4/5 bg-white text-base-content overflow-y-auto p-4">
+        <div className="flex flex-col h-full w-[80%] bg-white text-base-content overflow-y-auto p-4">
           {sidebarLinks.map((section, i) => (
             <div key={i} className="mb-6 last:mb-0">
               {/* Section Title */}
               {section.title && (
-                <h3 className="font-semibold text-gray-600 uppercase mb-2">
+                <h3 className="font-semibold text-black uppercase mb-2">
                   {section.title}
                 </h3>
               )}
@@ -352,11 +352,11 @@ const MentorLayout = () => {
                       key={j}
                       onClick={() => {
                         onClick();
-                        document.getElementById("my-drawer").checked = false; // Close drawer
+                        document.getElementById("my-drawer").checked = false;
                       }}
-                      className="flex items-center gap-3 p-2 rounded-md text-gray-700 hover:bg-gray-200 transition-colors duration-300 w-full"
+                      className="flex items-center gap-3 p-2 rounded-md text-black hover:bg-gray-200 transition-colors duration-300 w-full"
                     >
-                      <Icon className="w-5 h-5 text-gray-700 group-hover:text-blue-500" />
+                      <Icon className="w-5 h-5 text-black group-hover:text-blue-500" />
                       <span className="font-semibold">{label}</span>
                     </button>
                   ) : (
@@ -370,7 +370,7 @@ const MentorLayout = () => {
                         `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 w-full ${
                           isActive
                             ? "bg-gray-200 text-blue-500"
-                            : "text-gray-700 hover:bg-gray-200"
+                            : "text-black hover:bg-gray-200"
                         }`
                       }
                     >

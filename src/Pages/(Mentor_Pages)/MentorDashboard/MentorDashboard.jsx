@@ -292,24 +292,29 @@ const MentorDashboard = () => {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-4 px-5 py-5">
+      <div className="flex flex-row  items-center justify-between px-4 sm:px-5 py-4">
         {/* Title */}
-        <h3 className="text-2xl text-black font-bold">Mentor Dashboard</h3>
+        <h3 className="text-xl sm:text-2xl text-black font-bold">
+          Mentor Dashboard
+        </h3>
 
         {/* Refresh Button */}
         <button
           onClick={() => handleRefresh()}
           className="flex items-center gap-2 bg-white border border-gray-300 
-                 hover:bg-blue-50 hover:border-blue-300 text-gray-800 font-medium 
-                 px-4 py-2 rounded-lg shadow-sm transition-all duration-200 cursor-pointer"
+               hover:bg-blue-50 hover:border-blue-300 text-gray-800 font-medium 
+               px-3 sm:px-4 py-2 rounded-lg shadow-sm transition-all duration-200 cursor-pointer"
         >
           <FiRefreshCw
             id="refresh-icon"
-            className={`w-5 h-5 ${isRotating ? "spin" : ""}`}
+            className={`w-4 sm:w-5 h-4 sm:h-5 ${isRotating ? "spin" : ""}`}
           />
-          Refresh
+          <span className="text-sm sm:text-base">Refresh</span>
         </button>
       </div>
+
+      {/* Divider */}
+      <p className="bg-gray-500 w-[90%] mx-auto h-[1px] mb-4" />
 
       {/* Cards */}
       <MentorDashboardCards
@@ -345,23 +350,25 @@ const MentorDashboard = () => {
         </h3>
 
         {/* Manage Buttons Row */}
-        <div className="flex justify-around gap-4 my-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-4 md:px-8 mt-5 pb-20 md:pb-0">
           {/* My Mentorship Button */}
           <button
             onClick={() => navigate("/Mentor/MyMentorship's")}
-            className="flex w-[330px] justify-center items-center gap-1 text-gray-700 hover:text-blue-600 transition-colors p-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg shadow-sm hover:shadow-2xl cursor-pointer"
+            className="flex justify-center items-center gap-2 text-gray-700 hover:text-blue-600 transition-all p-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg shadow-sm hover:shadow-lg cursor-pointer"
           >
             <MyMentorshipIcon className="w-6 h-6" />
-            <span className="text-sm font-medium">Manage Courses</span>
+            <span className="text-sm font-medium text-center">
+              Manage Courses
+            </span>
           </button>
 
           {/* My Courses Button */}
           <button
             onClick={() => navigate("/Mentor/MyCourses")}
-            className="flex w-[330px] justify-center items-center gap-1 text-gray-700 hover:text-blue-600 transition-colors p-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg shadow-sm hover:shadow-2xl cursor-pointer"
+            className="flex justify-center items-center gap-2 text-gray-700 hover:text-blue-600 transition-all p-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg shadow-sm hover:shadow-lg cursor-pointer"
           >
             <MyCoursesIcon className="w-6 h-6" />
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium text-center">
               Manage Mentorship&apos;s
             </span>
           </button>
@@ -369,19 +376,23 @@ const MentorDashboard = () => {
           {/* My Mentorship Applications Button */}
           <button
             onClick={() => navigate("/Mentor/MentorshipApplications")}
-            className="flex w-[330px] justify-center items-center gap-1 text-gray-700 hover:text-blue-600 transition-colors p-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg shadow-sm hover:shadow-2xl cursor-pointer"
+            className="flex justify-center items-center gap-2 text-gray-700 hover:text-blue-600 transition-all p-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg shadow-sm hover:shadow-lg cursor-pointer"
           >
             <ApplicationsIcon className="w-6 h-6" />
-            <span className="text-sm font-medium">Course Applications</span>
+            <span className="text-sm font-medium text-center">
+              Course Applications
+            </span>
           </button>
 
           {/* My Courses Applications Button */}
           <button
             onClick={() => navigate("/Mentor/CourseApplications")}
-            className="flex w-[330px] justify-center items-center gap-1 text-gray-700 hover:text-blue-600 transition-colors p-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg shadow-sm hover:shadow-2xl cursor-pointer"
+            className="flex justify-center items-center gap-2 text-gray-700 hover:text-blue-600 transition-all p-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg shadow-sm hover:shadow-lg cursor-pointer"
           >
             <ApplicationsIcon className="w-6 h-6" />
-            <span className="text-sm font-medium">Mentorship Applications</span>
+            <span className="text-sm font-medium text-center">
+              Mentorship Applications
+            </span>
           </button>
         </div>
       </div>

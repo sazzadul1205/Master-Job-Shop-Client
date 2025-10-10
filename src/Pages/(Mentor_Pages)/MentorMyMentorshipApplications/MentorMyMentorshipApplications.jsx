@@ -123,18 +123,18 @@ const MentorMyMentorshipApplications = () => {
   };
 
   return (
-    <div className="py-7 px-8">
-      <div className="flex justify-between items-center">
-        {/* Title */}
-        <h3 className="font-bold text-3xl text-gray-700">
+    <div className="py-6 px-4 sm:py-7 sm:px-8 pb-14 md:pb-0">
+      {/* Title */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+        <h3 className="font-bold text-2xl sm:text-3xl text-gray-700 mb-4 sm:mb-0">
           Mentorship Applications Management
         </h3>
       </div>
 
       {/* Filters */}
-      <div className="pt-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="pt-4 sm:pt-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         {/* Search Input */}
-        <div className="relative w-full md:max-w-md">
+        <div className="relative w-full sm:max-w-md">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <IoSearchSharp className="w-5 h-5 text-gray-500" />
           </span>
@@ -173,7 +173,7 @@ const MentorMyMentorshipApplications = () => {
         </div>
       </div>
 
-      {/* Container for Mentorship Applications */}
+      {/* Mentorship Applications Container */}
       <div className="my-6 space-y-6">
         {filteredMentorship && filteredMentorship.length > 0 ? (
           filteredMentorship.map((mentorship) => (
@@ -188,22 +188,26 @@ const MentorMyMentorshipApplications = () => {
             />
           ))
         ) : (
-          <div className="flex flex-col items-center justify-center py-16 text-center bg-white rounded-xl shadow-md border border-gray-200">
-            {/* Red Cross Icon */}
-            <div className="text-red-500 bg-red-100 p-7 mb-4 rounded-full">
-              <ImCross className="w-12 h-12" />
+          <div className="flex flex-col items-center justify-center py-8 px-4 sm:py-12 sm:px-6 text-center bg-white rounded-xl shadow-md border border-gray-200">
+            {/* Icon */}
+            <div className="text-red-500 bg-red-100 p-5 sm:p-6 mb-3 sm:mb-4 rounded-full flex items-center justify-center">
+              <ImCross className="w-8 h-8 sm:w-12 sm:h-12" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-600">
+
+            {/* Title */}
+            <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-600">
               No Mentorship&apos;s or Applications Found
             </h3>
-            <p className="text-gray-500 mt-2">
+
+            {/* Description */}
+            <p className="text-xs sm:text-sm md:text-base text-gray-500 mt-2">
               Try adjusting your filters or check back later.
             </p>
           </div>
         )}
       </div>
 
-      {/* Modal */}
+      {/* Modals */}
       {/* Mentorship Application Modal */}
       <dialog id="View_Mentorship_Application_Modal" className="modal">
         <MyMentorshipApplicationModal

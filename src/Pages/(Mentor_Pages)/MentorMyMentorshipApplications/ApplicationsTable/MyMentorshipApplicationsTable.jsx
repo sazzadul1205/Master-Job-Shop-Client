@@ -386,7 +386,7 @@ const MyMentorshipApplicationsTable = ({
   };
 
   return (
-    <div className="relative bg-white rounded-xl shadow-md p-6 border border-gray-200">
+    <div className="relative bg-white rounded-xl shadow-md p-2 pt-6 md:pt-0 md:p-6 border border-gray-200">
       {/* Status Badge */}
       <span
         className={`absolute -top-2 -left-4 px-3 py-1 rounded-full text-white font-semibold text-sm
@@ -414,12 +414,12 @@ const MyMentorshipApplicationsTable = ({
       </span>
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 my-2 md:my-6">
         {/* Title */}
-        <h2 className="text-2xl font-bold text-gray-600">{title}</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-600">{title}</h2>
 
         {/* Filters */}
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 gap-2 w-full md:w-auto">
           {/* Copy JSON Button */}
           <button
             data-tooltip-id="copyTooltip"
@@ -437,9 +437,10 @@ const MyMentorshipApplicationsTable = ({
                 showConfirmButton: false,
               });
             }}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer transition"
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl border bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer transition w-full sm:w-auto"
           >
             <FaCopy className="text-lg" />
+            <span className="hidden sm:inline">Copy JSON</span>
           </button>
 
           {/* Tooltip Instance */}
@@ -449,7 +450,7 @@ const MyMentorshipApplicationsTable = ({
           <select
             value={
               mentorship?.status === "completed"
-                ? "" // clear value if completed
+                ? ""
                 : statusMap[mentorship.status] || "open"
             }
             onChange={(e) =>
@@ -459,8 +460,8 @@ const MyMentorshipApplicationsTable = ({
                 e.target.value
               )
             }
-            disabled={mentorship?.status === "completed" || statusLoading} // disable if completed or loading
-            className={`px-3 py-2 w-[200px] rounded-xl border transition cursor-pointer ${
+            disabled={mentorship?.status === "completed" || statusLoading}
+            className={`px-3 py-2 rounded-xl border transition w-full sm:w-[200px] ${
               mentorship?.status === "completed" || statusLoading
                 ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
                 : "bg-white text-gray-800 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -479,12 +480,12 @@ const MyMentorshipApplicationsTable = ({
             )}
           </select>
 
-          {/* Show Complete Program Button only if not Completed */}
+          {/* Complete Program Button */}
           {mentorship?.status !== "completed" && (
             <button
               onClick={() => handleCompleteProgram(mentorship?._id)}
               disabled={loadingComplete}
-              className={`flex items-center gap-2 px-5 py-2.5 font-semibold rounded-xl shadow-md border transition-all duration-300 ease-in-out cursor-pointer ${
+              className={`flex items-center justify-center gap-2 px-5 py-2.5 font-semibold rounded-xl shadow-md border transition-all duration-300 ease-in-out w-full sm:w-auto ${
                 loadingComplete
                   ? "bg-gray-400 text-gray-200 border-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-green-500 to-green-600 text-white border-green-600 hover:from-green-600 hover:to-green-700 hover:shadow-lg active:scale-95"
@@ -505,18 +506,18 @@ const MyMentorshipApplicationsTable = ({
       </div>
 
       {/* Applicants Info */}
-      <div className="py-4 grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
+      <div className="py-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {/* Total Applicants Card */}
         <div
-          className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200 cursor-pointer"
+          className="flex flex-col sm:flex-row items-center sm:items-start gap-3 p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition w-full"
           onClick={() => setActiveFilters([])}
         >
-          <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
-            <IoIosEye className="w-5 h-5" />
+          <div className="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">
+            <IoIosEye className="w-6 h-6" />
           </div>
-          <div>
-            <p className="text-sm text-gray-500">Total Applicants</p>
-            <p className="text-lg font-bold text-gray-700">
+          <div className="flex-1 min-w-0 text-center sm:text-left">
+            <p className="text-sm text-gray-500 truncate">Total Applicants</p>
+            <p className="text-lg sm:text-xl font-bold text-gray-700 truncate">
               {applications.length}
             </p>
           </div>
@@ -524,49 +525,55 @@ const MyMentorshipApplicationsTable = ({
 
         {/* Accepted Applicants */}
         <div
-          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer ${
+          className={`flex flex-col sm:flex-row items-center sm:items-start gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition w-full ${
             activeFilters.includes("Accepted") ? "bg-green-100" : "bg-gray-50"
           }`}
           onClick={() => toggleFilter("Accepted")}
         >
-          <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
-            <FaCheck className="w-5 h-5" />
+          <div className="bg-green-500 text-white rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">
+            <FaCheck className="w-6 h-6" />
           </div>
-          <div>
-            <p className="text-sm text-gray-500">Accepted</p>
-            <p className="text-lg font-bold text-green-600">{acceptedCount}</p>
+          <div className="flex-1 min-w-0 text-center sm:text-left">
+            <p className="text-sm text-gray-500 truncate">Accepted</p>
+            <p className="text-lg sm:text-xl font-bold text-green-600 truncate">
+              {acceptedCount}
+            </p>
           </div>
         </div>
 
         {/* Rejected Applicants */}
         <div
-          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer ${
+          className={`flex flex-col sm:flex-row items-center sm:items-start gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition w-full ${
             activeFilters.includes("Rejected") ? "bg-red-100" : "bg-gray-50"
           }`}
           onClick={() => toggleFilter("Rejected")}
         >
-          <div className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
-            <ImCross className="w-5 h-5" />
+          <div className="bg-red-500 text-white rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">
+            <ImCross className="w-6 h-6" />
           </div>
-          <div>
-            <p className="text-sm text-gray-500">Rejected</p>
-            <p className="text-lg font-bold text-red-600">{rejectedCount}</p>
+          <div className="flex-1 min-w-0 text-center sm:text-left">
+            <p className="text-sm text-gray-500 truncate">Rejected</p>
+            <p className="text-lg sm:text-xl font-bold text-red-600 truncate">
+              {rejectedCount}
+            </p>
           </div>
         </div>
 
         {/* Pending Applicants */}
         <div
-          className={`flex items-center gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer ${
+          className={`flex flex-col sm:flex-row items-center sm:items-start gap-3 p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition w-full ${
             activeFilters.includes("Pending") ? "bg-yellow-100" : "bg-gray-50"
           }`}
           onClick={() => toggleFilter("Pending")}
         >
-          <div className="bg-yellow-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
-            <MdPendingActions className="w-5 h-5" />
+          <div className="bg-yellow-500 text-white rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">
+            <MdPendingActions className="w-6 h-6" />
           </div>
-          <div>
-            <p className="text-sm text-gray-500">Pending</p>
-            <p className="text-lg font-bold text-yellow-600">{pendingCount}</p>
+          <div className="flex-1 min-w-0 text-center sm:text-left">
+            <p className="text-sm text-gray-500 truncate">Pending</p>
+            <p className="text-lg sm:text-xl font-bold text-yellow-600 truncate">
+              {pendingCount}
+            </p>
           </div>
         </div>
       </div>
@@ -574,10 +581,10 @@ const MyMentorshipApplicationsTable = ({
       {/* Table Container */}
       <div className="overflow-x-auto text-black">
         {/* Table */}
-        <table className="table">
+        <table className="hidden md:table">
           {/* Table Head */}
-          <thead className="bg-gray-200 text-black">
-            <tr>
+          <thead className="bg-gray-200">
+            <tr className="text-black">
               <th>#</th>
               <th>Applicant Info</th>
               <th className="text-center">Status</th>
@@ -793,6 +800,207 @@ const MyMentorshipApplicationsTable = ({
             ))}
           </tbody>
         </table>
+
+        {/* Mobile View */}
+        <div className="block md:hidden">
+          {paginatedApplicants.map((applicant, index) => (
+            <div
+              key={applicant?.id || index}
+              className="border-b border-gray-200 mb-4 p-3 rounded-lg shadow-sm bg-white"
+            >
+              {/* Serial + Name + Avatar */}
+              <div className="flex items-center gap-3 mb-2">
+                {/* Serial */}
+                <span className="font-bold">{startIndex + index + 1}.</span>
+
+                {/* Avatar */}
+                <img
+                  src={
+                    applicant?.avatar ||
+                    applicant?.profileImage ||
+                    DefaultApplicant
+                  }
+                  alt={applicant?.name || "N/A"}
+                  className="w-12 h-12 rounded-full"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = DefaultApplicant;
+                  }}
+                />
+
+                {/* Name */}
+                <h3
+                  className="font-bold cursor-pointer hover:text-blue-600 transition"
+                  onClick={() => {
+                    setSelectedApplicantName(applicant?.userId || "N/A");
+                    document
+                      .getElementById("View_Applicant_Profile_Modal")
+                      ?.showModal();
+                  }}
+                >
+                  {applicant?.name || "N/A"}
+                </h3>
+              </div>
+
+              {/* Status */}
+              <div className="flex mb-2 justify-end">
+                <span
+                  className={`px-3 py-1 rounded-xl md:rounded-full text-white font-semibold text-sm ${
+                    applicant?.status === "Accepted"
+                      ? "bg-green-500"
+                      : applicant?.status === "Rejected"
+                      ? "bg-red-500"
+                      : "bg-gray-400"
+                  }`}
+                >
+                  {applicant?.status || "Pending"}
+                </span>
+              </div>
+
+              {/* Application Time */}
+              <div className="mb-3 text-gray-700 text-sm sm:text-base">
+                <span className="font-medium">Applied:</span>{" "}
+                <span className="block sm:inline">
+                  {formatDate(applicant?.appliedAt)}
+                </span>{" "}
+                <span className="text-gray-500 block sm:inline">
+                  ({getTimeAgo(applicant?.appliedAt)})
+                </span>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="gap-2">
+                {(() => {
+                  const status = getStatus(applicant);
+                  const isCompleted =
+                    mentorship?.status?.toLowerCase() === "completed";
+
+                  return (
+                    <>
+                      {/* View Button (always available, but disabled if Completed) */}
+                      <button
+                        onClick={() => {
+                          if (isCompleted) return;
+                          setSelectedApplicationID(applicant?._id);
+                          document
+                            .getElementById("View_Mentorship_Application_Modal")
+                            ?.showModal();
+                        }}
+                        data-tooltip-id={`viewTip-${id}-${applicant?._id}`}
+                        data-tooltip-content="View Application Details"
+                        disabled={isCompleted}
+                        className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer w-full justify-center ${
+                          isCompleted
+                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            : "bg-blue-500 text-white hover:bg-blue-700/90"
+                        }`}
+                      >
+                        <IoIosEye className="text-xl" /> View
+                      </button>
+                      <Tooltip id={`viewTip-${id}-${applicant?._id}`} />
+
+                      {/* Pending Applications → Accept & Reject */}
+                      {(status === "Pending" || !status) && (
+                        <>
+                          {/* Accept Button */}
+                          <button
+                            onClick={() =>
+                              updateApplicationStatus(
+                                applicant?._id,
+                                "Accepted",
+                                applicant?.name
+                              )
+                            }
+                            disabled={
+                              isCompleted || loadingId === applicant?._id
+                            }
+                            data-tooltip-id={`acceptTip-${id}-${applicant?._id}`}
+                            data-tooltip-content="Accept this Application"
+                            className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer w-full justify-center ${
+                              isCompleted
+                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "bg-green-500 text-white hover:bg-green-700/90"
+                            }`}
+                          >
+                            {loadingId === applicant?._id ? (
+                              <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                            ) : (
+                              <FaCheck />
+                            )}
+                            Accept
+                          </button>
+                          <Tooltip id={`acceptTip-${id}-${applicant?._id}`} />
+
+                          {/* Reject Button */}
+                          <button
+                            onClick={() =>
+                              updateApplicationStatus(
+                                applicant?._id,
+                                "Rejected",
+                                applicant?.name
+                              )
+                            }
+                            disabled={
+                              isCompleted || loadingId === applicant?._id
+                            }
+                            data-tooltip-id={`rejectTip-${id}-${applicant?._id}`}
+                            data-tooltip-content="Reject this Application"
+                            className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer w-full justify-center ${
+                              isCompleted
+                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "bg-red-500 text-white hover:bg-red-700/90"
+                            }`}
+                          >
+                            {loadingId === applicant?._id ? (
+                              <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                            ) : (
+                              <ImCross />
+                            )}
+                            Reject
+                          </button>
+                          <Tooltip id={`rejectTip-${id}-${applicant?._id}`} />
+                        </>
+                      )}
+
+                      {/* Accepted or Rejected → Revert */}
+                      {(status === "Accepted" || status === "Rejected") && (
+                        <>
+                          <button
+                            onClick={() =>
+                              updateApplicationStatus(
+                                applicant?._id,
+                                "Pending",
+                                applicant?.name
+                              )
+                            }
+                            disabled={
+                              isCompleted || loadingId === applicant?._id
+                            }
+                            data-tooltip-id={`revertTip-${id}-${applicant?._id}`}
+                            data-tooltip-content="Revert to Pending"
+                            className={`flex gap-2 items-center border-2 font-semibold py-2 px-5 rounded-lg transition cursor-pointer w-full justify-center ${
+                              isCompleted
+                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "bg-yellow-500 text-white hover:bg-yellow-700/90"
+                            }`}
+                          >
+                            {loadingId === applicant?._id ? (
+                              <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                            ) : (
+                              <MdRestartAlt className="text-2xl" />
+                            )}
+                            Revert
+                          </button>
+                          <Tooltip id={`revertTip-${id}-${applicant?._id}`} />
+                        </>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+          ))}
+        </div>
 
         {/* Pagination */}
         <div className="join flex justify-center mt-4">

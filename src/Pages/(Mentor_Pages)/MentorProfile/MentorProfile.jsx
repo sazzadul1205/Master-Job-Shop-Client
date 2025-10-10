@@ -87,9 +87,9 @@ const MentorProfile = () => {
   }
 
   return (
-    <div className="p-2 md:p-5 pb-20 md:pb-0">
+    <div className="p-2 md:p-5 pb-20 md:pb-5">
       {/* Basic Information */}
-      <div className="bg-white text-black w-full px-4 sm:px-6 rounded-xl pb-7 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+      <div className="bg-white text-black w-full px-4 sm:px-6 rounded-xl pb-7 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-default">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-7 gap-3 sm:gap-0">
           {/* Title */}
@@ -102,7 +102,7 @@ const MentorProfile = () => {
                 .getElementById("Edit_Profile_Basic_Information")
                 .showModal()
             }
-            className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-4 sm:px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer text-sm sm:text-base"
+            className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer text-sm sm:px-4 sm:py-1.5"
           >
             <MdEdit className="text-base sm:text-lg" /> Edit Profile
           </button>
@@ -139,7 +139,7 @@ const MentorProfile = () => {
       </div>
 
       {/* Contact Details Block */}
-      <div className="bg-white text-black w-full px-4 sm:px-6 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+      <div className="bg-white text-black w-full px-4 sm:px-6 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-default">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-7 gap-3 sm:gap-0">
           {/* Title */}
@@ -152,7 +152,7 @@ const MentorProfile = () => {
                 .getElementById("Edit_Profile_Contact_Details")
                 .showModal()
             }
-            className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-4 sm:px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer text-sm sm:text-base"
+            className="flex items-center gap-2 border border-gray-400 hover:bg-gray-400 text-black hover:text-white font-semibold px-5 py-2 rounded-md transition-colors duration-500 cursor-pointer text-sm sm:px-4 sm:py-1.5"
           >
             <MdEdit className="text-base sm:text-lg" /> Edit Contact
           </button>
@@ -189,7 +189,7 @@ const MentorProfile = () => {
       </div>
 
       {/* Expertise & Skills */}
-      <div className="bg-white text-black w-full px-6 sm:px-4 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+      <div className="bg-white text-black w-full px-6 sm:px-4 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-default">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-3 pt-7">
           {/* Title */}
@@ -252,7 +252,7 @@ const MentorProfile = () => {
       </div>
 
       {/* Biography */}
-      <div className="bg-white text-black w-full px-6 sm:px-4 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+      <div className="bg-white text-black w-full px-6 sm:px-4 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-default">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-3 pt-7">
           {/* Title */}

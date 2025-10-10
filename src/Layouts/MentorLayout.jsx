@@ -220,12 +220,12 @@ const MentorLayout = () => {
       {/* Sidebar & Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className="hidden md:block w-1/6 bg-white border-r border-gray-300 pt-1 px-2 overflow-y-auto h-[calc(100vh-64px)]">
+        <aside className="hidden md:block w-1/6 bg-white border-r border-gray-300 pt-1 px-2 h-[calc(100vh-64px)]">
           {sidebarLinks.map((section, i) => (
             <div key={i} className="mb-4">
               {/* Section Title */}
               {section.title && (
-                <h3 className="flex items-center gap-2 font-semibold text-gray-600 pt-3 pb-2 px-2 uppercase">
+                <h3 className="flex items-center gap-2 font-semibold text-gray-600 pt-3 pb-2 px-2 uppercase truncate">
                   {section.title}
                 </h3>
               )}
@@ -234,27 +234,22 @@ const MentorLayout = () => {
               <div className="space-y-2">
                 {section.links.map(({ label, path, icon: Icon, onClick }, j) =>
                   onClick ? (
-                    // Handle Click
                     <button
                       key={j}
                       onClick={onClick}
-                      className="flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden group text-gray-700 hover:bg-gray-200 w-full text-left"
+                      className="flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden text-ellipsis whitespace-nowrap text-gray-700 hover:bg-gray-200 w-full text-left"
                       data-tooltip-id="sidebar-tooltip"
                       data-tooltip-content={label}
                     >
-                      {/* Icon */}
-                      <Icon className="w-[20px] h-[20px] text-gray-700 group-hover:text-blue-500" />
-
-                      {/* Label */}
-                      <p className="font-semibold">{label}</p>
+                      <Icon className="w-[20px] h-[20px] text-gray-700 group-hover:text-blue-500 flex-shrink-0" />
+                      <p className="font-semibold truncate">{label}</p>
                     </button>
                   ) : (
-                    // Handle Link
                     <NavLink
                       key={j}
                       to={path}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 group ${
+                        `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 group overflow-hidden text-ellipsis whitespace-nowrap ${
                           isActive
                             ? "bg-gray-200 text-blue-500"
                             : "text-gray-700 hover:bg-gray-200"
@@ -265,17 +260,14 @@ const MentorLayout = () => {
                     >
                       {({ isActive }) => (
                         <>
-                          {/* Icon */}
                           <Icon
-                            className={`w-[20px] h-[20px] transition-colors duration-300 ${
+                            className={`w-[20px] h-[20px] flex-shrink-0 transition-colors duration-300 ${
                               isActive
                                 ? "text-blue-500"
                                 : "text-gray-700 group-hover:text-blue-500"
                             }`}
                           />
-
-                          {/* Label */}
-                          <p className="font-semibold">{label}</p>
+                          <p className="font-semibold truncate">{label}</p>
                         </>
                       )}
                     </NavLink>
@@ -339,7 +331,7 @@ const MentorLayout = () => {
             <div key={i} className="mb-6 last:mb-0">
               {/* Section Title */}
               {section.title && (
-                <h3 className="font-semibold text-black uppercase mb-2">
+                <h3 className="font-semibold text-black uppercase mb-2 truncate">
                   {section.title}
                 </h3>
               )}
@@ -354,10 +346,10 @@ const MentorLayout = () => {
                         onClick();
                         document.getElementById("my-drawer").checked = false;
                       }}
-                      className="flex items-center gap-3 p-2 rounded-md text-black hover:bg-gray-200 transition-colors duration-300 w-full"
+                      className="flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden whitespace-nowrap text-ellipsis text-gray-700 hover:bg-gray-200 w-full text-left"
                     >
-                      <Icon className="w-5 h-5 text-black group-hover:text-blue-500" />
-                      <span className="font-semibold">{label}</span>
+                      <Icon className="w-5 h-5 flex-shrink-0 text-black group-hover:text-blue-500" />
+                      <span className="font-semibold truncate">{label}</span>
                     </button>
                   ) : (
                     <NavLink
@@ -367,7 +359,7 @@ const MentorLayout = () => {
                         (document.getElementById("my-drawer").checked = false)
                       } // Close drawer
                       className={({ isActive }) =>
-                        `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 w-full ${
+                        `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 w-full overflow-hidden whitespace-nowrap text-ellipsis ${
                           isActive
                             ? "bg-gray-200 text-blue-500"
                             : "text-black hover:bg-gray-200"
@@ -375,13 +367,13 @@ const MentorLayout = () => {
                       }
                     >
                       <Icon
-                        className={`w-5 h-5 transition-colors duration-300 ${
+                        className={`w-5 h-5 flex-shrink-0 transition-colors duration-300 ${
                           path === window.location.pathname
                             ? "text-blue-500"
                             : "text-gray-700 hover:text-blue-500"
                         }`}
                       />
-                      <span className="font-semibold">{label}</span>
+                      <span className="font-semibold truncate">{label}</span>
                     </NavLink>
                   )
                 )}

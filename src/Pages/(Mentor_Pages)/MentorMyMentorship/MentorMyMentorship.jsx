@@ -254,23 +254,28 @@ const MentorMyMentorship = () => {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between p-5">
+      <div className="flex flex-col md:flex-row items-center justify-between px-4 sm:px-5 py-4 gap-4">
         {/* Title */}
-        <h3 className="text-2xl text-black font-bold">My Mentorship&apos;s</h3>
+        <h3 className="text-xl sm:text-2xl text-black font-bold">
+          My Mentorship&apos;s
+        </h3>
 
         {/* Create New Mentorship Button */}
         <button
           onClick={() =>
             document.getElementById("Create_Mentorship_Modal").showModal()
           }
-          className="flex items-center gap-4 bg-[#002242] hover:bg-[#00509e] text-white shadow hover:shadow-2xl font-semibold px-5 py-3 rounded-md transition-colors duration-500 cursor-pointer"
+          className="flex items-center gap-3 sm:gap-4 bg-[#002242] hover:bg-[#00509e] text-white shadow hover:shadow-2xl font-semibold px-4 sm:px-5 py-2 sm:py-3 rounded-md transition-colors duration-500 cursor-pointer text-sm sm:text-base"
         >
-          <FaPlus /> Create New Mentorship
+          <FaPlus className="w-4 h-4 sm:w-5 sm:h-5" /> Create New Mentorship
         </button>
       </div>
 
+      {/* Divider */}
+      <p className="bg-gray-500 w-[90%] mx-auto h-[1px] mb-4" />
+
       {/* Tabs Navigation */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 p-1 mx-5 bg-gray-200 rounded-md">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 p-1 mx-2 md:mx-5 bg-gray-200 rounded-md">
         {tabs.map((tab) => (
           <p
             key={tab.id}
@@ -288,7 +293,7 @@ const MentorMyMentorship = () => {
       </div>
 
       {/* Tabs Content */}
-      <div className="p-5">
+      <div className="p-5 pb-20 md:pb-5">
         {/* Active Tab Content */}
         {activeTab === "active" && (
           <MentorMyActiveMentorship

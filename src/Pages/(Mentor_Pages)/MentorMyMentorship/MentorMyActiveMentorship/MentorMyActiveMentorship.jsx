@@ -43,7 +43,7 @@ const MentorMyActiveMentorship = ({
   return (
     <div className="text-black">
       {/* Title */}
-      <h3 className="text-2xl font-bold">
+      <h3 className="text-xl sm:text-2xl font-bold">
         Active Mentorship&apos;s ( {sortedMentorship?.length || 0} )
       </h3>
 
@@ -51,16 +51,16 @@ const MentorMyActiveMentorship = ({
       <p className="bg-blue-500 w-full h-[2px] my-2" />
 
       {/* Mentorship Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-5">
         {sortedMentorship && sortedMentorship.length > 0 ? (
           sortedMentorship.map((mentorship, idx) => (
             <div
               key={idx}
-              className="relative bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-2xl"
+              className="relative bg-white rounded-xl shadow-lg p-4 sm:p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-2xl"
             >
               {/* Status Badge */}
               <span
-                className={`absolute -top-3 -left-3 px-5 py-1 text-sm font-semibold rounded-full shadow-xl ${
+                className={`absolute -top-3 -left-3 px-3 sm:px-5 py-1 text-xs sm:text-sm font-semibold rounded-full shadow-xl ${
                   ["active", "closed"].includes(
                     mentorship?.status?.toLowerCase()
                   )
@@ -90,7 +90,7 @@ const MentorMyActiveMentorship = ({
               {/* Star Toggle */}
               <button
                 onClick={() => toggleStar(mentorship._id)}
-                className="absolute top-3 right-3 text-2xl cursor-pointer transition-colors group"
+                className="absolute top-3 right-3 text-xl sm:text-2xl cursor-pointer transition-colors group"
               >
                 {mentorship.archived ? (
                   <FaStar className="text-yellow-400 drop-shadow-md" />
@@ -105,32 +105,30 @@ const MentorMyActiveMentorship = ({
               </button>
 
               {/* Content */}
-              <div className="space-y-2">
+              <div className="space-y-2 text-sm sm:text-base pt-5 md:pt-0">
                 {/* Title */}
-                <h4 className="font-semibold text-lg text-gray-900">
+                <h4 className="font-semibold text-gray-900 text-base sm:text-lg">
                   {mentorship.title || "Untitled Mentorship"}
                 </h4>
 
                 {/* Category */}
-                <p className="text-gray-500 text-sm">
+                <p className="text-gray-500 text-xs sm:text-sm">
                   {mentorship?.category || "Category not specified"} ›{" "}
                   {mentorship?.subCategory || "Subcategory not specified"}
                 </p>
 
                 {/* Location */}
-                <p className="text-sm">
+                <p className="text-gray-800 text-xs sm:text-sm">
                   <span className="font-semibold">Location:</span>{" "}
-                  <span className="text-gray-800">
-                    {mentorship?.location?.city
-                      ? `${mentorship?.location?.city}, ${mentorship?.location?.country}`
-                      : mentorship?.isRemote
-                      ? "Remote"
-                      : "Not specified"}
-                  </span>
+                  {mentorship?.location?.city
+                    ? `${mentorship?.location?.city}, ${mentorship?.location?.country}`
+                    : mentorship?.isRemote
+                    ? "Remote"
+                    : "Not specified"}
                 </p>
 
                 {/* Fee */}
-                <p className="text-sm">
+                <p className="text-xs sm:text-sm">
                   <span className="font-semibold">Fee:</span>{" "}
                   <span className="text-green-600 font-semibold">
                     {mentorship?.fee
@@ -144,7 +142,7 @@ const MentorMyActiveMentorship = ({
                 </p>
 
                 {/* Posted Date */}
-                <p className="text-sm text-gray-400">
+                <p className="text-gray-400 text-xs sm:text-sm">
                   Posted:{" "}
                   {mentorship?.postedAt
                     ? calculateDaysAgo(mentorship.postedAt)
@@ -153,7 +151,7 @@ const MentorMyActiveMentorship = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-between items-center mt-4 gap-2">
+              <div className="flex flex-col sm:flex-row justify-between items-stretch mt-4 gap-2">
                 {/* View */}
                 <button
                   onClick={() => {
@@ -192,26 +190,26 @@ const MentorMyActiveMentorship = ({
           ))
         ) : (
           // Fallback: Center Card for Creating Mentorship
-          <div className="col-span-full mx-auto max-w-3xl flex flex-col items-center justify-center bg-white rounded-xl shadow-lg p-10 text-center space-y-6">
+          <div className="col-span-full mx-auto max-w-3xl flex flex-col items-center justify-center bg-white rounded-xl shadow-lg p-6 sm:p-10 text-center space-y-4 sm:space-y-6">
             {/* Icon */}
             <div className="bg-blue-100 p-4 rounded-full">
-              <FaPlus className="text-4xl text-blue-600" />
+              <FaPlus className="text-3xl sm:text-4xl text-blue-600" />
             </div>
 
             {/* Heading */}
-            <h3 className="text-2xl font-bold text-gray-900">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
               No Mentorship&apos;s Created Yet
             </h3>
 
             {/* Description */}
-            <p className="text-gray-600 font-semibold text-base ">
+            <p className="text-gray-600 font-semibold text-sm sm:text-base">
               It looks like you haven’t created any mentorship programs yet.
               Mentorship&apos;s are a great way to guide aspiring developers,
               share your knowledge, and build your professional network.
             </p>
 
             {/* Encouragement */}
-            <p className="text-gray-500 text-sm ">
+            <p className="text-gray-500 text-xs sm:text-sm">
               Click the button below to create your first mentorship program.
               You can set up topics, schedule sessions, and start helping
               mentees grow their skills today!
@@ -222,9 +220,9 @@ const MentorMyActiveMentorship = ({
               onClick={() =>
                 document.getElementById("Create_Mentorship_Modal").showModal()
               }
-              className="flex items-center gap-3 bg-[#002242] hover:bg-[#00509e] text-white shadow hover:shadow-2xl font-semibold px-6 py-3 rounded-md transition-colors duration-500 cursor-pointer"
+              className="flex items-center gap-2 sm:gap-3 bg-[#002242] hover:bg-[#00509e] text-white shadow hover:shadow-2xl font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-md transition-colors duration-500 cursor-pointer text-sm sm:text-base"
             >
-              <FaPlus /> Create New Mentorship
+              <FaPlus className="w-4 h-4 sm:w-5 sm:h-5" /> Create New Mentorship
             </button>
           </div>
         )}

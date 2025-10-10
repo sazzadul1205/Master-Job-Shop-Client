@@ -24,11 +24,11 @@ const MentorDeleteCourseModal = () => {
 
   // States
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   // React Hook Form
   const { register: registerVerify, handleSubmit: handleSubmitVerify } =
@@ -86,9 +86,9 @@ const MentorDeleteCourseModal = () => {
 
   // Step 1: Verify password
   const onVerifyPassword = async (data) => {
+    setLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
-    setLoading(true);
 
     try {
       if (!user?.email) throw new Error("User not found. Please re-login.");
@@ -133,11 +133,36 @@ const MentorDeleteCourseModal = () => {
 
   // Loading states
   if (MentorIsLoading || MyCoursesIsLoading || CourseApplicationsIsLoading)
-    return <Loading />;
+    return (
+      <div
+        id="Settings_Change_Password_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        <Loading height="min-h-[60vh]" />
+      </div>
+    );
 
   // Error states
   if (MentorError || MyCoursesError || CourseApplicationsError)
-    return <Error />;
+    return (
+      <div
+        id="Settings_Change_Password_Modal"
+        className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
+      >
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={() => handleClose()}
+          className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+        >
+          <ImCross className="text-xl" />
+        </button>
+
+        {/* Error Component inside modal */}
+
+        <Error height="min-h-[60vh]" />
+      </div>
+    );
 
   // Delete Courses & Applications Handler
   const DeleteCoursesHandler = async () => {
@@ -374,6 +399,7 @@ const MentorDeleteCourseModal = () => {
 
         {/* Right: Mentor Info */}
         <div className="flex flex-col items-center justify-start border-l pl-6 text-center">
+          {/* Avatar */}
           <img
             src={
               MentorData?.avatar ||
@@ -383,12 +409,18 @@ const MentorDeleteCourseModal = () => {
             alt="Mentor Avatar"
             className="w-28 h-28 rounded-full shadow-md mb-4 object-cover"
           />
+
+          {/* Name */}
           <h4 className="text-lg font-semibold">
             {MentorData?.name || user?.displayName || "No Name"}
           </h4>
+
+          {/* Position */}
           <p className="text-sm text-gray-500 mb-1">
             {MentorData?.position || "Mentor"}
           </p>
+
+          {/* Email */}
           <p className="text-gray-600 text-sm">
             {MentorData?.email || user?.email}
           </p>

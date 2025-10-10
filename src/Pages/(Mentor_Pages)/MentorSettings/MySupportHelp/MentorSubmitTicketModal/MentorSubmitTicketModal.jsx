@@ -11,6 +11,9 @@ import { ImCross } from "react-icons/im";
 import useAuth from "../../../../../Hooks/useAuth";
 import useAxiosPublic from "../../../../../Hooks/useAxiosPublic";
 
+// Shared
+import FormInput from "../../../../../Shared/FormInput/FormInput";
+
 const MentorSubmitTicketModal = () => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
@@ -113,85 +116,48 @@ const MentorSubmitTicketModal = () => {
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Subject */}
-        <div>
-          {/* Label */}
-          <label className="block text-gray-700 font-semibold mb-1">
-            Subject <span className="text-red-500">*</span>
-          </label>
-
-          {/* Input */}
-          <input
-            type="text"
-            {...register("subject", { required: "Subject is required" })}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Briefly describe your issue"
-          />
-
-          {/* Error */}
-          {errors.subject && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.subject.message}
-            </p>
-          )}
-        </div>
+        <FormInput
+          label="Subject"
+          required
+          placeholder="Briefly describe your issue"
+          register={register("subject", { required: "Subject is required" })}
+          error={errors.subject}
+        />
 
         {/* Category */}
-        <div>
-          {/* Label */}
-          <label className="block text-gray-700 font-semibold mb-1">
-            Category <span className="text-red-500">*</span>
-          </label>
-
-          {/* Select */}
-          <select
-            {...register("category", {
-              required: "Please select a category",
-            })}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select a category</option>
-            <option value="Technical Issue">Technical Issue</option>
-            <option value="Payment Issue">Payment Issue</option>
-            <option value="Account Problem">Account Problem</option>
-            <option value="Other">Other</option>
-          </select>
-
-          {/* Error */}
-          {errors.category && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.category.message}
-            </p>
-          )}
-        </div>
+        <FormInput
+          label="Category"
+          required
+          as="select"
+          placeholder="Select a category"
+          register={register("category", {
+            required: "Please select a category",
+          })}
+          error={errors.category}
+          options={[
+            { value: "Technical Issue", label: "Technical Issue" },
+            { value: "Payment Issue", label: "Payment Issue" },
+            { value: "Account Problem", label: "Account Problem" },
+            { value: "Other", label: "Other" },
+          ]}
+        />
 
         {/* Description */}
-        <div>
-          {/* Label */}
-          <label className="block text-gray-700 font-semibold mb-1">
-            Description <span className="text-red-500">*</span>
-          </label>
+        <FormInput
+          label="Description"
+          required
+          as="textarea"
+          placeholder="Provide more details about your issue..."
+          rows={4}
+          register={register("description", {
+            required: "Description is required",
+          })}
+          error={errors.description}
+        />
 
-          {/* Textarea */}
-          <textarea
-            rows="4"
-            {...register("description", {
-              required: "Description is required",
-            })}
-            className="textarea w-full bg-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Provide more details about your issue..."
-          ></textarea>
-
-          {/* Error */}
-          {errors.description && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.description.message}
-            </p>
-          )}
-        </div>
-
-        {/* Submit */}
+        {/* Buttons */}
         <div className="flex justify-end gap-3 pt-3">
-          {/* Cancel Button */}
+          {/* Cancel */}
           <button
             type="button"
             onClick={handleClose}
@@ -200,7 +166,7 @@ const MentorSubmitTicketModal = () => {
             Cancel
           </button>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             type="submit"
             disabled={uploading}

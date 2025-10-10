@@ -116,7 +116,7 @@ const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
   return (
     <div
       id="Edit_Profile_Basic_Information"
-      className="modal-box min-w-3xl relative bg-white rounded-xl shadow-xl w-full max-w-2xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
+      className="modal-box relative bg-white rounded-xl shadow-xl w-full max-w-lg sm:max-w-2xl mx-auto max-h-[90vh] p-4 sm:p-6 text-black overflow-y-auto"
     >
       {/* Close Button */}
       <button
@@ -128,26 +128,29 @@ const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
       </button>
 
       {/* Modal Title */}
-      <h3 className="font-bold text-xl text-center mb-4">
+      <h3 className="font-bold text-lg sm:text-xl text-center mb-4 pt-5 md:pt-0">
         Edit Profile Basic Information
       </h3>
 
       {/* Divider */}
-      <div className="p-[1px] bg-blue-500 mb-4" />
+      <div className="h-[1px] bg-blue-500 mb-4" />
 
       {/* Server error message */}
       {errorMessage && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-center">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-center text-sm sm:text-base">
           {errorMessage}
         </div>
       )}
 
       {/* Preference Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 sm:space-y-5"
+      >
         {/* Basic information */}
-        <div className="flex w-full gap-3">
+        <div className="flex flex-col sm:flex-row w-full gap-3">
           {/* Avatar Section */}
-          <div className="w-1/3 p-2">
+          <div className="w-full sm:w-1/3 p-2 flex flex-col items-center">
             {/* Logo Title */}
             <p className="font-medium text-center text-sm mb-1">Mentor Image</p>
 
@@ -160,7 +163,7 @@ const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
           </div>
 
           {/* Initial Information */}
-          <div className="w-2/3 space-y-3 py-2 pl-3 border-l border-gray-300">
+          <div className="w-full sm:w-2/3 space-y-3 py-2 sm:pl-3 border-t sm:border-t-0 sm:border-l border-gray-300">
             {/* Name */}
             <FormInput
               label="Name"
@@ -185,18 +188,18 @@ const EditProfileBasicInformationModal = ({ MentorData, refetch }) => {
         <FormInput
           label="Description"
           required
-          rows={10}
+          rows={6}
           as="textarea"
-          placeholder="Describe Your Self ......"
+          placeholder="Describe Yourself ..."
           register={register("description", { required: true })}
-          error={errors.position}
+          error={errors.description}
         />
 
         {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow ${
+          className={`bg-blue-700 hover:bg-blue-800 text-white text-sm md:text-md font-semibold w-full py-2 rounded shadow ${
             loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
           }`}
         >

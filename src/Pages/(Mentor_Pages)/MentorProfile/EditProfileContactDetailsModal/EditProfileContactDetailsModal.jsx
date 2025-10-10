@@ -85,7 +85,7 @@ const EditProfileContactDetailsModal = ({ MentorData, refetch }) => {
   return (
     <div
       id="Edit_Profile_Contact_Details"
-      className="modal-box min-w-3xl relative bg-white rounded-xl shadow-xl w-full max-w-2xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
+      className="modal-box relative bg-white rounded-xl shadow-xl w-full max-w-lg sm:max-w-2xl mx-auto max-h-[90vh] p-4 sm:p-6 text-black overflow-y-auto"
     >
       {/* Close Button */}
       <button
@@ -97,22 +97,25 @@ const EditProfileContactDetailsModal = ({ MentorData, refetch }) => {
       </button>
 
       {/* Modal Title */}
-      <h3 className="font-bold text-xl text-center mb-4">
+      <h3 className="font-bold text-lg sm:text-xl text-center mb-4 pt-5 md:pt-0">
         Edit Profile Contact Details
       </h3>
 
       {/* Divider */}
-      <div className="p-[1px] bg-blue-500 mb-4" />
+      <div className="h-[1px] bg-blue-500 mb-4" />
 
       {/* Server error message */}
       {errorMessage && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-center">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-center text-sm sm:text-base">
           {errorMessage}
         </div>
       )}
 
       {/* Contact Details Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 sm:space-y-5"
+      >
         {/* Email */}
         <FormInput
           label="Email"
@@ -124,19 +127,23 @@ const EditProfileContactDetailsModal = ({ MentorData, refetch }) => {
         />
 
         {/* Phone */}
-        <div>
-          <label className="font-medium text-sm mb-1">
+        <div className="w-full">
+          <label className="font-medium text-sm sm:text-base mb-1 block">
             Phone <span className="text-red-500">*</span>
           </label>
+
           <PhoneInput
             country="bd"
             value={phoneNumber}
             onChange={setPhoneNumber}
-            inputClass="!w-full !bg-white !text-black !rounded-lg !shadow-md"
-            inputStyle={{ width: "100%", height: "40px" }}
+            inputClass="!w-full"
+            containerClass="!w-full border border-black rounded-md"
           />
+
           {!phoneNumber && (
-            <p className="text-red-500 text-sm">Phone is required</p>
+            <p className="text-red-500 text-xs sm:text-sm mt-1">
+              Phone is required
+            </p>
           )}
         </div>
 

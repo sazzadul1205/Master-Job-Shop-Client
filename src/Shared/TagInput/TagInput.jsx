@@ -1,31 +1,24 @@
 import { useState } from "react";
-
-// Packages
 import PropTypes from "prop-types";
-
-// Icons
 import { ImCross } from "react-icons/im";
 
 const TagInput = ({
-  items = [], // default empty array
+  items = [],
   appendItem,
   removeItem,
   label = "Items",
   placeholder = "Add new item",
-  showNumbers = false, // directive from parent
+  showNumbers = false,
 }) => {
-  // Local State
   const [newValue, setNewValue] = useState("");
 
-  // Handle Add New Tag
   const handleAdd = () => {
     const value = newValue.trim();
     if (value) {
       if (showNumbers) {
-        // Add with index number at start
         appendItem({
           value: `${items.length + 1}. ${value}`,
-          index: items.length + 1, // keep index separate too
+          index: items.length + 1,
         });
       } else {
         appendItem({ value });
@@ -35,39 +28,39 @@ const TagInput = ({
   };
 
   return (
-    <div className="mb-3">
+    <div className="mb-3 w-full">
       {/* Label */}
       <label className="block font-semibold text-sm mb-2 capitalize">
         {label}
       </label>
 
       {/* Tags */}
-      <div className="flex flex-wrap gap-1 rounded border border-gray-700 mb-3 px-2 py-2">
+      <div className="flex flex-wrap gap-2 rounded border border-gray-700 mb-3 px-2 py-2">
         {items.length > 0 ? (
           items.map((item, index) => (
             <div
-              key={item.id || index} // fallback key if id is missing
+              key={item.id || index}
               onClick={() => removeItem(index)}
-              className="flex items-center border-2 border-gray-600 hover:border-blue-600 font-semibold text-gray-800 gap-2 px-5 py-1 rounded-xl cursor-pointer hover:bg-blue-100 transition-all duration-200 text-sm"
+              className="flex items-center border-2 border-gray-600 hover:border-blue-600 font-semibold text-gray-800 gap-2 px-3 sm:px-5 py-1 rounded-xl cursor-pointer hover:bg-blue-100 transition-all duration-200 text-sm"
             >
               {item.value} <ImCross className="text-blue-500 text-[10px]" />
             </div>
           ))
         ) : (
-          <p className="text-gray-500 italic text-sm px-5 py-2">
+          <p className="text-gray-500 italic text-sm px-2 sm:px-5 py-2 w-full">
             No {label.toLowerCase()} added yet.
           </p>
         )}
       </div>
 
       {/* Add New Tag */}
-      <div className="flex justify-end gap-2">
+      <div className="flex flex-col sm:flex-row justify-end gap-2 w-full">
         <input
           type="text"
           value={newValue}
           onChange={(e) => setNewValue(e.target.value)}
           placeholder={placeholder}
-          className="input input-bordered bg-white text-black border-black w-3/7 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          className="input input-bordered bg-white text-black border-black w-full sm:w-[65%] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
@@ -78,7 +71,7 @@ const TagInput = ({
         <button
           type="button"
           onClick={handleAdd}
-          className="flex items-center gap-2 border border-blue-600 font-semibold text-blue-600 rounded shadow-xl hover:shadow-2xl px-5 py-1 cursor-pointer hover:bg-blue-600 hover:text-white transition-colors duration-500"
+          className="flex items-center justify-center gap-2 border border-blue-600 font-semibold text-blue-600 rounded shadow-xl hover:shadow-2xl px-5 py-2 sm:py-1 w-full sm:w-auto cursor-pointer hover:bg-blue-600 hover:text-white transition-colors duration-500"
         >
           Add
         </button>
@@ -87,7 +80,6 @@ const TagInput = ({
   );
 };
 
-// Prop Types
 TagInput.propTypes = {
   items: PropTypes.array,
   appendItem: PropTypes.func.isRequired,

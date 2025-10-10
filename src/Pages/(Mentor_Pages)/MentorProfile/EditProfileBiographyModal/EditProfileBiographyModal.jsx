@@ -74,7 +74,7 @@ const EditProfileBiographyModal = ({ MentorData, refetch }) => {
   return (
     <div
       id="Edit_Profile_Biography"
-      className="modal-box min-w-3xl relative bg-white rounded-xl shadow-xl w-full max-w-2xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
+      className="modal-box relative bg-white rounded-xl shadow-xl w-full sm:max-w-2xl mx-auto max-h-[90vh] p-4 sm:p-6 text-black overflow-y-auto"
     >
       {/* Close Button */}
       <button
@@ -86,30 +86,34 @@ const EditProfileBiographyModal = ({ MentorData, refetch }) => {
       </button>
 
       {/* Title */}
-      <h3 className="font-bold text-xl text-center mb-4">
+      <h3 className="font-bold text-lg sm:text-xl text-center mb-4 pt-5 md:pt-0">
         Edit Profile Biography
       </h3>
 
       {/* Divider */}
-      <div className="p-[1px] bg-blue-500 mb-4" />
+      <div className="h-[2px] bg-blue-500 mb-4" />
 
       {/* Error */}
       {errorMessage && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-center">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-center text-sm sm:text-base">
           {errorMessage}
         </div>
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 sm:space-y-6"
+      >
         {/* Biography */}
         <FormInput
           label="Biography"
-          rows={15}
+          rows={10}
           as="textarea"
           placeholder="Make a Biography ......"
           register={register("biography")}
           error={errors.position}
+          className="w-full resize-none p-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
 
         {/* Submit */}

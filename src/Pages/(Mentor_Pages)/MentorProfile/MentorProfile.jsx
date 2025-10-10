@@ -87,7 +87,7 @@ const MentorProfile = () => {
   }
 
   return (
-    <div className="p-2 md:p-5 pb-20 md:pb-5">
+    <div className="p-2 md:p-5 pb-20 md:pb-5 space-y-5">
       {/* Basic Information */}
       <div className="bg-white text-black w-full px-4 sm:px-6 rounded-xl pb-7 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-default">
         {/* Header */}
@@ -139,7 +139,7 @@ const MentorProfile = () => {
       </div>
 
       {/* Contact Details Block */}
-      <div className="bg-white text-black w-full px-4 sm:px-6 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-default">
+      <div className="bg-white text-black w-full px-4 sm:px-6 rounded-xl pb-7 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-default">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-7 gap-3 sm:gap-0">
           {/* Title */}
@@ -189,7 +189,7 @@ const MentorProfile = () => {
       </div>
 
       {/* Expertise & Skills */}
-      <div className="bg-white text-black w-full px-6 sm:px-4 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-default">
+      <div className="bg-white text-black w-full px-4 sm:px-6 rounded-xl pb-7 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-default">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-3 pt-7">
           {/* Title */}
@@ -252,7 +252,7 @@ const MentorProfile = () => {
       </div>
 
       {/* Biography */}
-      <div className="bg-white text-black w-full px-6 sm:px-4 rounded-xl pb-7 mt-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-default">
+      <div className="bg-white text-black w-full px-4 sm:px-6 rounded-xl pb-7 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-default">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-3 pt-7">
           {/* Title */}

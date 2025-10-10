@@ -14,6 +14,7 @@ import {
 } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { FaRegMessage } from "react-icons/fa6";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 // Assets
 import MenteesIcon from "../assets/MentorLayoutIcons/MenteesIcon";
@@ -38,6 +39,8 @@ import useAxiosPublic from "../Hooks/useAxiosPublic";
 // Components
 import MentorProfileDropdown from "../Pages/(Mentor_Pages)/MentorLayoutComponents/MentorProfileDropdown";
 import MentorNotificationsDropdown from "../Pages/(Mentor_Pages)/MentorLayoutComponents/MentorNotificationsDropdown";
+import MentorProfileDropdownMobile from "../Pages/(Mentor_Pages)/MentorLayoutComponents/MentorProfileDropdownMobile";
+import MentorNotificationsDropdownMobile from "../Pages/(Mentor_Pages)/MentorLayoutComponents/MentorNotificationsDropdownMobile";
 
 // Navbar Links
 const sidebarLinks = [
@@ -187,24 +190,24 @@ const MentorLayout = () => {
   return (
     <div className="min-h-screen bg-gradient-to-bl from-blue-100 to-white flex flex-col">
       {/* Navbar */}
-      <div className="flex justify-between items-center bg-[#002242] shadow-2xl w-full px-5 py-3">
+      <div className="flex justify-between md:justify-between items-center bg-[#002242] shadow-2xl w-full px-5 py-8 md:py-2 relative">
         {/* Logo */}
-        <NavLink className="ml-2 rounded-md transition-all duration-200 text-white">
-          <div className="hidden md:flex items-center">
+        <NavLink className="text-white absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
+          <div className="flex items-center">
             <p className="text-xl font-semibold playfair">Master Job Shop</p>
           </div>
         </NavLink>
 
-        {/* Dropdowns */}
-        <div className="flex items-center gap-7">
-          {/* Dropdowns - Profile */}
+        {/* Dropdowns (hidden on mobile) */}
+        <div className="hidden md:flex items-center gap-7 ml-auto">
+          {/* Notifications */}
           <MentorNotificationsDropdown
             openDropdown={openDropdown}
             toggleDropdown={toggleDropdown}
             notificationRef={notificationRef}
           />
 
-          {/* Dropdowns - Messages */}
+          {/* Profile */}
           <MentorProfileDropdown
             profileRef={profileRef}
             MentorData={MentorData}
@@ -217,7 +220,7 @@ const MentorLayout = () => {
       {/* Sidebar & Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-1/6 bg-white border-r border-gray-300 pt-1 px-2 overflow-y-auto h-[calc(100vh-64px)]">
+        <aside className="hidden md:block w-1/6 bg-white border-r border-gray-300 pt-1 px-2 overflow-y-auto h-[calc(100vh-64px)]">
           {sidebarLinks.map((section, i) => (
             <div key={i} className="mb-4">
               {/* Section Title */}
@@ -292,9 +295,34 @@ const MentorLayout = () => {
         </aside>
 
         {/* Content */}
-        <main className="w-5/6 overflow-y-auto h-[calc(100vh-64px)]">
+        <main className="w-5/6 md:h-[calc(100vh-64px)]">
           <Outlet />
         </main>
+
+        <div className="dock">
+          {/* Navigation */}
+          <button>
+            {/* Icon */}
+            <GiHamburgerMenu className="text-white text-2xl" />
+            {/* Label */}
+            <span className="dock-label">Navigation</span>
+          </button>
+
+          {/* Profile */}
+          <MentorProfileDropdownMobile
+            MentorData={MentorData}
+            profileRef={profileRef}
+            openDropdown={openDropdown}
+            toggleDropdown={toggleDropdown}
+          />
+
+          {/* Notifications */}
+          <MentorNotificationsDropdownMobile
+            openDropdown={openDropdown}
+            toggleDropdown={toggleDropdown}
+            notificationRef={notificationRef}
+          />
+        </div>
       </div>
 
       {/* Modals */}

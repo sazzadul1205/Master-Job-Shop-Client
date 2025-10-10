@@ -30,7 +30,7 @@ const MentorDashboardInsights = ({
     }) || [];
 
   return (
-    <div className="bg-white p-5 m-5 rounded-2xl shadow-md border border-gray-300 ">
+    <div className="bg-white p-2 md:p-5 m-2 md:m-5 rounded-2xl shadow-md border border-gray-300 ">
       {/* Header */}
       <h3 className="text-2xl font-semibold text-center text-gray-700 mb-4">
         Course and Mentorship Insights
@@ -40,7 +40,7 @@ const MentorDashboardInsights = ({
       <p className="w-full h-1 bg-gray-300 my-2" />
 
       {/* Grid */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Mentorship Insights */}
         <MentorshipInsights mentorship={mergedMentorship} />
 

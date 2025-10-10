@@ -1,6 +1,4 @@
 import { useState } from "react";
-
-// Packages
 import PropTypes from "prop-types";
 
 // Icons
@@ -18,20 +16,18 @@ import {
   HiOutlineClock,
 } from "react-icons/hi";
 
-// Modals
+// Modal
 import CourseDetailsModal from "../../../../(Public_Pages)/Home/FeaturedCourses/CourseDetailsModal/CourseDetailsModal";
 
 const CourseInsights = ({ course = [] }) => {
-  // State Variables
   const [selectedCourseID, setSelectedCourseID] = useState(null);
 
-  // Defensive: ensure array
+  // Defensive array check
   const list = Array.isArray(course) ? course : [];
 
-  // compute counts for each course
+  // Aggregate stats
   const enriched = list.map((m) => {
     const apps = Array.isArray(m.applications) ? m.applications : [];
-
     const accepted = apps.filter(
       (a) => String(a.status).toLowerCase() === "accepted"
     ).length;
@@ -43,56 +39,45 @@ const CourseInsights = ({ course = [] }) => {
     ).length;
     const total = apps.length;
 
-    return {
-      course: m, // keep original course data
-      accepted,
-      rejected,
-      pending,
-      total,
-    };
+    return { course: m, accepted, rejected, pending, total };
   });
 
-  // sort by total applications desc, take top 3
+  // Top 3 by applications
   const top = enriched.sort((a, b) => b.total - a.total).slice(0, 3);
 
-  // helper: format date
-  const formatDate = (isoOrStr) => {
-    if (!isoOrStr) return "N/A";
+  const formatDate = (date) => {
+    if (!date) return "N/A";
     try {
-      const d = new Date(isoOrStr);
+      const d = new Date(date);
       return d.toLocaleDateString(undefined, {
         day: "numeric",
         month: "short",
         year: "numeric",
       });
     } catch {
-      return isoOrStr;
+      return date;
     }
   };
 
-  // progress percentage (accepted / total)
   const pct = (part, total) =>
     total > 0 ? Math.round((part / total) * 100) : 0;
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+    <div className="p-4 sm:p-6 bg-white rounded-lg shadow-sm border border-gray-200">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        {/* Title */}
-        <h3 className="text-lg font-semibold text-gray-800">Course Insights</h3>
-
-        {/* Description */}
-        <span className="text-sm text-gray-500">Top applied Course</span>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+        <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
+          Course Insights
+        </h3>
+        <span className="text-sm text-gray-500">Top applied courses</span>
       </div>
 
       {/* List */}
       {top.length === 0 ? (
-        // Fallback
-        <div className="py-8 text-center text-gray-500">
-          No Course data available.
+        <div className="py-8 text-center text-gray-500 text-sm sm:text-base">
+          No course data available.
         </div>
       ) : (
-        // List of top course
         <div className="space-y-4">
           {top.map((item, idx) => {
             const m = item.course || {};
@@ -112,48 +97,40 @@ const CourseInsights = ({ course = [] }) => {
             return (
               <div
                 key={m._id || idx}
-                className="p-4 border border-gray-100 rounded-lg hover:shadow-md transition-shadow duration-150"
+                className="p-4 border border-gray-100 rounded-lg hover:shadow-md transition-all duration-150"
               >
-                <div className="flex items-start gap-4">
-                  {/* Left: Mentor avatar */}
-                  <div className="flex-shrink-0">
+                <div className="flex flex-col sm:flex-row items-start gap-4">
+                  {/* Avatar */}
+                  <div className="flex-shrink-0 self-center sm:self-start">
                     <img
                       src={
                         mentor.profileImage ||
                         "https://via.placeholder.com/64?text=Mentor"
                       }
                       alt={mentor.name || "Mentor"}
-                      className="w-16 h-16 rounded-full object-cover border"
+                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border"
                     />
                   </div>
 
-                  {/* Middle: meta */}
-                  <div className="flex-1">
-                    {/* Top Part */}
-                    <div className="flex items-start justify-between gap-4">
+                  {/* Course Info */}
+                  <div className="flex-1 w-full">
+                    {/* Top Section */}
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                       <div>
-                        {/* Title */}
-                        <h4 className="text-md font-semibold text-gray-800">
-                          {m.title || "Untitled course"}
+                        <h4 className="text-base sm:text-lg font-semibold text-gray-800">
+                          {m.title || "Untitled Course"}
                         </h4>
 
-                        {/* Mentor, Start Date, Duration */}
-                        <div className="text-sm text-gray-500 mt-1">
-                          {/* Mentor */}
-                          <span className="inline-flex items-center gap-2 mr-4">
-                            <FiUser className="inline-block" />{" "}
-                            {mentor.name || mentor.email || "Unknown Mentor"}
+                        <div className="text-xs sm:text-sm text-gray-500 mt-1 flex flex-wrap gap-2">
+                          <span className="inline-flex items-center gap-1">
+                            <FiUser />{" "}
+                            {mentor.name || mentor.email || "Unknown"}
                           </span>
-
-                          {/* Start Date */}
-                          <span className="inline-flex items-center gap-2 mr-4">
-                            <FiCalendar className="inline-block" />{" "}
-                            {formatDate(startDate)}
+                          <span className="inline-flex items-center gap-1">
+                            <FiCalendar /> {formatDate(startDate)}
                           </span>
-
-                          {/* Duration / Sessions */}
-                          <span className="inline-flex items-center gap-2">
-                            <FiClock className="inline-block" />{" "}
+                          <span className="inline-flex items-center gap-1">
+                            <FiClock />{" "}
                             {m.durationWeeks
                               ? `${m.durationWeeks}w`
                               : m.sessionsPerWeek
@@ -162,51 +139,42 @@ const CourseInsights = ({ course = [] }) => {
                           </span>
                         </div>
 
-                        {/* Location & Fee */}
-                        <div className="text-sm text-gray-500 mt-2 flex items-center gap-4">
-                          {/* Location */}
-                          <span className="inline-flex items-center gap-2">
+                        <div className="text-xs sm:text-sm text-gray-500 mt-2 flex flex-wrap gap-3">
+                          <span className="inline-flex items-center gap-1">
                             <FiMapPin /> {location}
                           </span>
-                          {/* Fee */}
-                          <span className="inline-flex items-center gap-2">
+                          <span className="inline-flex items-center gap-1">
                             <FiDollarSign /> {fee}
                           </span>
                         </div>
                       </div>
 
-                      {/* Right: total applications */}
+                      {/* Right Stats */}
                       <div className="text-right">
-                        {/* Title */}
-                        <div className="text-sm text-gray-500">
+                        <div className="text-xs sm:text-sm text-gray-500">
                           Applications
                         </div>
-
-                        {/* Count */}
-                        <div className="text-2xl font-bold text-gray-900">
+                        <div className="text-xl sm:text-2xl font-bold text-gray-900">
                           {item.total}
                         </div>
-
-                        {/* Button */}
                         <button
-                          className="mt-3 text-xs inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100 cursor-pointer "
+                          className="mt-2 sm:mt-3 text-xs sm:text-sm inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100 transition-all"
                           onClick={() => {
                             document
                               .getElementById("Course_Details_Modal")
                               ?.showModal();
-                            // FIX: Use the Course._id, not item._id
                             setSelectedCourseID(m?._id || null);
                           }}
                           type="button"
                         >
-                          View details <FiChevronRight />
+                          View <FiChevronRight />
                         </button>
                       </div>
                     </div>
 
-                    {/* Stats row */}
-                    <div className="mt-4 grid grid-cols-3 gap-3">
-                      {/* Accepted Card */}
+                    {/* Stats Grid */}
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {/* Accepted */}
                       <div className="p-3 rounded-lg bg-green-50 border border-green-100">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-sm text-green-700 font-medium">
@@ -222,7 +190,7 @@ const CourseInsights = ({ course = [] }) => {
                         </div>
                       </div>
 
-                      {/* Rejected Card */}
+                      {/* Rejected */}
                       <div className="p-3 rounded-lg bg-red-50 border border-red-100">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-sm text-red-700 font-medium">
@@ -238,7 +206,7 @@ const CourseInsights = ({ course = [] }) => {
                         </div>
                       </div>
 
-                      {/* Pending Card */}
+                      {/* Pending */}
                       <div className="p-3 rounded-lg bg-yellow-50 border border-yellow-100">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-sm text-yellow-700 font-medium">
@@ -255,7 +223,7 @@ const CourseInsights = ({ course = [] }) => {
                       </div>
                     </div>
 
-                    {/* Progress bar for accepted */}
+                    {/* Progress Bar */}
                     <div className="mt-4">
                       <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
                         <span>Acceptance rate</span>
@@ -278,8 +246,7 @@ const CourseInsights = ({ course = [] }) => {
         </div>
       )}
 
-      {/* ----- Modal ----- */}
-      {/* Course Details Modal */}
+      {/* Modal */}
       <dialog id="Course_Details_Modal" className="modal">
         <CourseDetailsModal
           isEditor={true}
@@ -291,7 +258,6 @@ const CourseInsights = ({ course = [] }) => {
   );
 };
 
-// Prop Validation
 CourseInsights.propTypes = {
   course: PropTypes.arrayOf(
     PropTypes.shape({

@@ -41,6 +41,7 @@ import MentorProfileDropdown from "../Pages/(Mentor_Pages)/MentorLayoutComponent
 import MentorNotificationsDropdown from "../Pages/(Mentor_Pages)/MentorLayoutComponents/MentorNotificationsDropdown";
 import MentorProfileDropdownMobile from "../Pages/(Mentor_Pages)/MentorLayoutComponents/MentorProfileDropdownMobile";
 import MentorNotificationsDropdownMobile from "../Pages/(Mentor_Pages)/MentorLayoutComponents/MentorNotificationsDropdownMobile";
+import { useSwipeToOpenDrawer } from "../Hooks/useSwipeToOpenDrawer";
 
 // Navbar Links
 const sidebarLinks = [
@@ -125,7 +126,9 @@ const MentorLayout = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
   const queryClient = useQueryClient();
-
+  useSwipeToOpenDrawer();
+  
+  
   // ---------- Refetch Functions ----------
   const RefetchAll = () => {
     queryClient.invalidateQueries({ queryKey: ["MentorshipData"] });

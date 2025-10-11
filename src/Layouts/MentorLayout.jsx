@@ -9,9 +9,10 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 // Icons
 import {
   IoAddSharp,
-  IoNotificationsOutline,
   IoSettingsOutline,
+  IoNotificationsOutline,
 } from "react-icons/io5";
+import { ImCross } from "react-icons/im";
 import { CgProfile } from "react-icons/cg";
 import { FaRegMessage } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -36,12 +37,14 @@ import Error from "../Shared/Error/Error";
 import useAuth from "../Hooks/useAuth";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
 
+// Functions
+import { useSwipeToOpenDrawer } from "../Hooks/useSwipeToOpenDrawer";
+
 // Components
 import MentorProfileDropdown from "../Pages/(Mentor_Pages)/MentorLayoutComponents/MentorProfileDropdown";
 import MentorNotificationsDropdown from "../Pages/(Mentor_Pages)/MentorLayoutComponents/MentorNotificationsDropdown";
 import MentorProfileDropdownMobile from "../Pages/(Mentor_Pages)/MentorLayoutComponents/MentorProfileDropdownMobile";
 import MentorNotificationsDropdownMobile from "../Pages/(Mentor_Pages)/MentorLayoutComponents/MentorNotificationsDropdownMobile";
-import { useSwipeToOpenDrawer } from "../Hooks/useSwipeToOpenDrawer";
 
 // Navbar Links
 const sidebarLinks = [
@@ -126,25 +129,20 @@ const MentorLayout = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
   const queryClient = useQueryClient();
-  useSwipeToOpenDrawer();
-  
-  
-  // ---------- Refetch Functions ----------
-  const RefetchAll = () => {
-    queryClient.invalidateQueries({ queryKey: ["MentorshipData"] });
-    queryClient.invalidateQueries({ queryKey: ["MyMentorshipData"] });
-    queryClient.invalidateQueries({ queryKey: ["MyMentorshipApplications"] });
-  };
 
-  //  ---------- Dropdown State ----------
+  // Dropdown states
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // ---------- Refs ----------
+  // Dropdown refs
   const profileRef = useRef(null);
   const messageRef = useRef(null);
   const notificationRef = useRef(null);
 
-  // ---------- Fetching Mentor Data ----------
+  // Swipe drawer (custom hook)
+  useSwipeToOpenDrawer(setIsDrawerOpen);
+
+  // Fetch mentor data
   const {
     data: MentorData,
     isLoading,
@@ -156,7 +154,12 @@ const MentorLayout = () => {
     enabled: !!user?.email,
   });
 
-  // Fixed Click Outside Dropdown
+  // Lock body scroll when drawer is open
+  useEffect(() => {
+    document.body.style.overflow = isDrawerOpen ? "hidden" : "auto";
+  }, [isDrawerOpen]);
+
+  // Click outside dropdown closes
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -167,7 +170,6 @@ const MentorLayout = () => {
         setOpenDropdown(null);
       }
     };
-
     const handleScroll = () => setOpenDropdown(null);
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -177,17 +179,22 @@ const MentorLayout = () => {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [profileRef, notificationRef, messageRef]);
+  }, []);
 
-  // Loading UI
+  // Check for Loading
   if (isLoading || loading) return <Loading />;
 
-  // Error UI
+  // Check for errors
   if (error) return <Error message="Failed to load mentor data." />;
 
-  // Dropdown Toggler
-  const toggleDropdown = (name) => {
+  const toggleDropdown = (name) =>
     setOpenDropdown((prev) => (prev === name ? null : name));
+
+  // Refetch all queries
+  const RefetchAll = () => {
+    queryClient.invalidateQueries({ queryKey: ["MentorshipData"] });
+    queryClient.invalidateQueries({ queryKey: ["MyMentorshipData"] });
+    queryClient.invalidateQueries({ queryKey: ["MyMentorshipApplications"] });
   };
 
   return (
@@ -201,16 +208,13 @@ const MentorLayout = () => {
           </div>
         </NavLink>
 
-        {/* Dropdowns (hidden on mobile) */}
+        {/* Desktop dropdowns */}
         <div className="hidden md:flex items-center gap-7 ml-auto">
-          {/* Notifications */}
           <MentorNotificationsDropdown
             openDropdown={openDropdown}
             toggleDropdown={toggleDropdown}
             notificationRef={notificationRef}
           />
-
-          {/* Profile */}
           <MentorProfileDropdown
             profileRef={profileRef}
             MentorData={MentorData}
@@ -220,20 +224,17 @@ const MentorLayout = () => {
         </div>
       </div>
 
-      {/* Sidebar & Content */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside className="hidden md:block w-1/6 bg-white border-r border-gray-300 pt-1 px-2 h-[calc(100vh-64px)]">
+      {/* Main content */}
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Desktop Sidebar */}
+        <aside className="hidden md:block w-1/6 bg-white border-r border-gray-300 pt-1 px-2 h-[calc(100vh-64px)] overflow-y-auto">
           {sidebarLinks.map((section, i) => (
             <div key={i} className="mb-4">
-              {/* Section Title */}
               {section.title && (
                 <h3 className="flex items-center gap-2 font-semibold text-gray-600 pt-3 pb-2 px-2 uppercase truncate">
                   {section.title}
                 </h3>
               )}
-
-              {/* Links */}
               <div className="space-y-2">
                 {section.links.map(({ label, path, icon: Icon, onClick }, j) =>
                   onClick ? (
@@ -244,7 +245,7 @@ const MentorLayout = () => {
                       data-tooltip-id="sidebar-tooltip"
                       data-tooltip-content={label}
                     >
-                      <Icon className="w-[20px] h-[20px] text-gray-700 group-hover:text-blue-500 flex-shrink-0" />
+                      <Icon className="w-[20px] h-[20px] text-gray-700 flex-shrink-0 group-hover:text-blue-500" />
                       <p className="font-semibold truncate">{label}</p>
                     </button>
                   ) : (
@@ -252,7 +253,7 @@ const MentorLayout = () => {
                       key={j}
                       to={path}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 group overflow-hidden text-ellipsis whitespace-nowrap ${
+                        `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 w-full overflow-hidden whitespace-nowrap text-ellipsis ${
                           isActive
                             ? "bg-gray-200 text-blue-500"
                             : "text-gray-700 hover:bg-gray-200"
@@ -261,47 +262,49 @@ const MentorLayout = () => {
                       data-tooltip-id="sidebar-tooltip"
                       data-tooltip-content={label}
                     >
-                      {({ isActive }) => (
-                        <>
-                          <Icon
-                            className={`w-[20px] h-[20px] flex-shrink-0 transition-colors duration-300 ${
-                              isActive
-                                ? "text-blue-500"
-                                : "text-gray-700 group-hover:text-blue-500"
-                            }`}
-                          />
-                          <p className="font-semibold truncate">{label}</p>
-                        </>
-                      )}
+                      <Icon className="w-[20px] h-[20px] flex-shrink-0" />
+                      <p className="font-semibold truncate">{label}</p>
                     </NavLink>
                   )
                 )}
               </div>
-
-              {/* Tooltip */}
-              <Tooltip
-                id="sidebar-tooltip"
-                place="top"
-                effect="solid"
-                className="bg-blue-500 text-white text-sm z-[9999]"
-              />
             </div>
           ))}
+          <Tooltip
+            id="sidebar-tooltip"
+            place="top"
+            effect="solid"
+            className="bg-blue-500 text-white text-sm z-[9999]"
+          />
         </aside>
 
         {/* Content */}
-        <main className="w-full md:w-5/6 md:h-[calc(100vh-64px)] md:overflow-y-auto ">
+        <main className="w-full md:w-5/6 md:h-[calc(100vh-64px)] md:overflow-y-auto">
           <Outlet />
         </main>
 
-        <div className="flex md:hidden dock">
-          {/* Navigation */}
-          <label htmlFor="my-drawer">
-            {/* Icon */}
-            <GiHamburgerMenu className="text-white text-2xl" />
-            {/* Label */}
-            <span className="dock-label">Navigation</span>
-          </label>
+        {/* Mobile drawer button + dropdowns */}
+        <div className="flex md:hidden dock z-50 gap-3 items-center">
+          {/* Drawer button */}
+          <button
+            className="drawer-toggle-btn flex items-center gap-2 text-white text-2xl"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsDrawerOpen((prev) => !prev);
+            }}
+          >
+            {isDrawerOpen ? (
+              <>
+                <ImCross className="text-white text-xl" />
+                <span className="dock-label">Close</span>
+              </>
+            ) : (
+              <>
+                <GiHamburgerMenu className="text-white text-2xl" />
+                <span className="dock-label">Navigation</span>
+              </>
+            )}
+          </button>
 
           {/* Profile */}
           <MentorProfileDropdownMobile
@@ -318,81 +321,85 @@ const MentorLayout = () => {
             notificationRef={notificationRef}
           />
         </div>
-      </div>
 
-      {/* Drawer */}
-      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+        {/* Drawer overlay */}
+        {isDrawerOpen && (
+          <div
+            className="fixed inset-0 bg-black/40 z-40"
+            onClick={() => setIsDrawerOpen(false)}
+          />
+        )}
 
-      {/* Sidebar */}
-      <div className="drawer-side">
-        {/* Overlay */}
-        <label htmlFor="my-drawer" className="drawer-overlay"></label>
-
-        {/* Drawer Content */}
-        <div className="flex flex-col h-full w-[80%] bg-white text-base-content overflow-y-auto p-4">
-          {sidebarLinks.map((section, i) => (
-            <div key={i} className="mb-6 last:mb-0">
-              {/* Section Title */}
-              {section.title && (
-                <h3 className="font-semibold text-black uppercase mb-2 truncate">
-                  {section.title}
-                </h3>
-              )}
-
-              {/* Links */}
-              <div className="flex flex-col space-y-2">
-                {section.links.map(({ label, path, icon: Icon, onClick }, j) =>
-                  onClick ? (
-                    <button
-                      key={j}
-                      onClick={() => {
-                        onClick();
-                        document.getElementById("my-drawer").checked = false;
-                      }}
-                      className="flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden whitespace-nowrap text-ellipsis text-gray-700 hover:bg-gray-200 w-full text-left"
-                    >
-                      <Icon className="w-5 h-5 flex-shrink-0 text-black group-hover:text-blue-500" />
-                      <span className="font-semibold truncate">{label}</span>
-                    </button>
-                  ) : (
-                    <NavLink
-                      key={j}
-                      to={path}
-                      onClick={() =>
-                        (document.getElementById("my-drawer").checked = false)
-                      } // Close drawer
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 w-full overflow-hidden whitespace-nowrap text-ellipsis ${
-                          isActive
-                            ? "bg-gray-200 text-blue-500"
-                            : "text-black hover:bg-gray-200"
-                        }`
-                      }
-                    >
-                      <Icon
-                        className={`w-5 h-5 flex-shrink-0 transition-colors duration-300 ${
-                          path === window.location.pathname
-                            ? "text-blue-500"
-                            : "text-gray-700 hover:text-blue-500"
-                        }`}
-                      />
-                      <span className="font-semibold truncate">{label}</span>
-                    </NavLink>
-                  )
+        {/* Mobile Drawer Content */}
+        <div
+          className={`fixed top-0 left-0 h-full w-4/5 bg-white p-4 pb-20 transform transition-transform duration-300 ease-in-out z-40 ${
+            isDrawerOpen ? "translate-x-0" : "-translate-x-full"
+          } `}
+          style={{
+            WebkitOverflowScrolling: "touch", // enables momentum scroll
+            overscrollBehavior: "contain", // prevents background scroll
+          }}
+        >
+          <div className="h-full overflow-y-auto">
+            {sidebarLinks.map((section, i) => (
+              <div key={i} className="mb-6 last:mb-0">
+                {section.title && (
+                  <h3 className="font-semibold text-black uppercase mb-2 truncate">
+                    {section.title}
+                  </h3>
                 )}
+                <div className="flex flex-col space-y-2">
+                  {section.links.map(
+                    ({ label, path, icon: Icon, onClick }, j) =>
+                      onClick ? (
+                        <button
+                          key={j}
+                          onClick={() => {
+                            onClick();
+                            setIsDrawerOpen(false);
+                          }}
+                          className="flex items-center gap-3 p-2 rounded-md transition-colors duration-500 overflow-hidden whitespace-nowrap text-ellipsis text-gray-700 hover:bg-gray-200 w-full text-left"
+                        >
+                          <Icon className="w-5 h-5 flex-shrink-0 text-black group-hover:text-blue-500" />
+                          <span className="font-semibold truncate">
+                            {label}
+                          </span>
+                        </button>
+                      ) : (
+                        <NavLink
+                          key={j}
+                          to={path}
+                          onClick={() => setIsDrawerOpen(false)}
+                          className={({ isActive }) =>
+                            `flex items-center gap-3 p-2 rounded-md transition-colors duration-500 w-full overflow-hidden whitespace-nowrap text-ellipsis ${
+                              isActive
+                                ? "bg-gray-200 text-blue-500"
+                                : "text-black hover:bg-gray-200"
+                            }`
+                          }
+                        >
+                          <Icon className="w-5 h-5 flex-shrink-0" />
+                          <span className="font-semibold truncate">
+                            {label}
+                          </span>
+                        </NavLink>
+                      )
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Modals */}
-      {/* ---------- Create Mentorship Modal ---------- */}
+      {/* ---------- Modals ---------- */}
+
+      {/* --------- Create Mentorship Modal --------- */}
       <dialog id="Create_Mentorship_Modal" className="modal">
         <CreateMentorshipModal refetch={RefetchAll} />
       </dialog>
 
-      {/* ---------- Create Course Modal ---------- */}
+      {/* --------- Create Course Modal --------- */}
       <dialog id="Create_Course_Modal" className="modal">
         <CreateCourseModal refetch={RefetchAll} />
       </dialog>

@@ -92,11 +92,12 @@ const MentorNotificationsDropdownMobile = ({
 
       {/* Drop-up Panel */}
       <div
-        className={`fixed bottom-16 left-1/2 transform -translate-x-1/2 w-80 md:w-96 bg-white text-black rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transition-all duration-300 ease-in-out origin-bottom ${
-          openDropdown === "notifications"
-            ? "opacity-100 scale-100 translate-y-0"
-            : "opacity-0 scale-95 translate-y-4"
-        } z-50`}
+        className={`fixed bottom-16 left-1/2 transform -translate-x-1/2 w-80 md:w-96 bg-white text-black rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transition-all duration-300 ease-in-out origin-bottom
+    ${
+      openDropdown === "notifications"
+        ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
+        : "opacity-0 scale-95 translate-y-4 pointer-events-none"
+    } z-50`}
       >
         <ul className="py-2 max-h-80 overflow-y-auto">
           {/* Loading */}

@@ -75,14 +75,13 @@ const MentorProfileDropdownMobile = ({
 
       {/* Drop-up menu */}
       <div
-        className={`absolute bottom-16 w-72 bg-white text-black rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transition-all duration-300 ease-in-out
-          ${
-            openDropdown === "profile"
-              ? "opacity-100 scale-100"
-              : "opacity-0 scale-0"
-          }
-          origin-bottom
-        `}
+        className={`absolute bottom-16 w-72 bg-white text-black rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transition-all duration-300 ease-in-out origin-bottom
+      ${
+        openDropdown === "profile"
+          ? "opacity-100 scale-100 pointer-events-auto"
+          : "opacity-0 scale-0 pointer-events-none"
+      }
+    `}
       >
         {/* Header */}
         <div className="flex items-center gap-3 p-4 border-b border-gray-100 bg-gray-50">

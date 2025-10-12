@@ -182,7 +182,7 @@ const MentorshipDetailsModal = ({
   return (
     <div
       id="Mentorship_Details_Modal"
-      className="modal-box max-w-5xl mx-auto p-6 space-y-6 bg-white text-black rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
+      className="modal-box w-full max-w-full sm:max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto p-4 sm:p-6 space-y-4 sm:space-y-6 bg-white text-black rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
     >
       {/* Close Button */}
       <button
@@ -193,23 +193,26 @@ const MentorshipDetailsModal = ({
       </button>
 
       {/* Mentor Info */}
-      <div className="flex items-center space-x-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-4 sm:space-y-0  gap-0 md:gap-5 pt-6 text-center sm:text-left">
         {/* Mentor Image */}
         <img
           src={Mentor?.profileImage || DefaultUserLogo}
           alt={Mentor?.name || "Mentor"}
-          className="w-20 h-20 rounded-full object-cover border-2 border-blue-400"
+          className="w-24 h-24 sm:w-20 sm:h-20 mx-auto sm:mx-0 rounded-full object-cover border-2 border-blue-400"
         />
 
         {/* Mentor Details */}
-        <div>
+        <div className="flex-1">
           {/* Name */}
-          <h2 className="text-2xl font-semibold flex items-center gap-2">
-            <FaUserTie className="text-blue-500" /> {Mentor?.name || "N/A"}
+          <h2 className="text-xl sm:text-2xl font-semibold flex justify-center sm:justify-start items-center gap-2 flex-wrap">
+            <FaUserTie className="text-blue-500" />
+            <span>{Mentor?.name || "N/A"}</span>
           </h2>
 
           {/* Position */}
-          <p className="text-sm text-gray-500">{Mentor?.position || "N/A"}</p>
+          <p className="text-sm text-gray-500 mt-1">
+            {Mentor?.position || "N/A"}
+          </p>
 
           {/* Bio */}
           <div className="mt-2 text-gray-700">
@@ -228,28 +231,33 @@ const MentorshipDetailsModal = ({
         </div>
       </div>
 
+      {/* Divider */}
+      <p className="bg-gray-400 h-[1px] w-[80%] md:w-[99%] mx-auto" />
+
       {/* Program Title & Description */}
-      <div>
+      <div className="mt-4 text-center sm:text-left px-3 sm:px-0">
         {/* Title */}
-        <h1 className="text-3xl font-bold mt-4 text-blue-600">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 break-words">
           {title || "Untitled Mentorship Program"}
         </h1>
 
         {/* Description */}
-        <p className="mt-2 text-black whitespace-pre-line">
+        <p className="mt-2 text-gray-800 text-sm sm:text-base md:text-lg leading-relaxed whitespace-pre-line break-words">
           {description ||
             "No description available for this mentorship program."}
         </p>
       </div>
 
       {/* Key Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 px-0">
         {/* Category */}
-        <div className="flex items-center gap-2">
-          <FaBook className="text-green-500" />
+        <div className="flex items-start sm:items-center gap-3 bg-gray-50 p-4 rounded-lg">
+          <FaBook className="text-green-500 text-xl sm:text-2xl flex-shrink-0" />
           <div>
-            <h3 className="font-semibold text-lg">Category</h3>
-            <p>
+            <h3 className="font-semibold text-base sm:text-lg text-gray-800">
+              Category
+            </h3>
+            <p className="text-sm sm:text-base text-gray-700">
               {category
                 ? `${category} / ${subCategory || "TBD"}`
                 : "Not specified"}
@@ -258,23 +266,29 @@ const MentorshipDetailsModal = ({
         </div>
 
         {/* Duration weeks */}
-        <div className="flex items-center gap-2">
-          <FaClock className="text-orange-500" />
+        <div className="flex items-start sm:items-center gap-3 bg-gray-50 p-4 rounded-lg">
+          <FaClock className="text-orange-500 text-xl sm:text-2xl flex-shrink-0" />
           <div>
-            <h3 className="font-semibold text-lg">Duration</h3>
-            <p>{durationWeeks || "TBD"} Weeks</p>
+            <h3 className="font-semibold text-base sm:text-lg text-gray-800">
+              Duration
+            </h3>
+            <p className="text-sm sm:text-base text-gray-700">
+              {durationWeeks || "TBD"} Weeks
+            </p>
           </div>
         </div>
 
         {/* Sessions */}
-        <div className="flex items-center gap-2">
-          <FaCalendarAlt className="text-blue-400" />
+        <div className="flex items-start sm:items-center gap-3 bg-gray-50 p-4 rounded-lg sm:col-span-2">
+          <FaCalendarAlt className="text-blue-400 text-xl sm:text-2xl flex-shrink-0" />
           <div>
-            <h3 className="font-semibold text-lg">Sessions</h3>
-            <p>
+            <h3 className="font-semibold text-base sm:text-lg text-gray-800">
+              Sessions
+            </h3>
+            <p className="text-sm sm:text-base text-gray-700">
               {sessionsPerWeek || "TBD"} per week, {sessionLength || "TBD"} each
             </p>
-            <p>
+            <p className="text-sm sm:text-base text-gray-600">
               {sessionDays?.length ? sessionDays.join(", ") : "TBD"} |{" "}
               <span>
                 {formatTime(sessionStartTime)} - {formatTime(sessionEndTime)}
@@ -284,11 +298,13 @@ const MentorshipDetailsModal = ({
         </div>
 
         {/* Location */}
-        <div className="flex items-center gap-2">
-          <FaMapMarkerAlt className="text-red-400" />
+        <div className="flex items-start sm:items-center gap-3 bg-gray-50 p-4 rounded-lg">
+          <FaMapMarkerAlt className="text-red-400 text-xl sm:text-2xl flex-shrink-0" />
           <div>
-            <h3 className="font-semibold text-lg">Location</h3>
-            <p>
+            <h3 className="font-semibold text-base sm:text-lg text-gray-800">
+              Location
+            </h3>
+            <p className="text-sm sm:text-base text-gray-700 break-words">
               {location?.address || ""}
               {location?.city ? `, ${location.city}` : ""}
               {location?.state ? `, ${location.state}` : ""}
@@ -299,40 +315,48 @@ const MentorshipDetailsModal = ({
         </div>
 
         {/* Fee */}
-        <div className="flex items-center gap-2">
-          <FaMoneyBillWave className="text-yellow-500" />
+        <div className="flex items-start sm:items-center gap-3 bg-gray-50 p-4 rounded-lg">
+          <FaMoneyBillWave className="text-yellow-500 text-xl sm:text-2xl flex-shrink-0" />
           <div>
-            <h3 className="font-semibold text-lg">Fee</h3>
+            <h3 className="font-semibold text-base sm:text-lg text-gray-800">
+              Fee
+            </h3>
             {fee?.isFree ? (
-              <p>Free</p>
+              <p className="text-sm sm:text-base text-gray-700">Free</p>
             ) : fee?.amount ? (
-              <p>
+              <p className="text-sm sm:text-base text-gray-700">
                 {fee.amount} {fee.currency || "USD"} via{" "}
                 <span className="text-black">{fee.paymentMethod || "TBD"}</span>
               </p>
             ) : (
-              <p>Not specified</p>
+              <p className="text-sm sm:text-base text-gray-700">
+                Not specified
+              </p>
             )}
           </div>
         </div>
 
         {/* Start / End Date */}
-        <div className="flex items-center gap-2">
-          <FaCalendarAlt className="text-purple-400" />
+        <div className="flex items-start sm:items-center gap-3 bg-gray-50 p-4 rounded-lg">
+          <FaCalendarAlt className="text-purple-400 text-xl sm:text-2xl flex-shrink-0" />
           <div>
-            <h3 className="font-semibold text-lg">Start / End Date</h3>
-            <p>
+            <h3 className="font-semibold text-base sm:text-lg text-gray-800">
+              Start / End Date
+            </h3>
+            <p className="text-sm sm:text-base text-gray-700">
               {startDate || "TBD"} - {endDate || "TBD"}
             </p>
           </div>
         </div>
 
         {/* Posted At */}
-        <div className="flex items-center gap-2">
-          <FaCalendarAlt className="text-gray-500" />
+        <div className="flex items-start sm:items-center gap-3 bg-gray-50 p-4 rounded-lg sm:col-span-2">
+          <FaCalendarAlt className="text-gray-500 text-xl sm:text-2xl flex-shrink-0" />
           <div>
-            <h3 className="font-semibold text-lg">Posted At</h3>
-            <p>
+            <h3 className="font-semibold text-base sm:text-lg text-gray-800">
+              Posted At
+            </h3>
+            <p className="text-sm sm:text-base text-gray-700">
               {postedAt
                 ? new Date(postedAt).toLocaleString("en-US", {
                     day: "2-digit",
@@ -349,19 +373,41 @@ const MentorshipDetailsModal = ({
       </div>
 
       {/* Required Skills */}
-      <div>
+      <div className="mt-6">
         {/* Title */}
-        <h3 className="font-semibold text-xl mt-6 pb-3 flex items-center gap-2 text-blue-600">
-          <FaTools /> Required Skills
+        <h3 className="font-semibold text-xl pb-3 flex items-center gap-2 text-blue-600">
+          <FaTools className="text-blue-500" /> Required Skills
         </h3>
 
         {/* Skill List */}
         {skills?.length > 0 ? (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+          <ul
+            className="
+        grid 
+        grid-cols-2
+        sm:grid-cols-3 
+        md:grid-cols-4 
+        lg:grid-cols-5 
+        gap-3 
+        mt-2
+      "
+          >
             {skills.map((tech, idx) => (
               <li
                 key={idx}
-                className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full inline-block font-medium"
+                className="
+            bg-blue-100 
+            text-blue-800 
+            px-3 
+            py-2 
+            rounded-full 
+            text-center 
+            font-medium 
+            text-sm 
+            sm:text-base 
+            hover:bg-blue-200 
+            transition
+          "
               >
                 {tech}
               </li>
@@ -372,18 +418,49 @@ const MentorshipDetailsModal = ({
         )}
       </div>
 
+      {/* Divider */}
+      <p className="bg-gray-400 h-[1px] w-[80%] md:w-[99%] mx-auto" />
+
       {/* Prerequisites / Soft Requirements */}
-      <div>
+      <div className="mt-6">
         {/* Title */}
-        <h3 className="font-semibold text-xl mt-4 pb-3 flex items-center gap-2 text-green-600">
-          <FaTasks /> Prerequisites / Soft Requirements
+        <h3 className="font-semibold text-xl pb-3 flex items-center gap-2 text-green-600">
+          <FaTasks className="text-green-500" /> Prerequisites / Soft
+          Requirements
         </h3>
 
         {/* Prerequisite List */}
         {prerequisites?.length > 0 ? (
-          <ul className="list-disc list-inside mt-2 font-semibold text-gray-700">
+          <ul
+            className="
+        grid 
+        grid-cols-1 
+        sm:grid-cols-2 
+        md:grid-cols-3 
+        gap-3 
+        mt-2 
+        font-semibold 
+        text-gray-700
+      "
+          >
             {prerequisites.map((item, idx) => (
-              <li key={idx}>{item}</li>
+              <li
+                key={idx}
+                className="
+            bg-green-100 
+            text-green-800 
+            px-4 
+            py-2 
+            rounded-lg 
+            shadow-sm 
+            hover:bg-green-200 
+            transition 
+            text-sm 
+            sm:text-base
+          "
+              >
+                {item}
+              </li>
             ))}
           </ul>
         ) : (
@@ -391,20 +468,45 @@ const MentorshipDetailsModal = ({
         )}
       </div>
 
+      {/* Divider */}
+      <p className="bg-gray-400 h-[1px] w-[80%] md:w-[99%] mx-auto" />
+
       {/* Skills Covered */}
-      <div>
+      <div className="mt-6">
         {/* Title */}
-        <h3 className="font-semibold text-xl mt-4 pb-3 flex items-center gap-2 text-purple-600">
-          <FaTools /> Skills You Will Learn
+        <h3 className="font-semibold text-xl pb-3 flex items-center gap-2 text-purple-600">
+          <FaTools className="text-purple-500" /> Skills You Will Learn
         </h3>
 
         {/* Skill List */}
         {skillsCovered?.length > 0 ? (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+          <ul
+            className="
+        grid 
+        grid-cols-1 
+        sm:grid-cols-2 
+        md:grid-cols-3 
+        gap-3 
+        mt-2
+      "
+          >
             {skillsCovered.map((skill, idx) => (
               <li
                 key={idx}
-                className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full inline-block font-medium"
+                className="
+            bg-purple-100 
+            text-purple-800 
+            px-4 
+            py-2 
+            rounded-lg 
+            shadow-sm 
+            font-medium 
+            text-sm 
+            sm:text-base 
+            hover:bg-purple-200 
+            transition-all 
+            duration-200
+          "
               >
                 {skill}
               </li>
@@ -417,18 +519,52 @@ const MentorshipDetailsModal = ({
         )}
       </div>
 
+      {/* Divider */}
+      <p className="bg-gray-400 h-[1px] w-[80%] md:w-[99%] mx-auto" />
+
       {/* Attachments */}
-      <div>
+      <div className="mt-6">
         {/* Title */}
-        <h3 className="font-semibold text-xl mt-4 pb-3 flex items-center gap-2 text-orange-600">
-          <FaBook /> Attachments
+        <h3 className="font-semibold text-xl pb-3 flex items-center gap-2 text-orange-600">
+          <FaBook className="text-orange-500" /> Attachments
         </h3>
 
         {/* Attachment List */}
         {attachments?.length > 0 ? (
-          <ul className="list-disc list-inside mt-2 font-semibold text-gray-700">
+          <ul
+            className="
+        grid 
+        grid-cols-1 
+        sm:grid-cols-2 
+        md:grid-cols-3 
+        gap-3 
+        mt-2
+      "
+          >
             {attachments.map((file, idx) => (
-              <li key={idx}>{file}</li>
+              <li
+                key={idx}
+                className="
+            flex 
+            items-center 
+            gap-2 
+            bg-orange-50 
+            text-orange-800 
+            px-4 
+            py-2 
+            rounded-lg 
+            shadow-sm 
+            font-medium 
+            text-sm 
+            sm:text-base 
+            hover:bg-orange-100 
+            transition-all 
+            duration-200
+            break-all
+          "
+              >
+                📎 {file}
+              </li>
             ))}
           </ul>
         ) : (
@@ -438,39 +574,65 @@ const MentorshipDetailsModal = ({
         )}
       </div>
 
+      {/* Divider */}
+      <p className="bg-gray-400 h-[1px] w-[80%] md:w-[99%] mx-auto" />
+
       {/* Weekly Plan */}
-      <div>
+      <div className="mt-6">
         {/* Title */}
-        <h3 className="font-semibold text-xl mt-4 pb-3 flex items-center gap-2 text-teal-600">
-          <FaTasks /> Weekly Plan
+        <h3 className="font-semibold text-xl pb-3 flex items-center gap-2 text-teal-600">
+          <FaTasks className="text-teal-500" /> Weekly Plan
         </h3>
 
-        {/* Weekly Plan */}
+        {/* Weekly Plan List */}
         {weeklyPlan && weeklyPlan.length > 0 ? (
-          <div className="space-y-4 mt-2">
+          <div
+            className="
+        grid 
+        grid-cols-1 
+        sm:grid-cols-2 
+        lg:grid-cols-3 
+        gap-4 
+        mt-2
+      "
+          >
             {weeklyPlan.map((week) => (
               <div
                 key={week.weekNo}
-                className="p-4 border-4 border-l-blue-500 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                className="
+            p-4 
+            border-l-4 
+            border-teal-500 
+            rounded-lg 
+            bg-gray-50 
+            shadow-sm 
+            hover:shadow-md 
+            hover:bg-gray-100 
+            transition-all 
+            duration-200 
+            flex 
+            flex-col 
+            justify-between
+          "
               >
                 {/* Week Number & Topic */}
-                <h4 className="font-semibold text-lg">
+                <h4 className="font-semibold text-lg text-gray-800 break-words">
                   Week {week.weekNo}: {week.topic || "No topic provided"}
                 </h4>
 
                 {/* Objectives */}
-                <p className="text-gray-700 mt-1">
+                <p className="text-gray-700 mt-2 text-sm sm:text-base">
                   <strong>Objectives:</strong>{" "}
                   {week.objectives || "Not specified"}
                 </p>
 
                 {/* Resources */}
-                <p className="text-gray-700 mt-1">
+                <p className="text-gray-700 mt-1 text-sm sm:text-base">
                   <strong>Resources:</strong> {week.resources || "Not provided"}
                 </p>
 
                 {/* Notes */}
-                <p className="text-gray-500 mt-1 text-sm">
+                <p className="text-gray-500 mt-2 text-xs sm:text-sm italic">
                   {week.notes || "No additional notes"}
                 </p>
               </div>
@@ -483,24 +645,27 @@ const MentorshipDetailsModal = ({
         )}
       </div>
 
+      {/* Divider */}
+      <p className="bg-gray-400 h-[1px] w-[80%] md:w-[99%] mx-auto" />
+
       {/* Communication & Support */}
-      <div>
+      <div className="mt-6">
         {/* Title */}
-        <h3 className="font-semibold text-xl mt-4 pb-3 flex items-center gap-2 text-red-600">
-          <FaCommentDots /> Communication & Support
+        <h3 className="font-semibold text-xl pb-3 flex items-center gap-2 text-red-600">
+          <FaCommentDots className="text-red-500" /> Communication & Support
         </h3>
 
-        {/* Sessions */}
+        {/* Communication Details */}
         {communication ? (
-          <>
+          <div className="space-y-2 text-sm sm:text-base text-gray-700">
             {/* Preferred Method */}
-            <p className="text-gray-700 mt-1">
+            <p>
               <strong>Preferred Method:</strong>{" "}
               {communication.preferredMethod || "Not specified"}
             </p>
 
             {/* One-on-One Support */}
-            <p className="text-gray-700 mt-1">
+            <p>
               <strong>One-on-One Support:</strong>{" "}
               {communication.oneOnOneSupport !== undefined
                 ? communication.oneOnOneSupport
@@ -510,7 +675,7 @@ const MentorshipDetailsModal = ({
             </p>
 
             {/* Group Chat */}
-            <p className="text-gray-700 mt-1">
+            <p>
               <strong>Group Chat:</strong>{" "}
               {communication.groupChatEnabled !== undefined
                 ? communication.groupChatEnabled
@@ -520,10 +685,10 @@ const MentorshipDetailsModal = ({
             </p>
 
             {/* Notes */}
-            <p className="text-black mt-1 whitespace-pre-line pt-2">
+            <p className="text-gray-800 whitespace-pre-line pt-2">
               {communication.notes || "No additional notes provided."}
             </p>
-          </>
+          </div>
         ) : (
           <p className="text-gray-500 mt-2">
             No communication details provided for this program.
@@ -536,7 +701,23 @@ const MentorshipDetailsModal = ({
         <Link to={`/Mentorship/Apply/${selectedMentorshipID}`}>
           <button
             type="button"
-            className="w-full px-6 py-3 font-semibold text-sm text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors cursor-pointer"
+            className="
+        w-full 
+        sm:w-auto 
+        px-6 
+        py-3 
+        font-semibold 
+        text-sm 
+        sm:text-base
+        text-white 
+        bg-blue-600 
+        rounded 
+        hover:bg-blue-700 
+        transition-colors 
+        cursor-pointer
+        block
+        sm:inline-block
+      "
           >
             Apply Now
           </button>
@@ -544,11 +725,11 @@ const MentorshipDetailsModal = ({
       )}
 
       {/* Posted Date */}
-      <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-1 mt-2 text-xs sm:text-sm text-gray-400">
         <FaCalendarAlt className="text-gray-400" />
         <span>
           Posted on:{" "}
-          <span>
+          <span className="break-words">
             {postedAt
               ? new Date(postedAt).toLocaleString("en-US", {
                   day: "2-digit",

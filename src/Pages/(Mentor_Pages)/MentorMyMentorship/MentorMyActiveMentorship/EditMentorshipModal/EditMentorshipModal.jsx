@@ -252,7 +252,7 @@ const EditMentorshipModal = ({
   if (error)
     return (
       <div
-        id="Edit_Mentorship_Modal"
+        id="Create_Mentorship_Modal"
         className="modal-box p-0 relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] text-black overflow-y-auto"
       >
         {/* Close Button */}
@@ -263,8 +263,6 @@ const EditMentorshipModal = ({
         >
           <ImCross className="text-xl" />
         </button>
-
-        {/* Error Component inside modal */}
 
         <Error height="min-h-[60vh]" />
       </div>
@@ -354,8 +352,8 @@ const EditMentorshipModal = ({
 
   return (
     <div
-      id="Edit_Mentorship_Modal"
-      className="modal-box max-w-4xl mx-auto p-6 space-y-6 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh] text-black"
+      id="Create_Mentorship_Modal"
+      className="modal-box relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-full sm:max-w-xl md:max-w-3xl mx-auto max-h-[90vh] p-4 sm:p-6 text-black overflow-y-auto"
     >
       {/* Close Button */}
       <button
@@ -367,7 +365,9 @@ const EditMentorshipModal = ({
       </button>
 
       {/* Modal Title */}
-      <h3 className="font-bold text-xl text-center mb-4">Edit Mentorship</h3>
+      <h3 className="font-bold text-lg sm:text-xl text-center mb-4 pt-5 md:pt-0">
+        Edit Mentorship
+      </h3>
 
       {/* Divider */}
       <div className="p-[1px] bg-blue-500 mb-4" />
@@ -406,7 +406,7 @@ const EditMentorshipModal = ({
           />
 
           {/* Category & Subcategory */}
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             {/* Category */}
             <FormInput
               as="select"
@@ -492,7 +492,7 @@ const EditMentorshipModal = ({
           <p className="bg-gray-500 p-[1px] my-2" />
 
           {/* Duration & Sessions Per Week */}
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             {/* Total Duration */}
             <FormInput
               label="Total Duration (Weeks)"
@@ -538,7 +538,7 @@ const EditMentorshipModal = ({
             <label className="block font-medium text-sm">Session Days</label>
 
             {/* Days Checkboxes */}
-            <div className="grid grid-cols-7 gap-2">
+            <div className="grid grid-cols-3 md:grid-cols-7 gap-2">
               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
                 const selectedDays = watch("sessionDays") || [];
                 const sessionsPerWeek = Number(watch("sessionsPerWeek")) || 0;
@@ -580,7 +580,7 @@ const EditMentorshipModal = ({
           </div>
 
           {/* Session Times */}
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             {/* Session Start Time */}
             <FormInput
               label="Session Start Time"
@@ -643,7 +643,7 @@ const EditMentorshipModal = ({
           </div>
 
           {/* On-site Detailed Location (always shown, disabled if Remote) */}
-          <div className="grid grid-cols-2 gap-2 mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 space-y-2">
             {/* City */}
             <FormInput
               label="City"
@@ -720,7 +720,7 @@ const EditMentorshipModal = ({
           </div>
 
           {/* All fee inputs */}
-          <div className="grid grid-cols-2 items-center gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 space-y-2">
             {/* Fee Type */}
             <FormInput
               label="Fee Type"
@@ -807,7 +807,7 @@ const EditMentorshipModal = ({
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  id="negotiable"
+                  id="negotiable-mentorship"
                   {...register("fee.negotiable")}
                   disabled={watch("fee.isFree")}
                   className="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
@@ -831,7 +831,7 @@ const EditMentorshipModal = ({
         <p className="bg-gray-500 h-[1px] w-full" />
 
         {/* Dates */}
-        <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row gap-2">
           {/* Start Date */}
           <FormInput
             label="Program Start Date"
@@ -872,7 +872,8 @@ const EditMentorshipModal = ({
             options={preferredCommunicationMethod}
           />
 
-          <div className="flex flex-row justify-between px-20 py-2">
+          {/* Group Chat & One-on-One Support */}
+          <div className="flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-4">
             {/* Group Chat Enabled */}
             <div className="flex items-center gap-2">
               <input

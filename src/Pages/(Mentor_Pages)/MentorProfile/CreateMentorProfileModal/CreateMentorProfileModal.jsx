@@ -37,7 +37,8 @@ const CreateMentorProfileModal = ({ refetch }) => {
   const [profileImage, setProfileImage] = useState(null);
 
   // New Field Values
-  const [setNewFieldValues] = useState({
+  // eslint-disable-next-line no-unused-vars
+  const [newFieldValues, setNewFieldValues] = useState({
     expertise: "",
     skills: "",
   });
@@ -159,42 +160,39 @@ const CreateMentorProfileModal = ({ refetch }) => {
   return (
     <div
       id="Create_Mentor_Profile_Modal"
-      className="modal-box min-w-4xl relative bg-white rounded-lg shadow-xl hover:shadow-2xl w-full max-w-3xl mx-auto max-h-[90vh] p-6 text-black overflow-y-auto"
+      className="modal-box relative bg-white rounded-xl shadow-xl w-full max-w-3xl mx-auto max-h-[90vh] overflow-y-auto p-5 sm:p-6 text-black"
     >
       {/* Close Button */}
       <button
         type="button"
         onClick={handleClose}
-        className="absolute top-2 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
+        className="absolute top-3 right-3 z-50 p-2 rounded-full hover:text-red-500 cursor-pointer transition-colors duration-300"
       >
-        <ImCross className="text-xl" />
+        <ImCross className="text-xl sm:text-2xl" />
       </button>
 
       {/* Modal Title */}
-      <h3 className="font-bold text-xl text-center mb-4">
+      <h3 className="font-bold text-lg sm:text-xl text-center mb-4 pt-5 md:pt-0">
         Create Mentor Profile
       </h3>
 
       {/* Divider */}
-      <div className="p-[1px] bg-blue-500 mb-4" />
+      <div className="h-[2px] bg-blue-500 mb-4" />
 
-      {/* Alert Messages */}
+      {/* Error Message */}
       {errorMessage && (
-        <div className="bg-red-100 text-red-800 font-medium border border-red-400 px-4 py-2 rounded mb-4 text-center">
+        <div className="bg-red-100 text-red-800 font-medium border border-red-400 px-3 py-2 rounded mb-4 text-center text-sm sm:text-base">
           {errorMessage}
         </div>
       )}
 
-      {/* Modal Form Section */}
+      {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Basic information */}
-        <div className="flex w-full gap-3">
+        {/* Basic Information */}
+        <div className="flex flex-col md:flex-row w-full gap-4">
           {/* Avatar Section */}
-          <div className="w-1/3 p-2">
-            {/* Logo Title */}
+          <div className="w-full md:w-1/3 p-2">
             <p className="font-medium text-center text-sm mb-1">Mentor Image</p>
-
-            {/* Logo Upload Container */}
             <CompanyProfileLogoUpload
               preview={preview}
               setPreview={setPreview}
@@ -203,8 +201,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
           </div>
 
           {/* Initial Information */}
-          <div className="w-2/3 space-y-3 py-2 pl-3 border-l border-gray-300">
-            {/* Name */}
+          <div className="w-full md:w-2/3 space-y-3 md:py-2 md:pl-3 md:border-l md:border-gray-300">
             <FormInput
               label="Name"
               required
@@ -213,7 +210,6 @@ const CreateMentorProfileModal = ({ refetch }) => {
               error={errors.name}
             />
 
-            {/* Industries */}
             <FormInput
               label="Industries"
               required
@@ -230,23 +226,19 @@ const CreateMentorProfileModal = ({ refetch }) => {
           required
           rows={4}
           as="textarea"
-          placeholder="Describe Your Self ......"
+          placeholder="Describe yourself..."
           register={register("description", { required: true })}
-          error={errors.position}
+          error={errors.description}
         />
 
         {/* Contact Information */}
         <div>
-          {/* Title */}
-          <h3 className="font-semibold text-lg text-gray-800">
+          <h3 className="font-semibold text-lg text-gray-800 mb-2">
             Contact Information
           </h3>
+          <div className="h-[2px] bg-blue-500 mb-3" />
 
-          {/* Divider */}
-          <hr className="bg-blue-500 h-[3px] my-2" />
-
-          {/* Contact Info */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {/* Email */}
             <FormInput
               label="Email"
@@ -259,7 +251,7 @@ const CreateMentorProfileModal = ({ refetch }) => {
 
             {/* Phone */}
             <div>
-              <label className="font-medium text-sm mb-1">
+              <label className="font-medium text-sm mb-1 block">
                 Phone <span className="text-red-500">*</span>
               </label>
               <PhoneInput
@@ -293,13 +285,13 @@ const CreateMentorProfileModal = ({ refetch }) => {
           showNumbers={false}
         />
 
-        {/* Expertise */}
+        {/* Skills */}
         <TagInput
           label="Skills"
           items={skillsFields}
           appendItem={appendSkills}
           removeItem={removeSkills}
-          placeholder="Add new Skills"
+          placeholder="Add new skill"
           showNumbers={false}
         />
 
@@ -308,16 +300,16 @@ const CreateMentorProfileModal = ({ refetch }) => {
           label="Biography"
           rows={4}
           as="textarea"
-          placeholder="Make a Biography ......"
+          placeholder="Write a short biography..."
           register={register("biography")}
-          error={errors.position}
+          error={errors.biography}
         />
 
-        {/* Submit Button */}
+        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
-          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded shadow ${
+          className={`bg-blue-700 hover:bg-blue-800 text-white font-semibold w-full py-2 rounded-lg shadow transition-all duration-200 ${
             loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
           }`}
         >

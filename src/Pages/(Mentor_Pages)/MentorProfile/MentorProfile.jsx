@@ -56,37 +56,48 @@ const MentorProfile = () => {
   // If no mentor profile data exists
   if (!MentorData || Object.keys(MentorData).length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
-        {/* Header */}
-        <h2 className="text-xl sm:text-2xl md:text-3xl text-black font-bold mb-3 sm:mb-4">
-          No Profile Found
-        </h2>
+      <>
+        <div className="flex flex-col items-center justify-center min-h-[70vh] px-4">
+          {/* Header */}
+          <h2 className="text-xl sm:text-2xl md:text-3xl text-black font-bold mb-3 sm:mb-4 text-center">
+            No Profile Found
+          </h2>
 
-        {/* Message */}
-        <p
-          className="text-gray-600 font-medium sm:font-semibold text-base
-         sm:text-lg md:text-xl mb-6 max-w-md sm:max-w-lg md:max-w-2xl"
-        >
-          You haven’t created your mentor profile yet. Please set it up to
-          showcase your expertise and connect with mentees.
-        </p>
+          {/* Message */}
+          <p
+            className="text-gray-600 font-medium sm:font-semibold text-base
+         sm:text-lg md:text-xl mb-6 max-w-md sm:max-w-lg md:max-w-2xl text-center"
+          >
+            You haven’t created your mentor profile yet. Please set it up to
+            showcase your expertise and connect with mentees.
+          </p>
 
-        {/* Create Button */}
-        <button
-          onClick={() =>
-            document.getElementById("Create_Mentor_Profile_Modal").showModal()
-          }
-          className="border-2 border-blue-500 hover:bg-blue-500 text-blue-700 hover:text-white 
+          {/* Create Button */}
+          <button
+            onClick={() => {
+              console.log("Click");
+              document
+                .getElementById("Create_Mentor_Profile_Modal")
+                .showModal();
+            }}
+            className="border-2 border-blue-500 hover+:bg-blue-500 text-blue-700 hover:text-white 
           font-semibold px-6 sm:px-10 py-2 sm:py-3 rounded-lg cursor-pointer transition-colors duration-300"
-        >
-          Create Profile
-        </button>
+          >
+            Create Profile
+          </button>
+        </div>
 
         {/* Create Mentor Profile Modal */}
-        <dialog id="Create_Mentor_Profile_Modal" className="modal">
+        <dialog
+          id="Create_Mentor_Profile_Modal"
+          className="modal w-full max-w-md sm:max-w-lg md:max-w-3xl p-0 m-0 rounded-none sm:rounded-xl"
+          onClick={(e) => {
+            if (e.target.tagName === "DIALOG") e.target.close();
+          }}
+        >
           <CreateMentorProfileModal refetch={refetch} />
         </dialog>
-      </div>
+      </>
     );
   }
 

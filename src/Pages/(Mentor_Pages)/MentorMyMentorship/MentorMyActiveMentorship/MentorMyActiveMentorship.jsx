@@ -60,7 +60,7 @@ const MentorMyActiveMentorship = ({
             >
               {/* Status Badge */}
               <span
-                className={`absolute -top-3 -left-3 px-3 sm:px-5 py-1 text-xs sm:text-sm font-semibold rounded-full shadow-xl ${
+                className={`absolute -top-3 -left-3 px-3 sm:px-5 py-1 text-xs sm:text-sm font-semibold rounded-full shadow-xl z-0 ${
                   ["active", "closed"].includes(
                     mentorship?.status?.toLowerCase()
                   )
@@ -90,7 +90,7 @@ const MentorMyActiveMentorship = ({
               {/* Star Toggle */}
               <button
                 onClick={() => toggleStar(mentorship._id)}
-                className="absolute top-3 right-3 text-xl sm:text-2xl cursor-pointer transition-colors group"
+                className="absolute top-3 right-3 text-xl sm:text-2xl cursor-pointer transition-colors group z-0"
               >
                 {mentorship.archived ? (
                   <FaStar className="text-yellow-400 drop-shadow-md" />
@@ -99,7 +99,7 @@ const MentorMyActiveMentorship = ({
                 )}
 
                 {/* Tooltip */}
-                <span className="absolute -top-8 right-1/2 translate-x-1/2 whitespace-nowrap text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="absolute -top-8 right-1/2 translate-x-1/2 whitespace-nowrap text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10">
                   {mentorship.archived ? "Archived" : "Un-Archived"}
                 </span>
               </button>
@@ -111,7 +111,7 @@ const MentorMyActiveMentorship = ({
                   {mentorship.title || "Untitled Mentorship"}
                 </h4>
 
-                {/* Category */}
+                {/* Category  Subcategory */}
                 <p className="text-gray-500 text-xs sm:text-sm">
                   {mentorship?.category || "Category not specified"} ›{" "}
                   {mentorship?.subCategory || "Subcategory not specified"}
@@ -151,7 +151,7 @@ const MentorMyActiveMentorship = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row justify-between items-stretch mt-4 gap-2">
+              <div className="flex flex-col sm:flex-row justify-between items-stretch mt-4 gap-2 z-10">
                 {/* View */}
                 <button
                   onClick={() => {
